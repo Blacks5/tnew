@@ -1,5 +1,4 @@
 
-<div class="wrapper wrapper-content  animated fadeInRight blog">
     <div class="row">
         <div class="col-lg-4">
             <div class="ibox">
@@ -282,7 +281,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
 

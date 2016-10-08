@@ -1,4 +1,5 @@
 <?php
+use \yii\helpers\Html;
 ?>
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-sm-4">
@@ -14,7 +15,7 @@
     </div>
     <div class="col-sm-8">
         <div class="title-action">
-            <a href="javascript:window.location.reload()" class="btn btn-primary">刷新</a>
+            <a href="javascript:void " class="btn btn-primary">来个按钮1</a>
         </div>
     </div>
 </div>
@@ -33,4 +34,3 @@
         </div>
     </div>
 </div>
-
