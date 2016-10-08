@@ -17,7 +17,7 @@ use \yii\helpers\Html;
     <?= Html::cssFile('@web/static/css/animate.css'); ?>
     <?= Html::cssFile('@web/static/css/style.css'); ?>
 </head>
-<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<body class="fixed-sidebar full-height-layout gray-bg" style="/*overflow:hidden*/">
 
 <!--全局js-->
 <?= Html::jsFile('@web/static/js/jquery.min.js?v=2.1.4') ?>
