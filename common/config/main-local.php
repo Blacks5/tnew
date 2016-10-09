@@ -7,6 +7,7 @@ return [
             'username' => 'haytoo',
             'password' => 'hsd89h&hhOH09UH90jo',
             'charset' => 'utf8',
+            'tablePrefix'=>'wcb_'
             /*
              'class' => 'yii\db\Connection',
              'dsn' => 'mysql:host=192.168.0.7;port=4546;dbname=wcb',
