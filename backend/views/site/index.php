@@ -41,12 +41,12 @@ use \yii\helpers\Html;
                 <li>
                     <a href="#">
                         <i class="fa fa-home"></i>
-                        <span class="nav-label">权限管理</span>
+                        <span class="nav-label">系统管理</span>
                         <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a class="J_menuItem" href="<?= Url::toRoute(['test']); ?>" data-index="0">角色管理</a>
+                            <a class="J_menuItem" href="<?= Url::toRoute(['system/list-all-permission']); ?>" data-index="0">权限(菜单)管理</a>
                         </li>
                         <li>
                             <a class="J_menuItem" href="<?= Url::toRoute(['test2']); ?>">test2</a>

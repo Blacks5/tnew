@@ -7,6 +7,7 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 namespace backend\controllers;
+use common\models\RbacPermission;
 use common\models\RbacRole;
 use yii;
 use backend\core\CoreBackendController;
@@ -27,7 +28,7 @@ class SystemController extends CoreBackendController
     {
         static $tree = [];
         foreach ($data as $k=>$v){
-            echo $pid. PHP_EOL;
+//            echo $pid. PHP_EOL;
             if($v['role_parent_id'] == $pid){
                 $v['role_name'] = str_repeat($html, $level). $v['role_name'];
                 $tree[] = $v;
@@ -50,15 +51,35 @@ class SystemController extends CoreBackendController
 
     }
 
-    // 列出所有权限
-    public function actionListallpermission()
+    // 列出所有权限（菜单）
+    public function actionListAllPermission()
     {
-
+        $data = RbacPermission::find()->asArray()->all();
+        $data = $this->tree_permission($data, $pid=0, $level=0);
+        return $this->render('list-all-permission', ['data'=>$data]);
     }
-    // 创建权限
-    public function actionCreatepermission()
-    {
 
+    private function tree_permission(&$data, $pid=0, $level=0, $html="==>>")
+    {
+        static $tree = [];
+        foreach ($data as $k=>$v){
+//            echo $pid. PHP_EOL;
+            if($v['permission_parent_id'] == $pid){
+                $v['permission_name'] = str_repeat($html, $level). $v['permission_name'];
+                $tree[] = $v;
+                unset($data[$k]);
+                $this->tree_permission($data, $v['permission_id'], $level+1, $html);
+            }
+        }
+        return $tree;
+    }
+    // 创建权限（菜单）
+    public function actionCreatePermission()
+    {
+        $request = Yii::$app->getRequest();
+        if($request->getIsGet()){
+            return $this->render('create-permission');
+        }
     }
 
     // 给角色分配权限
