@@ -23,13 +23,13 @@ class SystemController extends CoreBackendController
 //        return $data;
     }
 
-    public function tree($data, $pid=0, $level=0, $html='--|')
+    public function tree(&$data, $pid=0, $level=0, $html='--|')
     {
         static $tree = [];
         foreach ($data as $k=>$v){
             echo $pid. PHP_EOL;
             if($v['role_parent_id'] == $pid){
-                $v['role_name'] .= str_repeat($html, $level);
+                $v['role_name'] = str_repeat($html, $level). $v['role_name'];
                 $tree[] = $v;
                 unset($data[$k]);
                 $this->tree($data, $v['role_id'], $level+1, $html);
