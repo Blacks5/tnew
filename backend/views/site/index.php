@@ -46,13 +46,13 @@ use \yii\helpers\Html;
                     </a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a class="J_menuItem" href="<?= Url::toRoute(['system/list-all-permission']); ?>" data-index="0">权限(菜单)管理</a>
+                            <a class="J_menuItem" href="<?= Url::toRoute(['system/list-all-permissions']); ?>" data-index="0">权限(菜单)管理</a>
                         </li>
                         <li>
-                            <a class="J_menuItem" href="<?= Url::toRoute(['test2']); ?>">test2</a>
+                            <a class="J_menuItem" href="<?= Url::toRoute(['system/list-all-roles']); ?>">角色管理</a>
                         </li>
                         <li>
-                            <a class="J_menuItem" href="index_v3.html">主页示例三</a>
+                            <a class="J_menuItem" href="<?= Url::toRoute(['user/list-all-users']); ?>">员工管理</a>
                         </li>
                         <li>
                             <a class="J_menuItem" href="index_v4.html">主页示例四</a>

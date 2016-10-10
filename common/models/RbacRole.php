@@ -42,7 +42,7 @@ class RbacRole extends \common\core\CoreActiveRecord
         return [
             'role_id' => 'Role ID',
             'role_name' => '角色名字',
-            'role_parent_id' => '父权限id',
+            'role_parent_id' => '父id',
             'role_create_at' => '创建时间',
         ];
     }

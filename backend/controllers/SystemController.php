@@ -14,21 +14,22 @@ use backend\core\CoreBackendController;
 
 class SystemController extends CoreBackendController
 {
-    // 列出所有角色
-    public function actionListallroles()
+    /**
+     * 列出所有角色
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionListAllRoles()
     {
-//        Yii::$app->getResponse()->format = 'json';
         $data = (new yii\db\Query())->from(RbacRole::tableName())->all();
-//        p($data);
-        p($this->tree($data));
-//        return $data;
+        $data = $this->tree($data);
+        return $this->render('list-all-roles', ['data'=>$data]);
     }
 
-    public function tree(&$data, $pid=0, $level=0, $html='--|')
+    private function tree(&$data, $pid=0, $level=0, $html='==>>')
     {
         static $tree = [];
         foreach ($data as $k=>$v){
-//            echo $pid. PHP_EOL;
             if($v['role_parent_id'] == $pid){
                 $v['role_name'] = str_repeat($html, $level). $v['role_name'];
                 $tree[] = $v;
@@ -51,12 +52,16 @@ class SystemController extends CoreBackendController
 
     }
 
-    // 列出所有权限（菜单）
-    public function actionListAllPermission()
+    /**
+     * 列出所有权限（菜单）
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionListAllPermissions()
     {
         $data = RbacPermission::find()->asArray()->all();
         $data = $this->tree_permission($data, $pid=0, $level=0);
-        return $this->render('list-all-permission', ['data'=>$data]);
+        return $this->render('list-all-permissions', ['data'=>$data]);
     }
 
     private function tree_permission(&$data, $pid=0, $level=0, $html="==>>")

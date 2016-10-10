@@ -14,13 +14,13 @@ use \yii\helpers\Url;
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-sm-4">
-        <h2>标题</h2>
+        <h2>权限</h2>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">主页</a>
+                <a href="#">主页</a>
             </li>
             <li>
-                <strong>包屑导航</strong>
+                <strong>面包屑导航</strong>
             </li>
         </ol>
     </div>
