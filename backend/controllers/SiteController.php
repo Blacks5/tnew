@@ -2,7 +2,7 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\core\CoreBackendController;
+use common\core\CoreController;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
@@ -13,7 +13,7 @@ use yii\web\User;
 /**
  * Site controller
  */
-class SiteController extends CoreBackendController
+class SiteController extends CoreController
 {
 
     /**
@@ -93,9 +93,8 @@ class SiteController extends CoreBackendController
      */
     public function actionIndex()
     {
-        p(33333);
         if (yii::$app->getUser()->getIsGuest()) {
-            return yii::$app->getResponse()->redirect(['site/login']);
+            return $this->redirect(['site/login']);
         }
         return $this->render('index');
     }
@@ -118,15 +117,9 @@ class SiteController extends CoreBackendController
     {
 //p(3);
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            p(2);
-            return $this->goBack();
-        } else {
-            //p(11);
-            return $this->render('login', [
-                'model' => $model,
-            ]);
-        }
+        return $this->render('index');
+
+
     }
 
     /**
