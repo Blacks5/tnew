@@ -1,0 +1,63 @@
+<?php
+
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
+use app\models\User;
+
+/**
+ * UserSearch represents the model behind the search form about `app\models\User`.
+ */
+class UserSearch extends User
+{
+    public $username;
+    public $realname;
+    public $email;
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'realname', 'email'], 'safe'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        // bypass scenarios() implementation in the parent classDDD
+        return [
+            'search' => ['username', 'realname', 'email']
+        ];
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = User::find();
+        $this->setScenario('search');
+        $this->load($params);
+        if (!$this->validate()) {
+            return $query->where('0=1');
+        }
+
+        $query->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'realname', $this->realname])
+            ->andFilterWhere(['like', 'email', $this->email]);
+
+        return $query;
+    }
+}
