@@ -10,5 +10,15 @@ use yii;
 use common\core\CoreController;
 class CoreBackendController extends CoreController
 {
-
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            if (\yii::$app->getUser()->getIsGuest()) {
+                return yii::$app->getResponse()->redirect(['site/login']);
+                //return false;
+            }
+            return true;
+        }
+        return false;
+    }
 }

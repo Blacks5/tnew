@@ -217,7 +217,8 @@ use \yii\helpers\Html;
                         <li>
                             <a href="#">即时通讯 <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
-                                <li><a class="J_menuItem" href="chat_view.html">聊天窗口</a>
+                                <li>
+                                    <a class="J_menuItem" href="chat_view.html">聊天窗口</a>
                                 </li>
                                 <li><a class="J_menuItem" href="webim.html">layIM</a>
                                 </li>
