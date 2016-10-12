@@ -13,6 +13,6 @@ class UserController extends CoreBackendController
 {
     public function actionListAllUsers()
     {
-
+        
     }
 }
