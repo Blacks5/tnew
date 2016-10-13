@@ -7,6 +7,7 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 namespace backend\controllers;
+use backend\models\Menu;
 use common\models\RbacPermission;
 use common\models\RbacRole;
 use yii;
@@ -14,6 +15,27 @@ use backend\core\CoreBackendController;
 
 class SystemController extends CoreBackendController
 {
+
+    public function actionGetAssignedMenu($userid)
+    {
+        p(gethostbyname('baidu.com'), $this->GetHttpStatusCode('www.west.cn'));
+        $all_menu = Menu::find()->asArray()->indexBy('id')->all();
+        p($all_menu);
+        p(Yii::$app->getAuthManager()->getPermissionsByUser($userid));
+    }
+
+    function GetHttpStatusCode($url){
+        $curl = curl_init();
+        curl_setopt($curl,CURLOPT_URL,$url);//获取内容url
+        curl_setopt($curl,CURLOPT_HEADER,1);//获取http头信息
+        curl_setopt($curl,CURLOPT_NOBODY,1);//不返回html的body信息
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);//返回数据流，不直接输出
+        curl_setopt($curl,CURLOPT_TIMEOUT,30); //超时时长，单位秒
+        curl_exec($curl);
+        $rtn= curl_getinfo($curl,CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        return  $rtn;
+    }
     /**
      * 列出所有角色
      * @return string
