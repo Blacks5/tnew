@@ -68,7 +68,7 @@ class Menu extends \yii\db\ActiveRecord
     //获取左侧菜单列表
     public function  getLeftMenuList(){
         $uid = Yii::$app->user->identity->getId();
-        $auth = Yii::$app->authManager;
+        $auth = Yii::$app->getAuthManager();
         $Roles = $auth->getRolesByUser($uid);
         //var_dump($Roles);exit;
 
@@ -94,12 +94,14 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * 把返回的数据集转换成Tree
-     * @param array $list 要转换的数据集
-     * @param string $pid parent标记字段
-     * @param string $level level标记字段
+     * 生成tree
+     * @param $list
+     * @param string $pk
+     * @param string $pid
+     * @param string $child
+     * @param int $root
      * @return array
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+     * @author 涂鸿 <hayto@foxmail.com>
      */
     function list_to_tree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
         // 创建Tree
@@ -127,6 +129,16 @@ class Menu extends \yii\db\ActiveRecord
         return $tree;
     }
 
+    /**
+     * 生成tree
+     * @param $list
+     * @param string $pk
+     * @param string $pid
+     * @param string $child
+     * @param int $root
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     function list_to_tree2($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
         // 创建Tree
         $tree = array();

@@ -58,6 +58,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        Yii::$app->getView()->title = 'XX';
         //var_dump(Yii::$app);exit;
         $user_id=Yii::$app->user->identity->getId();
         $user_info = Yii::$app->authManager->getRolesByUser($user_id);

@@ -4,6 +4,7 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use backend\models\Log;
+
 /**
  * Login form
  */
@@ -75,16 +76,20 @@ class LoginForm extends Model
 
         return $this->_user;
     }
-    //登录记录
-    public function loginLog(){
-        $Log = new Log();
-        $userIP = Yii::$app->request->userIP;
-        Yii::$app->db->createCommand()->insert(
-            'log', [
+
+    /**
+     * 登录 记录
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function loginLog()
+    {
+        $userIP = Yii::$app->getRequest()->getUserIP();
+        Yii::$app->getDb()->createCommand()->insert(
+            Log::tableName(), [
             'username' => $this->username,
             'create_time' => time(),
-            'ip'=>$userIP,
-            'data'=>'',
+            'ip' => $userIP,
+            'data' => '',
         ])->execute();
     }
 }

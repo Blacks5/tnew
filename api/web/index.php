@@ -13,14 +13,6 @@ $config = yii\helpers\ArrayHelper::merge(
     require(__DIR__ . '/../config/main.php'),
     require(__DIR__ . '/../config/main-local.php')
 );
-function p()
-{
-    array_walk(func_get_args(), function (&$v) {
-        var_dump($v);
-    });
-    die;
-}
-//phpinfo();die;
 
 $application = new yii\web\Application($config);
 $application->run();
