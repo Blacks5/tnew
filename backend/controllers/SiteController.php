@@ -58,13 +58,17 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+//        $a = new \Yac();
+//        var_dump($a->get('yaconf'));die;
+
+
         Yii::$app->getView()->title = 'XX';
-        //var_dump(Yii::$app);exit;
         $user_id=Yii::$app->user->identity->getId();
         $user_info = Yii::$app->authManager->getRolesByUser($user_id);
         $menu = new Menu();
         $menu = $menu->getLeftMenuList();
-        //var_dump(array_key_exists('_child',$menu[0]));exit;
+        /*echo '<pre>';
+        var_dump($menu);die;*/
         return $this->render('index',[
             'menu' => $menu,
             'user_info' => key($user_info)

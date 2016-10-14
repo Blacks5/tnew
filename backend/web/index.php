@@ -20,7 +20,6 @@ function p()
     });
     die;
 }
-//phpinfo();die;
-
+//var_dump(yaconf::get("yaconf"));die;
 $application = new yii\web\Application($config);
 $application->run();
