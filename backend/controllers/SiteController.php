@@ -9,7 +9,6 @@ use common\models\LoginForm;
 use backend\models\Menu;
 
 use backend\components\Helper;
-
 /**
  * Site controller
  */
@@ -58,10 +57,6 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-//        $a = new \Yac();
-//        var_dump($a->get('yaconf'));die;
-
-
         Yii::$app->getView()->title = 'XX';
         $user_id=Yii::$app->user->identity->getId();
         $user_info = Yii::$app->authManager->getRolesByUser($user_id);
