@@ -20,9 +20,6 @@ $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
 $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>';
 ?>
-<div class="wrapper wrapper-content">
-
-    <div class="ibox-content">
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="row">
     <div class="col-sm-11">
@@ -70,9 +67,5 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
         <input class="form-control search" data-target="assigned"
                placeholder="<?= Yii::t('rbac-admin', 'Search for assigned') ?>">
         <select multiple size="20" class="form-control list" data-target="assigned"></select>
-    </div>
-</div>
-
-
     </div>
 </div>

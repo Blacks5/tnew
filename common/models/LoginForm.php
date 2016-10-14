@@ -80,7 +80,7 @@ class LoginForm extends Model
         $Log = new Log();
         $userIP = Yii::$app->request->userIP;
         Yii::$app->db->createCommand()->insert(
-            'Log', [
+            'log', [
             'username' => $this->username,
             'create_time' => time(),
             'ip'=>$userIP,

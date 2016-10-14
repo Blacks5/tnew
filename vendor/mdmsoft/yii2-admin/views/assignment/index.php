@@ -25,48 +25,18 @@ $columns[] = [
     'template' => '{view}'
 ];
 ?>
+<div class="assignment-index">
 
-<div class="wrapper wrapper-content">
+    <h1><?= Html::encode($this->title) ?></h1>
 
-    <div class="ibox-content">
-        <div class="assignment-index">
+    <?php Pjax::begin(); ?>
+    <?=
+    GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => $columns,
+    ]);
+    ?>
+    <?php Pjax::end(); ?>
 
-            <h1><?= Html::encode($this->title) ?></h1>
-
-            <?php Pjax::begin(); ?>
-            <?=
-            GridView::widget([
-                'dataProvider' => $dataProvider,
-                //'filterModel' => $searchModel,
-                'layout' => '{items}{summary}{pager}', //数据布局
-
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-                    [
-                        'label' => '用户名',
-                        'attribute' => 'username',
-                    ],
-                    [
-                        'class' => 'yii\grid\ActionColumn',
-                        'header' => '操作',
-                        'options' => ['width' => '100px;'],
-                        'template' => '{view}',
-                        'buttons' => [
-                            'view' => function ($url, $model) {
-                                return Html::a('<i class="fa fa-edit">分配</i>', $url, [
-                                    'title' => Yii::t('app', 'view'),
-                                    'class' => 'del btn btn-primary btn-xs',
-                                ]);
-                            }
-                        ],
-
-                    ],
-                ],
-
-            ]);
-            ?>
-            <?php Pjax::end(); ?>
-
-        </div>
-    </div>
 </div>

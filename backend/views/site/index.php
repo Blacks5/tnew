@@ -38,7 +38,7 @@ $this->title = 'Y+';
                         </div>
                     </li>
 
-                    <?php  foreach($menu as $v1):?>
+                    <?php  foreach($menu as $v1){ ?>
                         <?php $data = json_decode($v1['data'], true);?>
                         <li><!--一级级菜单-->
                             <a href="#">
@@ -46,37 +46,37 @@ $this->title = 'Y+';
                                 <span class="nav-label"><?= $v1['name']?></span>
                                 <span class="fa arrow"></span>
                             </a>
-                            <?php if(array_key_exists('_child',$v1)):?>
+                            <?php if(array_key_exists('_child',$v1)){?>
                                 <ul class="nav nav-second-level">
-                                    <?php  foreach($v1['_child'] as $v2):?>
+                                    <?php  foreach($v1['_child'] as $v2){?>
                                         <?php $data2 = json_decode($v2['data'], true);?>
-                                        <?php if(array_key_exists('_child',$v2)):?>
+                                        <?php if(array_key_exists('_child',$v2)){?>
                                             <li><!--二级菜单-->
                                                 <a href="#">
                                                     <?php if($data2['icon']):?><i class="<?=$data2['icon']?>"></i><?php endif;?><?= $v2['name']?>
                                                     <span class="fa arrow"></span>
                                                 </a>
-                                                <?php if(!empty($v2['_child'])):?>
+                                                <?php if(!empty($v2['_child'])){ ?>
                                                     <ul class="nav nav-third-level collapse">
-                                                    <?php  foreach($v2['_child'] as $v3):?>
+                                                    <?php  foreach($v2['_child'] as $v3){ ?>
                                                         <li><!--三级菜单-->
                                                             <a class="J_menuItem" href="<?= Url::toRoute($v3['route']);?>" data-index="0"><?= $v3['name']?></a>
                                                         </li>
-                                                    <? endforeach;?>
+                                                    <?php } ?>
                                                     </ul>
-                                                <?php  endif;?>
+                                                <?php  } ?>
                                             </li>
-                                        <?php else:?>
+                                        <?php }else{ ?>
                                             <li><!--二级菜单-->
                                                 <a class="J_menuItem" href="<?= Url::toRoute($v2['route']);?>" data-index="0"><?= $v2['name']?></a>
                                             </li>
-                                        <?php  endif;?>
-                                    <? endforeach;?>
+                                        <?php  }?>
+                                    <?php } ?>
                                 </ul>
-                            <?php endif;?>
+                            <?php }; ?>
 
                         </li>
-                    <?php endforeach;?>
+                    <?php };?>
 
                 </ul>
             </div>

@@ -10,9 +10,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Menus'), 'url
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('rbac-admin', 'Update');
 ?>
-<div class="wrapper wrapper-content">
+<div class="menu-update">
 
-    <div class="ibox-content">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?=
@@ -21,5 +20,4 @@ $this->params['breadcrumbs'][] = Yii::t('rbac-admin', 'Update');
     ])
     ?>
 
-    </div>
 </div>

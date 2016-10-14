@@ -28,7 +28,7 @@ class MenuController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['get'],
+                    'delete' => ['post'],
                 ],
             ],
         ];

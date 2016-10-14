@@ -9,9 +9,7 @@ $this->title = Yii::t('rbac-admin', 'Create Menu');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Menus'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="wrapper wrapper-content">
-
-    <div class="ibox-content">
+<div class="menu-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -21,5 +19,4 @@ $this->params['breadcrumbs'][] = $this->title;
     ])
     ?>
 
-    </div>
 </div>
