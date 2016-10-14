@@ -171,7 +171,9 @@ class UploadedFile extends Object
      */
     public function getBaseName()
     {
-        return pathinfo($this->name, PATHINFO_FILENAME);
+        // https://github.com/yiisoft/yii2/issues/11012
+        $pathInfo = pathinfo('_' . $this->name, PATHINFO_FILENAME);
+        return mb_substr($pathInfo, 1, mb_strlen($pathInfo, '8bit'), '8bit');
     }
 
     /**
@@ -223,7 +225,7 @@ class UploadedFile extends Object
             foreach ($names as $i => $name) {
                 self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
             }
-        } elseif ($errors !== UPLOAD_ERR_NO_FILE) {
+        } elseif ((int)$errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = new static([
                 'name' => $names,
                 'tempName' => $tempNames,

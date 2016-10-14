@@ -29,7 +29,7 @@ use yii\helpers\Json;
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0.5
+ * @since 2.0.6
  */
 trait BootstrapWidgetTrait
 {
@@ -98,4 +98,10 @@ trait BootstrapWidgetTrait
             $this->getView()->registerJs(implode("\n", $js));
         }
     }
+
+    /**
+     * @return \yii\web\View the view object that can be used to render views or view files.
+     * @see yii\base\Widget::getView()
+     */
+    abstract function getView();
 }

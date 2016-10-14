@@ -277,7 +277,7 @@ yii = (function ($) {
                 return {};
             }
 
-            var pairs = url.substring(pos + 1).split('&'),
+            var pairs = url.substring(pos + 1).split('#')[0].split('&'),
                 params = {},
                 pair,
                 i;
@@ -411,7 +411,7 @@ yii = (function ($) {
     return pub;
 })(jQuery);
 
-jQuery(document).ready(function () {
+jQuery(function () {
     yii.initModule(yii);
 });
 

@@ -1,10 +1,6 @@
 Yii Framework 2 faker extension Change Log
 ==============================================
 
-2.0.4 under development
------------------------
-
-
 2.0.3 March 01, 2015
 --------------------
 

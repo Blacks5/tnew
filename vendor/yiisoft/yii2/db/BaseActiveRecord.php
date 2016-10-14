@@ -77,6 +77,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @event Event an event that is triggered after a record is deleted.
      */
     const EVENT_AFTER_DELETE = 'afterDelete';
+    /**
+     * @event Event an event that is triggered after a record is refreshed.
+     * @since 2.0.8
+     */
+    const EVENT_AFTER_REFRESH = 'afterRefresh';
 
     /**
      * @var array attribute values indexed by attribute names
@@ -419,7 +424,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        return isset($this->_attributes[$name]) || in_array($name, $this->attributes(), true);
     }
 
     /**
@@ -907,7 +912,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function afterSave($insert, $changedAttributes)
     {
         $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, new AfterSaveEvent([
-            'changedAttributes' => $changedAttributes
+            'changedAttributes' => $changedAttributes,
         ]));
     }
 
@@ -951,6 +956,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Repopulates this active record with the latest data.
+     *
+     * If the refresh is successful, an [[EVENT_AFTER_REFRESH]] event will be triggered.
+     * This event is available since version 2.0.8.
+     *
      * @return boolean whether the row still exists in the database. If true, the latest data
      * will be populated to this active record. Otherwise, this record will remain unchanged.
      */
@@ -966,8 +975,21 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $this->_oldAttributes = $this->_attributes;
         $this->_related = [];
+        $this->afterRefresh();
 
         return true;
+    }
+
+    /**
+     * This method is called when the AR object is refreshed.
+     * The default implementation will trigger an [[EVENT_AFTER_REFRESH]] event.
+     * When overriding this method, make sure you call the parent implementation to ensure the
+     * event is triggered.
+     * @since 2.0.8
+     */
+    public function afterRefresh()
+    {
+        $this->trigger(self::EVENT_AFTER_REFRESH);
     }
 
     /**
@@ -1235,8 +1257,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $this->_related[$name] = $model;
         } elseif (isset($this->_related[$name])) {
             if ($relation->indexBy !== null) {
-                $indexBy = $relation->indexBy;
-                $this->_related[$name][$model->$indexBy] = $model;
+                if ($relation->indexBy instanceof \Closure) {
+                    $index = call_user_func($relation->indexBy, $model);
+                } else {
+                    $index = $model->{$relation->indexBy};
+                }
+                $this->_related[$name][$index] = $model;
             } else {
                 $this->_related[$name][] = $model;
             }
@@ -1304,10 +1330,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
             $p2 = static::isPrimaryKey(array_values($relation->link));
             if ($p2) {
-                foreach ($relation->link as $a => $b) {
-                    $model->$a = null;
+                if ($delete) {
+                    $model->delete();
+                } else {
+                    foreach ($relation->link as $a => $b) {
+                        $model->$a = null;
+                    }
+                    $model->save(false);
                 }
-                $delete ? $model->delete() : $model->save(false);
             } elseif ($p1) {
                 foreach ($relation->link as $a => $b) {
                     if (is_array($this->$b)) { // relation via array valued attribute

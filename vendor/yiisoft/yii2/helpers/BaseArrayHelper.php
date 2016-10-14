@@ -93,7 +93,7 @@ class BaseArrayHelper
                 }
             }
 
-            return $recursive ? static::toArray($result) : $result;
+            return $recursive ? static::toArray($result, $properties) : $result;
         } else {
             return [$object];
         }
@@ -189,7 +189,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && array_key_exists($key, $array)) {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array)) ) {
             return $array[$key];
         }
 
@@ -203,7 +203,7 @@ class BaseArrayHelper
             // it is not reliably possible to check whether a property is accessable beforehand
             return $array->$key;
         } elseif (is_array($array)) {
-            return array_key_exists($key, $array) ? $array[$key] : $default;
+            return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
         } else {
             return $default;
         }
@@ -265,6 +265,7 @@ class BaseArrayHelper
      * ```
      *
      * The result will be an associative array, where the key is the value of `id` attribute
+     *
      * ```php
      * [
      *     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
@@ -274,6 +275,7 @@ class BaseArrayHelper
      * ```
      *
      * An anonymous function can be used in the grouping array as well.
+     *
      * ```php
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
@@ -281,12 +283,14 @@ class BaseArrayHelper
      * ```
      *
      * Passing `id` as a third argument will group `$array` by `id`:
+     *
      * ```php
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
      * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
      * and indexed by `data` on the third level:
+     *
      * ```php
      * [
      *     '123' => [
@@ -300,6 +304,7 @@ class BaseArrayHelper
      * ```
      *
      * The anonymous function can be used in the array of grouping keys as well:
+     *
      * ```php
      * $result = ArrayHelper::index($array, 'data', [function ($element) {
      *     return $element['id'];
@@ -308,6 +313,7 @@ class BaseArrayHelper
      *
      * The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
      * and indexed by the `data` on the third level:
+     *
      * ```php
      * [
      *     '123' => [
@@ -331,7 +337,7 @@ class BaseArrayHelper
      * @param string|string[]|\Closure[]|null $groups the array of keys, that will be used to group the input array
      * by one or more keys. If the $key attribute or its value for the particular element is null and $groups is not
      * defined, the array element will be discarded. Otherwise, if $groups is specified, array element will be added
-     * to the result array without any key.
+     * to the result array without any key. This parameter is available since version 2.0.8.
      * @return array the indexed and/or grouped array
      */
     public static function index($array, $key, $groups = [])
@@ -357,6 +363,9 @@ class BaseArrayHelper
             } else {
                 $value = static::getValue($element, $key);
                 if ($value !== null) {
+                    if (is_float($value)) {
+                        $value = (string) $value;
+                    }
                     $lastArray[$value] = $element;
                 }
             }
@@ -685,22 +694,22 @@ class BaseArrayHelper
      * @param array|\Traversable $haystack The set of values to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
      * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
-     * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @throws InvalidParamException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
     public static function isIn($needle, $haystack, $strict = false)
     {
         if ($haystack instanceof \Traversable) {
-            foreach($haystack as $value) {
-                if ($needle == $value && (!$strict || $needle === $haystack)) {
+            foreach ($haystack as $value) {
+                if ($needle == $value && (!$strict || $needle === $value)) {
                     return true;
                 }
             }
         } elseif (is_array($haystack)) {
             return in_array($needle, $haystack, $strict);
         } else {
-            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+            throw new InvalidParamException('Argument $haystack must be an array or implement Traversable');
         }
 
         return false;
@@ -729,21 +738,109 @@ class BaseArrayHelper
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
-     * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @throws InvalidParamException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
      */
     public static function isSubset($needles, $haystack, $strict = false)
     {
         if (is_array($needles) || $needles instanceof \Traversable) {
-            foreach($needles as $needle) {
+            foreach ($needles as $needle) {
                 if (!static::isIn($needle, $haystack, $strict)) {
                     return false;
                 }
             }
             return true;
         } else {
-            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
+            throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
+    }
+
+    /**
+     * Filters array according to rules specified.
+     *
+     * For example:
+     * ```php
+     * $array = [
+     *     'A' => [1, 2],
+     *     'B' => [
+     *         'C' => 1,
+     *         'D' => 2,
+     *     ],
+     *     'E' => 1,
+     * ];
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['A']);
+     * // $result will be:
+     * // [
+     * //     'A' => [1, 2],
+     * // ]
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['A', 'B.C']);
+     * // $result will be:
+     * // [
+     * //     'A' => [1, 2],
+     * //     'B' => ['C' => 1],
+     * // ]
+     * ```
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['B', '!B.C']);
+     * // $result will be:
+     * // [
+     * //     'B' => ['D' => 2],
+     * // ]
+     * ```
+     *
+     * @param array $array Source array
+     * @param array $filters Rules that define array keys which should be left or removed from results.
+     * Each rule is:
+     * - `var` - `$array['var']` will be left in result.
+     * - `var.key` = only `$array['var']['key'] will be left in result.
+     * - `!var.key` = `$array['var']['key'] will be removed from result.
+     * @return array Filtered array
+     * @since 2.0.9
+     */
+    public static function filter($array, $filters)
+    {
+        $result = [];
+        $forbiddenVars = [];
+
+        foreach ($filters as $var) {
+            $keys = explode('.', $var);
+            $globalKey = $keys[0];
+            $localKey = isset($keys[1]) ? $keys[1] : null;
+
+            if ($globalKey[0] === '!') {
+                $forbiddenVars[] = [
+                    substr($globalKey, 1),
+                    $localKey,
+                ];
+                continue;
+            }
+
+            if (empty($array[$globalKey])) {
+                continue;
+            }
+            if ($localKey === null) {
+                $result[$globalKey] = $array[$globalKey];
+                continue;
+            }
+            if (!isset($array[$globalKey][$localKey])) {
+                continue;
+            }
+            if (!array_key_exists($globalKey, $result)) {
+                $result[$globalKey] = [];
+            }
+            $result[$globalKey][$localKey] = $array[$globalKey][$localKey];
+        }
+
+        foreach ($forbiddenVars as $var) {
+            list($globalKey, $localKey) = $var;
+            if (array_key_exists($globalKey, $result)) {
+                unset($result[$globalKey][$localKey]);
+            }
+        }
+
+        return $result;
     }
 }
