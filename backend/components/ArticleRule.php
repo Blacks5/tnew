@@ -1,10 +1,4 @@
 <?php
-/**
- * User: Administrator
- * Date: 2016-7-5
- * Time: 16:10
- * Description:
- */
 
 namespace backend\components;
 
@@ -12,7 +6,11 @@ namespace backend\components;
 use Yii;
 use yii\rbac\Rule;
 
-
+/**
+ * Class ArticleRule
+ * @package backend\components
+ * @author 涂鸿 <hayto@foxmail.com>
+ */
 class ArticleRule extends Rule
 {
     public $name = 'article';

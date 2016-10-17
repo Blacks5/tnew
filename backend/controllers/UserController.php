@@ -10,7 +10,12 @@ use backend\models\User;
 
 use Yii;
 
-//class UserController extends \yii\web\Controller
+/**
+ * 员工控制器
+ * Class UserController
+ * @package backend\controllers
+ * @author 涂鸿 <hayto@foxmail.com>
+ */
 class UserController extends CoreBackendController
 {
     //public $enableCsrfValidation = false;
@@ -30,7 +35,11 @@ class UserController extends CoreBackendController
         return $this->render('index');
     }
 
-    //用户列表
+    /**
+     * 员工列表
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionList()
     {
         Yii::$app->user->identity->username;
@@ -42,7 +51,12 @@ class UserController extends CoreBackendController
             'pages' => $pages
         ]);
     }
-    //新增用户
+
+    /**
+     * 新增员工
+     * @return string|\yii\web\Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionCreate()
     {
         $model = new User();
@@ -82,7 +96,11 @@ class UserController extends CoreBackendController
         }
     }
 
-    //更新用户
+    /**
+     * 更新员工
+     * @return string|\yii\web\Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionUpdate(){
         $item_name = Yii::$app->request->get('item_name');
         $id = Yii::$app->request->get('id');
@@ -122,11 +140,27 @@ class UserController extends CoreBackendController
             'item' => $item_one
         ]);
     }
-    //删除用户
+
+    /**
+     * 删除员工
+     * @param $id
+     * @return \yii\web\Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
         return $this->redirect(['list']);
+    }
+
+    /**
+     * 修改员工密码
+     * @param $id
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionModPwd($id)
+    {
+
     }
 
     protected function findModel($id)

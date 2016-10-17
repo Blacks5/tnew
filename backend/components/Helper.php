@@ -1,14 +1,13 @@
 <?php
-/**
- * User: lzkong1029
- * Date: 2016-7-6
- * Time: 15:10
- * Description:静态公共函数类库
- */
 
 namespace backend\components;
 
-
+/**
+ * 静态公共函数类库
+ * Class Helper
+ * @package backend\components
+ * @author 涂鸿 <hayto@foxmail.com>
+ */
 class Helper {
 
     public static function hello(){
