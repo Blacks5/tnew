@@ -8,17 +8,43 @@
  */
 namespace backend\controllers;
 
+use common\models\LoginForm;
+use yii;
 use common\core\CoreCommonController;
 
 class LoginController extends CoreCommonController
 {
+    /**
+     * 登录
+     * @return string|yii\web\Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionLogin()
     {
-        p('login');
+        Yii::$app->getView()->title = 'xxxx';
+        if (!Yii::$app->getUser()->getIsGuest()) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->login()) {
+            $model->loginLog();
+            return $this->goBack();
+        } else {
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
     }
 
+    /**
+     * 退出登录
+     * @return yii\web\Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionLogout()
     {
-        p('logout');
+        Yii::$app->getUser()->logout();
+        return $this->goHome();
     }
 }

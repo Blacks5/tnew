@@ -20,10 +20,11 @@ return [
         //ACF肯定要加,加了才会自动验证是否有权限
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
+
             //允许访问的action
             //controller/action
             //'*'
-//            'site/*',
+            'login/login',
 //            'index/*'
         ]
     ],
@@ -40,6 +41,7 @@ return [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => false,
             'authTimeout' => 30000,
+            'loginUrl'=>['login/login'], // 没有登录会跳这里
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
         'session' => [

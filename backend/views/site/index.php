@@ -29,7 +29,7 @@ use mdm\admin\components\MenuHelper;
                                 <li><a class="J_menuItem" href="<?= Url::toRoute(['user/update','id'=>Yii::$app->user->identity->getId()])?>">个人资料</a>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="<?=Url::toRoute('site/logout')?>">安全退出</a>
+                                <li><a href="<?=Url::toRoute('login/logout')?>">安全退出</a>
                                 </li>
                             </ul>
                         </div>
@@ -125,7 +125,7 @@ use mdm\admin\components\MenuHelper;
                         </li>
                     </ul>
                 </div>
-                <a href="<?=Url::toRoute('site/logout')?>" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+                <a href="<?=Url::toRoute('login/logout')?>" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
             </div>
             <div class="row J_mainContent" id="content-main">
                 <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="<?= Url::toRoute('index/welcome')?>" frameborder="0" data-id="0" seamless></iframe>

@@ -57,7 +57,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            return Yii::$app->getUser()->login($this->getUser()); // , $this->rememberMe ? 3600 * 24 * 30 : 0
         } else {
             return false;
         }
@@ -87,7 +87,7 @@ class LoginForm extends Model
         Yii::$app->getDb()->createCommand()->insert(
             Log::tableName(), [
             'username' => $this->username,
-            'create_time' => time(),
+            'create_time' => $_SERVER['REQUEST_TIME'],
             'ip' => $userIP,
             'data' => '',
         ])->execute();
