@@ -14,11 +14,11 @@ class LoginController extends CoreCommonController
 {
     public function actionLogin()
     {
-
+        p('login');
     }
 
     public function actionLogout()
     {
-
+        p('logout');
     }
 }

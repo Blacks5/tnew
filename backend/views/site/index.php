@@ -6,7 +6,6 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use mdm\admin\components\MenuHelper;
 
-$this->title = 'Y+';
 ?>
 <div id="wrapper">
         <!--左侧导航开始-->

@@ -2,22 +2,21 @@
 namespace backend\controllers;
 
 use Yii;
-use yii\web\Controller;
+use backend\core\CoreBackendController;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
 use backend\models\Menu;
 
-use backend\components\Helper;
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends CoreBackendController
 {
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    /*public function behaviors111()
     {
         return [
             'access' => [
@@ -41,7 +40,7 @@ class SiteController extends Controller
                 ],
             ],
         ];
-    }
+    }*/
 
     /**
      * @inheritdoc
@@ -75,7 +74,7 @@ class SiteController extends Controller
         return $this->render('list');
     }
 
-    public function actionLogin()
+/*    public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -90,13 +89,13 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
-    }
+    }*/
 
-    public function actionLogout()
+/*    public function actionLogout()
     {
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
+    }*/
 
 }

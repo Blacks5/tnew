@@ -8,9 +8,20 @@
  */
 namespace backend\core;
 
+use yii;
 use common\core\CoreCommonController;
 
 class CoreBackendController extends CoreCommonController
 {
+    public function beforeAction($action)
+    {
+        if(parent::beforeAction($action)){
+            if(Yii::$app->getUser()->getIsGuest()){
+                return Yii::$app->getResponse()->redirect(['login/login']);
+            }
+            return true;
+        }
+        return false;
+    }
 
 }
