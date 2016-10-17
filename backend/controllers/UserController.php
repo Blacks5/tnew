@@ -5,10 +5,12 @@ use backend\core\CoreBackendController;
 use backend\models\AuthItem;
 use backend\models\Menu;
 use backend\models\PasswordForm;
+use common\components\Helper;
 use yii\data\Pagination;
 use backend\models\User;
 
 use Yii;
+use yii\web\Response;
 
 /**
  * 员工控制器
@@ -33,6 +35,12 @@ class UserController extends CoreBackendController
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionGetSubAddr($p_id)
+    {
+        Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+        return Helper::getSubAddr($p_id);
     }
 
     /**
@@ -79,7 +87,8 @@ class UserController extends CoreBackendController
             $model->email = $post['User']['email'];
             $model->setPassword($post['User']['auth_key']);
             $model->generateAuthKey();
-            $model->created_at = time();
+            $model->created_at = $_SERVER['REQUEST_TIME'];
+            $model->updated_at = $_SERVER['REQUEST_TIME'];
             $model->save();
             //获取插入后id
             $user_id = $model->attributes['id'];
@@ -88,10 +97,15 @@ class UserController extends CoreBackendController
 
             return $this->redirect(['list']);
         } else {
+
+            $all_province = Helper::getAllProvince();
+//            array_unshift($all_province, '请选择省');
+//            p($all_province);
             return $this->render('create', [
                 'model' => $model,
                 'model1' => $model1,
-                'item' => $item_one
+                'item' => $item_one,
+                'all_province'=>$all_province
             ]);
         }
     }
