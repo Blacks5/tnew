@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\core\CoreBackendController;
 use Yii;
 use backend\models\Menu;
 use yii\data\ActiveDataProvider;
@@ -14,7 +15,7 @@ use yii\data\Pagination;
 /**
  * MenuController implements the CRUD actions for Menu model.
  */
-class MenuController extends Controller
+class MenuController extends CoreBackendController
 {
     /**
      * @inheritdoc

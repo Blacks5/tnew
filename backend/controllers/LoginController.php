@@ -12,6 +12,13 @@ use common\models\LoginForm;
 use yii;
 use common\core\CoreCommonController;
 
+/**
+ * 登录 退出 控制器
+ * 唯一一个继承自CoreCommonController的控制器
+ * Class LoginController
+ * @package backend\controllers
+ * @author 涂鸿 <hayto@foxmail.com>
+ */
 class LoginController extends CoreCommonController
 {
     /**

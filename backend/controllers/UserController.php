@@ -1,6 +1,7 @@
 <?php
 
 namespace backend\controllers;
+use backend\core\CoreBackendController;
 use backend\models\AuthItem;
 use backend\models\Menu;
 use backend\models\PasswordForm;
@@ -9,7 +10,8 @@ use backend\models\User;
 
 use Yii;
 
-class UserController extends \yii\web\Controller
+//class UserController extends \yii\web\Controller
+class UserController extends CoreBackendController
 {
     //public $enableCsrfValidation = false;
 

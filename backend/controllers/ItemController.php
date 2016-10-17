@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\core\CoreBackendController;
 use Yii;
 use backend\models\AuthItem;
 use yii\data\ActiveDataProvider;
@@ -14,7 +15,7 @@ use yii\helpers\Json;
 /**
  * ItemController implements the CRUD actions for AuthItem model.
  */
-class ItemController extends Controller
+class ItemController extends CoreBackendController
 {
     /*public function beforeAction($action)
     {

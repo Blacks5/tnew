@@ -1,6 +1,7 @@
 <?php
 
 namespace backend\controllers;
+use backend\core\CoreBackendController;
 use backend\models\Log;
 use backend\models\Menu;
 use backend\models\PasswordForm;
@@ -8,7 +9,8 @@ use yii\data\Pagination;
 
 use Yii;
 
-class IndexController extends \yii\web\Controller
+//class IndexController extends \yii\web\Controller
+class IndexController extends CoreBackendController
 {
     public $enableCsrfValidation = false;
 

@@ -8,7 +8,7 @@ $this->title = 'My Yii Application';
 ?>
 <div class="wrapper wrapper-content">
     <div class="row">
-        <?php if(\Yii::$app->user->can('/site/index')):?> <!--判断是否有‘/site/index’权限，有则显示，无则隐藏-->
+        <?php if(\Yii::$app->user->can('/site/index')){ ?> <!--判断是否有‘/site/index’权限，有则显示，无则隐藏-->
         <div class="col-sm-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -23,7 +23,7 @@ $this->title = 'My Yii Application';
                 </div>
             </div>
         </div>
-        <?php endif;?>
+        <?php } ?>
         <div class="col-sm-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -83,7 +83,7 @@ $this->title = 'My Yii Application';
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach($log as $vo):?>
+                        <?php foreach($log as $vo){?>
                             <tr>
                                 <td><?=$vo['id']?></td>
                                 <td><?=$vo['username']?></td>
@@ -91,7 +91,7 @@ $this->title = 'My Yii Application';
                                 <td><?= date('Y-m-d H:i:s',$vo['create_time'])?></td>
                                 <td><?=$vo['data']?></td>
                             </tr>
-                        <?php endforeach;?>
+                        <?php }?>
                         </tbody>
                     </table>
                 </div>

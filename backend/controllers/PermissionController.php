@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\core\CoreBackendController;
 use backend\models\AuthItem;
 use backend\models\Menu;
 use Yii;
@@ -14,7 +15,7 @@ use yii\filters\VerbFilter;
 /**
  * PermissionController implements the CRUD actions for AuthItemChild model.
  */
-class PermissionController extends Controller
+class PermissionController extends CoreBackendController
 {
     public $enableCsrfValidation = false;
     /**
