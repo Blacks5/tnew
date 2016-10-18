@@ -6,8 +6,11 @@ use backend\models\AuthItem;
 use backend\models\Menu;
 use backend\models\PasswordForm;
 use common\components\Helper;
+use common\models\Department;
+use common\models\Jobs;
+use common\models\User;
 use yii\data\Pagination;
-use backend\models\User;
+//use backend\models\User;
 
 use Yii;
 use yii\web\Response;
@@ -37,10 +40,22 @@ class UserController extends CoreBackendController
         return $this->render('index');
     }
 
+    /**
+     * 获取子地区
+     * @param $p_id
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionGetSubAddr($p_id)
     {
         Yii::$app->getResponse()->format = Response::FORMAT_JSON;
         return Helper::getSubAddr($p_id);
+    }
+
+    public function actionGetJobs($d_id)
+    {
+        Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+        return Jobs::getJobs($d_id);
     }
 
     /**
@@ -50,8 +65,7 @@ class UserController extends CoreBackendController
      */
     public function actionList()
     {
-        Yii::$app->user->identity->username;
-        $data = User::find();
+        $data = User::find()->where(['!=', 'status', 0]);
         $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => '15']);
         $user = $data->joinWith('usergroup')->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('list',[
@@ -67,45 +81,34 @@ class UserController extends CoreBackendController
      */
     public function actionCreate()
     {
+        Yii::$app->getView()->title = '新增员工';
+
         $model = new User();
         $model1 = new AuthItem();
 
-        $auth = Yii::$app->authManager;
-        $item = $auth->getRoles();
-        $itemArr =array();
-        foreach($item as $v){
-            $itemArr[] .= $v->name;
-        }
-        foreach($itemArr as $key=>$value)
-        {
-            $item_one[$value]=$value;
-        }
+        $auth = Yii::$app->getAuthManager();
+        $item = $auth->getRoles(); // 获取所有角色
+        $item_one = array_keys($item);
+        $item_one = array_combine($item_one, $item_one);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $post = Yii::$app->request->post();
-            $model->username = $post['User']['username'];
-            $model->email = $post['User']['email'];
-            $model->setPassword($post['User']['auth_key']);
-            $model->generateAuthKey();
-            $model->created_at = $_SERVER['REQUEST_TIME'];
-            $model->updated_at = $_SERVER['REQUEST_TIME'];
-            $model->save();
-            //获取插入后id
-            $user_id = $model->attributes['id'];
-            $role = $auth->createRole($post['AuthItem']['name']);                //创建角色对象
-            $auth->assign($role, $user_id);                           //添加对应关系
-
-            return $this->redirect(['list']);
-        } else {
-
+        $request = Yii::$app->getRequest();
+        if($request->getIsPost()){
+            $post = $request->post();
+            if($model->createUser($post)){
+                // 分配部门角色
+                $role = $auth->createRole($post['AuthItem']['name']);
+                $auth->assign($role, $model->id);
+                return $this->redirect(['list']);
+            }
+        }else {
             $all_province = Helper::getAllProvince();
-//            array_unshift($all_province, '请选择省');
-//            p($all_province);
+            $all_departments = Department::getAllDepartments();
             return $this->render('create', [
                 'model' => $model,
                 'model1' => $model1,
                 'item' => $item_one,
-                'all_province'=>$all_province
+                'all_province'=>$all_province,
+                'all_departments'=>$all_departments
             ]);
         }
     }
@@ -149,9 +152,14 @@ class UserController extends CoreBackendController
             return $this->redirect(['user/update', 'id' => $model1->id]);
         }
 
+        $all_province = Helper::getAllProvince();
+        $all_departments = Department::getAllDepartments();
         return $this->render('update',[
             'model' => $model,
-            'item' => $item_one
+            'item' => $item_one,
+
+            'all_province'=>$all_province,
+            'all_departments'=>$all_departments
         ]);
     }
 
@@ -163,7 +171,9 @@ class UserController extends CoreBackendController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save(false);
         return $this->redirect(['list']);
     }
 

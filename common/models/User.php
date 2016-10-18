@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\models\AuthAssignment;
 use yii;
 use common\core\CoreCommonActiveRecord;
 /**
@@ -109,7 +110,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function beforeSave($insert)
     {
         if(parent::beforeSave($insert)){
-            return $this->updated_at = time();
+            return $this->updated_at = $_SERVER['REQUEST_TIME'];
         }
         return false;
     }
@@ -136,6 +137,15 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             }
         }
         return null;*/
+    }
+
+    public function getUsergroup()
+    {
+        /**
+         * 第一个参数为要关联的字表模型类名称，
+         *第二个参数指定 通过子表的 customer_id 去关联主表的 id 字段
+         */
+        return $this->hasOne(AuthAssignment::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -219,7 +229,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
         $this->setPassword($this->password_hash);
         $this->access_token = \yii::$app->security->generatePasswordHash($this->password_hash);
         $this->generateAuthkey();
-        $this->created_at = time();
+        $this->created_at = $_SERVER['REQUEST_TIME'];
         return $this->save(false) ? $this: null;
     }
 

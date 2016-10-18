@@ -15,18 +15,22 @@ use \yii\helpers\Url;
     $model->city = 2; ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'realname')->textInput(['maxlength' => true])->label('真实姓名') ?>
+    <?= $form->field($model, 'cellphone')->textInput(['maxlength' => true])->label('手机号码') ?>
 
     <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only'])->label('所属部门') ?>
+    <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList(['请选择职位'])->label('请选择职位', ['class' => 'sr-only']) ?>
 
     <?= $form->field($model, 'province', ['options' => ['class' => 'form-group']])->dropDownList($all_province)->label('请选择省', ['class' => 'sr-only'])->label('负责区域') ?>
     <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList(['请选择市'])->label('请选择城市', ['class' => 'sr-only']) ?>
     <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList(['请选择县/区'])->label('请选择城县/区', ['class' => 'sr-only']) ?>
 
 
-    <?= $form->field($model1, 'name')->dropDownList($item)->label('用户组') ?>
+    <?= $form->field($model1, 'name')->dropDownList($item)->label('部门') ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '新增' : '更新', ['class' => $model->isNewRecord ? 'btn btn-primary' : 'btn btn-primary']) ?>
@@ -38,7 +42,20 @@ use \yii\helpers\Url;
 
 <?php
 $this->registerJs('
-    var url = "'.Url::toRoute(['user/get-sub-addr']).'";
+    var url = "'.Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
+    var url_jobs = "'.Url::toRoute(['user/get-jobs']).'"; // 获取职位
+    
+    // 部门变化
+    $("#user-department_id").change(function(){
+        var d_id = $(this).val();
+        $.get(url_jobs, {d_id:d_id}, function(data){
+            var dom  = createDom(data);
+            $("#user-job_id").html(dom);
+        });
+    });
+
+
+    
     
     // 省变化
     $("#user-province").change(function(){
@@ -46,6 +63,8 @@ $this->registerJs('
         $.get(url, {p_id:province_id}, function(data){
             var dom  = createDom(data);
             $("#user-city").html(dom);
+            
+            $("#user-city").trigger("change");
         });     
     });
     
@@ -57,11 +76,6 @@ $this->registerJs('
             $("#user-county").html(dom);
         });
     });
-
-    // 县变化
-    $("#user-county").change(function(){
-        console.log("县变了");
-    });
     
     // 专业造dom
     function createDom(data){
@@ -71,6 +85,10 @@ $this->registerJs('
         })
         return dom;
     }
+    
+    // 初始化
+    $("#user-province").trigger("change");
+    $("#user-department_id").trigger("change");
  ');
 
 
