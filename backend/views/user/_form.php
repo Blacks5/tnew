@@ -38,40 +38,39 @@ use \yii\helpers\Url;
 
 <?php
 $this->registerJs('
+    var url = "'.Url::toRoute(['user/get-sub-addr']).'";
+    
     // 省变化
     $("#user-province").change(function(){
-        var url = "'.Url::toRoute(['user/get-sub-addr']).'";
         var province_id = $(this).val();
-        var dom = new String();
         $.get(url, {p_id:province_id}, function(data){
-            dom  = createDom(data);
-        });
-
-        console.log(dom);
-//        dom = "<option>222</option>";
-        $("#user-city").append(dom);
-
+            var dom  = createDom(data);
+            $("#user-city").html(dom);
+        });     
     });
-    function createDom(data){
-        console.log(333);
-        var dom = "";
-        $.each(data, function (k, v) {
-            dom += "<option  value=\"2\">2</option>";
-        })
-        return dom;
-    }
-
+    
     // 市变化
     $("#user-city").change(function(){
-        console.log("市");
+        var city_id = $(this).val();
+        $.get(url, {p_id:city_id}, function(data){
+            var dom  = createDom(data);
+            $("#user-county").html(dom);
+        });
     });
-
-
 
     // 县变化
     $("#user-county").change(function(){
         console.log("县变了");
     });
+    
+    // 专业造dom
+    function createDom(data){
+        var dom = "";
+        $.each(data, function (k, v) {
+            dom += "<option  value="+k+">"+v+"</option>";
+        })
+        return dom;
+    }
  ');
 
 
