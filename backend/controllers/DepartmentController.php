@@ -12,6 +12,7 @@ use backend\core\CoreBackendController;
 use common\models\Department;
 use common\models\Jobs;
 use yii;
+
 class DepartmentController extends CoreBackendController
 {
     /**
