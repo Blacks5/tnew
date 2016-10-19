@@ -8,12 +8,11 @@
  */
 
 namespace backend\components;
-use api\components\CustomCommonException;
-
+use common\components\CustomCommonException;
 class CustomBackendException extends CustomCommonException
 {
     /*public function __construct($message, $code=0)
     {
         parent::__construct(403, $message, $code);
     }*/
-}
+}fi

@@ -7,7 +7,7 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace api\components;
+namespace common\components;
 
 
 class CustomCommonException extends \Exception

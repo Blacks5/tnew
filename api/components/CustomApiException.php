@@ -8,7 +8,7 @@
  */
 
 namespace api\components;
-
+use common\components\CustomCommonException;
 class CustomApiException extends CustomCommonException
 {
     /*public function __construct($message, $code=0)
