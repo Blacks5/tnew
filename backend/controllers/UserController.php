@@ -37,9 +37,10 @@ class UserController extends CoreBackendController
         }
     }*/
 
-    public function actionIndex()
+    public function actionView($id)
     {
-        return $this->render('index');
+        $model = User::find()->joinWith('usergroup')->where(['id'=>$id])->one();
+        return $this->render('view', ['model'=>$model]);
     }
 
     /**

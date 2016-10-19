@@ -111,7 +111,7 @@ $this->registerJs("
         $('.del-user').on('click', function(ev){
             layer.confirm('是否删除用户?', {icon: 3, title:'删除用户'}, function(index){
                   console.log($(this).attr('data-value'));
-                  
+
                   layer.close(index);
             });
         });
