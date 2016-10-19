@@ -66,8 +66,8 @@ class UserController extends CoreBackendController
     public function actionList()
     {
         $data = User::find()->where(['!=', 'status', 0]);
-        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => '15']);
-        $user = $data->joinWith('usergroup')->offset($pages->offset)->limit($pages->limit)->all();
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => '2']);
+        $user = $data->joinWith('usergroup')->orderBy(['id'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('list',[
             'user'=>$user,
             'pages' => $pages

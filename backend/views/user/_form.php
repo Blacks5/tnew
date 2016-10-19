@@ -17,8 +17,8 @@ use \yii\helpers\Url;
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'realname')->textInput(['maxlength' => true])->label('真实姓名') ?>
     <?= $form->field($model, 'cellphone')->textInput(['maxlength' => true])->label('手机号码') ?>
-
-    <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
+    <input type="password" id="user-password_hash" name="User[password_hash]" style="display: none">
+    <?= $form->field($model, 'password_hash')->passwordInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
