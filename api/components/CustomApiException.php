@@ -8,7 +8,6 @@
  */
 
 namespace api\components;
-use api\components\CustomCommonException;
 
 class CustomApiException extends CustomCommonException
 {
