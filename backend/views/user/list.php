@@ -20,6 +20,22 @@ use yii\widgets\LinkPager;
                             </div>
                         </div>
                         <hr>
+                        <form class="row" method="get" action="">
+                            <div class="col-sm-2">
+                                <input type="text" name="UserSearch[username]" placeholder="用户名" value="<?php echo $sear['username'];  ?>" class="input form-control">
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" name="UserSearch[realname]" value="<?php echo $sear['realname'];  ?>" placeholder="真实姓名" class="input form-control">
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" name="UserSearch[email]" value="<?php echo $sear['email'];  ?>" placeholder="邮箱" class="input form-control">
+                            </div>
+                            <div  class="col-sm-3">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-primary"> <i class="fa fa-search"></i> 搜索</button>
+                            </span>
+                            </div>
+                        </form>
 
                         <div class="table-responsive">
                             <table class="table table-striped">
