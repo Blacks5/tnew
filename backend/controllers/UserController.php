@@ -11,6 +11,7 @@ use common\models\Jobs;
 use common\models\User;
 use yii\data\Pagination;
 //use backend\models\User;
+use common\models\UserSearch;
 
 use Yii;
 use yii\web\Response;
@@ -65,10 +66,13 @@ class UserController extends CoreBackendController
      */
     public function actionList()
     {
-        $data = User::find()->where(['!=', 'status', 0]);
-        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => '2']);
-        $user = $data->joinWith('usergroup')->orderBy(['id'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+        $query = new UserSearch();
+        $model = $query->search(Yii::$app->getRequest()->getQueryParams());
+        $clone_model = clone $model;
+        $pages = new Pagination(['totalCount' =>$clone_model->count(), 'pageSize' => '2']);
+        $user = $model->joinWith('usergroup')->orderBy(['id'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('list',[
+            'sear'=>$query->getAttributes(),
             'user'=>$user,
             'pages' => $pages
         ]);
