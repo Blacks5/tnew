@@ -22,17 +22,20 @@ use yii\widgets\LinkPager;
                         <hr>
                         <form class="row" method="get" action="">
                             <div class="col-sm-2">
-                                <input type="text" name="UserSearch[username]" placeholder="用户名" value="<?php echo $sear['username'];  ?>" class="input form-control">
+                                <input type="text" name="UserSearch[username]" placeholder="用户名"
+                                       value="<?php echo $sear['username']; ?>" class="input form-control">
                             </div>
                             <div class="col-sm-2">
-                                <input type="text" name="UserSearch[realname]" value="<?php echo $sear['realname'];  ?>" placeholder="真实姓名" class="input form-control">
+                                <input type="text" name="UserSearch[realname]" value="<?php echo $sear['realname']; ?>"
+                                       placeholder="真实姓名" class="input form-control">
                             </div>
                             <div class="col-sm-2">
-                                <input type="text" name="UserSearch[email]" value="<?php echo $sear['email'];  ?>" placeholder="邮箱" class="input form-control">
+                                <input type="text" name="UserSearch[email]" value="<?php echo $sear['email']; ?>"
+                                       placeholder="邮箱" class="input form-control">
                             </div>
-                            <div  class="col-sm-3">
+                            <div class="col-sm-3">
                             <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary"> <i class="fa fa-search"></i> 搜索</button>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                             </span>
                             </div>
                         </form>
@@ -63,10 +66,19 @@ use yii\widgets\LinkPager;
                                         <td><?= date('Y-m-d H:i:s', $vo['created_at']) ?></td>
                                         <td><a class="btn btn-primary btn-xs"
                                                href="<?= Url::toRoute(['user/update', 'item_name' => $vo['usergroup']['item_name'], 'id' => $vo['id']]) ?>"><i
+                                                    class="fa fa-edit"></i>查看
+                                            </a>
+                                            <a class="btn btn-primary btn-xs"
+                                               href="<?= Url::toRoute(['user/update', 'item_name' => $vo['usergroup']['item_name'], 'id' => $vo['id']]) ?>"><i
                                                     class="fa fa-edit"></i>编辑
                                             </a>
+                                            <a class="btn btn-primary btn-xs"
+                                               href="<?= Url::toRoute(['user/mod-pwd', 'id' => $vo['id']]) ?>"><i
+                                                    class="fa fa-edit"></i>重置密码
+                                            </a>
                                             <?php if ($vo['usergroup']['item_name'] != '超级管理员') { ?>
-                                                <button class="btn btn-danger btn-xs del-user" data-value="<?= $vo['id'] ?>"><i
+                                                <button class="btn btn-danger btn-xs del-user"
+                                                        data-value="<?= $vo['id'] ?>"><i
                                                         class="fa fa-close"></i>删除
                                                 </button>
                                             <?php } ?></td>

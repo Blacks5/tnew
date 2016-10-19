@@ -24,9 +24,13 @@ use common\core\CoreCommonActiveRecord;
  */
 class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
 {
+
+    public $password_hash_1; // 重复密码
+
+
     // 10正常 0删除 1禁用 2离职
     const STATUS_ACTIVE = 10;
-//    const STATUS_DELETE = 0;
+    const STATUS_DELETE = 0;
     const STATUS_STOP = 1;
     const STATUS_LEAVE = 2;
 
@@ -61,7 +65,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             [['created_at', 'updated_at'], 'safe'],
             ['password_hash', 'required', 'on'=>'create', 'message'=>'{attribute}必须填写'],
             ['email', 'email', 'message'=>'{attribute}错误'],
-            [['username', 'realname', 'email', 'county', 'city', 'province'], 'required',
+            [['username', 'realname', 'email', 'county', 'city', 'province', 'password_hash_1', 'password_hash'], 'required',
                 'message'=>'{attribute}必须填写'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key'], 'string', 'max' => 32],
@@ -72,6 +76,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             ['email', 'unique', 'targetClass' => 'app\models\User', 'message' => '邮箱已存在', 'on'=>'create'],
             [['cellphone'], 'match', 'pattern' => '/^1[3|5|8]\d{9}$/', 'message'=>'错误的手机号码'],
 
+            [['password_hash_1'], 'compare', 'compareAttribute'=>'password_hash', 'operator'=>'==='],
             [['department_id', 'job_id'], 'safe']
         ];
     }
@@ -80,6 +85,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
         $scen = parent::scenarios();
         $scen['create'] = ['username', 'realname', 'password_hash', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['update'] = ['username', 'realname', /*'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
+        $scen['modpwd'] = ['password_hash', 'password_hash_1'];
         return $scen;
     }
 
@@ -254,16 +260,30 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
      * @return bool
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function modpwd($newpwd, $userid)
+    public function modpwd($param, $userid)
     {
-        $model = self::findOne(['id'=>$userid]);
+        $this->scenario = 'modpwd';
+        $this->load($param);
+        if(!$this->validate()){
+            return false;
+        }
+
+        $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
+        $this->access_token = Yii::$app->security->generatePasswordHash($this->password_hash);
+        if(!$this->update(false)){
+            return false;
+        }
+        return true;
+
+        /*$model = static::findOne(['id'=>$userid]);
         if($model){
-            $model->password_hash = \yii::$app->security->generatePasswordHash($newpwd);
-            $model->access_token = \yii::$app->security->generatePasswordHash($model->password_hash);
+            $model->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
+            $model->access_token = Yii::$app->security->generatePasswordHash($model->password_hash);
             if(!$model->update(false)){
                 return false;
             }
             return true;
         }
+        return false;*/
     }
 }

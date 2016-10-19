@@ -60,6 +60,7 @@ class SiteController extends CoreBackendController
         $user_id=Yii::$app->user->identity->getId();
         $user_info = Yii::$app->authManager->getRolesByUser($user_id);
         $menu = new Menu();
+//        p($user_id, $user_info);
         $menu = $menu->getLeftMenuList();
         /*echo '<pre>';
         var_dump($menu);die;*/

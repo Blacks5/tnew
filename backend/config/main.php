@@ -23,7 +23,7 @@ return [
 
             //允许访问的action
             //controller/action
-//            '*',
+            '*',
             'login/login',
 //            'index/*'
         ]

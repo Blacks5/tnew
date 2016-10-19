@@ -70,20 +70,23 @@ class Menu extends \yii\db\ActiveRecord
         $uid = Yii::$app->user->identity->getId();
         $auth = Yii::$app->getAuthManager();
         $Roles = $auth->getRolesByUser($uid);
-        //var_dump($Roles);exit;
+//        var_dump($Roles);exit;
 
         foreach($Roles as $vo){
             $name = $vo->name;
         }
-        $Permission = $auth->getPermissionsByRole($name);
-        $RolesList = '';
-        foreach($Permission as $vo){
-            $RolesList .= "'".$vo->name."',";
-        }
-        $RolesList = substr($RolesList,0,-1);
 
-        $menu = Yii::$app->db->createCommand("SELECT * FROM `menu` WHERE route IN ($RolesList)  ORDER BY `order` ASC")->queryAll();
-        $menu = self::list_to_tree2($menu,'id','parent');
+        // 没有任何权限就返回空数组
+        $menu = [];
+        if($Permission = $auth->getPermissionsByRole($name)) {
+            $RolesList = '';
+            foreach ($Permission as $vo) {
+                $RolesList .= "'" . $vo->name . "',";
+            }
+            $RolesList = substr($RolesList, 0, -1);
+            $menu = Yii::$app->db->createCommand("SELECT * FROM `menu` WHERE route IN ($RolesList)  ORDER BY `order` ASC")->queryAll();
+            $menu = self::list_to_tree2($menu, 'id', 'parent');
+        }
         return $menu;
     }
 

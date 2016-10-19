@@ -11,8 +11,7 @@ use \yii\helpers\Url;
 
 <div class="user-form">
 
-    <?php $form = ActiveForm::begin();
-    $model->city = 2; ?>
+    <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'realname')->textInput(['maxlength' => true])->label('真实姓名') ?>

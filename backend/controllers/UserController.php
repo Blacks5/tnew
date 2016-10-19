@@ -14,6 +14,7 @@ use yii\data\Pagination;
 use common\models\UserSearch;
 
 use Yii;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
@@ -176,7 +177,7 @@ class UserController extends CoreBackendController
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $model->status = 0;
+        $model->status = User::STATUS_DELETE;
         $model->save(false);
         return $this->redirect(['list']);
     }
@@ -188,7 +189,15 @@ class UserController extends CoreBackendController
      */
     public function actionModPwd($id)
     {
+        $request = Yii::$app->getRequest();
+        $model = $this->findModel($id);
+        if($request->getIsPost()){
+            if($model->modpwd($request->post(), $id)){
+                return $this->redirect(['user/list']);
+            }
+        }
 
+        return $this->render('modpwd', ['model'=>$model]);
     }
 
     protected function findModel($id)
