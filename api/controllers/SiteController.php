@@ -1,10 +1,10 @@
 <?php
-namespace frontend\controllers;
+namespace api\controllers;
 
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
+use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
@@ -18,36 +18,6 @@ use frontend\models\ContactForm;
  */
 class SiteController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
-                'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * @inheritdoc
@@ -66,13 +36,39 @@ class SiteController extends Controller
     }
 
     /**
+     * 安卓端登录
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionLogin()
+    {
+        $request = Yii::$app->getRequest();
+        $username = $request->post('username');
+        $password = $request->post('password');
+        $model = new LoginForm();
+        $model->username = $username;
+        $model->password = $password;
+        if(!$model->validate()){
+            return ['status'=>0, 'message'=>'用户名或密码错误', 'data'=>[]];
+        }
+        if($model->login()){
+            $user = Yii::$app->getUser()->getIdentity();
+            $data = [
+                'id'=>$user->id,
+                'realname'=>$user->realname,
+                'access_token'=>$user->access_token
+            ];
+            return ['status'=>1, 'message'=>'登录成功', 'data'=>$data];
+        }
+        return ['status'=>0, 'message'=>'登录异常', 'data'=>[]];
+    }
+    /**
      * Displays homepage.
      *
      * @return mixed
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return [1,2,3];
     }
 
     /**
@@ -80,7 +76,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionLogin()
+   /* public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -94,7 +90,7 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
-    }
+    }*/
 
     /**
      * Logs out the current user.
