@@ -107,11 +107,10 @@ use yii\widgets\LinkPager;
 <?= Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 <?php
 $this->registerJs("
-        var del_url = '" . Url::toRoute(["user/delete", "id" => $vo["id"]]) . "';
+        var del_url = '" . Url::toRoute(["user/delete"]) . "';
         $('.del-user').on('click', function(ev){
             layer.confirm('是否删除用户?', {icon: 3, title:'删除用户'}, function(index){
-                  console.log($(this).attr('data-value'));
-                  
+                  window.location.href=del_url+'?id='+$(ev.target).attr('data-value');
                   layer.close(index);
             });
         });

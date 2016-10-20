@@ -27,77 +27,110 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <form method="get" class="form-horizontal">
+                    <form method="post" class="form-horizontal">
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">类型</label>
+                            <label class="col-sm-2 control-label">适用类型</label>
                             <div class="col-sm-4">
                                 <select class="form-control m-b" name="p_type">
-                                    <option>选项 1</option>
-                                    <option>选项 2</option>
-                                    <option>选项 3</option>
-                                    <option>选项 4</option>
+                                    <?php foreach ($goods_type as $v) { ?>
+                                        <option value="<?= $v['t_id']; ?>"><?= $v['t_name']; ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
                         <!--<div class="hr-line-dashed"></div>-->
-                        <div class="form-group">
+                        <div class="form-group <?php if ($msg = $model->getFirstError('p_name')) {
+                            echo 'has-error';
+                        } ?>">
                             <label class="col-sm-2 control-label">名称</label>
 
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="p_name">
-                                <span class="help-block m-b-none">帮助文本</span>
+                                <input type="text" class="form-control" name="p_name" value="<?=$model->p_name?>">
+                                <?php if ($msg) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
 
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
+                        <div class="form-group <?php if ($model->hasErrors('p_period')) {
+                            echo 'has-error';
+                        } ?>">
                             <label class="col-sm-2 control-label">期数</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control">
-                                <span class="help-block m-b-none">帮助文本</span>
+                                <input type="text" class="form-control" name="p_period" value="<?=$model->p_period?>">
+                                <?php if ($msg = $model->getFirstError('p_period')) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">月利率</label>
-
+                        <div class="form-group <?php if ($model->hasErrors('p_month_rate')) {
+                            echo 'has-error';
+                        } ?>">
+                            <label class="col-sm-2 control-label">月利率(%)</label>
                             <div class="col-sm-4">
-                                <input type="password" class="form-control" name="password">
+                                <input type="text" class="form-control" name="p_month_rate" value="<?=$model->p_month_rate?>">
+                                <?php if ($msg = $model->getFirstError('p_month_rate')) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
+                        <div class="form-group <?php if ($model->hasErrors('p_add_service_fee')) {
+                            echo 'has-error';
+                        } ?>">
                             <label class="col-sm-2 control-label">增值服务费</label>
 
                             <div class="col-sm-4">
-                                <input type="password" class="form-control" name="password">
+                                <input type="text" class="form-control" name="p_add_service_fee" value="<?=$model->p_add_service_fee?>">
+                                <?php if ($msg = $model->getFirstError('p_add_service_fee')) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
+                        <div class="form-group <?php if ($model->hasErrors('p_free_pack_fee')) {
+                            echo 'has-error';
+                        } ?>">
                             <label class="col-sm-2 control-label">随心包服务费</label>
 
                             <div class="col-sm-4">
-                                <input type="password" class="form-control" name="password">
+                                <input type="text" class="form-control" name="p_free_pack_fee" value="<?=$model->p_free_pack_fee?>">
+                                <?php if ($msg = $model->getFirstError('p_free_pack_fee')) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
+                        <div class="form-group <?php if ($model->hasErrors('p_finance_mangemant_fee')) {
+                            echo 'has-error';
+                        } ?>">
                             <label class="col-sm-2 control-label">财务管理费</label>
 
                             <div class="col-sm-4">
-                                <input type="password" class="form-control" name="password">
+                                <input type="text" class="form-control" name="p_finance_mangemant_fee" value="<?=$model->p_finance_mangemant_fee?>">
+                                <?php if ($msg = $model->getFirstError('p_finance_mangemant_fee')) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
+                        <div class="form-group <?php if ($model->hasErrors('p_customer_management')) {
+                            echo 'has-error';
+                        } ?>">
                             <label class="col-sm-2 control-label">客户管理费</label>
 
                             <div class="col-sm-4">
-                                <input type="password" class="form-control" name="password">
+                                <input type="text" class="form-control" name="p_customer_management" value="<?=$model->p_customer_management?>">
+                                <?php if ($msg = $model->getFirstError('p_customer_management')) { ?>
+                                    <span class="help-block m-b-none"><?= $msg ?></span>
+                                <?php } ?>
                             </div>
                         </div>
+                        <input type="hidden" name="_csrf-backend"
+                               value="<?= Yii::$app->getRequest()->getCsrfToken() ?>">
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-2">

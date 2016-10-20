@@ -46,11 +46,11 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->where(['!=', 'status', self::STATUS_DELETE]);
         $this->setScenario('search');
         $this->load($params);
         if (!$this->validate()) {
-            return $query->where('0=1');
+            return $query->andWhere('0=1');
         }
 
         $query->andFilterWhere(['like', 'username', $this->username])

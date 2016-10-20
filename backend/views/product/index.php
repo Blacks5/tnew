@@ -58,23 +58,13 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['p_customer_management'] ?></td>
                                         <td><?= $vo['p_status'] ?></td>
                                         <td><a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/view', 'id' => 2]) ?>"><i
+                                               href="<?= Url::toRoute(['product/view', 'id' => $vo['p_id']]) ?>"><i
                                                     class="fa fa-edit"></i>查看
                                             </a>
-                                            <a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/update', 'item_name' => 2, 'id' => 2]) ?>"><i
-                                                    class="fa fa-edit"></i>编辑
-                                            </a>
-                                            <a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/mod-pwd', 'id' => 2]) ?>"><i
-                                                    class="fa fa-edit"></i>重置密码
-                                            </a>
-                                            <?php if (1 != '超级管理员') { ?>
-                                                <button class="btn btn-danger btn-xs del-user"
-                                                        data-value="<?= 2 ?>"><i
+                                                <button class="btn btn-danger btn-xs del-product"
+                                                        data-value="<?= $vo['p_id'] ?>"><i
                                                         class="fa fa-close"></i>删除
                                                 </button>
-                                            <?php } ?></td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>
@@ -101,11 +91,11 @@ use yii\widgets\LinkPager;
 <?= Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 <?php
 $this->registerJs("
-        var del_url = '" . Url::toRoute(["user/delete", "id" => 2]) . "';
-        $('.del-user').on('click', function(ev){
-            layer.confirm('是否删除用户?', {icon: 3, title:'删除用户'}, function(index){
-                  console.log($(this).attr('data-value'));
-
+        var del_url = '" . Url::toRoute(["product/delete"]) . "';
+        $('.del-product').on('click', function(ev){
+            layer.confirm('是否删除产品?', {icon: 3, title:'删除产品'}, function(index){
+                  window.location.href=del_url+'?p_id='+$(ev.target).attr('data-value');
+                  layer.close(index);
                   layer.close(index);
             });
         });

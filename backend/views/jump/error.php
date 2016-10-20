@@ -20,7 +20,7 @@ a:hover,a:active{color:#333;text-decoration: underline}
 <body>
 <div class="showMsg" style="text-align:center">
 	<h5>操作提示</h5>
-    <div class="content guery" style="display:inline-block;display:-moz-inline-stack;zoom:1;*display:inline;max-width:330px"><?php echo $result['msg'];?></div>
+    <div class="content guery" style="color: red;display:inline-block;display:-moz-inline-stack;zoom:1;*display:inline;max-width:330px"><?php echo $result['msg'];?></div>
     <div class="bottom">
     <?php if($result['url']=='admin_parent'){?>
      <a href="javascript:admin_close_dialog();">如果您的浏览器没有自动跳转，请点击这里 </a>

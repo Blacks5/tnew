@@ -84,7 +84,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     {
         $scen = parent::scenarios();
         $scen['create'] = ['username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
-        $scen['update'] = ['username', 'realname', /*'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
+        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
         return $scen;
     }
@@ -100,6 +100,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             'realname' => '真实姓名',
             'auth_key' => 'Auth Key', // cookie登录用
             'password_hash' => '密码',
+            'password_hash_1' => '密码',
             'password_reset_token' => 'Password Reset Token',
             'email' => '邮箱',
             'county' => '县/区',
@@ -229,6 +230,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function createUser($param)
     {
         if(!$this->load($param) || !$this->validate()){
+//            p($this->errors);
             return false;
         }
         $this->setPassword($this->password_hash);

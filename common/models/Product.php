@@ -16,6 +16,7 @@ use common\core\CoreCommonActiveRecord;
  * @property integer $p_finance_mangemant_fee
  * @property integer $p_customer_management
  * @property integer $p_status
+ * @property integer $p_type
  * @property integer $p_created_at
  * @property integer $p_updated_at
  */
@@ -47,11 +48,13 @@ class Product extends CoreCommonActiveRecord
     public function rules()
     {
         return [
-            [['p_name', 'p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'required', 'except'=>'search'],
+            [['p_name', 'p_type', 'p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'required', 'except'=>'search'],
             [['p_period', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management', 'p_status', 'p_created_at', 'p_updated_at'], 'integer'],
             [['p_month_rate'], 'number', 'max'=>'100', 'min'=>'0.0001'],
 //            [['p_name'], 'string', 'max' => 30],
-            [['p_status'], 'in', 'range'=>[10, 1]]
+            [['p_status'], 'in', 'range'=>[10, 1]],
+
+            ['p_type', 'in', 'range'=>array_column(Yii::$app->params['goods_type'], 't_id')]
         ];
     }
 
@@ -93,6 +96,10 @@ class Product extends CoreCommonActiveRecord
 
     public function createProduct()
     {
+        if(!$this->validate()){
+//            p($this->errors);
+            return false;
+        }
         $this->p_created_at = $_SERVER['REQUEST_TIME'];
         $this->p_month_rate /= 100;
         return $this->save(false) ? $this : null;
@@ -112,7 +119,7 @@ class Product extends CoreCommonActiveRecord
     {
         $this->setScenario('search');
         $this->load($param);
-        $query = self::find();
+        $query = self::find()->where(['!=', 'p_status', self::STATUS_DEL]);
         if(!$this->validate()){
             return $query->where('1=2');
         }
