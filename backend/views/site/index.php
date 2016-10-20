@@ -33,7 +33,7 @@ use mdm\admin\components\MenuHelper;
                                 </li>
                             </ul>
                         </div>
-                        <div class="logo-element">H+
+                        <div class="logo-element">W+
                         </div>
                     </li>
 

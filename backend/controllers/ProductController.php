@@ -15,13 +15,14 @@ class ProductController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount'=>$querycount->count()]);
-        $pages->pageSize=2;
+        $pages->pageSize=20;
         $data = $query->orderBy(['p_created_at'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
         return $this->render('index', [
             'sear'=>$model->getAttributes(),
             'model'=>$data,
             'totalpage'=> $pages->pageCount,
+            'pages'=>$pages
         ]);
     }
 
@@ -32,9 +33,9 @@ class ProductController extends CoreBackendController
      */
     public function actionCreate()
     {
-        $this->getView()->title='添加产品';
+//        $this->getView()->title='添加产品';
 
-        $request = \Yii::$app->getRequest();
+        /*$request = \Yii::$app->getRequest();
         $model = new Product();
         if($request->getIsPost()){
             $model->load($request->post());
@@ -46,9 +47,9 @@ class ProductController extends CoreBackendController
         }
 
         $all_status = Product::getAllStatus();
-        array_pop($all_status);
+        array_pop($all_status);*/
 
-        return $this->render('create', ['model'=>$model, 'all_status'=>$all_status]);
+        return $this->render('create'/*, ['model'=>$model, 'all_status'=>$all_status]*/);
     }
 
     /**
