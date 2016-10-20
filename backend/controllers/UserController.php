@@ -14,6 +14,7 @@ use yii\data\Pagination;
 use common\models\UserSearch;
 
 use Yii;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -39,7 +40,7 @@ class UserController extends CoreBackendController
 
     public function actionView($id)
     {
-        return $this->success("添加成功！");
+//        return $this->success("添加成功！");
         $model = User::find()->joinWith('usergroup')->where(['id'=>$id])->asArray()->one();
         return $this->render('view', ['model'=>$model]);
     }
@@ -105,7 +106,8 @@ class UserController extends CoreBackendController
                 // 分配部门角色
                 $role = $auth->createRole($post['AuthItem']['name']);
                 $auth->assign($role, $model->id);
-                return $this->redirect(['list']);
+                return $this->success('添加成功！', Url::toRoute(['user/list']));
+//                return $this->redirect(['list']);
             }
         }else {
             $all_province = Helper::getAllProvince();

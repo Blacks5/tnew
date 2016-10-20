@@ -70,20 +70,20 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key'], 'string', 'max' => 32],
             [['realname'], 'string', 'max' => 10],
-            [['password_hash', 'password_reset_token', 'email'], 'string', 'max' => 256, 'min' => 6, 'tooShort'=>'{attribute}至少为6位'],
+            [['password_hash', 'password_reset_token', 'email', 'password_hash_1'], 'string', 'max' => 256, 'min' => 6, 'tooShort'=>'{attribute}至少为6位'],
             [['county', 'city', 'province'], 'string', 'max' => 20],
             ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => '{attribute}已存在', 'on'=>'create'],
             ['email', 'unique', 'targetClass' => 'app\models\User', 'message' => '邮箱已存在', 'on'=>'create'],
             [['cellphone'], 'match', 'pattern' => '/^1[3|5|8]\d{9}$/', 'message'=>'错误的手机号码'],
 
-            [['password_hash_1'], 'compare', 'compareAttribute'=>'password_hash', 'operator'=>'==='],
+            [['password_hash_1'], 'compare', 'compareAttribute'=>'password_hash', 'message'=>'两次密码不一致'],
             [['department_id', 'job_id'], 'safe']
         ];
     }
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['create'] = ['username', 'realname', 'password_hash', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
+        $scen['create'] = ['username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['update'] = ['username', 'realname', /*'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
         return $scen;
@@ -229,9 +229,10 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function createUser($param)
     {
         if(!$this->load($param) || !$this->validate()){
-
+p($this->errors);
             return false;
         }
+        p($param);
         $this->setPassword($this->password_hash);
         $this->access_token = \yii::$app->security->generatePasswordHash($this->password_hash);
         $this->generateAuthkey();
