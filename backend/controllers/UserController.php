@@ -39,7 +39,7 @@ class UserController extends CoreBackendController
 
     public function actionView($id)
     {
-        $model = User::find()->joinWith('usergroup')->where(['id'=>$id])->one();
+        $model = User::find()->joinWith('usergroup')->where(['id'=>$id])->asArray()->one();
         return $this->render('view', ['model'=>$model]);
     }
 
@@ -71,7 +71,7 @@ class UserController extends CoreBackendController
         $query = new UserSearch();
         $model = $query->search(Yii::$app->getRequest()->getQueryParams());
         $clone_model = clone $model;
-        $pages = new Pagination(['totalCount' =>$clone_model->count(), 'pageSize' => '2']);
+        $pages = new Pagination(['totalCount' =>$clone_model->count(), 'pageSize' => '20']);
         $user = $model->joinWith('usergroup')->orderBy(['id'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('list',[
             'sear'=>$query->getAttributes(),

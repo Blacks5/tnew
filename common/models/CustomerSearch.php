@@ -6,12 +6,12 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace app\models;
+namespace common\models;
 
 use common\models\Customer;
 use yii;
 use common\core\CoreCommonModel;
-class CustomerSearch extends BaseModel
+class CustomerSearch extends CoreCommonModel
 {
     public $c_customer_name;
     public $c_customer_cellphone;
@@ -31,7 +31,7 @@ class CustomerSearch extends BaseModel
         if(!$this->validate()){
             return $query->where('1=2');
         }
-
+//p($this->getAttributes());
         $query->andFilterWhere(['like', 'c_customer_name', $this->c_customer_name])
             ->andFilterWhere(['like', 'c_customer_cellphone', $this->c_customer_cellphone])
             ->andFilterWhere(['like', 'c_customer_id_card', $this->c_customer_id_card]);

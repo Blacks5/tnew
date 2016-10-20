@@ -467,6 +467,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
+//        p($roles);
         return $roles;
     }
 
@@ -489,6 +490,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+//        p($permissions);
         return $permissions;
     }
 

@@ -8,7 +8,7 @@
 
 namespace backend\controllers;
 
-use app\models\Customer;
+use common\models\Customer;
 use common\models\CustomerSearch;
 use yii;
 use backend\core\CoreBackendController;
@@ -37,13 +37,15 @@ class CustomerController extends CoreBackendController
         array_walk($data, function(&$v){
             $v['c_status'] = Customer::getAllStatus()[$v['c_status']];
             $v['c_created_at'] = date('Y-m-d H:i:s', $v['c_created_at']);
+            $v['c_updated_at'] = date('Y-m-d H:i:s', $v['c_updated_at']);
         });
+//        p($model->getAttributes());
         return $this->render('index', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
+            'pages'=>$pages
         ]);
-        return $this->render('index');
     }
 
     public function actionView($c_id)

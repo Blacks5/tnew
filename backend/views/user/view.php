@@ -19,7 +19,7 @@ use yii\widgets\DetailView;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">真实姓名：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?php echo 1; ?></p>
+                            <p class="form-control-static"><?= $model['realname']; ?></p>
                         </div>
                     </div>
 
@@ -28,14 +28,14 @@ use yii\widgets\DetailView;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">登录名：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?php echo 1; ?></p>
+                            <p class="form-control-static"><?= $model['username']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">联系邮箱：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?php echo 1; ?></p>
+                            <p class="form-control-static"><?= $model['email']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -43,16 +43,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">所属部门/职位：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?php echo '财务部【大当家】'; ?>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">最近登录时间：</label>
-                        <div class="col-sm-8">
-                            <p class="form-control-static">
-                                <?php echo 1; ?>
+                                <?= $model['department_id'],"【{$model["job_id"]}】"; ?>
                             </p>
                         </div>
                     </div>
@@ -61,17 +52,17 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">负责区域：</label>
                         <div class="col-sm-1">
                             <p class="form-control-static">
-                                <?php echo '四川省'; ?>
+                                <?= $model['province']; ?>
                             </p>
                         </div>
                         <div class="col-sm-1">
                             <p class="form-control-static">
-                                <?php echo '金牛区'; ?>
+                                <?= $model['city']; ?>
                             </p>
                         </div>
                         <div class="col-sm-1">
                             <p class="form-control-static">
-                                <?php echo '花牌坊街'; ?>
+                                <?= $model['county']; ?>
                             </p>
                         </div>
                     </div>
@@ -81,7 +72,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">锁定状态：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?php if(1 === 1): ?>
+                                <?php if($model['status'] === '10'): ?>
                                     <button class="btn btn-primary btn-xs">开启</button>
                                 <?php else: ?>
                                     <button type="button" class="btn btn-default btn-xs">已锁定</button>

@@ -36,9 +36,7 @@ use \yii\helpers\Url;
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>
-
 <?php
 $this->registerJs('
     var url = "'.Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
@@ -52,9 +50,6 @@ $this->registerJs('
             $("#user-job_id").html(dom);
         });
     });
-
-
-    
     
     // 省变化
     $("#user-province").change(function(){
@@ -89,6 +84,4 @@ $this->registerJs('
     $("#user-province").trigger("change");
     $("#user-department_id").trigger("change");
  ');
-
-
 ?>
