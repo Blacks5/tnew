@@ -39,6 +39,7 @@ class UserController extends CoreBackendController
 
     public function actionView($id)
     {
+        return $this->success("添加成功！");
         $model = User::find()->joinWith('usergroup')->where(['id'=>$id])->asArray()->one();
         return $this->render('view', ['model'=>$model]);
     }
