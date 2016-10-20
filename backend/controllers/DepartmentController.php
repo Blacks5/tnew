@@ -12,6 +12,7 @@ use backend\core\CoreBackendController;
 use common\models\Department;
 use common\models\Jobs;
 use yii;
+use backend\components\CustomBackendException;
 
 class DepartmentController extends CoreBackendController
 {
@@ -43,19 +44,19 @@ class DepartmentController extends CoreBackendController
             try {
                 Yii::$app->getResponse()->format = 'json';
                 if (!$d_name) {
-                    throw new CustomException('请填写部门名称');
+                    throw new CustomBackendException('请填写部门名称');
                 }
 
                 if (Department::find()->where(['d_name' => $d_name])->exists()) {
-                    throw new CustomException('部门名称已存在');
+                    throw new CustomBackendException('部门名称已存在');
                 }
                 $model = new Department();
                 $model->d_name = $d_name;
                 if (!$model->save()) {
-                    throw new CustomException('添加失败');
+                    throw new CustomBackendException('添加失败');
                 }
                 return ['status' => 1, 'message' => '添加成功'];
-            } catch (CustomException $e) {
+            } catch (CustomBackendException $e) {
                 return ['status' => 0, 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
                 return ['status' => 0, 'message' => '系统错误'];
@@ -124,12 +125,12 @@ class DepartmentController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $pages->pageSize = 3;//Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('index', [
             'sear' => $model->getAttributes(),
             'model' => $data,
-            'totalpage' => $pages->pageCount
+            'pages' => $pages
         ]);
     }
 
