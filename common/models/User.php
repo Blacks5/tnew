@@ -229,10 +229,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function createUser($param)
     {
         if(!$this->load($param) || !$this->validate()){
-p($this->errors);
             return false;
         }
-        p($param);
         $this->setPassword($this->password_hash);
         $this->access_token = \yii::$app->security->generatePasswordHash($this->password_hash);
         $this->generateAuthkey();

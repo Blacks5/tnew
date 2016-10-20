@@ -17,7 +17,7 @@ class CoreCommonController extends Controller
      * @param integer $wait 跳转等待时间
      * @return mixed
      */
-    public function success($msg = '', $url = null, $wait = 2000)
+    public function success($msg = '', $url = null, $wait = 500)
     {
         $postaction = Yii::$app->urlManager->createUrl(['login/login']);
         $result = [

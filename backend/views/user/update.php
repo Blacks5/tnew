@@ -20,22 +20,16 @@ $this->title = '更新用户 ';
                 <?= $form->field($model, 'id')->hiddenInput()->label('') ?>
 
                 <?= $form->field($model, 'username')->textInput(['readonly' => true])->label('用户名') ?>
-                <?php if ($model->username == 'admin'): ?>
-                    <?= $form->field($model, 'auth_key_new')->textInput(['value' => '', 'readonly' => true])->label('密码') ?>
-                <?php else: ?>
-                    <?= $form->field($model, 'auth_key_new')->textInput(['value' => ''])->label('密码') ?>
-                <?php endif; ?>
 
-                <?= $form->field($model, 'auth_key')->hiddenInput()->label(false) ?>
 
                 <?= $form->field($model, 'email')->textInput(['email' => true])->label('邮箱') ?>
 
                 <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only'])->label('所属部门') ?>
-                <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList(['请选择职位'])->label('请选择职位', ['class' => 'sr-only']) ?>
+                <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList($all_jobs)->label('请选择职位', ['class' => 'sr-only']) ?>
 
                 <?= $form->field($model, 'province', ['options' => ['class' => 'form-group']])->dropDownList($all_province)->label('请选择省', ['class' => 'sr-only'])->label('负责区域') ?>
-                <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList(['请选择市'])->label('请选择城市', ['class' => 'sr-only']) ?>
-                <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList(['请选择县/区'])->label('请选择城县/区', ['class' => 'sr-only']) ?>
+                <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList($all_citys)->label('请选择城市', ['class' => 'sr-only']) ?>
+                <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList($all_countys)->label('请选择城县/区', ['class' => 'sr-only']) ?>
 
                 <?php if ($model->username == 'admin'): ?>
                     <?= $form->field($model->usergroup, 'item_name')->dropDownList($item, ['disabled' => true])->label('用户组') ?>
