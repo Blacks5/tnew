@@ -6,11 +6,10 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace common\helper;
+namespace common\models;
 
 use crazyfd\qiniu\Qiniu;
 use yii;
-use common\helper\BaseUploadFile;
 class UploadFile extends BaseUploadFile
 {
     public $oi_front_id;

@@ -36,7 +36,6 @@ use mdm\admin\components\MenuHelper;
                         <div class="logo-element">W+
                         </div>
                     </li>
-
                     <?php  foreach($menu as $v1){ ?>
                         <?php $data = json_decode($v1['data'], true);?>
                         <li><!--一级级菜单-->

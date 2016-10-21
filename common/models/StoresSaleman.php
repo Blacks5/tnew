@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
 use Yii;
+use common\core\CoreCommonActiveRecord;
 
 /**
  * This is the model class for table "stores_saleman".
@@ -11,7 +12,7 @@ use Yii;
  * @property integer $ss_store_id
  * @property integer $ss_saleman_id
  */
-class StoresSaleman extends \app\core\base\BaseActiveRecord
+class StoresSaleman extends CoreCommonActiveRecord
 {
     /**
      * @inheritdoc

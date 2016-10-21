@@ -146,14 +146,17 @@ class Stores extends CoreCommonActiveRecord
         ];
     }
 
-    public function createStores()
+    public function createStores($param)
     {
+        if($this->load($param) && $this->validate()) {
+            $user = Yii::$app->getUser()->getIdentity();
+            $this->s_add_user_id = $user->getId();
+            $this->s_add_user_name = $user->realname;
+            $this->s_created_at = $_SERVER['REQUEST_TIME'];
 
-        $this->s_add_user_id = Yii::$app->getUser()->getIdentity()->getId();
-        $this->s_add_user_name = Yii::$app->getUser()->getIdentity()->realname;
-        $this->s_created_at = $_SERVER['REQUEST_TIME'];
-
-        return $this->save(false) ? $this : null;
+            return $this->save(false) ? $this : null;
+        }
+        return null;
     }
 
     public function updateStore($params)

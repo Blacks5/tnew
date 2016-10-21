@@ -6,7 +6,7 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace common\helper;
+namespace common\models;
 use crazyfd\qiniu\Qiniu;
 use yii;
 use api\core\CoreApiModel;
