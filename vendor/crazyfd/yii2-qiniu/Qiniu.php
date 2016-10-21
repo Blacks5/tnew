@@ -19,7 +19,7 @@ use yii\web\HttpException;
 class Qiniu
 {
 
-    const UP_HOST = 'http://up-z0.qiniu.com';
+    const UP_HOST = 'http://up.qiniu.com';
     const RS_HOST = 'http://rs.qbox.me';
     const RSF_HOST = 'http://rsf.qbox.me';
 
@@ -286,8 +286,8 @@ class Qiniu
      */
     public function getLink($key = '')
     {
-         $url = "http://{$this->domain}/{$key}";
-//    	$url = "{$this->domain}{$key}";
+//         $url = "http://{$this->domain}/{$key}";
+    	$url = rtrim($this->domain,'/')."/{$key}";
         return $url;
     }
 

@@ -1,6 +1,6 @@
 {
     "name": "crazyfd/yii2-qiniu",
-    "description": "yii2",
+    "description": "yii2上传到七牛云存储",
 	"keywords": ["yii", "qiniu", "upload"],
 	"type": "yii2-extension",
     "license": "MIT",
