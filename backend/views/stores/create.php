@@ -228,3 +228,41 @@ loadinit('three');
 loadinit('four');
 loadinit('five');
 </script>
+<?php
+$this->registerJs('
+    var url = "'.\yii\helpers\Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
+    
+    
+    // 省变化
+    $("#stores-s_province").change(function(){
+        var province_id = $(this).val();
+        $.get(url, {p_id:province_id}, function(data){
+            var dom  = createDom(data);
+            $("#stores-s_city").html(dom);
+            
+            $("#stores-s_city").trigger("change");
+        });     
+    });
+    
+    // 市变化
+    $("#stores-s_city").change(function(){
+        var city_id = $(this).val();
+        $.get(url, {p_id:city_id}, function(data){
+            var dom  = createDom(data);
+            $("#stores-s_county").html(dom);
+        });
+    });
+    
+    // 专业造dom
+    function createDom(data){
+        var dom = "";
+        $.each(data, function (k, v) {
+            dom += "<option  value="+k+">"+v+"</option>";
+        })
+        return dom;
+    }
+    
+    // 初始化
+    $("#stores-s_province").trigger("change");
+ ');
+?>

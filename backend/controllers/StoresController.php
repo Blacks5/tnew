@@ -76,17 +76,16 @@ class StoresController extends CoreBackendController
     public function actionView($id)
     {
         if ($model = Stores::findOne($id)) {
-            $t = new BaseUploadFile();
+            $t = new UploadFile();
             $model->s_photo_one = $model->s_photo_one ? $t->handle->getLink($model->s_photo_one) : '';
             $model->s_photo_two = $model->s_photo_two ? $t->handle->getLink($model->s_photo_two) : '';
             $model->s_photo_three = $model->s_photo_three ? $t->handle->getLink($model->s_photo_three) : '';
             $model->s_photo_four = $model->s_photo_four ? $t->handle->getLink($model->s_photo_four) : '';
             $model->s_photo_five = $model->s_photo_five ? $t->handle->getLink($model->s_photo_five) : '';
-            $all_sales = Stores::find()->select(['id', 'realname', 'belong_stores_id'])
-                ->leftJoin(User::tableName(), 'county=s_county')
-                ->where(['s_id' => $id, 'status' => User::STATUS_ACTIVE])->orderBy(['belong_stores_id' => SORT_ASC])
-                ->asArray()->all();
-            return $this->render('view', ['model' => $model, 's_id' => $id, 'data' => $all_sales]);
+            $all_sales = User::find()->select(['realname'])
+                ->where(['belong_stores_id' => $id, 'county' => $model->s_county, 'status' => User::STATUS_ACTIVE])
+                ->indexBy('id')->asArray()->column();
+            return $this->render('view', ['model' => $model, 's_id' => $id, 'all_sales' => $all_sales]);
         } else {
             return Yii::$app->getResponse()->redirect(['stores/index']);
         }
@@ -113,12 +112,17 @@ class StoresController extends CoreBackendController
             Stores::BANK_PRIVATE_NOT => '否'
         ];
         // 所有省
-        $provinces = GetPcc::getPcc();
+        $all_province = Helper::getAllProvince();
+
+        $all_citys = Helper::getSubAddr($model->province);
+        $all_countys = Helper::getSubAddr($model->city);
         return $this->render('update', [
             'model' => $model,
             'store_status' => $stroe_status,
             'is_private_bank' => $is_private_bank,
-            'provinces' => $provinces
+            'all_provinces' => $all_province,
+            'all_citys'=>$all_citys,
+            'all_countys'=>$all_countys
         ]);
     }
 

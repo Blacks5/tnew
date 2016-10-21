@@ -1,5 +1,4 @@
 <?php
-app\assets\PccAsset::register($this);
 //app\assets\MainAsset::register($this);
 $this->params['breadcrumbs'][] = ['label' => '商户列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -17,7 +16,7 @@ $form = ActiveForm::begin(
         ],
     ]
 );
-$t = new \app\helper\BaseUploadFile();
+$t = new \common\models\UploadFile();
 ?>
 <style>
     .wraper{
@@ -62,7 +61,7 @@ $t = new \app\helper\BaseUploadFile();
             <?= $form->field($model, 's_service_charge')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_addr')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_status')->dropDownList($store_status,['class'=>'form-control'])->label('状态'); ?>
-            <?= $form->field($model, 's_province')->dropDownList($provinces, ['class'=>'form-control getpcc', 'data-id'=>2]); ?>
+            <?= $form->field($model, 's_province')->dropDownList($all_provinces, ['class'=>'form-control getpcc', 'data-id'=>2]); ?>
             <?= $form->field($model, 's_city')->dropDownList([], ['class'=>'form-control getpcc', 'default-value'=>$model->s_city]); ?>
             <?= $form->field($model, 's_county')->dropDownList([], ['class'=>'form-control getpcc', 'default-value'=>$model->s_county]); ?>
             <?= $form->field($model, 's_remark')->textarea(['class'=>'form-control']); ?>
