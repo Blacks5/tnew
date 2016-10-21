@@ -52,7 +52,7 @@ class CustomerController extends CoreBackendController
     {
         if($data = Customer::getOneDetail($c_id)){
             $this->getView()->title = $data['c_customer_name'];
-            $data['c_status'] = Customer::getAllStatus()[$data['c_status']];
+//            $data['c_status'] = Customer::getAllStatus()[$data['c_status']];
             return $this->render('view', ['model'=>$data]);
         }
     }

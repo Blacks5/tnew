@@ -64,7 +64,7 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['c_total_money'] ?></td>
                                         <td><?= $vo['c_updated_at'] ?></td>
                                         <td><a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/view', 'id' => 1]) ?>"><i
+                                               href="<?= Url::toRoute(['customer/view', 'c_id' => $vo['c_id']]) ?>"><i
                                                     class="fa fa-edit"></i>查看
                                             </a>
                                         </td>
@@ -91,16 +91,3 @@ use yii\widgets\LinkPager;
 
         </div>
     </div>
-<?= Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
-<?php
-$this->registerJs("
-        var del_url = '" . Url::toRoute(["user/delete", "id" => 1]) . "';
-        $('.del-user').on('click', function(ev){
-            layer.confirm('是否删除用户?', {icon: 3, title:'删除用户'}, function(index){
-                  console.log($(this).attr('data-value'));
-
-                  layer.close(index);
-            });
-        });
-    ");
-?>
