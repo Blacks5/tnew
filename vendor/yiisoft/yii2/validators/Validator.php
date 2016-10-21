@@ -128,7 +128,7 @@ class Validator extends Component
      * by [[clientValidateAttribute()]]. If that method returns null, even if this property
      * is true, no client-side validation will be done by this validator.
      */
-    public $enableClientValidation = false;
+    public $enableClientValidation = true;
     /**
      * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
      * If not set, [[isEmpty()]] will be used to check if a value is empty. The signature
