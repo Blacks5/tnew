@@ -1,11 +1,9 @@
 <?php
-//app\assets\PccAsset::register($this);
-app\assets\MainAsset::register($this);
-
+use yii\helpers\Html;
 $this->params['breadcrumbs'][] = ['label' => '部门列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<link rel="stylesheet" href="/statics/css/style.min.css">
+
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate" action="" method="post">
@@ -33,10 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-8 col-sm-offset-3">
                     <!--<a class="btn btn-primary" href="<? /*=Yii::$app->getUrlManager()->createUrl(['department/update-department', 'd_id'=>$model['d_id']])*/ ?>">编辑职位</a>-->
 
-                    <a class="btn btn-primary" href="javascript:void(0);"
+                    <a class="btn btn-sm btn-primary" href="javascript:void(0);"
                        onclick="test_l_job('<?= Yii::$app->getUrlManager()->createUrl(['department/create-job_bak', 'd_id' => $model['d_id']]) ?>');">添加职位</a>
-                    <a class="btn btn-primary" href="javascript:void(0);" onclick="job_list_alert();">编辑职位</a>
-                    <a class="btn btn-default" href="<?=Yii::$app->getUrlManager()->createUrl(['department/index'])?>">返回</a>
+                    <a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="job_list_alert();">编辑职位</a>
+                    <a class="btn btn-sm btn-default"
+                       href="<?= Yii::$app->getUrlManager()->createUrl(['department/index']) ?>">返回</a>
                 </div>
             </div>
     </div>
@@ -79,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </section>
-    <script src="/statics/plugins/layer/layer.js"></script>
+    <?= Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
     <script>
         //添加职位
         function test_l_job(url) {
@@ -88,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 title: '添加职位',
                 shadeClose: true,
                 shade: 0.8,
-                area: ['380px', '30%'],
+                area: ['380px', '35%'],
                 content: $('#creat_job'),
                 btn: ['添加', '取消'],
                 yes: function (index) {

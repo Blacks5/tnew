@@ -1,9 +1,9 @@
 <?php
-//app\assets\PccAsset::register($this);
 $this->params['breadcrumbs'][] = ['label' => '所有部门', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-//use \yii\bootstrap\ActiveForm;
-use kartik\form\ActiveForm;
+
+use yii\widgets\ActiveForm;
+
 $form = ActiveForm::begin(
     [
 //        'layout' => 'horizontal',
@@ -20,8 +20,6 @@ $form = ActiveForm::begin(
     ]
 );
 ?>
-<link rel="stylesheet" href="/statics/css/animate.min.css">
-<link rel="stylesheet" href="/statics/css/style.min.css">
     <div class="ibox float-e-margins">
         <div class="ibox-content">
 
