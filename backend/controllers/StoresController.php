@@ -26,6 +26,11 @@ use backend\core\CoreBackendController;
  */
 class StoresController extends CoreBackendController
 {
+    /**
+     * 商户列表
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionIndex()
     {
         $this->getView()->title = '商户列表';
@@ -34,7 +39,7 @@ class StoresController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 2;//Yii::$app->params['page_size'];
+        $pages->pageSize = 5;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['s_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('index', [
             'sear' => $model->getAttributes(),
@@ -44,6 +49,11 @@ class StoresController extends CoreBackendController
         ]);
     }
 
+    /**
+     * 添加商户
+     * @return mixed|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionCreate()
     {
         $this->getView()->title = '添加商户';
@@ -73,6 +83,12 @@ class StoresController extends CoreBackendController
         ]);
     }
 
+    /**
+     * 详情
+     * @param $id
+     * @return $this|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionView($id)
     {
         if ($model = Stores::findOne($id)) {
@@ -85,6 +101,9 @@ class StoresController extends CoreBackendController
             $all_sales = User::find()->select(['realname'])
                 ->where(['belong_stores_id' => $id, 'county' => $model->s_county, 'status' => User::STATUS_ACTIVE])
                 ->indexBy('id')->asArray()->column();
+            $model->s_province = Helper::getAddrName($model->s_province);
+            $model->s_city = Helper::getAddrName($model->s_city);
+            $model->s_county = Helper::getAddrName($model->s_county);
             return $this->render('view', ['model' => $model, 's_id' => $id, 'all_sales' => $all_sales]);
         } else {
             return Yii::$app->getResponse()->redirect(['stores/index']);
@@ -92,6 +111,12 @@ class StoresController extends CoreBackendController
     }
 
 
+    /**
+     * 编辑
+     * @param $id
+     * @return $this|string|yii\web\Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionUpdate($id)
     {
         $this->getView()->title = '编辑商户';
@@ -101,7 +126,9 @@ class StoresController extends CoreBackendController
         $request = Yii::$app->getRequest();
         if ($request->getIsPost()) {
             if ($model->updateStore($request->post(), $id)) {
-                return $this->redirect(['view', 'id' => $model->s_id]);
+                return $this->success('编辑成功', yii\helpers\Url::toRoute(['stores/view', 'id'=>$model->s_id]));
+            }else{
+                return $this->error('编辑失败');
             }
         }
         // 商户状态
@@ -114,8 +141,8 @@ class StoresController extends CoreBackendController
         // 所有省
         $all_province = Helper::getAllProvince();
 
-        $all_citys = Helper::getSubAddr($model->province);
-        $all_countys = Helper::getSubAddr($model->city);
+        $all_citys = Helper::getSubAddr($model->s_province);
+        $all_countys = Helper::getSubAddr($model->s_city);
         return $this->render('update', [
             'model' => $model,
             'store_status' => $stroe_status,
@@ -128,9 +155,13 @@ class StoresController extends CoreBackendController
 
     public function actionDelete($id)
     {
-        if (Stores::findOne($id)->delete()) {
-            return $this->redirect(['index']);
+        $model = Stores::findOne($id);
+        $model->s_status = Stores::STATUS_DELETE;
+        if($model->save()){
+            return $this->success('删除成功', yii\helpers\Url::toRoute(['stores/index']));
         }
+
+        return $this->error('删除失败');
     }
 
     public function actionAllorders($id)

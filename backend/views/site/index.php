@@ -130,7 +130,7 @@ use mdm\admin\components\MenuHelper;
                 <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="<?= Url::toRoute('index/welcome')?>" frameborder="0" data-id="0" seamless></iframe>
             </div>
             <div class="footer">
-                <div class="pull-right">&copy; 2012-2016 <a href="http://1000xun.findz.cn/" target="_blank">Y+</a>
+                <div class="pull-right">&copy; 2012-2016 <a href="#" target="_blank">W+</a>
                 </div>
             </div>
         </div>

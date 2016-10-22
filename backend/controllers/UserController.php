@@ -52,9 +52,9 @@ class UserController extends CoreBackendController
             ->leftJoin(Department::tableName() . ' as d', 'department_id=d_id')
             ->where(['id' => $id])
             ->asArray()->one();
-        $model['province'] = (new Query())->select(['region_name'])->from(TooRegion::tableName())->where(['region_id' => $model['province']])->scalar();
-        $model['city'] = (new Query())->select(['region_name'])->from(TooRegion::tableName())->where(['region_id' => $model['city']])->scalar();
-        $model['county'] = (new Query())->select(['region_name'])->from(TooRegion::tableName())->where(['region_id' => $model['county']])->scalar();
+        $model['province'] = Helper::getAddrName($model['province']);
+        $model['city'] = Helper::getAddrName($model['city']);
+        $model['county'] = Helper::getAddrName($model['county']);
         return $this->render('view', ['model' => $model]);
     }
 

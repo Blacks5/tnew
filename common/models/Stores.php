@@ -46,6 +46,7 @@ class Stores extends CoreCommonActiveRecord
     const STATUS_ACTIVE = 10;
     const STATUS_REFUSE = 1;
     const STATUS_STOP = 2;
+    const STATUS_DELETE = 0;
 
     // 是否对私账户
     const BANK_PRIVATE = 1;
@@ -165,13 +166,14 @@ class Stores extends CoreCommonActiveRecord
         if ($this->validate()) {
             return $this->save(false) ? $this : null;
         }
+        return null;
     }
 
     public function search($param)
     {
         $this->setScenario('search');
         $this->load($param);
-        $query = self::find();
+        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE]);
         if (!$this->validate()) {
             return $query->where('1=2');
         }

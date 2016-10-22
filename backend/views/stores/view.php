@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="form-group">
                 <label class="col-sm-3 control-label">工商局注册名：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_name; ?></p>
+                    <p class="form-control-static"><?= $model->s_gov_name; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
@@ -43,39 +43,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     <p class="form-control-static"><?= $model->s_owner_phone; ?></p>
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">商铺地址：</label>
-                <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_phone; ?></p>
-                </div>
-            </div>
+
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">结算账户卡号：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_name; ?></p>
+                    <p class="form-control-static"><?= $model->s_bank_num; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">结算账户银行：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= '中国银行-中江支行'; ?></p>
+                    <p class="form-control-static"><?= $model->s_bank_name. '-'. $model->s_bank_addr. '-'. $model->s_bank_sub; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">是否对私账户：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_phone; ?></p>
+                    <p class="form-control-static"><?= $model->s_bank_is_private; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">门店服务费：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_phone; ?></p>
+                    <p class="form-control-static"><?= $model->s_service_charge; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
@@ -83,6 +77,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <label class="col-sm-3 control-label">所在省市县/区：</label>
                 <div class="col-sm-2">
                     <p class="form-control-static"><?= $model->s_province; ?>  <?= $model->s_city; ?>  <?= $model->s_county; ?></p>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商铺地址：</label>
+                <div class="col-sm-8">
+                    <p class="form-control-static"><?= $model->s_addr; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
@@ -141,14 +142,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="form-group">
                 <label class="col-sm-3 control-label">商铺添加人：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_phone; ?></p>
+                    <p class="form-control-static"><?= $model->s_add_user_name; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">添加时间：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_owner_phone; ?></p>
+                    <p class="form-control-static"><?= date('Y-m-d H:i:s', $model->s_created_at); ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>

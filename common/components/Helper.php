@@ -39,5 +39,14 @@ class Helper
         return $data;
     }
 
-    
+    /**
+     * 根据id获取地名
+     * @param $id
+     * @return false|null|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getAddrName($id)
+    {
+        return (new Query())->select(['region_name'])->from(TooRegion::tableName())->where(['region_id' => $id])->scalar();
+    }
 }

@@ -89,13 +89,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['s_created_at']) ?></td>
                                                         <td>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/allorders', 'id' => $_v['s_id']]); ?>"
-                                                               class="button">订单</a>
+                                                               class="btn btn-primary btn-xs">订单</a>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/view', 'id' => $_v['s_id']]); ?>"
-                                                               class="button">详情</a>
-                                                            <a class="button"
+                                                               class="btn btn-primary btn-xs">详情</a>
+                                                            <a class="btn-xs btn btn-primary"
                                                                href="<?= Yii::$app->getUrlManager()->createUrl(['stores/update', 'id' => $_v['s_id']]); ?>">编辑</a>
-                                                            <a class="button"
-                                                               href="javascript:del('<?= $_v['s_name'] ?>', <?= $_v['s_id'] ?>)">删除</a>
+                                                            <button class="btn-xs btn btn-danger del-stores"
+                                                                    data-value="<?= $_v['s_id'] ?>">删除</button>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
@@ -115,7 +115,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div id="page11"></div>
+                                        <!--分页-->
+                                        <div class="f-r">
+                                            <?= \yii\widgets\LinkPager::widget([
+                                                'pagination' => $pages,
+                                                'firstPageLabel' => '首页',
+                                                'nextPageLabel' => '下一页',
+                                                'prevPageLabel' => '上一页',
+                                                'lastPageLabel' => '末页',
+                                            ]) ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -125,43 +134,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-        <script src="/statics/plugins/layer/layer.js"></script>
-        <link rel="stylesheet" href="/statics/plugins/laypage/skin/laypage.css">
-        <script src="/statics/plugins/laypage/laypage.js"></script>
-
-
-
-        <script>
-            function initpage(){
-                laypage({
-                    cont: 'page11',
-                    pages: <?= $totalpage;?>, //可以叫服务端把总页数放在某一个隐藏域，再获取。假设我们获取到的是18
-                    curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
-                        var page = location.search.match(/page=(\d+)/);
-                        return page ? page[1] : 1;
-                    }(),
-                    skip: true,
-                    jump: function(e, first){ //触发分页后的回调
-                        if(!first){ //一定要加此判断，否则初始时会无限刷新
-                            var search = location.search;
-                            var n = location.href.indexOf('page=');
-
-                            if(n < 0){
-                                var url = location.href+(search ? "&page=" : "?page=");
-                            }else{
-                                var url = location.href.substr(0, n)+(search ? "page=" : "?page=");
-                            }
-
-                            location.href = url+e.curr;
-                        }
-                    }
-                });
-            };
-            initpage();
-        </script>
+<?= Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
+<?php
+$this->registerJs("
+        var del_url = '" . \yii\helpers\Url::toRoute(["stores/delete"]) . "';
+        $('.del-stores').on('click', function(ev){
+            layer.confirm('是否删除商户?', {icon: 3, title:'删除商户'}, function(index){
+                  window.location.href=del_url+'?id='+$(ev.target).attr('data-value');
+                  layer.close(index);
+            });
+        });
+    ");
+?>

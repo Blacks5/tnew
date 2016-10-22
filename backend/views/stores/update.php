@@ -62,8 +62,8 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_addr')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_status')->dropDownList($store_status,['class'=>'form-control'])->label('状态'); ?>
             <?= $form->field($model, 's_province')->dropDownList($all_provinces, ['class'=>'form-control getpcc', 'data-id'=>2]); ?>
-            <?= $form->field($model, 's_city')->dropDownList([], ['class'=>'form-control getpcc', 'default-value'=>$model->s_city]); ?>
-            <?= $form->field($model, 's_county')->dropDownList([], ['class'=>'form-control getpcc', 'default-value'=>$model->s_county]); ?>
+            <?= $form->field($model, 's_city')->dropDownList($all_citys, ['class'=>'form-control getpcc', 'default-value'=>$model->s_city]); ?>
+            <?= $form->field($model, 's_county')->dropDownList($all_countys, ['class'=>'form-control getpcc', 'default-value'=>$model->s_county]); ?>
             <?= $form->field($model, 's_remark')->textarea(['class'=>'form-control']); ?>
 
             <?= $form->field($model, 's_photo_one')->hiddenInput(['class'=>'form-control'])->label('');; ?>
@@ -170,24 +170,6 @@ $t = new \common\models\UploadFile();
         </div>
     </div>
 <?php ActiveForm::end(); ?>
-<script>
- /*   var test1 = {
-        ajax: '/tools/get-pcc',
-        select: '#stores-s_city',
-        defVal: [5, 256, 257],
-        dataReader: {name:'region_name', callcode:'region_id'}
-    };
-    var linkageSel = new LinkageSel(test1);*/
-//    setTimeout(function(){
-//        $('#stores-s_city').addClass('getpcc');
-////        $('#stores-s_county').addClass('getpcc');
-//    }, 1000);
-//    setTimeout(function(){
-////        $('#stores-s_city').addClass('getpcc');
-//        $('#stores-s_county').addClass('getpcc');
-//    }, 2000);
-
-</script>
 <script src="/statics/plugins/layer/layer.js"></script>
 <script src="/statics/plugins/puupload/plupload.full.min.js"></script>
 
@@ -264,3 +246,41 @@ $t = new \common\models\UploadFile();
     loadinit('four');
     loadinit('five');
 </script>
+<?php
+$this->registerJs('
+    var url = "'.\yii\helpers\Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
+
+
+    // 省变化
+    $("#stores-s_province").change(function(){
+        var province_id = $(this).val();
+        $.get(url, {p_id:province_id}, function(data){
+            var dom  = createDom(data);
+            $("#stores-s_city").html(dom);
+
+            $("#stores-s_city").trigger("change");
+        });
+    });
+
+    // 市变化
+    $("#stores-s_city").change(function(){
+        var city_id = $(this).val();
+        $.get(url, {p_id:city_id}, function(data){
+            var dom  = createDom(data);
+            $("#stores-s_county").html(dom);
+        });
+    });
+
+    // 专业造dom
+    function createDom(data){
+        var dom = "";
+        $.each(data, function (k, v) {
+            dom += "<option  value="+k+">"+v+"</option>";
+        })
+        return dom;
+    }
+
+    // 初始化
+//    $("#stores-s_province").trigger("change");
+ ');
+?>
