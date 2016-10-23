@@ -7,8 +7,9 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace common\helper;
-use api\components\CustomCommonException;
+namespace common\models;
+
+use common\components\CustomCommonException;
 use common\models\Orders;
 use common\models\Product;
 use common\models\Repayment;
@@ -87,7 +88,7 @@ class CalInterest
             }
             // 插入的条数与期数不同就回滚
             if(Yii::$app->db->createCommand()->batchInsert(Repayment::tableName(), $columns, $data)->execute() != $order_info['p_period']){
-                throw new ('还款计划生成错误，请重试');
+                throw new CustomCommonException('还款计划生成错误，请重试');
             }
             $attrs = [
                 'o_operator_id'=>$userinfo->id, 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'],

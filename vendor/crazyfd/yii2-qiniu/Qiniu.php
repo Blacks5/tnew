@@ -288,6 +288,7 @@ class Qiniu
     {
 //         $url = "http://{$this->domain}/{$key}";
     	$url = rtrim($this->domain,'/')."/{$key}";
+        $url = "http://{$this->domain}/{$key}";
         return $url;
     }
 

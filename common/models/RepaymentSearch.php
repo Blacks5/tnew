@@ -6,11 +6,11 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace app\models;
+namespace common\models;
 
 use yii;
-use app\core\base\BaseModel;
-class RepaymentSearch extends BaseModel
+use backend\core\CoreBackendModel;
+class RepaymentSearch extends CoreBackendModel
 {
     public $c_customer_name;
     public $c_customer_id_card;

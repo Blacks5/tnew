@@ -31,19 +31,19 @@ $this->params['breadcrumbs'][] = $this->title;
 <!--                    <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_name]" placeholder="客户姓名" value="<?php echo $sear['customer_name'];  ?>" class="input form-control">
+                            <input type="text" name="OrdersSearch[customer_name]" placeholder="客户姓名" value="<?php echo 1;/*$sear['customer_name']*/;  ?>" class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_cellphone]" value="<?php echo $sear['customer_cellphone'];  ?>" placeholder="客户电话" class="input form-control">
+                            <input type="text" name="OrdersSearch[customer_cellphone]" value="<?php echo 1//$sear['customer_cellphone'];  ?>" placeholder="客户电话" class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[product_name]" value="<?php echo $sear['product_name'];  ?>" placeholder="产品名" class="input form-control">
+                            <input type="text" name="OrdersSearch[product_name]" value="<?php echo 1//$sear['product_name'];  ?>" placeholder="产品名" class="input form-control">
                         </div>
                         <div class="col-sm-4">
                             <div class="input-daterange input-group" id="datepicker">
-                                <input type="text" class="form-control" name="OrdersSearch[start_time]" value="<?= $sear['start_time'];?>" placeholder="开始时间">
+                                <input type="text" class="form-control" name="OrdersSearch[start_time]" value="<?= 1//$sear['start_time'];?>" placeholder="开始时间">
                                 <span class="input-group-addon ">到</span>
-                                <input type="text" class="form-control" name="OrdersSearch[end_time]" value="<?= $sear['end_time'];?>" placeholder="结束时间">
+                                <input type="text" class="form-control" name="OrdersSearch[end_time]" value="<?= 1//$sear['end_time'];?>" placeholder="结束时间">
                             </div>
                         </div>
                         <div  class="col-sm-1">
@@ -64,8 +64,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <th class="client-avatar">订单编号</th>
                                                     <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
                                                     <th>客户电话</th>
-                                                    <th>产品名</th>
-                                                    <th class="client-status">期数</th>
+                                                    <!--<th>产品名</th>-->
+                                                    <!--<th class="client-status">期数</th>-->
                                                     <th>总金额</th>
                                                     <th>贷款金额</th>
                                                     <th>借款次数</th>
@@ -82,16 +82,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td class="client-avatar"><?= $_v['o_serial_id'] ?></td>
                                                     <td><?= $_v['c_customer_name'] ?></td>
                                                     <td><?= $_v['c_customer_cellphone']?></td>
-                                                    <td><?= $_v['p_name']?></td>
-                                                    <td class="client-status"><?= $_v['p_period'];?></td>
+                                                    <!--<td><?/*= $_v['p_name']*/?></td>-->
+                                                    <!--<td class="client-status"><?/*= $_v['p_period'];*/?></td>-->
                                                     <td class="client-status"><?= $_v['o_total_price']+0;?>元</td>
                                                     <td class="client-status"><?= $_v['o_total_price']-$_v['o_total_deposit'];?>元</td>
                                                     <td class="client-status"><?= $_v['c_total_borrow_times'];?>次</td>
                                                     <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
                                                     <td>
                                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
-                                                           class="btn btn-primary btn-xs">详情</a>
-                                                        <a class="btn btn-danger btn-xs" href="javascript:revoke(<?= $_v['o_id']; ?>)">撤销订单</a>
+                                                           class="button">详情</a>
+                                                        <a class="button" href="javascript:revoke(<?= $_v['o_id']; ?>)">撤销订单</a>
                                                     </td>
                                                 </tr>
                                          <?php }?>

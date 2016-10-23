@@ -170,8 +170,8 @@ $t = new \common\models\UploadFile();
         </div>
     </div>
 <?php ActiveForm::end(); ?>
-<script src="/statics/plugins/layer/layer.js"></script>
-<script src="/statics/plugins/puupload/plupload.full.min.js"></script>
+<?= \yii\bootstrap\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
+<?=\yii\bootstrap\Html::jsFile('@web/js/plugins/puupload/plupload.full.min.js')?>
 
 <script>
     function loadinit($name){
@@ -186,7 +186,7 @@ $t = new \common\models\UploadFile();
                 ]
             },
             multipart_params: {
-                _csrf: '<?= Yii::$app->getRequest()->getCsrfToken(); ?>'
+                '_csrf-backend': '<?= Yii::$app->getRequest()->getCsrfToken(); ?>'
             }
         });
         uploader.init(); //初始化
