@@ -76,6 +76,7 @@ class Menu extends \yii\db\ActiveRecord
             $Permission += $auth->getPermissionsByRole($vo->name);
         }
         // 没有任何权限就返回空数组
+//        p($Permission);
         $menu = [];
         if($Permission) {
             $RolesList = '';

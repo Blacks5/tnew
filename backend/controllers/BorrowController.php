@@ -22,7 +22,7 @@ class BorrowController extends CoreBackendController
 {
     public function actionIndex()
     {
-        echo '12';
+        echo '父菜单用';
     }
 
     // 列表 待审核
