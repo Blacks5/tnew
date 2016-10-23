@@ -70,16 +70,14 @@ class Menu extends \yii\db\ActiveRecord
         $uid = Yii::$app->user->identity->getId();
         $auth = Yii::$app->getAuthManager();
         $Roles = $auth->getRolesByUser($uid);
-
-        $name = ''; // 整个默认值
+        $Permission = [];
         foreach($Roles as $vo){
-            $name = $vo->name;
+//            $name = $vo->name;
+            $Permission += $auth->getPermissionsByRole($vo->name);
         }
-//        p($Roles, $name);
         // 没有任何权限就返回空数组
         $menu = [];
-        if($Permission = $auth->getPermissionsByRole($name)) {
-//            p($Permission);
+        if($Permission) {
             $RolesList = '';
             foreach ($Permission as $vo) {
                 $RolesList .= "'" . $vo->name . "',";
@@ -88,7 +86,6 @@ class Menu extends \yii\db\ActiveRecord
             $menu = Yii::$app->db->createCommand("SELECT * FROM `menu` WHERE route IN ($RolesList)  ORDER BY `order` ASC")->queryAll();
             $menu = self::list_to_tree2($menu, 'id', 'parent');
         }
-//        p($menu);
         return $menu;
     }
 

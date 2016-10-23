@@ -62,8 +62,8 @@ class SiteController extends CoreBackendController
         $menu = new Menu();
 //        p($user_id, $user_info);
         $menu = $menu->getLeftMenuList();
-        /*echo '<pre>';
-        var_dump($menu);die;*/
+//        echo '<pre>';
+//        var_dump($menu);die;
         return $this->render('index',[
             'menu' => $menu,
             'user_info' => key($user_info)
