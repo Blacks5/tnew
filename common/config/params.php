@@ -4,7 +4,7 @@ return [
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
 
-    'page_size'=>5, // Android 列表
+    'page_size'=>2, // Android 列表
 
     // 违约金每天5块
     'overdue_money_everyday'=>5,

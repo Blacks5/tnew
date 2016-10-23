@@ -7,12 +7,12 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 
-namespace app\models;
+namespace common\models;
 
 use yii;
-use app\core\base\BaseModel;
+use common\core\CoreCommonModel;
 
-class OrdersSearch extends BaseModel
+class OrdersSearch extends CoreCommonModel
 {
 
     /*public function scenarios()
