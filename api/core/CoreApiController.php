@@ -10,9 +10,9 @@ namespace api\core;
 
 use api\components\AuthApi;
 use yii;
-use common\core\CoreCommonController;
+use yii\rest\Controller;
 
-class CoreApiController extends CoreCommonController
+class CoreApiController extends Controller
 {
     // 关闭csrf验证
 //    public $enableCsrfValidation = false;

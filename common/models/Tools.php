@@ -10,7 +10,6 @@
 namespace common\models;
 
 
-use app\models\OrderSerial;
 
 class Tools
 {

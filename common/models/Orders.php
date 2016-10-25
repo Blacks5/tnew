@@ -69,8 +69,8 @@ class Orders extends CoreCommonActiveRecord
 
             [['o_status', 'o_images_id', 'o_remark', 'o_operator_id', 'o_operator_realname', 'o_operator_date', 'o_user_id', 'o_operator_remark'], 'safe'],
 
-            [['o_product_id'], 'exist', 'targetClass'=>'app\models\Product', 'targetAttribute'=>'p_id', 'message'=>'产品不存在'],
-            [['o_store_id'], 'exist', 'targetClass'=>'app\models\Stores', 'targetAttribute'=>'s_id', 'message'=>'商户不存在'],
+            [['o_product_id'], 'exist', 'targetClass'=>'common\models\Product', 'targetAttribute'=>'p_id', 'message'=>'产品不存在'],
+            [['o_store_id'], 'exist', 'targetClass'=>'common\models\Stores', 'targetAttribute'=>'s_id', 'message'=>'商户不存在'],
 
             [['o_is_add_service_fee', 'o_is_free_pack_fee'], 'in', 'range'=>[1,0]]
         ];

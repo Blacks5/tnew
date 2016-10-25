@@ -9,11 +9,16 @@
 namespace api\controllers;
 
 use yii;
-use common\core\CoreCommonController;
+use yii\rest\Controller;
 use common\models\LoginForm;
 
-
-class LoginController extends CoreCommonController
+/**
+ * 登录控制器，不要判断登录，和其他控制器集成的父类不同
+ * Class LoginController
+ * @package api\controllers
+ * @author 涂鸿 <hayto@foxmail.com>
+ */
+class LoginController extends Controller
 {
     public $enableCsrfValidation = false;
     /**

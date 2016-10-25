@@ -14,9 +14,9 @@ use common\models\Sms;
 use common\models\Tools;
 use common\models\Customer;
 use common\models\Goods;
-use app\models\OrderImages;
 use common\models\Orders;
 use yii\base\Exception;
+use common\models\OrderImages;
 
 class OrdersHelper
 {
