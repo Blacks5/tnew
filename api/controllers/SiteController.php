@@ -40,7 +40,7 @@ class SiteController extends CoreApiController
      * 安卓端登录
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionLogin()
+    /*public function actionLogin()
     {
         $request = Yii::$app->getRequest();
         $username = $request->post('username');
@@ -61,7 +61,7 @@ class SiteController extends CoreApiController
             return ['status'=>1, 'message'=>'登录成功', 'data'=>$data];
         }
         return ['status'=>0, 'message'=>'登录异常', 'data'=>[]];
-    }
+    }*/
     /**
      * Displays homepage.
      *

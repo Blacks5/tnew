@@ -49,4 +49,65 @@ class Helper
     {
         return (new Query())->select(['region_name'])->from(TooRegion::tableName())->where(['region_id' => $id])->scalar();
     }
+
+    /**
+     * 通过id获取银行名
+     * @param $id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getBankNameById($id)
+    {
+        return array_column(\Yii::$app->params['bank_list'], 'bank_name', 'bank_id')[$id];
+    }
+
+    /**
+     * 获取婚姻状态字符串
+     * @param $id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getMaritalStatusString($id)
+    {
+        return array_column(\Yii::$app->params['marital_status'], 'marital_str', 'marital_id')[$id];
+    }
+
+
+    /**
+     * 获取住房情况
+     * @param $id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getHouseInfoString($id)
+    {
+        return array_column(\Yii::$app->params['house_info'], 'house_info_str', 'house_info_id')[$id];
+    }
+
+    /**
+     * 亲人关系
+     * @param $id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getKindShipString($id)
+    {
+        return array_column(\Yii::$app->params['kinship'], 'kinship_str', 'kinship_id')[$id];
+    }
+
+
+    /**
+     * 公司所在行业
+     * @param $id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getCompanyIndustryString($id)
+    {
+        return array_column(\Yii::$app->params['company_kind'], 'company_kind_name', 'company_kind_id')[$id];
+    }
+    public static function getCompanyTypeString($id)
+    {
+        return array_column(\Yii::$app->params['company_type'], 'company_type_name', 'company_type_id')[$id];
+    }
 }

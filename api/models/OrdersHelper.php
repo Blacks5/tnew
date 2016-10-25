@@ -88,9 +88,10 @@ class OrdersHelper
             }else{
                 $customerModel = new Customer();
             }
+//            p($data['data']);
             $customerModel->load($data, 'data');
             if(!$customerModel->validate()){
-                p($customerModel->errors);
+                p(1, $customerModel->errors);
                 throw new CustomApiException('customer-errors');
             }
             $customerModel->c_total_money = $total_price;//
