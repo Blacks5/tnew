@@ -31,7 +31,7 @@ class BorrowController extends CoreBackendController
         $this->getView()->title = '待审核列表';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
-        $query = $query->andWhere(['o_status'=>Orders::STATUS_WAIT_CHECK]);
+        $query = $query->andWhere(['o_status' => Orders::STATUS_WAIT_CHECK]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = 10;//Yii::$app->params['page_size'];
@@ -40,7 +40,7 @@ class BorrowController extends CoreBackendController
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages'=>$pages
+            'pages' => $pages
         ]);
     }
 
@@ -64,7 +64,7 @@ class BorrowController extends CoreBackendController
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages'=>$pages
+            'pages' => $pages
         ]);
     }
 
@@ -87,13 +87,9 @@ class BorrowController extends CoreBackendController
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages'=>$pages
+            'pages' => $pages
         ]);
     }
-
-
-
-
 
 
     /**
@@ -104,8 +100,8 @@ class BorrowController extends CoreBackendController
      */
     public function actionView($order_id)
     {
-        if($model = Orders::getOne($order_id)){
-            return $this->render('view', ['model'=>$model]);
+        if ($model = Orders::getOne($order_id)) {
+            return $this->render('view', ['model' => $model]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -114,18 +110,21 @@ class BorrowController extends CoreBackendController
     public function actionVeriftPass($order_id)
     {
 // 审核通过 10. 增加逾期还款列表: 自动计算滞纳金.
-        $resq = Yii::$app->getRequest();
-        if($resq->getIsAjax()){
-            Yii::$app->getResponse()->format = 'json';
-            try {
-                CalInterest::genRefundPlan($order_id);
-                return ['status' => 1, 'message' => '审核通过，已生成还款计划'];
-            }catch(CustomCommonException $e){
-                return ['status' => 0, 'message' => $e->getMessage()];
-            }catch(yii\base\Exception $e){
-                return ['status' => 0, 'message' => '系统错误'];
-            }
+//        $resq = Yii::$app->getRequest();
+//        if($resq->getIsAjax()){
+//            Yii::$app->getResponse()->format = 'json';
+        try {
+            CalInterest::genRefundPlan($order_id);
+            return $this->success('审核通过，已生成还款计划', yii\helpers\Url::toRoute(['borrow/list-wait-verify']));
+//                return ['status' => 1, 'message' => '审核通过，已生成还款计划'];
+        } catch (CustomCommonException $e) {
+            return $this->error($e->getMessage());
+//                return ['status' => 0, 'message' => $e->getMessage()];
+        } catch (yii\base\Exception $e) {
+            return $this->error('系统错误');
+//                return ['status' => 0, 'message' => '系统错误'];
         }
+//        }
     }
 
     /**
@@ -139,36 +138,36 @@ class BorrowController extends CoreBackendController
     public function actionVeriftRefuse($o_id)
     {
         $resq = Yii::$app->getRequest();
-        if($resq->getIsPost()){
+        if ($resq->getIsPost()) {
 //            Yii::$app->getResponse()->format = 'json';
             $o_operator_remark = $resq->post('remark');
             $userinfo = Yii::$app->getUser()->getIdentity();
 
             $trans = Yii::$app->db->beginTransaction();
-            try{
-                if(is_null($o_operator_remark)){
+            try {
+                if (is_null($o_operator_remark)) {
                     throw new CustomBackendException('请填写拒绝原因');
                 }
 
-                $model = Orders::findBySql('select * from '.Orders::tableName(). ' where o_status=0 and o_id=:oid limit 1 for update', [':oid'=>$o_id])->one();
-                if($model){
+                $model = Orders::findBySql('select * from ' . Orders::tableName() . ' where o_status=0 and o_id=:oid limit 1 for update', [':oid' => $o_id])->one();
+                if ($model) {
                     $model->o_status = Orders::STATUS_REFUSE;
                     $model->o_operator_id = $userinfo->id;
                     $model->o_operator_realname = $userinfo->realname;
                     $model->o_operator_date = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
                     $model->o_operator_remark = $o_operator_remark;
-                    if(!$model->save(false)) throw new CustomBackendException('操作失败');
-                    Customer::updateAll(['c_is_forbidden'=>1, 'c_forbidden_time'=>strtotime('+3 months')], ['c_id'=>$model->o_customer_id]);
+                    if (!$model->save(false)) throw new CustomBackendException('操作失败');
+                    Customer::updateAll(['c_is_forbidden' => 1, 'c_forbidden_time' => strtotime('+3 months')], ['c_id' => $model->o_customer_id]);
                 }
 
                 $trans->commit();
                 return $this->success('拒绝成功');
 //                return ['status' => 1, 'message' => '拒绝成功'];
-            }catch(CustomBackendException $e){
+            } catch (CustomBackendException $e) {
                 $trans->rollBack();
                 return $this->error($e->getMessage());
 //                return ['status' => 0, 'message' => $e->getMessage()];
-            }catch(yii\base\Exception $e){
+            } catch (yii\base\Exception $e) {
                 $trans->rollBack();
                 return $this->error('审核异常');
 //                return ['status' => 0, 'message' => '审核异常'];
@@ -187,9 +186,9 @@ class BorrowController extends CoreBackendController
     public function actionVeriftCancel($order_id)
     {
 //        Yii::$app->getResponse()->format = 'json';
-        $order_model = Orders::findOne(['o_id'=>$order_id]);
+        $order_model = Orders::findOne(['o_id' => $order_id]);
         $order_model->o_status = Orders::STATUS_CANCEL;
-        if(!$order_model->save(false)){
+        if (!$order_model->save(false)) {
             return $this->error('取消失败');
 //            return ['status' => 0, 'message' => '取消失败'];
         }
@@ -217,13 +216,13 @@ class BorrowController extends CoreBackendController
                     throw new CustomBackendException('订单不存在');
                 }
                 $order_model->o_status = Orders::STATUS_REVOKE;
-                if(!$order_model->save(false)){
+                if (!$order_model->save(false)) {
                     throw new CustomBackendException('撤销订单失败');
                 }
                 $sql = 'select * from ' . Repayment::tableName() . ' where r_orders_id=:r_orders_id for update';
                 // 锁数据用
                 Repayment::findBySql($sql, [':r_orders_id' => $o_id])->all();
-                if (!Repayment::deleteAll(['r_orders_id'=>$o_id])) {
+                if (!Repayment::deleteAll(['r_orders_id' => $o_id])) {
                     throw new CustomBackendException('还款计划操作失败');
                 }
                 $trans->commit();
