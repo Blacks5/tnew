@@ -8,80 +8,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <link rel="stylesheet" href="/statics/css/style.min.css">
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
-<!--订单信息部分-->
-            <div class="form-group">
-                <div>
-                    <label class="col-sm-2 control-label">订单号：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['o_serial_id']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">使用产品：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_name']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">期数：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_period']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">月利率：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_month_rate']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">增值服务费：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_add_service_fee']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">随心包服务费：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_free_pack_fee']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">财务管理费：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_finance_mangemant_fee']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">客户管理费：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['p_customer_management']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">订单总价格：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['o_total_price']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">贷款总金额：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['o_total_price'] - $model['o_total_deposit']; ?></p>
-                    </div>
-                </div>
-                <div>
-                    <label class="col-sm-2 control-label">注释：</label>
-                    <div class="col-sm-2">
-                        <p class="form-control-static"><?= $model['o_remark']; ?></p>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="hr-line-dashed"></div>
-<!--客户信息部分-->
+        <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate" action="" method="post">
             <div class="form-group">
                 <div>
                     <label class="col-sm-2 control-label">客户姓名：</label>
@@ -217,11 +144,61 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="hr-line-dashed"></div>
 
 
+            <div class="form-group">
+                <div>
+                    <label class="col-sm-2 control-label">使用产品：</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static"><?= $model['p_name']; ?></p>
+                    </div>
+                </div>
+                <div>
+                    <label class="col-sm-2 control-label">借款金额：</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static"><?= $model['o_total_price']; ?></p>
+                    </div>
+                </div>
+                <div>
+                    <label class="col-sm-2 control-label">使用产品：</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static"><?= $model['p_name']; ?></p>
+                    </div>
+                </div>
+                <div>
+                    <label class="col-sm-2 control-label">借款金额：</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static"><?= $model['o_total_price']; ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
 
 
+            <div class="hr-line-dashed"></div>
+            <div class="form-group">
+                <div>
+                    <label class="col-sm-3 control-label">首付金额：</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static"><?= $model['o_total_deposit']; ?></p>
+                    </div>
+                </div>
+                <div>
+                    <label class="col-sm-3 text-right">订单状态：</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static label label-warning"><?= \common\models\Orders::getAllStatus()[$model['o_status']]; ?></p>
+                    </div>
+                </div>
+            </div>
 
 
+            <div class="hr-line-dashed"></div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">sa注释：</label>
+                <div class="col-sm-2">
+                    <p class="form-control-static"><?= $model['o_remark']; ?></p>
+                </div>
+            </div>
             <?php if((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK){ ?>
+                <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-8 col-sm-offset-3">
                         <button class="btn btn-success" onclick="verify()">通过</button>

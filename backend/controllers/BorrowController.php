@@ -22,13 +22,26 @@ class BorrowController extends CoreBackendController
 {
     public function actionIndex()
     {
-        echo '父菜单用';
+        echo '父菜单';
     }
 
     // 列表 待审核
     public function actionListWaitVerify()
     {
-
+        $this->getView()->title = '待审核列表';
+        $model = new OrdersSearch();
+        $query = $model->search(Yii::$app->getRequest()->getQueryParams());
+        $query = $query->andWhere(['o_status'=>Orders::STATUS_WAIT_CHECK]);
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        return $this->render('listwaitverify', [
+            'sear' => $model->getAttributes(),
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages'=>$pages
+        ]);
     }
 
     /**

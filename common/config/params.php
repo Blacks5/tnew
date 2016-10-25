@@ -61,15 +61,17 @@ return [
 
     // 公司性质
     'company_type'=>[
-        ['comppany_type_id'=>1, 'comppany_type_name'=>'个体'],
-        ['comppany_type_id'=>2, 'comppany_type_name'=>'国企'],
-        ['comppany_type_id'=>3, 'comppany_type_name'=>'上市公司'],
+        ['company_type_id'=>1, 'company_type_name'=>'个体'],
+        ['company_type_id'=>2, 'company_type_name'=>'国企'],
+        ['company_type_id'=>3, 'company_type_name'=>'上市公司'],
     ],
 
     // 所属行业
     'company_kind'=>[
-        ['comppany_kind_id'=>1, 'comppany_kind_name'=>'美容美发'],
-        ['comppany_kind_id'=>2, 'comppany_kind_name'=>'餐饮娱乐'],
-        ['comppany_kind_id'=>3, 'comppany_kind_name'=>'机械行业'],
+        ['company_kind_id'=>1, 'company_kind_name'=>'美容美发'],
+        ['company_kind_id'=>2, 'company_kind_name'=>'餐饮娱乐'],
+        ['company_kind_id'=>3, 'company_kind_name'=>'游戏行业'],
+        ['company_kind_id'=>4, 'company_kind_name'=>'金融行业'],
+        ['company_kind_id'=>5, 'company_kind_name'=>'软件行业'],
     ]
 ];

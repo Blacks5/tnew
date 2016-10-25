@@ -95,16 +95,25 @@ class Orders extends CoreCommonActiveRecord
         ];
     }
 
+    /**
+     * 取一个完整的借款 包含 product，customer，order
+     * @param $order_id
+     * @return array|null|\yii\db\ActiveRecord
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public static function getOne($order_id)
     {
-        $select = ['*'];
-        $data = self::find()->alias('orders')->select($select)
-            ->leftJoin(Product::tableName(). ' product', 'product.p_id=orders.o_product_id') // 关联产品
-            ->leftJoin(Customer::tableName(). ' customer', 'customer.c_id=orders.o_customer_id') // 关联客户->where([''])
-            ->leftJoin(Repayment::tableName(), 'repayment.r_orders_id=orders.o_id')//关联还款
-            ->where(['orders.o_id'=>$order_id])
-            ->asArray()->one();
-        return $data;
+        return self::find()->select('*')->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
+            ->leftJoin(Product::tableName(), 'p_id=o_product_id')
+            ->where('o_id=:o_id', [':o_id'=>$order_id])->asArray()->one();
+//        $select = ['*'];
+//        $data = self::find()->alias('orders')->select($select)
+//            ->leftJoin(Product::tableName(). ' product', 'product.p_id=orders.o_product_id') // 关联产品
+//            ->leftJoin(Customer::tableName(). ' customer', 'customer.c_id=orders.o_customer_id') // 关联客户->where([''])
+//            ->leftJoin(Repayment::tableName(), 'repayment.r_orders_id=orders.o_id')//关联还款
+//            ->where(['orders.o_id'=>$order_id])
+//            ->asArray()->one();
+//        return $data;
     }
 
 }
