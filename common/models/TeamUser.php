@@ -1,9 +1,9 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
 use Yii;
-
+use common\core\CoreCommonActiveRecord;
 /**
  * This is the model class for table "team_user".
  *
@@ -11,7 +11,7 @@ use Yii;
  * @property integer $tu_tid
  * @property integer $tu_sale_id
  */
-class TeamUser extends \app\core\base\BaseActiveRecord
+class TeamUser extends CoreCommonActiveRecord
 {
     /**
      * @inheritdoc

@@ -56,12 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= $_v['d_name'] ?></td>
                                     <td>
                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['department/view-department', 'd_id' => $_v['d_id']]); ?>"
-                                           class="button">详情</a>
+                                           class="btn btn-primary btn-xs">详情</a>
                                         <!--<a class="button" href="<? /*= Yii::$app->getUrlManager()->createUrl(['department/create-job','d_id'=>$_v['d_id']]); */
                                         ?>">添加职位</a>-->
-                                        <a class="button"
+                                        <a class="btn btn-primary btn-xs"
                                            href="<?= Yii::$app->getUrlManager()->createUrl(['department/update-department', 'd_id' => $_v['d_id']]); ?>">编辑</a>
-                                        <a class="button"
+                                        <a class="btn btn-danger btn-xs"
                                            href="javascript:del('<?= $_v['d_name'] ?>', <?= $_v['d_id'] ?>)">删除</a>
                                     </td>
                                 </tr>

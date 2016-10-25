@@ -1,9 +1,9 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
 use Yii;
-
+use common\core\CoreCommonActiveRecord;
 /**
  * This is the model class for table "team".
  *
@@ -13,7 +13,7 @@ use Yii;
  * @property integer $t_city
  * @property integer $t_county
  */
-class Team extends \app\core\base\BaseActiveRecord
+class Team extends CoreCommonActiveRecord
 {
     /**
      * @inheritdoc
@@ -29,9 +29,9 @@ class Team extends \app\core\base\BaseActiveRecord
     public function rules()
     {
         return [
-            [['t_name', 't_province', 't_city', 't_county'], 'required'],
+            [['t_name', 't_province', 't_city', 't_county'], 'required', 'except' => 'search'],
             [['t_province', 't_city', 't_county'], 'integer'],
-            [['t_name'], 'string', 'max' => 10],
+            [['t_name'], 'string', 'max' => 10]
         ];
     }
 
@@ -77,5 +77,25 @@ class Team extends \app\core\base\BaseActiveRecord
             return null;
         }
         return $this->save(false) ? $this : null;
+    }
+
+    public function scenarios()
+    {
+        $scen = parent::scenarios();
+        $scen['search'] = ['t_name'];
+        return $scen;
+    }
+
+    public function search($param)
+    {
+        $this->setScenario('search');
+        $this->load($param);
+        $query = self::find()->where('t_id > 0');
+        if (!$this->validate()) {
+            return $query->where('1=2');
+        }
+
+        $query->andFilterWhere(['like', 't_name', $this->t_name]);
+        return $query;
     }
 }
