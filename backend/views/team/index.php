@@ -67,11 +67,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                class="client-link"><?= $_v['t_name'] ?></a></td>
                                                         <td>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/view', 't_id' => $_v['t_id']]); ?>"
-                                                               class="btn btn-primary btn-xs">详情</a>
+                                                               class="btn btn-primary btn-xs"><i
+                                                                    class="fa fa-folder"></i> 详情</a>
                                                             <a class="btn btn-primary btn-xs"
-                                                               href="<?= Yii::$app->getUrlManager()->createUrl(['team/update', 't_id' => $_v['t_id']]); ?>">编辑</a>
+                                                               href="<?= Yii::$app->getUrlManager()->createUrl(['team/update', 't_id' => $_v['t_id']]); ?>"><i
+                                                                    class="fa fa-pencil"></i> 编辑</a>
                                                             <a class="btn btn-danger btn-xs"
-                                                               href="javascript:del('<?= $_v['t_name'] ?>', <?= $_v['t_id'] ?>)">删除</a>
+                                                               href="javascript:del('<?= $_v['t_name'] ?>', <?= $_v['t_id'] ?>)"><i
+                                                                    class="fa fa-close"></i> 删除</a>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>

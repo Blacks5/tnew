@@ -90,8 +90,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
                                                     <td>
                                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
-                                                           class="button">详情</a>
-                                                        <a class="button" href="javascript:revoke(<?= $_v['o_id']; ?>)">撤销订单</a>
+                                                           class="btn btn-primary btn-xs"><i class="fa fa-folder"></i>
+                                                            详情</a>
+                                                        <a class="btn btn-warning btn-xs"
+                                                           href="javascript:revoke(<?= $_v['o_id']; ?>)"><i
+                                                                class="fa fa-mail-reply"></i> 撤销订单</a>
                                                     </td>
                                                 </tr>
                                          <?php }?>

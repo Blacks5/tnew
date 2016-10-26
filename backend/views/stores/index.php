@@ -89,13 +89,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['s_created_at']) ?></td>
                                                         <td>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/allorders', 'id' => $_v['s_id']]); ?>"
-                                                               class="btn btn-primary btn-xs">订单</a>
+                                                               class="btn btn-primary btn-xs"><i
+                                                                    class="fa fa-cart-plus"></i> 订单</a>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/view', 'id' => $_v['s_id']]); ?>"
-                                                               class="btn btn-primary btn-xs">详情</a>
+                                                               class="btn btn-primary btn-xs"><i
+                                                                    class="fa fa-folder"></i> 详情</a>
                                                             <a class="btn-xs btn btn-primary"
-                                                               href="<?= Yii::$app->getUrlManager()->createUrl(['stores/update', 'id' => $_v['s_id']]); ?>">编辑</a>
+                                                               href="<?= Yii::$app->getUrlManager()->createUrl(['stores/update', 'id' => $_v['s_id']]); ?>"><i
+                                                                    class="fa fa-edit"></i> 编辑</a>
                                                             <button class="btn-xs btn btn-danger del-stores"
-                                                                    data-value="<?= $_v['s_id'] ?>">删除</button>
+                                                                    data-value="<?= $_v['s_id'] ?>"><i
+                                                                    class="fa fa-close"></i> 删除
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
