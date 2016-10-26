@@ -33,10 +33,12 @@ class Orders extends CoreCommonActiveRecord
     const STATUS_NOT_COMPLETE = 2; // 不完整
     const STATUS_REFUSE = 1; // 拒绝
     const STATUS_WAIT_CHECK = 0; // 待审核
+    const STATUS_WAIT_CHECK_AGAIN = 6; // 待二审
     const STATUS_PAYING = 10; // 还款中
     const STATUS_PAY_OVER = 5; // 还款中
     const STATUS_CANCEL = 4; // 取消
     const STATUS_REVOKE = 3; // 还款中
+
     /**
      * @inheritdoc
      */
@@ -48,6 +50,7 @@ class Orders extends CoreCommonActiveRecord
     {
         return [
             self::STATUS_WAIT_CHECK=>'待审核',
+            self::STATUS_WAIT_CHECK_AGAIN=>'待二审',
             self::STATUS_REFUSE=>'已拒绝',
             self::STATUS_PAYING=>'还款中',
             self::STATUS_PAY_OVER=>'已还清',

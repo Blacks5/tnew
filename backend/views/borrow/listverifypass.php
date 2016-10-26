@@ -1,22 +1,13 @@
 <?php
 
-use yii\helpers\Html;
-//use yii\grid\GridView;
-use kartik\grid\GridView;
-use yii\widgets\Pjax;
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\UserSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-//app\assets\LayerAsset::register($this);
-//app\assets\MainAsset::register($this);
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<!--<link rel="stylesheet" href="/statics/css/animate.min.css">-->
 <link rel="stylesheet" href="/statics/css/style.min.css">
 
+
+
 <div class="">
+
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox">
@@ -91,6 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td>
                                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
                                                            class="btn btn-primary btn-xs">详情</a>
+                                                        <a class="btn btn-danger btn-xs" href="javascript:revoke(<?= $_v['o_id']; ?>)">撤销订单</a>
                                                     </td>
                                                 </tr>
                                          <?php }?>

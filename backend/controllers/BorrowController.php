@@ -75,15 +75,15 @@ class BorrowController extends CoreBackendController
      */
     public function actionListVeriftPass()
     {
-        $this->getView()->title = '借款通过列表';
+        $this->getView()->title = '已通过列表';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_PAYING]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = Yii::$app->params['page_size'];
+        $pages->pageSize = 10;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        return $this->render('index', [
+        return $this->render('listverifypass', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
@@ -106,28 +106,96 @@ class BorrowController extends CoreBackendController
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
 
-    // 审核通过
-    public function actionVeriftPass($order_id)
+    /**
+     * 初审通过
+     * @param $order_id
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionVerifyPassFirst($order_id)
     {
-// 审核通过 10. 增加逾期还款列表: 自动计算滞纳金.
-//        $resq = Yii::$app->getRequest();
-//        if($resq->getIsAjax()){
-//            Yii::$app->getResponse()->format = 'json';
-        try {
-            CalInterest::genRefundPlan($order_id);
-            return $this->success('审核通过，已生成还款计划', yii\helpers\Url::toRoute(['borrow/list-wait-verify']));
-//                return ['status' => 1, 'message' => '审核通过，已生成还款计划'];
-        } catch (CustomCommonException $e) {
-            return $this->error($e->getMessage());
-//                return ['status' => 0, 'message' => $e->getMessage()];
-        } catch (yii\base\Exception $e) {
-            return $this->error('系统错误');
-//                return ['status' => 0, 'message' => '系统错误'];
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_operator_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+
+                /* 初审通过可以不写备注
+                 * if (empty($o_operator_remark)) {
+                    throw new CustomBackendException('请填写原因', 0);
+                }*/
+
+                // 初审0 二审6 都可以取消
+                if (!$model = Orders::find()->where(['o_status' => Orders::STATUS_WAIT_CHECK, 'o_id' => $order_id])->one()) {
+                    throw new CustomBackendException('订单状态已经改变，不可审核！', 4);
+                }
+                $model->o_status = Orders::STATUS_WAIT_CHECK_AGAIN;
+                $model->o_operator_id = $userinfo->id;
+                $model->o_operator_realname = $userinfo->realname;
+                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
+                $model->o_operator_remark = $o_operator_remark;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+                return ['status' => 1, 'message' => '初审订单通过成功，等待上次客户合同图片'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
         }
-//        }
     }
 
     /**
+     * 二审通过+生成还款计划
+     * @param $order_id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionVerifyPass($order_id)
+    {
+// 审核通过 10. 增加逾期还款列表: 自动计算滞纳金.
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            $trans = Yii::$app->db->beginTransaction();
+            try {
+
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_operator_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                // 状态必须为6（初审通过）的才可以终审
+                if(!$model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id'=>$order_id])->one()){
+                    throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
+                }
+                $model->o_status = Orders::STATUS_REFUSE;
+                $model->o_operator_id = $userinfo->id;
+                $model->o_operator_realname = $userinfo->realname;
+                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
+                $model->o_operator_remark = $o_operator_remark;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+
+                // 生成还款计划
+                CalInterest::genRefundPlan($order_id);
+
+                $trans->commit();
+                return ['status' => 1, 'message' => '终审并放款成功，已生成还款计划！'];
+            } catch (CustomBackendException $e) {
+                $trans->rollBack();
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                $trans->rollBack();
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    /**
+     * 拒绝
      * 取消和拒绝的区别: 取消可以重提, 拒绝后该身份证三个月内都不能再提.
      * 1，锁定订单。2，修改客户信息，3，修改订单信息
      * @param $o_id
@@ -135,65 +203,77 @@ class BorrowController extends CoreBackendController
      * @throws yii\db\Exception
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionVeriftRefuse($o_id)
+    public function actionVerifyRefuse($order_id)
     {
-        $resq = Yii::$app->getRequest();
-        if ($resq->getIsPost()) {
-//            Yii::$app->getResponse()->format = 'json';
-            $o_operator_remark = $resq->post('remark');
-            $userinfo = Yii::$app->getUser()->getIdentity();
-
-            $trans = Yii::$app->db->beginTransaction();
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
             try {
-                if (is_null($o_operator_remark)) {
-                    throw new CustomBackendException('请填写拒绝原因');
-                }
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
-                $model = Orders::findBySql('select * from ' . Orders::tableName() . ' where o_status=0 and o_id=:oid limit 1 for update', [':oid' => $o_id])->one();
-                if ($model) {
-                    $model->o_status = Orders::STATUS_REFUSE;
-                    $model->o_operator_id = $userinfo->id;
-                    $model->o_operator_realname = $userinfo->realname;
-                    $model->o_operator_date = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-                    $model->o_operator_remark = $o_operator_remark;
-                    if (!$model->save(false)) throw new CustomBackendException('操作失败');
-                    Customer::updateAll(['c_is_forbidden' => 1, 'c_forbidden_time' => strtotime('+3 months')], ['c_id' => $model->o_customer_id]);
+                $o_operator_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                if (empty($o_operator_remark)) {
+                    throw new CustomBackendException('请填写拒绝原因', 0);
                 }
-
-                $trans->commit();
-                return $this->success('拒绝成功');
-//                return ['status' => 1, 'message' => '拒绝成功'];
+                // 初审0 二审6 都可以取消
+                if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
+                    throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
+                }
+                $model->o_status = Orders::STATUS_REFUSE;
+                $model->o_operator_id = $userinfo->id;
+                $model->o_operator_realname = $userinfo->realname;
+                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
+                $model->o_operator_remark = $o_operator_remark;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+                return ['status' => 1, 'message' => '拒绝订单成功，该客户三个月不能再次申请借款'];
             } catch (CustomBackendException $e) {
-                $trans->rollBack();
-                return $this->error($e->getMessage());
-//                return ['status' => 0, 'message' => $e->getMessage()];
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
-                $trans->rollBack();
-                return $this->error('审核异常');
-//                return ['status' => 0, 'message' => '审核异常'];
+                return ['status' => 2, 'message' => '系统错误'];
             }
         }
-
-        return $this->error('操作失败');
     }
 
     /**
+     * 取消
      * 取消和拒绝的区别: 取消可以重提, 拒绝后该身份证三个月内都不能再提.
      * @param $order_id
      * @return mixed
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionVeriftCancel($order_id)
+    public function actionVerifyCancel($order_id)
     {
-//        Yii::$app->getResponse()->format = 'json';
-        $order_model = Orders::findOne(['o_id' => $order_id]);
-        $order_model->o_status = Orders::STATUS_CANCEL;
-        if (!$order_model->save(false)) {
-            return $this->error('取消失败');
-//            return ['status' => 0, 'message' => '取消失败'];
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_operator_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                if (empty($o_operator_remark)) {
+                    throw new CustomBackendException('请填写取消原因', 0);
+                }
+                // 初审0 二审6 都可以取消
+                if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
+                    throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
+                }
+                $model->o_status = Orders::STATUS_CANCEL;
+                $model->o_operator_id = $userinfo->id;
+                $model->o_operator_realname = $userinfo->realname;
+                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
+                $model->o_operator_remark = $o_operator_remark;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+                return ['status' => 1, 'message' => '取消订单成功'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
         }
-        return $this->success('取消成功');
-//        return ['status' => 1, 'message' => '取消成功'];
     }
 
     /**
@@ -203,7 +283,7 @@ class BorrowController extends CoreBackendController
      * @throws yii\db\Exception
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionVeriftRevoke($o_id)
+    public function actionVerifyRevoke($o_id)
     {
         if (Yii::$app->getRequest()->getIsAjax()) {
             // 1订单改为撤销状态 2删除所有还款计划 3

@@ -1,12 +1,10 @@
 <?php
 use \common\components\Helper;
 
-$this->title = $model['c_customer_name'] . '借款订单';
-$plist = Yii::$app->getRequest()->get('plist');
-$this->params['breadcrumbs'][] = ($plist == 1) ? (['label' => '待审核借款订单', 'url' => ['wait-checklist']]) : (($plist == 2) ? (['label' => '已拒绝借款订单', 'url' => ['refuselist']]) : (['label' => '已通过借款订单', 'url' => ['index']]));
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = $model['c_customer_name'] . '借款详情';
 ?>
 <?= \yii\helpers\Html::cssFile('@web/css/style.css') ?>
+
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
@@ -220,19 +218,200 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="hr-line-dashed"></div>
 
-
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK) { ?>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-                            <button class="btn btn-success" onclick="verify()">通过</button>
-                            <button class="btn btn-info" onclick="verifycancel()">取消</button>
-                            <button class="btn btn-danger" onclick="verifyRefuse()">拒绝</button>
+                            <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
+                            <button class="btn btn-success verify-first">初审通过</button>
+                            <button class="btn btn-info cancel">取消</button>
+                            <button class="btn btn-danger refuse">拒绝</button>
                         </div>
                     </div>
+                <?php } ?>
+
+                <!--终审-->
+                <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK_AGAIN) { ?>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-3">
+                            <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
+                            <button class="btn btn-success verify-end">终审放款</button>
+                            <button class="btn btn-info cancel"
+                            ">取消</button>
+                            <button class="btn btn-danger refuse">拒绝</button>
+                        </div>
+                    </div>
+
                 <?php } ?>
         </div>
     </div>
 </div>
+
+
+<!--弹窗内容-->
+<style>
+    #xx {
+        width: 500px;
+        height: 200px;
+        max-width: 500px;
+        max-height: 200px;
+    }
+</style>
+<div class="form-group" id="remark-box" style="display: none">
+    <textarea id="xx" name="remark" placeholder="选填"><?= $model['o_operator_remark'] ?></textarea>
+</div>
+<!--弹窗内容-->
+<?php
+
+$this->registerJs('
+// 初审通过
+$(".verify-first").click(function(){
+       var index = layer.open({
+        type: 1,
+        title:"填写备注",
+        area: ["auto", "auto"], //宽高
+        content:$("#remark-box"),
+        btn: ["确认", "取消"],
+        btn1:function(){
+            var loading = layer.load(4);
+            var remark = $("#xx").val();
+            $.ajax({
+                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-pass-first', 'order_id' => $model['o_id']]) . '",
+                type: "post",
+                dataType: "json",
+                data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        },
+        btn2:function(){
+            layer.close(index);
+        },
+    }) 
+});
+
+// 终审放款
+$(".verify-end").click(function(){
+       var index = layer.open({
+        type: 1,
+        title:"填写备注",
+        area: ["auto", "auto"], //宽高
+        content:$("#remark-box"),
+        btn: ["确认", "取消"],
+        btn1:function(){
+            var loading = layer.load(4);
+            var remark = $("#xx").val();
+            $.ajax({
+                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-pass', 'order_id' => $model['o_id']]) . '",
+                type: "post",
+                dataType: "json",
+                data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        },
+        btn2:function(){
+            layer.close(index);
+        },
+    }) 
+});
+
+// 取消
+$(".cancel").click(function(){
+       var index = layer.open({
+        type: 1,
+        title:"填写备注",
+        area: ["auto", "auto"], //宽高
+        content:$("#remark-box"),
+        btn: ["确认", "取消"],
+        btn1:function(){
+            var loading = layer.load(4);
+            var remark = $("#xx").val();
+            $.ajax({
+                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-cancel', 'order_id' => $model['o_id']]) . '",
+                type: "post",
+                dataType: "json",
+                data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        },
+        btn2:function(){
+            layer.close(index);
+        },
+    }) 
+});
+
+// 拒绝
+$(".refuse").click(function(){
+       var index = layer.open({
+        type: 1,
+        title:"填写备注",
+        area: ["auto", "auto"], //宽高
+        content:$("#remark-box"),
+        btn: ["确认", "取消"],
+        btn1:function(){
+            var loading = layer.load(4);
+            var remark = $("#xx").val();
+            $.ajax({
+                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-refuse', 'order_id' => $model['o_id']]) . '",
+                type: "post",
+                dataType: "json",
+                data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        },
+        btn2:function(){
+            layer.close(index);
+        },
+    }) 
+});
+');
+?>
 <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 <script>
     /**
@@ -270,7 +449,24 @@ $this->params['breadcrumbs'][] = $this->title;
             });
     }
     /**
-     * 通过
+     * 初审
+     */
+    function verify_first() {
+        layer.confirm('确认初审通过该借款订单？',
+            {
+                icon: 3, btn: ['确定', '取消'],
+                btn1: function (index) {
+                    var loadind = layer.load();
+                    var url = "<?= \yii\helpers\Url::toRoute(['borrow/verify-pass-first', 'order_id' => $model['o_id']])?>";
+                    window.location.href = url;
+                },
+                btn2: function (index) {
+                    layer.close(index)
+                },
+            });
+    }
+    /**
+     * 放款
      */
     function verify() {
         layer.confirm('确认通过该借款订单？',
@@ -299,7 +495,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 url: "<?=Yii::$app->getUrlManager()->createUrl(['borrowlist/refuse', 'o_id' => $model['o_id']])?>",
                 type: 'post',
                 dataType: 'json',
-                data: {remark: value, _csrf: "<?= Yii::$app->getRequest()->getCsrfToken();?>"},
+                data: {
+                    remark: value,
+                    "<?=Yii::$app->getRequest()->csrfParam; ?>": "<?= Yii::$app->getRequest()->getCsrfToken();?>"
+                },
                 success: function (data) {
                     if (data.status === 0) {
                         return layer.alert(data.message, {icon: 2});

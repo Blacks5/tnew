@@ -30,6 +30,14 @@ class CalInterest
         return $month_benjinTotal = $total_money * $rate_month * pow(1 + $rate_month, $total_months) / (pow(1 + $rate_month, $total_months) - 1); //每月还款金额
     }
 
+    /**
+     * 二审（放款）+生成还款计划
+     * @param $order_id
+     * @return bool
+     * @throws CustomCommonException
+     * @throws yii\base\Exception
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public static function genRefundPlan($order_id)
     {
 /*
@@ -78,32 +86,15 @@ class CalInterest
             $total_borrow_money -= $_temp['r_principal']; // 借款本金依次减少
             $Total_interest = $Total_interest + $_temp['r_interest']; // 总产生利息
         }
-//        p($data);
-        $trans = Yii::$app->db->beginTransaction();
         try{
-            // 查询是否是待审核状态
-            $order = Orders::findBySql('select * from orders where o_id=:order_id limit 1 for update', [':order_id'=>$order_id])->asArray()->one();
-            if($order['o_status'] !== '0'){
-                throw new CustomCommonException('订单已放款');
-            }
             // 插入的条数与期数不同就回滚
             if(Yii::$app->db->createCommand()->batchInsert(Repayment::tableName(), $columns, $data)->execute() != $order_info['p_period']){
-                throw new CustomCommonException('还款计划生成错误，请重试');
+                throw new CustomCommonException('还款计划生成错误，请重试', 5);
             }
-            $attrs = [
-                'o_operator_id'=>$userinfo->id, 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'],
-                'o_total_interest'=>$Total_interest, 'o_status'=>Orders::STATUS_PAYING
-            ];
-            if(Orders::updateAll($attrs, ['o_id'=>$order_id]) <= 0){
-                throw new CustomCommonException('订单状态修改失败，请重试');
-            }
-            $trans->commit();
             return true;
         }catch (CustomCommonException $e){
-            $trans->rollBack();
             throw $e;
         }catch (yii\base\Exception $e){
-            $trans->rollBack();
             throw $e;
         }
     }
