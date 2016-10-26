@@ -183,6 +183,7 @@ class StoresController extends CoreBackendController
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
+            'pages'=>$pages
         ]);
     }
 

@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <td><?= $_v['o_is_free_pack_fee']?"是":"否"; ?></td>
                                                         <td><?= $_v['o_operator_realname']?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_operator_date'])?></td>
-                                                        <td><?= $_v['o_status']?></td>
+                                                        <td><button class="btn btn-xs btn-danger"><?= \common\models\Orders::getAllStatus()[$_v['o_status']]?></button></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
                                                     </tr>
                                                 <?php }?>
@@ -102,7 +102,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div id="page11"></div>
+                                        <!--分页-->
+                                        <div class="f-r">
+                                            <?= \yii\widgets\LinkPager::widget([
+                                                'pagination' => $pages,
+                                                'firstPageLabel' => '首页',
+                                                'nextPageLabel' => '下一页',
+                                                'prevPageLabel' => '上一页',
+                                                'lastPageLabel' => '末页',
+                                            ]) ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -112,41 +121,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <script src="/statics/plugins/layer/layer.js"></script>
-        <link rel="stylesheet" href="/statics/plugins/laypage/skin/laypage.css">
-        <script src="/statics/plugins/laypage/laypage.js"></script>
 
         <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
         <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
 
         <script>
-            function initPage(){
-                laypage({
-                    cont: 'page11',
-                    pages: <?= $totalpage;?>, //可以叫服务端把总页数放在某一个隐藏域，再获取。假设我们获取到的是18
-                    curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
-                        var page = location.search.match(/page=(\d+)/);
-                        return page ? page[1] : 1;
-                    }(),
-                    skip: true,
-                    jump: function(e, first){ //触发分页后的回调
-                        if(!first){ //一定要加此判断，否则初始时会无限刷新
-                            var search = location.search;
-                            var n = location.href.indexOf('page=');
-
-                            if(n < 0){
-                                var url = location.href+(search ? "&page=" : "?page=");
-                            }else{
-                                var url = location.href.substr(0, n)+(search ? "page=" : "?page=");
-                            }
-
-                            location.href = url+e.curr;
-                        }
-                    }
-                });
-            };
-            initPage();
 
             $('#datepicker').datepicker({
                 todayBtn: "linked",
