@@ -32,6 +32,7 @@ class CalInterest
 
     /**
      * 二审（放款）+生成还款计划
+     * 加了for update ，但是没有开启事务，需要外部调用者开启事务
      * @param $order_id
      * @return bool
      * @throws CustomCommonException
@@ -46,7 +47,7 @@ class CalInterest
  * 修改orders表的状态，总利息，审核人id，审核人真实姓名，审核时间  插入repayment表
  * */
         $userinfo = Yii::$app->getUser()->getIdentity();
-        $order_info = Orders::find()->select(['*'])->leftJoin(Product::tableName(), 'o_product_id=p_id')->where(['o_id'=>$order_id])->asArray()->one();
+        $order_info = Orders::findBySql("select * from orders left join product on o_product_id=p_id where o_id=:o_id limit 1 for update", [':o_id'=>$order_id])->asArray()->one();
         $columns = [
             'r_customer_id', 'r_orders_id', 'r_total_repay', 'r_interest', 'r_principal', 'r_add_service_fee', 'r_free_pack_fee', 'r_finance_mangemant_fee', 'r_customer_management',
             'r_pre_repay_date', 'r_is_last', 'r_serial_no', 'r_operator_id', 'r_operator_date'

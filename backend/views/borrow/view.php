@@ -318,7 +318,9 @@ $(".verify-end").click(function(){
                 data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
                 success: function (data) {
                     if (data.status === 1) {
-                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                        return layer.alert(data.message, {icon: data.status}, function(){
+                            return window.location.href = "'.\yii\helpers\Url::toRoute(['borrow/list-wait-verify']).'";
+                        });
                     }else{
                         return layer.alert(data.message, {icon: data.status});
                     }
@@ -413,120 +415,3 @@ $(".refuse").click(function(){
 ');
 ?>
 <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
-<script>
-    /**
-     * 取消
-     */
-    function verifycancel() {
-        layer.confirm('确认取消该借款订单？',
-            {
-                icon: 3, btn: ['确定', '取消'],
-                btn1: function (index) {
-                    var loading = layer.load();
-                    $.ajax({
-                        url: "<?=Yii::$app->getUrlManager()->createUrl(['borrowlist/verify-cancel', 'order_id' => $model['o_id']])?>",
-                        type: 'post',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.status == 1) {
-                                return layer.msg(data.message, {icon: 2, time: 2000}, function () {
-                                    window.location.reload()
-                                });
-                            }
-                            return layer.msg(data.message, {icon: 5});
-                        },
-                        error: function () {
-                            return layer.alert('噢，我崩溃啦', {title: '系统错误', icon: 5});
-                        },
-                        complete: function () {
-                            layer.close(loading);
-                        },
-                    });
-                },
-                btn2: function (index) {
-                    layer.close(index)
-                },
-            });
-    }
-    /**
-     * 初审
-     */
-    function verify_first() {
-        layer.confirm('确认初审通过该借款订单？',
-            {
-                icon: 3, btn: ['确定', '取消'],
-                btn1: function (index) {
-                    var loadind = layer.load();
-                    var url = "<?= \yii\helpers\Url::toRoute(['borrow/verify-pass-first', 'order_id' => $model['o_id']])?>";
-                    window.location.href = url;
-                },
-                btn2: function (index) {
-                    layer.close(index)
-                },
-            });
-    }
-    /**
-     * 放款
-     */
-    function verify() {
-        layer.confirm('确认通过该借款订单？',
-            {
-                icon: 3, btn: ['确定', '取消'],
-                btn1: function (index) {
-                    var loadind = layer.load();
-                    var url = "<?= \yii\helpers\Url::toRoute(['borrow/verift-pass', 'order_id' => $model['o_id']])?>";
-                    window.location.href = url;
-                },
-                btn2: function (index) {
-                    layer.close(index)
-                },
-            });
-    }
-    /**
-     * 拒绝
-     */
-    function verifyRefuse() {
-        layer.prompt({
-            formType: 2,
-            title: '请填写拒绝原因'
-        }, function (value, index, elem) {
-            var loading = layer.load();
-            $.ajax({
-                url: "<?=Yii::$app->getUrlManager()->createUrl(['borrowlist/refuse', 'o_id' => $model['o_id']])?>",
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    remark: value,
-                    "<?=Yii::$app->getRequest()->csrfParam; ?>": "<?= Yii::$app->getRequest()->getCsrfToken();?>"
-                },
-                success: function (data) {
-                    if (data.status === 0) {
-                        return layer.alert(data.message, {icon: 2});
-                    }
-                    if (data.status === 1) {
-                        return layer.confirm(data.message,
-                            {
-                                icon: 1, btn: ['继续审核', '确认'],
-                                btn1: function (index) {
-                                    window.location.href = "<?=Yii::$app->getUrlManager()->createUrl(['borrowlist/wait-checklist'])?>";
-                                    layer.close(index)
-                                },
-                                btn2: function (index) {
-                                    return window.location.reload();
-                                },
-                            }
-                        );
-                    }
-                },
-                error: function () {
-                    layer.alert('噢，我崩溃啦', {title: '系统错误', icon: 5});
-                },
-                complete: function () {
-                    layer.close(loading);
-                },
-            });
-            layer.close(index);
-        });
-
-    }
-</script>

@@ -22,7 +22,7 @@ class RepaymentController extends CoreBackendController
 {
     public function actionIndex()
     {
-
+        echo '父菜单';
     }
 
 // 待还
@@ -36,7 +36,7 @@ class RepaymentController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        return $this->render('repaylist', [
+        return $this->render('waitrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,

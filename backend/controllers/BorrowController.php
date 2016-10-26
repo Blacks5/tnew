@@ -31,7 +31,7 @@ class BorrowController extends CoreBackendController
         $this->getView()->title = '待审核列表';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
-        $query = $query->andWhere(['o_status' => Orders::STATUS_WAIT_CHECK]);
+        $query = $query->andWhere(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN]]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = 10;//Yii::$app->params['page_size'];
@@ -52,15 +52,37 @@ class BorrowController extends CoreBackendController
     public function actionListVeriftRefuse()
     {
         $this->getView()->title = '已拒绝列表';
-
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_REFUSE]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = Yii::$app->params['page_size'];
+        $pages->pageSize = 10;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        return $this->render('index', [
+        return $this->render('listverifyrefuse', [
+            'sear' => $model->getAttributes(),
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
+    }
+
+    /**
+     * 已撤销列表（生成还款计划后，又撤销的）
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionListVeriftRevoke()
+    {
+        $this->getView()->title = '已撤销列表';
+        $model = new OrdersSearch();
+        $query = $model->search(Yii::$app->getRequest()->getQueryParams());
+        $query = $query->andWhere(['o_status' => Orders::STATUS_REVOKE]);
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        return $this->render('listverifyrevoke', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
@@ -139,7 +161,7 @@ class BorrowController extends CoreBackendController
                 if (!$model->save(false)) {
                     throw new CustomBackendException('操作订单失败', 5);
                 }
-                return ['status' => 1, 'message' => '初审订单通过成功，等待上次客户合同图片'];
+                return ['status' => 1, 'message' => '初审订单通过成功，等待上传客户合同图片'];
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
@@ -170,7 +192,7 @@ class BorrowController extends CoreBackendController
                 if(!$model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id'=>$order_id])->one()){
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
-                $model->o_status = Orders::STATUS_REFUSE;
+                $model->o_status = Orders::STATUS_PAYING;
                 $model->o_operator_id = $userinfo->id;
                 $model->o_operator_realname = $userinfo->realname;
                 $model->o_operator_date = $_SERVER['REQUEST_TIME'];
@@ -283,7 +305,7 @@ class BorrowController extends CoreBackendController
      * @throws yii\db\Exception
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionVerifyRevoke($o_id)
+    public function actionRevoke($o_id)
     {
         if (Yii::$app->getRequest()->getIsAjax()) {
             // 1订单改为撤销状态 2删除所有还款计划 3
@@ -291,35 +313,28 @@ class BorrowController extends CoreBackendController
                 Yii::$app->getResponse()->format = 'json';
                 $trans = Yii::$app->db->beginTransaction();
                 $sql = 'select * from ' . Orders::tableName() . ' where o_id=:o_id and o_status=' . Orders::STATUS_PAYING . ' limit 1 for update';
-                $order_model = Orders::findBySql($sql, [':o_id' => $o_id])->one();
-                if (!$order_model) {
-                    throw new CustomBackendException('订单不存在');
+                if(!$order_model = Orders::findBySql($sql, [':o_id' => $o_id])->one()){
+                    throw new CustomBackendException('订单不存在', 2);
                 }
                 $order_model->o_status = Orders::STATUS_REVOKE;
                 if (!$order_model->save(false)) {
-                    throw new CustomBackendException('撤销订单失败');
+                    throw new CustomBackendException('撤销订单失败', 5);
                 }
                 $sql = 'select * from ' . Repayment::tableName() . ' where r_orders_id=:r_orders_id for update';
                 // 锁数据用
                 Repayment::findBySql($sql, [':r_orders_id' => $o_id])->all();
                 if (!Repayment::deleteAll(['r_orders_id' => $o_id])) {
-                    throw new CustomBackendException('还款计划操作失败');
+                    throw new CustomBackendException('还款计划操作失败', 5);
                 }
                 $trans->commit();
-                return $this->success('撤销订单成功');
-//                return ['status' => 1, 'message' => '撤销订单成功'];
+                return ['status' => 1, 'message' => '撤销订单成功'];
             } catch (CustomBackendException $e) {
                 $trans->rollBack();
-                return $this->error($e->getMessage());
-//                return ['status' => 0, 'message' => $e->getMessage()];
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
                 $trans->rollBack();
-                return $this->error('系统错误');
-//                return ['status' => 0, 'message' => '系统错误'];
+                return ['status' => 2, 'message' => '系统错误'];
             }
         }
-        return $this->error('撤销失败');
     }
-
-
 }

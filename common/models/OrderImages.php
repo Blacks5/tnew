@@ -18,6 +18,9 @@ use common\core\CoreCommonActiveRecord;
  * @property string $oi_family_card_two
  * @property string $oi_driving_license_one
  * @property string $oi_driving_license_two
+ *
+ * 二审合同相关图片
+ * @property string $oi_after_contract
  */
 class OrderImages extends CoreCommonActiveRecord
 {
@@ -56,6 +59,8 @@ class OrderImages extends CoreCommonActiveRecord
             'oi_family_card_two' => '户口本2',
             'oi_driving_license_one' => '驾照1',
             'oi_driving_license_two' => '驾照2',
+
+            'oi_after_contract' => '合同1',
         ];
     }
     public function a()

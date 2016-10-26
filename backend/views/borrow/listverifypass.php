@@ -82,7 +82,7 @@
                                                     <td>
                                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
                                                            class="btn btn-primary btn-xs">详情</a>
-                                                        <a class="btn btn-danger btn-xs" href="javascript:revoke(<?= $_v['o_id']; ?>)">撤销订单</a>
+                                                        <a class="btn btn-danger btn-xs revoke" data-value="<?=$_v['o_id']; ?>">撤销订单</a>
                                                     </td>
                                                 </tr>
                                          <?php }?>
@@ -109,57 +109,50 @@
                 </div>
             </div>
         </div>
-        <script src="/statics/plugins/layer/layer.js"></script>
+    <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
         <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
         <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-<script>
-
-
-    /**
-     * 撤销订单
-     */
-    function revoke(o_id) {
-        layer.confirm('要撤销订单?', function(index){
-            layer.close(index);
+<?php
+$this->registerJs('
+    $(".revoke").click(function(ev){
+        var ev = ev;
+        layer.confirm("确定要撤销订单？", function(index){
             var loading = layer.load();
-            var url = "<?= Yii::$app->getUrlManager()->createUrl(['borrowlist/revoke']); ?>";
+
+            var order_id = $(ev.target).attr("data-value");
+            var url = "'.\yii\helpers\Url::toRoute(['borrow/revoke']).'";
             $.ajax({
                 url: url,
-                type: 'get',
-                dataType: 'json',
-                data: {o_id:o_id},
+                type: "get",
+                dataType: "json",
+                data: {o_id:order_id},
                 success: function(data){
-//                if(data.status === 1){
-//
-//                }else{
-                    layer.alert(data.message, function(){
-                        window.location.reload();
-                    });
-//                }
+                    if(data.status==1){
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
                 },
                 error: function(){
-                    layer.alert('系统错误');
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
                 },
                 complete: function(){
                     layer.close(loading);
                 },
             });
         });
-        return;
+    });
+');
+?>
+<script>
 
-    }
 
-
-    $('#datepicker').datepicker({
+    /*$('#datepicker').datepicker({
         todayBtn: "linked",
         keyboardNavigation: true,
         forceParse: true,
         autoclose:true,
         format: "yyyy-mm-dd",
         todayHighlight: true
-    });
+    });*/
 </script>
-
-        <?php
-//$this->registerJs()
-?>

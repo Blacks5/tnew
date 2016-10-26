@@ -64,12 +64,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <th class="client-avatar">订单编号</th>
                                                     <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
                                                     <th>客户电话</th>
-                                                    <!--<th>产品名</th>-->
-                                                    <!--<th class="client-status">期数</th>-->
-                                                    <th>总金额</th>
-                                                    <th>贷款金额</th>
-                                                    <th>借款次数</th>
-                                                    <th>提交时间</th>
+                                                    <th>本月应还总金额</th>
+                                                    <th>本金</th>
+                                                    <th>利息</th>
+                                                    <th>增值服务费</th>
+                                                    <th>随心包服务费</th>
+                                                    <th>财务管理费</th>
+                                                    <th>客户管理费</th>
+                                                    <th>期数</th>
+                                                    <th>应还款时间</th>
+                                                    <th>逾期天数</th>
+                                                    <th>逾期滞纳金</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -82,12 +87,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td class="client-avatar"><?= $_v['o_serial_id'] ?></td>
                                                     <td><?= $_v['c_customer_name'] ?></td>
                                                     <td><?= $_v['c_customer_cellphone']?></td>
-                                                    <!--<td><?/*= $_v['p_name']*/?></td>-->
-                                                    <!--<td class="client-status"><?/*= $_v['p_period'];*/?></td>-->
-                                                    <td class="client-status"><?= $_v['o_total_price']+0;?>元</td>
-                                                    <td class="client-status"><?= $_v['o_total_price']-$_v['o_total_deposit'];?>元</td>
-                                                    <td class="client-status"><?= $_v['c_total_borrow_times'];?>次</td>
-                                                    <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
+                                                    <td class="client-status"><?= $_v['r_total_repay']+0;?>元</td>
+                                                    <td class="client-status"><?= $_v['r_principal'];?>元</td>
+                                                    <td class="client-status"><?= $_v['r_interest'];?>元</td>
+                                                    <td class="client-status"><?= $_v['r_add_service_fee'];?>元</td>
+                                                    <td class="client-status"><?= $_v['r_free_pack_fee'];?>元</td>
+                                                    <td class="client-status"><?= $_v['r_finance_mangemant_fee'];?>元</td>
+                                                    <td class="client-status"><?= $_v['r_customer_management'];?>元</td>
+                                                    <td class="client-status"><?= $_v['r_serial_no'];?>次</td>
+                                                    <td class="client-status"><?= date("Y-m-d H:i:s", $_v['r_pre_repay_date'])?></td>
+                                                    <td class="client-status"><?= $_v['r_overdue_day'];?>天</td>
+                                                    <td class="client-status"><?= $_v['r_overdue_money'];?>元</td>
                                                     <td>
                                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
                                                            class="btn btn-primary btn-xs"><i class="fa fa-folder"></i>
