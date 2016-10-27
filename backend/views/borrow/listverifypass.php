@@ -116,7 +116,7 @@
 $this->registerJs('
     $(".revoke").click(function(ev){
         var ev = ev;
-        layer.confirm("确定要撤销订单？", function(index){
+        layer.confirm("确定要撤销订单？", {title:"撤销订单", icon:3}, function(index){
             var loading = layer.load();
 
             var order_id = $(ev.target).attr("data-value");

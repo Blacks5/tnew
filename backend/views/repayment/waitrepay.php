@@ -1,16 +1,6 @@
 <?php
 
-use yii\helpers\Html;
-//use yii\grid\GridView;
-use kartik\grid\GridView;
-use yii\widgets\Pjax;
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\UserSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-//app\assets\LayerAsset::register($this);
-//app\assets\MainAsset::register($this);
-$this->params['breadcrumbs'][] = $this->title;
+use yii\helpers\Url;
 ?>
 
 <!--<link rel="stylesheet" href="/statics/css/animate.min.css">-->
@@ -99,9 +89,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td class="client-status"><?= $_v['r_overdue_day'];?>天</td>
                                                     <td class="client-status"><?= $_v['r_overdue_money'];?>元</td>
                                                     <td>
-                                                        <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
+                                                        <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
                                                            class="btn btn-primary btn-xs"><i class="fa fa-folder"></i>
                                                             详情</a>
+
+                                                        <button data-value="<?=$_v['r_id']?>"
+                                                           class="btn btn-info btn-xs repay"><i class="fa fa-folder"></i>
+                                                            还款</button>
                                                     </td>
                                                 </tr>
                                          <?php }?>
@@ -130,9 +124,40 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
         <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-<script>
 
-
+    <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
+<?php
+$this->registerJs('
+$(".repay").click(function(env){
+    var url = "'.Url::toRoute(['repayment/repay']).'";
+    var r_id = $(env.target).attr("data-value");
+    layer.confirm("确定要进行还款操作吗？", {title:"还款操作", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: url,
+            type: "get",
+            dataType: "json",
+            data: {refund_id: r_id},
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            },
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+    });
+    });
+    
+});
+');
+?>
+        <script>
     $('#datepicker').datepicker({
         todayBtn: "linked",
         keyboardNavigation: true,

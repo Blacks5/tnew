@@ -35,12 +35,13 @@ class RepaymentController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
-        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
+        ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('waitrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages'=>$pages
+            'pages' => $pages
         ]);
     }
 
@@ -81,8 +82,9 @@ class RepaymentController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        array_walk($data, function(&$v){
+        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
+        ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        array_walk($data, function (&$v) {
             $v['r_overdue_money'] = 108;
         });
         return $this->render('overdue', [
@@ -98,24 +100,34 @@ class RepaymentController extends CoreBackendController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionAlreadyRepay($refund_id)
+    public function actionRepay($refund_id)
     {
+        if(Yii::$app->getRequest()->getIsAjax()) {
+            $trans = Yii::$app->getDb()->beginTransaction();
             try {
-                if (!$repay_model = Repayment::findOne(['r_id' => $refund_id])) {
-                    throw new CustomBackendException('还款计划不存在');
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+                $sql = "select * from ". Repayment::tableName()." where r_id=:r_id and r_status=:r_status limit 1 for update";
+                if (!$repay_model = Repayment::findBySql($sql, ['r_id' => $refund_id, ':r_status' => Repayment::STATUS_NOT_PAY])->one()) {
+                    throw new CustomBackendException('数据异常', 2);
                 }
-                $repay_model->r_status = 10; // 已还
+                $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
                 $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 已还
-//                $repay_model->r_operator_id = Yii::$app->getUser()->getIdentity()->getId(); // 已还
-//                $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 已还
-                if(!$repay_model->save(false)){
-                    throw new CustomBackendException('还款操作失败');
+                $repay_model->r_operator_id = Yii::$app->getUser()->getIdentity()->getId(); // 已还
+                $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 已还
+                if (!$repay_model->save(false)) {
+                    throw new CustomBackendException('还款操作失败', 5);
                 }
-                return $this->success('还款成功');
-            }catch(CustomBackendException $e){
-                return $this->error($e->getMessage());
-            }catch(yii\base\Exception $e){
-                return $this->error('系统错误');
+
+                $trans->commit();
+                return ['status' => 1, 'message' => '还款操作成功'];
+            } catch (CustomBackendException $e) {
+                $trans->rollBack();
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                $trans->rollBack();
+                p($e->getMessage());
+                return ['status' => 0, 'message' => '系统错误'];
             }
         }
+    }
 }
