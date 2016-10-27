@@ -80,6 +80,7 @@ class CalInterest
             $_temp['r_pre_repay_date'] = strtotime('+'. $i+1 . 'months'); // 下个月的明天
             $_temp['r_is_last'] = ($i+1==$order_info['p_period'])? 1: 2; // 1是 2不是最后一期
             $_temp['r_serial_no'] = $i+1;
+            $_temp['r_serial_total'] = $order_info['p_period'];
             $_temp['r_operator_id'] = $userinfo->id;
             $_temp['r_operator_date'] = $_SERVER['REQUEST_TIME'];
             $data[] = $_temp;
