@@ -309,13 +309,20 @@ class BorrowController extends CoreBackendController
     {
         if (Yii::$app->getRequest()->getIsAjax()) {
             // 1订单改为撤销状态 2删除所有还款计划 3
+            $trans = Yii::$app->db->beginTransaction();
             try {
                 Yii::$app->getResponse()->format = 'json';
-                $trans = Yii::$app->db->beginTransaction();
+
                 $sql = 'select * from ' . Orders::tableName() . ' where o_id=:o_id and o_status=' . Orders::STATUS_PAYING . ' limit 1 for update';
                 if(!$order_model = Orders::findBySql($sql, [':o_id' => $o_id])->one()){
                     throw new CustomBackendException('订单不存在', 2);
                 }
+
+                $limit_time = 30 * 60; // 半个小时
+                if(($order_model->o_operator_date + $limit_time) <= $_SERVER['REQUEST_TIME']){
+                    throw new CustomBackendException('订单已过可撤销时限', 2);
+                }
+
                 $order_model->o_status = Orders::STATUS_REVOKE;
                 if (!$order_model->save(false)) {
                     throw new CustomBackendException('撤销订单失败', 5);

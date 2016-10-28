@@ -84,7 +84,7 @@ use yii\helpers\Url;
                                                     <td class="client-status"><?= $_v['r_free_pack_fee'];?>元</td>
                                                     <td class="client-status"><?= $_v['r_finance_mangemant_fee'];?>元</td>
                                                     <td class="client-status"><?= $_v['r_customer_management'];?>元</td>
-                                                    <td class="client-status"><?= $_v['r_serial_no'];?>次</td>
+                                                    <td class="client-status"><?= $_v['r_serial_no'].'/'. $_v['r_serial_total'];?></td>
                                                     <td class="client-status"><?= date("Y-m-d H:i:s", $_v['r_pre_repay_date'])?></td>
                                                     <td class="client-status"><?= $_v['r_overdue_day'];?>天</td>
                                                     <td class="client-status"><?= $_v['r_overdue_money'];?>元</td>

@@ -117,6 +117,12 @@ class RepaymentController extends CoreBackendController
                 if (!$repay_model->save(false)) {
                     throw new CustomBackendException('还款操作失败', 5);
                 }
+                // 如果是最后一期，再把order表的状态改了
+                if($repay_model->r_is_last == 1){
+                    if(Orders::updateAll(['o_status'=>Orders::STATUS_PAY_OVER], ['o_id'=>$repay_model->r_orders_id]) != 1){
+                        throw new CustomBackendException('还款操作失败', 5);
+                    }
+                }
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '还款操作成功'];
@@ -125,7 +131,6 @@ class RepaymentController extends CoreBackendController
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
                 $trans->rollBack();
-                p($e->getMessage());
                 return ['status' => 0, 'message' => '系统错误'];
             }
         }

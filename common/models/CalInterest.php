@@ -50,7 +50,7 @@ class CalInterest
         $order_info = Orders::findBySql("select * from orders left join product on o_product_id=p_id where o_id=:o_id limit 1 for update", [':o_id'=>$order_id])->asArray()->one();
         $columns = [
             'r_customer_id', 'r_orders_id', 'r_total_repay', 'r_interest', 'r_principal', 'r_add_service_fee', 'r_free_pack_fee', 'r_finance_mangemant_fee', 'r_customer_management',
-            'r_pre_repay_date', 'r_is_last', 'r_serial_no', 'r_operator_id', 'r_operator_date'
+            'r_pre_repay_date', 'r_is_last', 'r_serial_no', 'r_serial_total', 'r_operator_id', 'r_operator_date'
         ];
         $total_borrow_money = $order_info['o_total_price']- $order_info['o_total_deposit']; // 一共借了多少钱
         $month_benjinTotal = self::calEveryMonth($total_borrow_money, $order_info['p_period'], $order_info['p_month_rate']); //每月还款金额（本金+利息）
