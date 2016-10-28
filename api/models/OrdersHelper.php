@@ -83,15 +83,18 @@ class OrdersHelper
                 if($customerModel->c_is_forbidden == 1){
                     if($customerModel->c_forbidden_time > $_SERVER['REQUEST_TIME']){
                         throw new CustomApiException('提交的订单被拒绝过,在'.date('Y-m-d H:i:s', $customerModel->c_forbidden_time). '后才能再次借款');
+                    }else{
+                        // 解除黑名单
+                        $customerModel->c_is_forbidden = 0;
+                        $customerModel->c_forbidden_time = 0;
                     }
                 }
             }else{
                 $customerModel = new Customer();
             }
-//            p($data['data']);
+
             $customerModel->load($data, 'data');
             if(!$customerModel->validate()){
-                p(1, $customerModel->errors);
                 throw new CustomApiException('customer-errors');
             }
             $customerModel->c_total_money = $total_price;//
@@ -99,7 +102,6 @@ class OrdersHelper
             $customerModel->c_total_borrow_times += 1;// 总借款次数
             $customerModel->c_created_at = $_SERVER['REQUEST_TIME'];//
             if(!$customerModel->save(false)){
-                p(1, $customerModel->errors);
                 throw new CustomApiException('用户写入失败');
             }
 
@@ -116,9 +118,7 @@ class OrdersHelper
             $ordersModel->o_customer_id = $customerModel->c_id;
             $ordersModel->o_is_auto_pay = $params['o_is_auto_pay']; // 银行代扣
             if(!$ordersModel->validate()){
-                p('订单错误', $ordersModel->errors);
                 throw new CustomApiException('order-errors');
-//                p($ordersModel->errors);
             }
             if(!$ordersModel->save(false)){
                 throw new CustomApiException('订单写入失败');
@@ -138,11 +138,9 @@ class OrdersHelper
             return ['status'=>1, 'message'=>'提交成功'];
         }catch(CustomApiException $e){
             $transaction->rollBack();
-//            p($e->getMessage());
             throw $e;
         }catch(Exception $e){
             $transaction->rollBack();
-            p('系统错误', $e->getMessage());
             throw $e;
         }
 

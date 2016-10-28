@@ -91,7 +91,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td>
                                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
                                                            class="button">详情</a>
-                                                        <a class="button" href="javascript:revoke(<?= $_v['o_id']; ?>)">撤销订单</a>
                                                     </td>
                                                 </tr>
                                          <?php }?>
@@ -118,45 +117,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <script src="/statics/plugins/layer/layer.js"></script>
         <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
         <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script>
 
-
-    /**
-     * 撤销订单
-     */
-    function revoke(o_id) {
-        layer.confirm('要撤销订单?', function(index){
-            layer.close(index);
-            var loading = layer.load();
-            var url = "<?= Yii::$app->getUrlManager()->createUrl(['borrowlist/revoke']); ?>";
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                data: {o_id:o_id},
-                success: function(data){
-//                if(data.status === 1){
-//
-//                }else{
-                    layer.alert(data.message, function(){
-                        window.location.reload();
-                    });
-//                }
-                },
-                error: function(){
-                    layer.alert('系统错误');
-                },
-                complete: function(){
-                    layer.close(loading);
-                },
-            });
-        });
-        return;
-
-    }
 
 
     $('#datepicker').datepicker({

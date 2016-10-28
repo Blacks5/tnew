@@ -40,7 +40,7 @@ return [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => false,
-            'authTimeout' => 300,
+            'authTimeout' => 3000,
             'loginUrl'=>['login/login'], // 没有登录会跳这里
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
