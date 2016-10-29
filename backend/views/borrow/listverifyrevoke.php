@@ -80,8 +80,10 @@
                                                         <td class="client-status"><?= $_v['c_total_borrow_times'];?>次</td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
                                                         <td>
+                                                            <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))){ ?>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
                                                                class="btn btn-primary btn-xs">详情</a>
+                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php }?>

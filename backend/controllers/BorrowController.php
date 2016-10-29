@@ -22,6 +22,7 @@ class BorrowController extends CoreBackendController
 {
     public function actionIndex()
     {
+
         echo '父菜单';
     }
 
@@ -51,6 +52,7 @@ class BorrowController extends CoreBackendController
      */
     public function actionListVeriftRefuse()
     {
+
         $this->getView()->title = '已拒绝列表';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());

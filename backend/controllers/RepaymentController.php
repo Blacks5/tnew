@@ -22,6 +22,8 @@ class RepaymentController extends CoreBackendController
 {
     public function actionIndex()
     {
+//        p(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['site/index'])));
+//        p(yii\helpers\Url::toRoute(['site/index']));
         echo '父菜单';
     }
 

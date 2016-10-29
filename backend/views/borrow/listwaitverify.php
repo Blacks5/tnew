@@ -81,7 +81,9 @@ use yii\helpers\Url;
                                                     <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
                                                     <td><button class="btn btn-xs btn-danger"><?= \common\models\Orders::getAllStatus()[$_v['o_status']]?></button></td>
                                                     <td>
+                                                        <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))){ ?>
                                                         <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>" class="btn btn-primary btn-xs">详情</a>
+                                                        <?php } ?>
                                                     </td>
                                                 </tr>
                                          <?php }?>
