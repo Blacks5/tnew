@@ -14,7 +14,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-sm-3">
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/create-department']))) { ?>
                             <a class="btn btn-info btn-sm" href="<?= Yii::$app->getUrlManager()->createUrl(['department/create-department']) ?>">新增部门</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <hr/>
@@ -55,14 +57,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= $_v['d_id'] ?></td>
                                     <td><?= $_v['d_name'] ?></td>
                                     <td>
+                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/view-department']))) { ?>
                                         <a href="<?= Yii::$app->getUrlManager()->createUrl(['department/view-department', 'd_id' => $_v['d_id']]); ?>"
                                            class="btn btn-primary btn-xs">详情</a>
-                                        <!--<a class="button" href="<? /*= Yii::$app->getUrlManager()->createUrl(['department/create-job','d_id'=>$_v['d_id']]); */
-                                        ?>">添加职位</a>-->
+                                        <?php } ?>
+                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/update-department']))) { ?>
                                         <a class="btn btn-primary btn-xs"
                                            href="<?= Yii::$app->getUrlManager()->createUrl(['department/update-department', 'd_id' => $_v['d_id']]); ?>">编辑</a>
+                                        <?php } ?>
+                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/delete-department']))) { ?>
                                         <a class="btn btn-danger btn-xs"
                                            href="javascript:del('<?= $_v['d_name'] ?>', <?= $_v['d_id'] ?>)">删除</a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php } ?>

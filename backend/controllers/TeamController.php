@@ -17,6 +17,10 @@ use backend\components\CustomBackendException;
 
 class TeamController extends CoreBackendController
 {
+    public function actionIndexp()
+    {
+        echo "父菜单";
+    }
     public function actionIndex()
     {
         $this->getView()->title = '团队列表';

@@ -16,7 +16,6 @@ use backend\components\CustomBackendException;
 
 class DepartmentController extends CoreBackendController
 {
-    public $enableCsrfValidation = false;
     /**
      * 创建部门
      * @return string|yii\web\Response
