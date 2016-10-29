@@ -5,7 +5,6 @@ use yii\helpers\Url;
 ?>
 
 <!--<link rel="stylesheet" href="/statics/css/animate.min.css">-->
-<link rel="stylesheet" href="/statics/css/style.min.css">
 
 <div class="">
     <div class="row">
@@ -114,8 +113,6 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
         <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
         <?php
