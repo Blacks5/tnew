@@ -15,7 +15,9 @@ use yii\widgets\LinkPager;
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-sm-3">
+                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/create']))) { ?>
                                 <a class="btn btn-info btn-sm" href="<?= Url::toRoute('product/create') ?>">新增产品</a>
+                                <?php } ?>
                             </div>
                         </div>
                         <hr>
@@ -57,14 +59,20 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['p_finance_mangemant_fee'] ?></td>
                                         <td><?= $vo['p_customer_management'] ?></td>
                                         <td><?= $vo['p_status'] ?></td>
-                                        <td><a class="btn btn-primary btn-xs"
+                                        <td>
+
+                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/view']))) { ?>
+                                                <a class="btn btn-primary btn-xs"
                                                href="<?= Url::toRoute(['product/view', 'id' => $vo['p_id']]) ?>"><i
                                                     class="fa fa-edit"></i>查看
                                             </a>
+                                            <?php } ?>
+                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/delete']))) { ?>
                                                 <button class="btn btn-danger btn-xs del-product"
                                                         data-value="<?= $vo['p_id'] ?>"><i
                                                         class="fa fa-close"></i>删除
                                                 </button>
+                                            <?php } ?>
                                     </tr>
                                 <?php } ?>
                                 </tbody>

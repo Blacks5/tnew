@@ -98,7 +98,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     $.ajax({
                         url: url,
-                        data: {j_name: job_name_d},
+                        data: {
+                            j_name: job_name_d,
+                            "<?= Yii::$app->getRequest()->csrfParam ?>": "<?= Yii::$app->getRequest()->getCsrfToken() ?>"
+                        },
                         type: 'post',
                         dataType: 'json',
                         success: function (data) {
@@ -149,7 +152,10 @@ $this->params['breadcrumbs'][] = $this->title;
             }
             $.ajax({
                 url: url,
-                data: {j_name: jobname},
+                data: {
+                    j_name: jobname,
+                    "<?= Yii::$app->getRequest()->csrfParam ?>": "<?= Yii::$app->getRequest()->getCsrfToken() ?>"
+                },
                 type: 'post',
                 dataType: 'json',
                 success: function (data) {
@@ -173,7 +179,7 @@ $this->params['breadcrumbs'][] = $this->title;
         function del_job(url, job_id) {
             $.ajax({
                 url: url,
-                data: {},
+                data: {"<?= Yii::$app->getRequest()->csrfParam ?>": "<?= Yii::$app->getRequest()->getCsrfToken() ?>"},
                 type: 'post',
                 dataType: 'json',
                 success: function (data) {

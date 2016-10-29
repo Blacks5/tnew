@@ -14,9 +14,6 @@ use yii\widgets\Pjax;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<!--<link rel="stylesheet" href="/statics/css/animate.min.css">-->
-<link rel="stylesheet" href="/statics/css/style.min.css">
-
 <div>
     <div class="row">
         <div class="col-sm-12">
@@ -25,8 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="row">
                         <div class="col-sm-3">
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/create']))) { ?>
                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/create']) ?>"
-                               class="btn btn-success">新增商户</a>
+                               class="btn btn-info btn-sm">新增商户</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -63,10 +62,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <thead>
                                                 <tr>
                                                     <th class="client-avatar">id</th>
-                                                    <th><a data-toggle="tab" href="#contact-3"
-                                                           class="client-link">负责人姓名</a></th>
+                                                    <th>负责人姓名</th>
+                                                    <th>负责人电话</th>
                                                     <th>商户店名</th>
-                                                    <th class="contact-type"></th>
                                                     <th>邮箱</th>
                                                     <th class="client-status">状态</th>
                                                     <th>添加时间</th>
@@ -74,33 +72,40 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <?php
-                                                foreach ($model as $_k => $_v) {
-                                                    ?>
+                                                <?php foreach ($model as $_k => $_v) { ?>
 
                                                     <tr>
                                                         <td class="client-avatar"><?= $_v['s_id'] ?></td>
-                                                        <td><a data-toggle="tab" href="#contact-3"
-                                                               class="client-link"><?= $_v['s_owner_name'] ?></a></td>
+                                                        <td><?= $_v['s_owner_name'] ?></td>
+                                                        <td><i class="fa fa-mobile"> </i> <?= $_v['s_owner_phone'] ?>
+                                                        </td>
                                                         <td><?= $_v['s_name'] ?></td>
-                                                        <td class="contact-type"><i class="fa fa-envelope"> </i></td>
-                                                        <td><?= $_v['s_owner_email'] ?></td>
+                                                        <td><i class="fa fa-envelope"> </i> <?= $_v['s_owner_email'] ?>
+                                                        </td>
                                                         <td class="client-status"><?= $_v['s_status']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['s_created_at']) ?></td>
                                                         <td>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/allorders']))) { ?>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/allorders', 'id' => $_v['s_id']]); ?>"
                                                                class="btn btn-primary btn-xs"><i
                                                                     class="fa fa-cart-plus"></i> 订单</a>
+                                                            <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/view']))) { ?>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/view', 'id' => $_v['s_id']]); ?>"
                                                                class="btn btn-primary btn-xs"><i
                                                                     class="fa fa-folder"></i> 详情</a>
+                                                            <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/update']))) { ?>
                                                             <a class="btn-xs btn btn-primary"
                                                                href="<?= Yii::$app->getUrlManager()->createUrl(['stores/update', 'id' => $_v['s_id']]); ?>"><i
                                                                     class="fa fa-edit"></i> 编辑</a>
+                                                            <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/delete']))) { ?>
                                                             <button class="btn-xs btn btn-danger del-stores"
                                                                     data-value="<?= $_v['s_id'] ?>"><i
                                                                     class="fa fa-close"></i> 删除
                                                             </button>
+                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>

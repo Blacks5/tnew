@@ -63,10 +63,13 @@ use yii\widgets\LinkPager;
                                         </td>
                                         <td><?= $vo['c_total_money'] ?></td>
                                         <td><?= $vo['c_updated_at'] ?></td>
-                                        <td><a class="btn btn-primary btn-xs"
+                                        <td>
+                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/view']))) { ?>
+                                                <a class="btn btn-primary btn-xs"
                                                href="<?= Url::toRoute(['customer/view', 'c_id' => $vo['c_id']]) ?>"><i
                                                     class="fa fa-edit"></i>查看
                                             </a>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                 <?php } ?>

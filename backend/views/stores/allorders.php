@@ -7,15 +7,9 @@ use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-//app\assets\LayerAsset::register($this);
-//app\assets\MainAsset::register($this);
 $this->params['breadcrumbs'][] = ['label' => '商户列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
-<link rel="stylesheet" href="/statics/css/animate.min.css">
-<link rel="stylesheet" href="/statics/css/style.min.css">
 
 
 <div class="animated fadeInRight">
@@ -121,10 +115,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-
-        <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-
+        <?= Html::cssFile('@web/css/plugins/datapicker/datepicker3.css') ?>
+        <?= Html::jsFile('@web/js/plugins/datapicker/bootstrap-datepicker.js') ?>
 
         <script>
 

@@ -50,20 +50,16 @@ use yii\widgets\DetailView;
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">负责区域：</label>
-                        <div class="col-sm-1">
-                            <p class="form-control-static">
+                        <div class="col-sm-8">
+                            <button class="btn btn-xs btn-primary">
                                 <?= $model['province']; ?>
-                            </p>
-                        </div>
-                        <div class="col-sm-1">
-                            <p class="form-control-static">
+                            </button>
+                            <button class="btn btn-xs btn-primary">
                                 <?= $model['city']; ?>
-                            </p>
-                        </div>
-                        <div class="col-sm-1">
-                            <p class="form-control-static">
+                            </button>
+                            <button class="btn btn-xs btn-primary">
                                 <?= $model['county']; ?>
-                            </p>
+                            </button>
                         </div>
                     </div>
 
@@ -85,7 +81,6 @@ use yii\widgets\DetailView;
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-
                             <button class="btn btn-primary" type="button" name="btnbutton" onclick="history.go(-1)">
                                 返回上一页
                             </button>
