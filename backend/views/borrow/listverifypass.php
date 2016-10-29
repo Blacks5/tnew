@@ -99,6 +99,10 @@
                                                             <a class="btn btn-danger btn-xs revoke"
                                                                data-value="<?= $_v['o_id']; ?>">撤销订单</a>
                                                             <?php } ?>
+                                                            <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/all-repayment-list']))){ ?>
+                                                                <a class="btn btn-danger btn-xs"
+                                                                   href="<?= \yii\helpers\Url::toRoute(['repayment/all-repayment-list', 'order_id'=>$_v['o_id']])?>">还款计划</a>
+                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>

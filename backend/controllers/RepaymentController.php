@@ -27,7 +27,12 @@ class RepaymentController extends CoreBackendController
         echo '父菜单';
     }
 
-// 待还
+
+    /**
+     * 最近30天待还的 计划
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionWaitRepay()
     {
         $this->getView()->title = '待还款列表';
@@ -136,5 +141,27 @@ class RepaymentController extends CoreBackendController
                 return ['status' => 0, 'message' => '系统错误'];
             }
         }
+    }
+
+    /**
+     * 某个订单的所有还款计划
+     * @param $order_id
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionAllRepaymentList($order_id)
+    {
+        $this->getView()->title = '还款列表';
+        $query = RepaymentSearch::repaymenlistbyorderid($order_id);
+//        $query = $query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY]);
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = 20;//Yii::$app->params['page_size'];
+        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
+        ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        return $this->render('allrepaymentlist', [
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
     }
 }

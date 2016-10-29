@@ -88,6 +88,15 @@ class Repayment extends CoreCommonActiveRecord
         ];
     }
 
-
+    /**
+     * 订单的所有还款计划
+     * @param $order_id
+     * @return $this
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getAllRepaymentByOrderid($order_id)
+    {
+        return self::find()->where(['r_orders_id'=>$order_id])->asArray()->asArray();
+    }
 
 }
