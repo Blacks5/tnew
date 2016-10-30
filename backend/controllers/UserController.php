@@ -42,6 +42,11 @@ class UserController extends CoreBackendController
         }
     }*/
 
+    public function actionIndex()
+    {
+        echo '员工管理';
+    }
+
     public function actionView($id)
     {
 //        return $this->success("添加成功！");
