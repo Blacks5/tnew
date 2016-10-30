@@ -59,8 +59,8 @@ use yii\widgets\LinkPager;
                                 <?php foreach ($user as $vo) { ?>
                                     <tr>
                                         <td><?= $vo['id'] ?></td>
-                                        <td><?= $vo['realname'] ?></td>
                                         <td><?= $vo['username'] ?></td>
+                                        <td><?= $vo['realname'] ?></td>
                                         <td><?= $vo['usergroup']['item_name'] ?></td>
                                         <td><i class="fa fa-mobile"
                                                style="color: #00a2d4;"></i>&nbsp;<?= $vo['cellphone'] ?></td>
