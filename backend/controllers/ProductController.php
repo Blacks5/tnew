@@ -8,6 +8,10 @@ use common\models\Product;
 
 class ProductController extends CoreBackendController
 {
+    public function actionIndexp()
+    {
+        echo '产品管理';
+    }
     public function actionIndex()
     {
         $this->getView()->title = '产品列表';
