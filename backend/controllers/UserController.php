@@ -172,10 +172,11 @@ class UserController extends CoreBackendController
                 $auth->revokeAll($user_id);
                 $auth->assign($role, $user_id);                           //添加对应关系
                 return $this->success('修改成功');
+            }else{
+                $msg = $model->getFirstErrors();
+                $msg = "<br>". implode(';', $msg);
+                return $this->error('修改失败'. $msg);
             }
-
-
-//            return $this->redirect(['user/update', 'id' => $model1->id]);
         }
 
         $all_province = Helper::getAllProvince();

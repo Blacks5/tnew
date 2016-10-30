@@ -24,7 +24,7 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required', 'message'=>'{attribute}不能为空'],
+            [['username', 'password'], 'required', 'message' => '{attribute}不能为空'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -35,8 +35,8 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-           'username'=>'用户名',
-           'password'=>'密码',
+            'username' => '用户名',
+            'password' => '密码',
         ];
     }
 
@@ -64,14 +64,11 @@ class LoginForm extends Model
      */
     public function login()
     {
-
         if ($this->validate()) {
-
-            return Yii::$app->getUser()->login($this->getUser()); // , $this->rememberMe ? 3600 * 24 * 30 : 0
-        } else {
-            p($this->errors);
-            return false;
+            $_user = $this->getUser();
+                return Yii::$app->getUser()->login($_user); // , $this->rememberMe ? 3600 * 24 * 30 : 0
         }
+        return false;
     }
 
     /**

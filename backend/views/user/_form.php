@@ -30,7 +30,7 @@ use \yii\helpers\Url;
     <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList(['请选择县/区'])->label('请选择城县/区', ['class' => 'sr-only']) ?>
 
 
-    <?= $form->field($model1, 'name')->dropDownList($item)->label('部门') ?>
+    <?= $form->field($model1, 'name')->dropDownList($item)->label('角色') ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '新增' : '更新', ['class' => $model->isNewRecord ? 'btn btn-primary' : 'btn btn-primary']) ?>

@@ -15,7 +15,7 @@ $this->title = '更新用户 ';
             <h1><?= Html::encode($this->title) ?></h1>
             <hr>
             <div class="auth-item-form col-sm-4">
-                <?php $form = ActiveForm::begin(); ?>
+                <?php $form = ActiveForm::begin(['enableClientScript'=>false]); ?>
 
                 <?= $form->field($model, 'id')->hiddenInput()->label('') ?>
 
@@ -23,6 +23,7 @@ $this->title = '更新用户 ';
 
 
                 <?= $form->field($model, 'email')->textInput(['email' => true])->label('邮箱') ?>
+                <?= $form->field($model, 'cellphone')->textInput(['cellphone' => true])->label('手机号码') ?>
 
                 <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only'])->label('所属部门') ?>
                 <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList($all_jobs)->label('请选择职位', ['class' => 'sr-only']) ?>
