@@ -1,6 +1,8 @@
 <?php
 namespace backend\controllers;
 
+use common\models\Department;
+use mdm\admin\models\searchs\User;
 use Yii;
 use backend\core\CoreBackendController;
 use yii\filters\VerbFilter;
@@ -58,7 +60,9 @@ class SiteController extends CoreBackendController
     {
         Yii::$app->getView()->title = 'XX';
         $user_id=Yii::$app->user->identity->getId();
-        $user_info = Yii::$app->authManager->getRolesByUser($user_id);
+//        $user_info = Yii::$app->authManager->getRolesByUser($user_id);
+        $d_id = User::find()->select(['department_id'])->where(['id'=>$user_id])->scalar();
+        $user_info = Department::find()->select(['d_name'])->where(['d_id'=>$d_id])->scalar();
         $menu = new Menu();
 //        p($user_id, $user_info);
         $menu = $menu->getLeftMenuList();
@@ -66,7 +70,8 @@ class SiteController extends CoreBackendController
 //        var_dump($menu);die;
         return $this->render('index',[
             'menu' => $menu,
-            'user_info' => key($user_info)
+//            'user_info' => key($user_info)
+                'user_info'=>$user_info
         ]);
     }
 
