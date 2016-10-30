@@ -93,6 +93,9 @@ class UserController extends CoreBackendController
         $clone_model = clone $model;
         $pages = new Pagination(['totalCount' => $clone_model->count(), 'pageSize' => '20']);
         $user = $model->joinWith('usergroup')->orderBy(['id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+        foreach($user as $v){
+            $v->department_id = Department::find()->select(['d_name'])->where(['d_id'=>$v->department_id])->scalar();
+        }
         return $this->render('list', [
             'sear' => $query->getAttributes(),
             'user' => $user,

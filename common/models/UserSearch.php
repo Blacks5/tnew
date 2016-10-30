@@ -57,6 +57,7 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'realname', $this->realname])
             ->andFilterWhere(['like', 'email', $this->email]);
 
+//        echo  $query->createCommand()->getRawSql();die;
         return $query;
     }
 }

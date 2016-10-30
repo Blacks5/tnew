@@ -61,7 +61,8 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['id'] ?></td>
                                         <td><?= $vo['username'] ?></td>
                                         <td><?= $vo['realname'] ?></td>
-                                        <td><?= $vo['usergroup']['item_name'] ?></td>
+                                        <!--<td><?/*= $vo['usergroup']['item_name'] */?></td>-->
+                                        <td><?= $vo['department_id'] ?></td>
                                         <td><i class="fa fa-mobile"
                                                style="color: #00a2d4;"></i>&nbsp;<?= $vo['cellphone'] ?></td>
                                         <td><i class="fa fa-envelope"

@@ -148,7 +148,7 @@ class DepartmentController extends CoreBackendController
      * @return string|yii\web\Response
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionCreateJob($d_id)
+    /*public function actionCreateJob($d_id)
     {
         $this->getView()->title = '创建职位';
         $model = new Jobs();
@@ -162,7 +162,7 @@ class DepartmentController extends CoreBackendController
         if($d_name = Department::find()->select('d_name')->where(['d_id'=>$d_id])->scalar()) {
             return $this->render('createjob', ['model' => $model, 'd_name' => $d_name]);
         }
-    }
+    }*/
 
     /**
      * 新增职位

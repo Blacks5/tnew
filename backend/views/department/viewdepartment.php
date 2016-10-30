@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+
 $this->params['breadcrumbs'][] = ['label' => '部门列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -18,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <strong class="col-sm-2 text-right">现有职位：</strong>
                     <span class="col-sm-10">
                         <?php if ($jobs) { ?>
-                        <?php foreach($jobs as $v){ ?>
+                            <?php foreach ($jobs as $v) { ?>
                                 <span class="form-control-static label label-info"><?= $v->j_name; ?></span>
                             <?php }
                         } else { ?>
@@ -30,16 +31,20 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="form-group">
                 <div class="col-sm-8 col-sm-offset-3">
                     <!--<a class="btn btn-primary" href="<? /*=Yii::$app->getUrlManager()->createUrl(['department/update-department', 'd_id'=>$model['d_id']])*/ ?>">编辑职位</a>-->
-
-                    <a class="btn btn-sm btn-primary" href="javascript:void(0);"
-                       onclick="test_l_job('<?= Yii::$app->getUrlManager()->createUrl(['department/create-job_bak', 'd_id' => $model['d_id']]) ?>');">添加职位</a>
-                    <a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="job_list_alert();">编辑职位</a>
+                    <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/create-job_bak']))) { ?>
+                        <a class="btn btn-sm btn-primary" href="javascript:void(0);"
+                           onclick="test_l_job('<?= Yii::$app->getUrlManager()->createUrl(['department/create-job_bak', 'd_id' => $model['d_id']]) ?>');">添加职位</a>
+                    <?php } ?>
+                    <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/update-job_bak']))) { ?>
+                        <a class="btn btn-sm btn-primary" href="javascript:void(0);"
+                           onclick="job_list_alert();">编辑职位</a>
+                    <?php } ?>
                     <a class="btn btn-sm btn-default"
                        href="<?= Yii::$app->getUrlManager()->createUrl(['department/index']) ?>">返回</a>
                 </div>
             </div>
+        </div>
     </div>
-</div>
     <section id="job_list" style="display: none;">
         <div id="signupForm" class="form-horizontal m-t form-vertical">
             <div class="ibox float-e-margins">
