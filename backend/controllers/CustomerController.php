@@ -21,6 +21,10 @@ use backend\core\CoreBackendController;
  */
 class CustomerController extends CoreBackendController
 {
+    public function actionIndexp()
+    {
+        echo '客户管理';
+    }
     /**
      * 用户列表
      * @author 涂鸿 <hayto@foxmail.com>
