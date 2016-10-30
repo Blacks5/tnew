@@ -18,8 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="row">
                         <div class="col-sm-3">
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/create']))) { ?>
                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/create']) ?>"
                                class="btn btn-success">新增团队</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -66,15 +68,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <td><a data-toggle="tab" href="#contact-3"
                                                                class="client-link"><?= $_v['t_name'] ?></a></td>
                                                         <td>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/view']))) { ?>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/view', 't_id' => $_v['t_id']]); ?>"
                                                                class="btn btn-primary btn-xs"><i
                                                                     class="fa fa-folder"></i> 详情</a>
+                                                            <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/update']))) { ?>
                                                             <a class="btn btn-primary btn-xs"
                                                                href="<?= Yii::$app->getUrlManager()->createUrl(['team/update', 't_id' => $_v['t_id']]); ?>"><i
                                                                     class="fa fa-pencil"></i> 编辑</a>
+                                                            <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/delete']))) { ?>
                                                             <a class="btn btn-danger btn-xs"
                                                                href="javascript:del('<?= $_v['t_name'] ?>', <?= $_v['t_id'] ?>)"><i
                                                                     class="fa fa-close"></i> 删除</a>
+                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>

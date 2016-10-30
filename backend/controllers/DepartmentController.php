@@ -17,6 +17,14 @@ use backend\components\CustomBackendException;
 class DepartmentController extends CoreBackendController
 {
     /**
+     * 部门管理父菜单
+     *
+     */
+    public function actionIndexp()
+    {
+        echo "父菜单";
+    }
+    /**
      * 创建部门
      * @return string|yii\web\Response
      * @author 涂鸿 <hayto@foxmail.com>
