@@ -19,16 +19,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-content">
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="Stores[s_owner_name]" placeholder="负责人姓名" value="<?php //echo $sear['s_owner_name'];  ?>" class="input form-control">
+                            <input type="text" name="AllOrdersWithStoreSearch[username]" placeholder="客户姓名"
+                                   value="<?php echo $sear['username']; ?>" class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="Stores[s_owner_phone]" value="<?php //echo $sear['s_owner_phone'];  ?>" placeholder="负责人电话" class="input form-control">
+                            <input type="text" name="AllOrdersWithStoreSearch[phone]"
+                                   value="<?php echo $sear['phone']; ?>" placeholder="客户电话" class="input form-control">
                         </div>
                         <div class="col-sm-4">
                                 <div class="input-daterange input-group" id="datepicker">
-                                    <input type="text" class="form-control" name="start" placeholder="开始时间">
+                                    <input type="text" class="form-control" name="AllOrdersWithStoreSearch[s_time]"
+                                           placeholder="开始时间"
+                                           value="<?php echo $sear['s_time'] ? (date('Y-m-d', $sear['s_time'])) : ''; ?>">
                                     <span class="input-group-addon ">到</span>
-                                    <input type="text" class="form-control" name="end" placeholder="结束时间">
+                                    <input type="text" class="form-control" name="AllOrdersWithStoreSearch[e_time]"
+                                           placeholder="结束时间"
+                                           value="<?php echo $sear['e_time'] ? (date('Y-m-d', $sear['e_time'])) : ''; ?>">
                                 </div>
                         </div>
 
@@ -52,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <tr>
                                                     <th class="client-avatar">id</th>
                                                     <th>订单使用的产品id</th>
-                                                    <th class="client-status">客户id</th>
+                                                    <th>客户姓名</th>
                                                     <th>涉及产品数</th>
                                                     <th>总价格</th>
                                                     <th>总定金</th>
@@ -70,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <tr>
                                                         <td class="client-avatar"><?= $_v['o_id']?></td>
                                                         <td><?= $_v['o_product_id']?></td>
-                                                        <td><?= $_v['o_customer_id']?></td>
+                                                        <td><?= $_v['c_customer_name'] ?></td>
                                                         <td><?= $_v['o_goods_num']?></td>
                                                         <td><?= $_v['o_total_price']?></td>
                                                         <td><?= $_v['o_total_deposit']?></td>

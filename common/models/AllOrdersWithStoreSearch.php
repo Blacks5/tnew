@@ -13,13 +13,16 @@ use yii\data\Pagination;
 
 class AllOrdersWithStoreSearch extends CoreCommonModel{
     public $username;
-    public $realname;
+    public $phone;
     public $id;
+    public $s_time;
+    public $e_time;
 
     public function rules()
     {
         return [
-            [['id'], 'trim']
+            [['id'], 'trim'],
+            [['username', 's_time', 'e_time', 'phone'], 'safe']
         ];
     }
 
@@ -27,13 +30,24 @@ class AllOrdersWithStoreSearch extends CoreCommonModel{
     {
         $this->load($param);
 
-        $query = Orders::find()
+        $query = Orders::find()->select(['*'])->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
             ->Where(['o_store_id' => $id])
         ;
 
         if(!$this->validate()){
             return $query->andWhere('1=2');
         }
+        $query->andFilterWhere(['like', 'c_customer_name', $this->username]);
+        $query->andFilterWhere(['like', 'c_customer_cellphone', $this->phone]);
+        if (!empty($this->s_time)) {
+            $this->s_time = strtotime($this->s_time . '00:00:00');
+            $query->andWhere(['>=', 'o_created_at', $this->s_time]);
+        }
+        if (!empty($this->e_time)) {
+            $this->e_time = strtotime($this->e_time . '23:59:59');
+            $query->andWhere(['<=', 'o_created_at', $this->e_time]);
+        }
+
 
         return $query;
     }

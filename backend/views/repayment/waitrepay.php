@@ -22,26 +22,28 @@ use yii\helpers\Url;
                     <!--                    <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_name]" placeholder="客户姓名"
-                                   value="<?php echo 1;/*$sear['customer_name']*/; ?>" class="input form-control">
+                            <input type="text" name="RepaymentSearch[c_customer_name]" placeholder="客户姓名"
+                                   value="<?php echo $sear['c_customer_name']; ?>" class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_cellphone]"
-                                   value="<?php echo 1//$sear['customer_cellphone'];  ?>" placeholder="客户电话"
+                            <input type="text" name="RepaymentSearch[c_customer_cellphone]"
+                                   value="<?php echo $sear['c_customer_cellphone']; ?>" placeholder="客户电话"
                                    class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[product_name]"
-                                   value="<?php echo 1//$sear['product_name'];  ?>" placeholder="产品名"
+                            <input type="text" name="RepaymentSearch[c_customer_id_card]"
+                                   value="<?php echo $sear['c_customer_id_card']; ?>" placeholder="客户身份证号码"
                                    class="input form-control">
                         </div>
                         <div class="col-sm-4">
                             <div class="input-daterange input-group" id="datepicker">
-                                <input type="text" class="form-control" name="OrdersSearch[start_time]"
-                                       value="<?= 1//$sear['start_time'];  ?>" placeholder="开始时间">
+                                <input type="text" class="form-control" name="RepaymentSearch[s_time]"
+                                       placeholder="应还款开始时间"
+                                       value="<?php echo $sear['s_time'] ? (date('Y-m-d', $sear['s_time'])) : ''; ?>">
                                 <span class="input-group-addon ">到</span>
-                                <input type="text" class="form-control" name="OrdersSearch[end_time]"
-                                       value="<?= 1//$sear['end_time'];  ?>" placeholder="结束时间">
+                                <input type="text" class="form-control" name="RepaymentSearch[e_time]"
+                                       value="<?php echo $sear['e_time'] ? (date('Y-m-d', $sear['e_time'])) : ''; ?>"
+                                       placeholder="应还款结束时间">
                             </div>
                         </div>
                         <div class="col-sm-1">
@@ -143,9 +145,9 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
+        <?= \yii\helpers\Html::cssFile('@web/css/plugins/datapicker/datepicker3.css') ?>
+        <?= \yii\helpers\Html::jsFile('@web/js/plugins/datapicker/bootstrap-datepicker.js') ?>
         <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
         <?php
         $this->registerJs('

@@ -15,9 +15,11 @@ class RepaymentSearch extends CoreBackendModel
     public $c_customer_name;
     public $c_customer_id_card;
     public $c_customer_cellphone;
+    public $s_time;
+    public $e_time;
     public function rules()
     {
-        return [[['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone'], 'safe']];
+        return [[['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 's_time', 'e_time'], 'safe']];
     }
 
     /**
@@ -41,6 +43,14 @@ class RepaymentSearch extends CoreBackendModel
             ->andFilterWhere(['like', 'c_customer_name', $this->c_customer_name])
             ->andFilterWhere(['like', 'c_customer_id_card', $this->c_customer_id_card])
             ->andFilterWhere(['like', 'c_customer_cellphone', $this->c_customer_cellphone]);
+        if (!empty($this->s_time)) {
+            $this->s_time = strtotime($this->s_time . '00:00:00');
+            $query->andWhere(['>=', 'r_pre_repay_date', $this->s_time]);
+        }
+        if (!empty($this->e_time)) {
+            $this->e_time = strtotime($this->e_time . '23:59:59');
+            $query->andWhere(['<=', 'r_pre_repay_date', $this->e_time]);
+        }
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
     }
 

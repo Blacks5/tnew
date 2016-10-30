@@ -175,10 +175,8 @@ class StoresController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $pages->pageSize = 1;
+        $pages->pageSize = 6;
         $data = $query->orderBy(['o_goods_num' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-
-
         return $this->render('allorders', [
             'sear' => $model->getAttributes(),
             'model' => $data,
