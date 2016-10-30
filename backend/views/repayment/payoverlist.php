@@ -9,8 +9,6 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-//app\assets\LayerAsset::register($this);
-//app\assets\MainAsset::register($this);
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
