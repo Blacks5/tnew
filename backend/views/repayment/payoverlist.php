@@ -129,8 +129,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-    <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-    <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <?= Html::cssFile('@web/css/plugins/datapicker/datepicker3.css') ?>
+    <?= Html::jsFile('@web/js/plugins/datapicker/bootstrap-datepicker.js') ?>
     <script>
 
 

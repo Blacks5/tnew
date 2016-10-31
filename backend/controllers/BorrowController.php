@@ -50,7 +50,7 @@ class BorrowController extends CoreBackendController
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionListVeriftRefuse()
+    public function actionListVerifyRefuse()
     {
 
         $this->getView()->title = '已拒绝列表';
@@ -74,7 +74,7 @@ class BorrowController extends CoreBackendController
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionListVeriftRevoke()
+    public function actionListVerifyRevoke()
     {
         $this->getView()->title = '已撤销列表';
         $model = new OrdersSearch();
@@ -97,7 +97,7 @@ class BorrowController extends CoreBackendController
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionListVeriftPass()
+    public function actionListVerifyPass()
     {
         $this->getView()->title = '已通过列表';
         $model = new OrdersSearch();

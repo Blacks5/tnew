@@ -26,6 +26,11 @@ use backend\core\CoreBackendController;
  */
 class StoresController extends CoreBackendController
 {
+
+    public function actionIndexp()
+    {
+        echo '商户管理';
+    }
     /**
      * 商户列表
      * @return string
