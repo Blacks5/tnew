@@ -10,8 +10,6 @@ namespace api\controllers;
 
 use api\components\CustomApiException;
 use api\models\OrdersHelper;
-use common\helper\CalInterest;
-use common\helper\UploadFile;
 use common\models\Customer;
 use common\models\OrderImages;
 use common\models\Orders;
