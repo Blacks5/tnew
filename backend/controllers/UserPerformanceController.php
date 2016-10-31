@@ -7,6 +7,7 @@
  * @author 涂鸿 <hayto@foxmail.com>
  */
 namespace backend\controllers;
+use backend\models\YejiSearch;
 use yii;
 use backend\core\CoreBackendController;
 
@@ -18,8 +19,17 @@ use backend\core\CoreBackendController;
  */
 class UserPerformanceController extends CoreBackendController
 {
+    /**
+     * 员工业绩列表
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionIndex()
     {
+        $yejidrv = new YejiSearch();
+        $list = $yejidrv->search(\yii::$app->request->getQueryParams());
 
+
+        return $this->render('index', ['data'=>$list, 'sear'=>$list['sear']]);
     }
 }

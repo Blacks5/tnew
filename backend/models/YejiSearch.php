@@ -6,12 +6,12 @@
  * Time: 15:46
  */
 
-namespace app\models;
+namespace backend\models;
 
-use app\core\base\BaseModel;
+use backend\core\CoreBackendModel;
 use yii\data\Pagination;
 
-class YejiSearch extends BaseModel{
+class YejiSearch extends CoreBackendModel{
     public $username;
     public $realname;
 
