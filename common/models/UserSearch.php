@@ -2,10 +2,10 @@
 
 namespace common\models;
 
+use common\models\User;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\User;
 
 /**
  * UserSearch represents the model behind the search form about `common\models\User`.
@@ -15,6 +15,7 @@ class UserSearch extends User
     public $username;
     public $realname;
     public $email;
+
     /**
      * @inheritdoc
      */
@@ -33,7 +34,7 @@ class UserSearch extends User
     {
         // bypass scenarios() implementation in the parent classDDD
         return [
-            'search'=>['username', 'realname', 'email']
+            'search' => ['username', 'realname', 'email']
         ];
     }
 
@@ -46,7 +47,10 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find()->where(['!=', 'status', self::STATUS_DELETE]);
+        $query = User::find()->select('*')
+            ->leftJoin(Department::tableName(), 'd_id=department_id')
+            ->where(['!=', 'status', self::STATUS_DELETE])
+            ->andWhere(['!=', 'username', 'admin']);
         $this->setScenario('search');
         $this->load($params);
         if (!$this->validate()) {

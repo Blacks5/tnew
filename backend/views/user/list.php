@@ -16,7 +16,7 @@ use yii\widgets\LinkPager;
                         <div class="row">
                             <div class="col-sm-3">
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/create']))) { ?>
-                                <a class="btn btn-info btn-sm" href="<?= Url::toRoute('user/create') ?>">新增用户</a>
+                                    <a class="btn btn-info btn-sm" href="<?= Url::toRoute('user/create') ?>">新增用户</a>
                                 <?php } ?>
                             </div>
                         </div>
@@ -61,8 +61,8 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['id'] ?></td>
                                         <td><?= $vo['username'] ?></td>
                                         <td><?= $vo['realname'] ?></td>
-                                        <!--<td><?/*= $vo['usergroup']['item_name'] */?></td>-->
-                                        <td><?= $vo['department_id'] ?></td>
+                                        <!--<td><? /*= $vo['usergroup']['item_name'] */ ?></td>-->
+                                        <td><?= $vo['d_name'] ?></td>
                                         <td><i class="fa fa-mobile"
                                                style="color: #00a2d4;"></i>&nbsp;<?= $vo['cellphone'] ?></td>
                                         <td><i class="fa fa-envelope"
@@ -72,31 +72,29 @@ use yii\widgets\LinkPager;
 
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/view']))) { ?>
                                                 <a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/view', 'id' => $vo['id']]) ?>"><i
-                                                    class="fa fa-edit"></i>查看
-                                            </a>
+                                                   href="<?= Url::toRoute(['user/view', 'id' => $vo['id']]) ?>"><i
+                                                        class="fa fa-edit"></i>查看
+                                                </a>
                                             <?php } ?>
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/update']))) { ?>
-                                            <a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/update', 'item_name' => $vo['usergroup']['item_name'], 'id' => $vo['id']]) ?>"><i
-                                                    class="fa fa-edit"></i>编辑
-                                            </a>
+                                                <a class="btn btn-primary btn-xs"
+                                                   href="<?= Url::toRoute(['user/update', 'id' => $vo['id']]) ?>"><i
+                                                        class="fa fa-edit"></i>编辑
+                                                </a>
                                             <?php } ?>
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/mod-pwd']))) { ?>
-                                            <a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['user/mod-pwd', 'id' => $vo['id']]) ?>"><i
-                                                    class="fa fa-edit"></i>重置密码
-                                            </a>
+                                                <a class="btn btn-primary btn-xs"
+                                                   href="<?= Url::toRoute(['user/mod-pwd', 'id' => $vo['id']]) ?>"><i
+                                                        class="fa fa-edit"></i>重置密码
+                                                </a>
                                             <?php } ?>
 
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/delete']))) { ?>
-                                            <?php if ($vo['usergroup']['item_name'] != '超级管理员') { ?>
                                                 <button class="btn btn-danger btn-xs del-user"
                                                         data-value="<?= $vo['id'] ?>"><i
                                                         class="fa fa-close"></i>删除
                                                 </button>
-                                                <?php }
-                                            } ?>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                 <?php } ?>

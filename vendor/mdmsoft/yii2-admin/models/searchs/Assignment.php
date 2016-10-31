@@ -53,11 +53,13 @@ class Assignment extends Model
             'query' => $query,
         ]);
 
+        $query->andWhere(['!=', 'username', 'admin']);
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
         $query->andFilterWhere(['like', $usernameField, $this->username]);
+
 
         return $dataProvider;
     }

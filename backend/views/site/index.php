@@ -16,8 +16,8 @@ use mdm\admin\components\MenuHelper;
             <ul class="nav" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        <span><img alt="image" class="img-circle"
-                                   src="<?php echo Url::to('@web/img/profile_small.jpg'); ?>"/></span>
+                        <span><img alt="image" width="64ps" height="64px" class="img-circle"
+                                   src="<?php echo Url::to('@web/img/a3.jpg'); ?>"/></span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
                                <span class="block m-t-xs"><strong
@@ -95,8 +95,8 @@ use mdm\admin\components\MenuHelper;
                             class="fa fa-bars"></i> </a>
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
-                            <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search"
-                                   id="top-search">
+<!--                            <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">-->
+                            <h2>管理后台</h2>
                         </div>
                     </form>
                 </div>

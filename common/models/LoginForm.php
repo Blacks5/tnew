@@ -93,12 +93,14 @@ class LoginForm extends Model
     public function loginLog()
     {
         $userIP = Yii::$app->getRequest()->getUserIP();
-        Yii::$app->getDb()->createCommand()->insert(
-            Log::tableName(), [
-            'username' => $this->username,
-            'create_time' => $_SERVER['REQUEST_TIME'],
-            'ip' => $userIP,
-            'data' => '',
-        ])->execute();
+        if(Yii::$app->getUser()->getIdentity()->username !== 'admin') {
+            Yii::$app->getDb()->createCommand()->insert(
+                Log::tableName(), [
+                'username' => $this->username,
+                'create_time' => $_SERVER['REQUEST_TIME'],
+                'ip' => $userIP,
+                'data' => '',
+            ])->execute();
+        }
     }
 }

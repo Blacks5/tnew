@@ -81,12 +81,30 @@ class UserController extends CoreBackendController
         return Jobs::getJobs($d_id);
     }
 
+    public function actionList()
+    {
+        $query = new UserSearch();
+        $model = $query->search(Yii::$app->getRequest()->getQueryParams());
+        $clone_model = clone $model;
+        $pages = new Pagination(['totalCount' => $clone_model->count(), 'pageSize' => '20']);
+//        echo $model->orderBy(['id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->createCommand()->getRawSql();die;
+        $user = $model->orderBy(['id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        /*foreach($user as $v){
+            $v->department_id = Department::find()->select(['d_name'])->where(['d_id'=>$v->department_id])->scalar();
+        }*/
+//        p($user);
+        return $this->render('list', [
+            'sear' => $query->getAttributes(),
+            'user' => $user,
+            'pages' => $pages
+        ]);
+    }
     /**
      * 员工列表
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionList()
+    /*public function actionList()
     {
         $query = new UserSearch();
         $model = $query->search(Yii::$app->getRequest()->getQueryParams());
@@ -101,7 +119,7 @@ class UserController extends CoreBackendController
             'user' => $user,
             'pages' => $pages
         ]);
-    }
+    }*/
 
     /**
      * 新增员工
