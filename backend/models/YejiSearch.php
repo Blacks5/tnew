@@ -46,7 +46,7 @@ class YejiSearch extends CoreBackendModel{
         ;
 
         foreach ($userlist as $_k=>$_v){
-            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']]);
+            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']])->andWhere(['!=', 'o_status', '2']);
             $t_ordercount = $orderinfo->count();
 
             $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id'], 'o_status'=>10]);
