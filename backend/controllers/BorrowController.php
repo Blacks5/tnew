@@ -35,7 +35,7 @@ class BorrowController extends CoreBackendController
         $query = $query->andWhere(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN]]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listwaitverify', [
             'sear' => $model->getAttributes(),
@@ -59,7 +59,7 @@ class BorrowController extends CoreBackendController
         $query = $query->andWhere(['o_status' => Orders::STATUS_REFUSE]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrefuse', [
             'sear' => $model->getAttributes(),
@@ -82,7 +82,7 @@ class BorrowController extends CoreBackendController
         $query = $query->andWhere(['o_status' => Orders::STATUS_REVOKE]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrevoke', [
             'sear' => $model->getAttributes(),
@@ -105,7 +105,7 @@ class BorrowController extends CoreBackendController
         $query = $query->andWhere(['o_status' => Orders::STATUS_PAYING]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 10;//Yii::$app->params['page_size'];
+        $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifypass', [
             'sear' => $model->getAttributes(),

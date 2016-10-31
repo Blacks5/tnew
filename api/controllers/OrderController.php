@@ -414,7 +414,6 @@ class OrderController extends CoreApiController
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage(), 'data'=>[]];
         }catch(yii\base\ErrorException $e){
-            p($e->getMessage());
             return ['status'=>0, 'message'=>'系统错误', 'data'=>[]];
         }
     }
