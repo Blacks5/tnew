@@ -25,8 +25,8 @@ $form = ActiveForm::begin(
             <?= $form->field($model, 't_name')->textInput(['class' => 'form-control'])/*->hint(' 这里', ['class'=>'fa fa-info-circle'])*/
             ; ?>
             <?= $form->field($model, 't_province')->dropDownList($provinces, ['class' => 'form-control getpcc', 'data-id' => 2]); ?>
-            <?= $form->field($model, 't_city')->dropDownList([], ['class' => 'form-control getpcc', 'default-value' => $model->t_city]); ?>
-            <?= $form->field($model, 't_county')->dropDownList([], ['class' => 'form-control getpcc', 'default-value' => $model->t_county]); ?>
+            <?= $form->field($model, 't_city')->dropDownList($all_citys, ['class' => 'form-control getpcc', 'default-value' => $model->t_city]); ?>
+            <?= $form->field($model, 't_county')->dropDownList($all_countys, ['class' => 'form-control getpcc', 'default-value' => $model->t_county]); ?>
             <div class="form-group">
                 <div class="col-sm-8 col-sm-offset-3">
                     <?= \yii\helpers\Html::submitButton('提交', ['class' => 'btn btn-primary']); ?>
@@ -71,6 +71,6 @@ $this->registerJs('
     }
     
     // 初始化
-    $("#team-t_province").trigger("change");
+//    $("#team-t_province").trigger("change");
  ');
 ?>

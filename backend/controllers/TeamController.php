@@ -70,10 +70,15 @@ class TeamController extends CoreBackendController
             }
         }
         // 所有省
+//        p($model['t_province']);
         $provinces = Helper::getAllProvince();
+        $all_citys = Helper::getSubAddr($model['t_province']);
+        $all_countys = Helper::getSubAddr($model['t_city']);
         return $this->render('update', [
             'model' => $model,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'all_citys' => $all_citys,
+            'all_countys' => $all_countys,
         ]);
     }
 
