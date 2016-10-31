@@ -30,6 +30,10 @@ class UserPerformanceController extends CoreBackendController
         $list = $yejidrv->search(\yii::$app->request->getQueryParams());
 
 
-        return $this->render('index', ['data'=>$list, 'sear'=>$list['sear']]);
+        return $this->render('index', [
+            'data'=>$list,
+            'sear'=>$list['sear'],
+            'pages'=>$list['pages']
+        ]);
     }
 }

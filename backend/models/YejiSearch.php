@@ -9,6 +9,7 @@
 namespace backend\models;
 
 use backend\core\CoreBackendModel;
+use common\models\Orders;
 use yii\data\Pagination;
 
 class YejiSearch extends CoreBackendModel{
@@ -31,13 +32,14 @@ class YejiSearch extends CoreBackendModel{
 
         $query =  $userlist = User::find()
             ->select(['user.id', 'user.username', 'user.realname'])
+            ->where(['!=', 'username', 'admin'])
             ->filterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'realname', $this->realname]);
 
         $querytemp = clone $query;
         $totalcount = $querytemp->count();
         $pages = new Pagination(['totalCount' => $totalcount]);
-        $pages->pageSize = 1;
+        $pages->pageSize = 10;
 
         $userlist = $query->offset($pages->offset)->limit($pages->limit)
             ->asArray()->all();
@@ -67,7 +69,8 @@ class YejiSearch extends CoreBackendModel{
         return [
             'data' => $userlist,
             'sear' => $this->getAttributes(),
-            'totalcount' => $pages->pageCount
+            'totalcount' => $pages->pageCount,
+            'pages'=>$pages
         ];
     }
 }
