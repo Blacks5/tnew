@@ -29,11 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-sm-4">
                                 <div class="input-daterange input-group" id="datepicker">
                                     <input type="text" class="form-control" name="AllOrdersWithStoreSearch[s_time]"
-                                           placeholder="开始时间"
+                                           placeholder="下单开始时间"
                                            value="<?php echo $sear['s_time'] ? (date('Y-m-d', $sear['s_time'])) : ''; ?>">
                                     <span class="input-group-addon ">到</span>
                                     <input type="text" class="form-control" name="AllOrdersWithStoreSearch[e_time]"
-                                           placeholder="结束时间"
+                                           placeholder="下单结束时间"
                                            value="<?php echo $sear['e_time'] ? (date('Y-m-d', $sear['e_time'])) : ''; ?>">
                                 </div>
                         </div>
