@@ -32,6 +32,7 @@ class LoginController extends CoreCommonController
         if (!Yii::$app->getUser()->getIsGuest()) {
             return $this->goHome();
         }
+        usleep(500);
         $model = new LoginForm();
         if ($model->load(Yii::$app->getRequest()->post()) && $model->login()) {
             $model->loginLog();
