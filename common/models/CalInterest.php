@@ -27,7 +27,8 @@ class CalInterest
      */
     public static function calEveryMonth($total_money, $total_months, $rate_month)
     {
-        return $month_benjinTotal = $total_money * $rate_month * pow(1 + $rate_month, $total_months) / (pow(1 + $rate_month, $total_months) - 1); //每月还款金额
+        // 〔贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数-1〕
+        return $month_benjinTotal = ($total_money * $rate_month * pow(1 + $rate_month, $total_months)) / (pow(1 + $rate_month, $total_months) - 1); //每月还款金额
     }
 
     /**

@@ -10,6 +10,7 @@ namespace api\controllers;
 
 use api\components\CustomApiException;
 use api\models\OrdersHelper;
+use common\models\CalInterest;
 use common\models\Customer;
 use common\models\OrderImages;
 use common\models\Orders;
@@ -372,16 +373,50 @@ class OrderController extends CoreApiController
     }
 
     /**
+     * 理论上：总借款额度，使用的产品id
+     *
+     *
      * 返回安卓端月还款额
-     * @param $total_money
-     * @param $total_months
-     * @param $rate_month
+     * @param $total_money 总共借多少钱
+     * @param $total_months 借多少个月
+     * @param $rate_month 月利率
      * @return float
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionCalEveryMonthPayMoney($total_money, $total_months, $rate_month)
+    public function actionGetRepayment()
     {
-        return CalInterest::calEveryMonth($total_money, $total_months, $rate_month);
+        $get = Yii::$app->getRequest();
+        $total_money = $get->get('total_money'); // 借款额
+        $product_id = $get->get('product_id'); // 使用的产品
+        $p_add_service_fee = $get->get('p_add_service_fee'); // 增值服务费
+        $p_free_pack_fee = $get->get('p_free_pack_fee'); // 随心包服务费
+        try{
+            if(!$total_money || !$product_id){
+                throw new CustomApiException('请求错误');
+            }
+            $select = ['p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'];
+            if(!$data = Product::find()->select($select)->where(['p_id'=>$product_id])->asArray()->one()){
+                throw new CustomApiException('请求错误');
+            }
+            $every_month_repay = CalInterest::calEveryMonth($total_money, $data['p_period'], $data['p_month_rate']);
+            if($p_add_service_fee == 1){
+                $every_month_repay += $data['p_add_service_fee'];
+            }
+            if($p_free_pack_fee == 1){
+                $every_month_repay += $data['p_free_pack_fee'];
+            }
+            $res = [];
+            for($i=0; $i<$data['p_period']; $i++){
+                $res[$i]['time'] = strtotime('+'. $i+1 . 'months'); // 下个月的明天
+                $res[$i]['money'] = round($every_month_repay, 2);
+            }
+            return ['status'=>1, 'message'=>'success', 'data'=>$res];
+        }catch(CustomApiException $e){
+            return ['status'=>0, 'message'=>$e->getMessage(), 'data'=>[]];
+        }catch(yii\base\ErrorException $e){
+            p($e->getMessage());
+            return ['status'=>0, 'message'=>'系统错误', 'data'=>[]];
+        }
     }
 
     /**
