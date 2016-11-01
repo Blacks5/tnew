@@ -58,8 +58,8 @@ class SiteController extends CoreBackendController
 
     public function actionIndex()
     {
-        Yii::$app->getView()->title = 'XX';
-        $user_id=Yii::$app->user->identity->getId();
+        Yii::$app->getView()->title = '后台';
+        $user_id=Yii::$app->getUser()->getIdentity()->getId();
 //        $user_info = Yii::$app->authManager->getRolesByUser($user_id);
         $d_id = User::find()->select(['department_id'])->where(['id'=>$user_id])->scalar();
         $user_info = Department::find()->select(['d_name'])->where(['d_id'=>$d_id])->scalar();

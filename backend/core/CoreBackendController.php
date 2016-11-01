@@ -13,5 +13,4 @@ use common\core\CoreCommonController;
 
 class CoreBackendController extends CoreCommonController
 {
-
 }

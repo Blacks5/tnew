@@ -67,6 +67,12 @@ class AccessControl extends \yii\base\ActionFilter
     {
         $actionId = $action->getUniqueId();
         $user = $this->getUser();
+        if(!$user->getIsGuest()){
+            if($user->getIdentity()->updated_at != Yii::$app->getSession()->get('logintime')){
+                $user->logout();
+                throw new ForbiddenHttpException('该账户已经在别处登录！如不是本人操作，请尽快修改密码！');
+            }
+        }
         if (Helper::checkRoute('/' . $actionId, Yii::$app->getRequest()->get(), $user)) {
             return true;
         }

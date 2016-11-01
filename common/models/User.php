@@ -127,7 +127,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id'=>$id, 'status'=>self::STATUS_ACTIVE]);
+        return static::find()->where(['id'=>$id, 'status'=>self::STATUS_ACTIVE])->one();
     }
 
     /**

@@ -16,7 +16,19 @@ return [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => false,
             'enableSession'=>false,
-            'loginUrl'=>null
+            'loginUrl'=>null,
+            'on beforeLogin' => function ($event) {
+                //
+            },
+            'on afterLogin' => function ($event) {
+                //
+            },
+            'on beforeLogout' => function ($event) {
+                //
+            },
+            'on afterLogout' => function ($event) {
+                //
+            },
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
