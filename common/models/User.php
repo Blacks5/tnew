@@ -87,7 +87,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
         $scen['create'] = ['username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
-        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
+//        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
         return $scen;
     }
 
@@ -287,16 +287,16 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
      */
     public function modselfpwd($param)
     {
-        $this->scenario = 'modselfpwd';
-        $this->load($param);
-        if(!$this->validate()){
-            return false;
+        if(!$this->validatePassword($param['User']['old_password'])){
+            return $this->addError('old_password', '原始密码错误');
         }
-//        $this->old_password = $this->ge
-        p($this->validatePassword('111111'));
-        p($this->old_password, $this->password_hash, $this->password_hash_1);
-        $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
-        $this->access_token = Yii::$app->security->generatePasswordHash($this->password_hash);
+        if($param['User']['password_hash'] !== $param['User']['password_hash_1']){
+            $this->addError('password_hash', '两次密码不一致');
+            return $this->addError('password_hash_1', '两次密码不一致');
+        }
+        $this->password_hash = Yii::$app->security->generatePasswordHash($param['User']['password_hash']);
+        $this->access_token = Yii::$app->security->generatePasswordHash($param['User']['password_hash']);
+        $this->updated_at = $_SERVER['REQUEST_TIME'];
         if(!$this->update(false)){
             return false;
         }

@@ -249,7 +249,7 @@ class UserController extends CoreBackendController
         $model = $this->findModel($id);
         if ($request->getIsPost()) {
             if ($model->modpwd($request->post(), $id)) {
-                $this->success('重置成功', Url::toRoute(['user/list']));
+                return $this->success('重置成功', Url::toRoute(['user/list']));
             }
         }
 
@@ -267,9 +267,8 @@ class UserController extends CoreBackendController
         $id = Yii::$app->getUser()->getIdentity()->getId();
         $model = $this->findModel($id);
         if ($request->getIsPost()) {
-//            p($request->post());
             if ($model->modselfpwd($request->post(), $id)) {
-                $this->success('修改成功', Url::toRoute(['user/list']));
+                return $this->success('修改成功', Url::toRoute(['user/list']));
             }
         }
 
