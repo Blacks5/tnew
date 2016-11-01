@@ -17,6 +17,7 @@ use common\models\Orders;
 use common\models\Product;
 use common\models\Stores;
 use common\models\TooRegion;
+use common\models\UploadFile;
 use yii;
 use api\core\CoreApiController;
 
@@ -267,6 +268,8 @@ class OrderController extends CoreApiController
             return ['status'=>0,'message'=>'上传失败4', 'data'=>[]];
         }
     }
+
+
 
 
     /**

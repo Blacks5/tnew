@@ -18,6 +18,7 @@ use common\core\CoreCommonActiveRecord;
  * @property string $oi_family_card_two
  * @property string $oi_driving_license_one
  * @property string $oi_driving_license_two
+ * @property string $oi_signature
  *
  * 二审合同相关图片
  * @property string $oi_after_contract
@@ -61,9 +62,7 @@ class OrderImages extends CoreCommonActiveRecord
             'oi_driving_license_two' => '驾照2',
 
             'oi_after_contract' => '合同1',
+            'oi_signature'=>'手写签名'
         ];
-    }
-    public function a()
-    {
     }
 }
