@@ -26,7 +26,7 @@ use mdm\admin\components\MenuHelper;
                                 </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a class="J_menuItem" href="form_avatar.html">修改头像</a>
+                            <li><a class="J_menuItem" href="<?= Url::toRoute(['user/mod-self-pwd']) ?>">修改密码</a>
                             </li>
                             <li><a class="J_menuItem"
                                    href="<?= Url::toRoute(['user/update', 'id' => Yii::$app->user->identity->getId()]) ?>">个人资料</a>

@@ -81,6 +81,7 @@ class UserController extends CoreBackendController
         return Jobs::getJobs($d_id);
     }
 
+
     public function actionList()
     {
         $query = new UserSearch();
@@ -248,11 +249,31 @@ class UserController extends CoreBackendController
         $model = $this->findModel($id);
         if ($request->getIsPost()) {
             if ($model->modpwd($request->post(), $id)) {
-                return $this->redirect(['user/list']);
+                $this->success('重置成功', Url::toRoute(['user/list']));
             }
         }
 
         return $this->render('modpwd', ['model' => $model]);
+    }
+
+    /**
+     * 修改自己的密码
+     * @return string|Response
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionModSelfPwd()
+    {
+        $request = Yii::$app->getRequest();
+        $id = Yii::$app->getUser()->getIdentity()->getId();
+        $model = $this->findModel($id);
+        if ($request->getIsPost()) {
+//            p($request->post());
+            if ($model->modselfpwd($request->post(), $id)) {
+                $this->success('修改成功', Url::toRoute(['user/list']));
+            }
+        }
+
+        return $this->render('modselfpwd', ['model' => $model]);
     }
 
     protected function findModel($id)

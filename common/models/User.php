@@ -26,6 +26,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
 {
 
     public $password_hash_1; // 重复密码
+    public $old_password; // 原始密码
 
 
     // 10正常 0删除 1禁用 2离职
@@ -65,7 +66,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             [['created_at', 'updated_at'], 'safe'],
             ['password_hash', 'required', 'on'=>'create', 'message'=>'{attribute}必须填写'],
             ['email', 'email', 'message'=>'{attribute}错误'],
-            [['username', 'realname', 'email', 'county', 'city', 'province', 'password_hash_1', 'password_hash'], 'required',
+            [['username', 'realname', 'email', 'county', 'city', 'province', 'password_hash_1', 'password_hash', 'old_password'], 'required',
                 'message'=>'{attribute}必须填写'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key'], 'string', 'max' => 32],
@@ -86,6 +87,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
         $scen['create'] = ['username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
+        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
         return $scen;
     }
 
@@ -275,16 +277,29 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             return false;
         }
         return true;
+    }
 
-        /*$model = static::findOne(['id'=>$userid]);
-        if($model){
-            $model->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
-            $model->access_token = Yii::$app->security->generatePasswordHash($model->password_hash);
-            if(!$model->update(false)){
-                return false;
-            }
-            return true;
+    /**
+     * 修改本账号的密码
+     * @param $param
+     * @return bool
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function modselfpwd($param)
+    {
+        $this->scenario = 'modselfpwd';
+        $this->load($param);
+        if(!$this->validate()){
+            return false;
         }
-        return false;*/
+//        $this->old_password = $this->ge
+        p($this->validatePassword('111111'));
+        p($this->old_password, $this->password_hash, $this->password_hash_1);
+        $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
+        $this->access_token = Yii::$app->security->generatePasswordHash($this->password_hash);
+        if(!$this->update(false)){
+            return false;
+        }
+        return true;
     }
 }

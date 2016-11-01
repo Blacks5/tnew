@@ -102,9 +102,14 @@ class ErrorAction extends Action
         if (Yii::$app->getRequest()->getIsAjax()) {
             return "$name: $message";
         } else {
+            if($exception->getCode() == 55){
+                $name = '账户异常！';
+                $code = $exception->getCode();
+            }
             return $this->controller->render($this->view ?: $this->id, [
                 'name' => $name,
                 'message' => $message,
+                'code'=>$code,
                 'exception' => $exception,
             ]);
         }
