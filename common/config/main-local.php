@@ -15,6 +15,14 @@ return [
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
             'useFileTransport' => true,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.qq.com',
+                'username' => '网站邮箱',
+                'password' => '邮箱密码或授权码',
+                'port' => '587', // 不走ssl就选25，不过腾讯必须走ssl端口
+                'encryption' => 'tls', // 不走ssl就填false
+            ],
         ],
         /*'authManager' => [
             'class' => 'yii\rbac\DbManager',
