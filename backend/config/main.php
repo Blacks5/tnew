@@ -25,7 +25,7 @@ return [
             //controller/action
 //            '*',
             'login/login',
-//            'index/*'
+//            'index/*'1
         ]
     ],
 
