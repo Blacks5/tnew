@@ -150,6 +150,7 @@ class UserController extends CoreBackendController
 //                return $this->redirect(['list']);
             }
         }
+//        p($model->errors);
         $all_province = Helper::getAllProvince();
         $all_departments = Department::getAllDepartments();
         return $this->render('create', [

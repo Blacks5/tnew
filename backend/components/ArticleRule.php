@@ -17,6 +17,7 @@ class ArticleRule extends Rule
     public function execute($user, $item, $params)
     {
         // 这里先设置为false,逻辑上后面再完善
+        p($user, $item, $params);
         return false;
     }
 }

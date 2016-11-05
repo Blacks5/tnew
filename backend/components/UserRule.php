@@ -1,0 +1,40 @@
+<?php
+
+namespace backend\components;
+
+
+use Yii;
+use yii\rbac\Rule;
+
+/**
+ * Class ArticleRule
+ * @package backend\components
+ * @author 涂鸿 <hayto@foxmail.com>
+ */
+class UserRule extends Rule
+{
+    public $name = 'user';
+    public function execute($user, $item, $params)
+    {
+        // 这里先设置为false,逻辑上后面再完善
+        // 只有总经办角色和员工本人，可以修改自己的信息
+        // todo 只有总经办角色和员工本人，可以修改自己的信息
+        /*/mnt/wcb_latest/backend/web/index.php:19:int 11 $user 操作者的用户id
+
+/mnt/wcb_latest/backend/web/index.php:19: item
+object(yii\rbac\Permission)[105]
+  public 'type' => string '2' (length=1)
+  public 'name' => string '编辑员工' (length=12)
+  public 'description' => null
+  public 'ruleName' => string '编辑员工' (length=12)
+  public 'data' => null
+  public 'createdAt' => string '1477832995' (length=10)
+  public 'updatedAt' => string '1478357974' (length=10)
+
+/mnt/wcb_latest/backend/web/index.php:19:
+array (size=1)
+  'id' => string '12' (length=2) // 参数
+*/
+        return true;
+    }
+}
