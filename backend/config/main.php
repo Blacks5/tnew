@@ -43,19 +43,19 @@ return [
             'authTimeout' => 3000,
 //            'loginUrl'=>['login/login'], // 没有登录会跳这里
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-            'on beforeLogin' => function ($event) {
+            /*'on beforeLogin' => function ($event) {
                 $event->identity->updated_at = $_SERVER['REQUEST_TIME'];
                 $event->identity->save(false);
-            },
-            'on afterLogin' => function ($event) {
-                //
+            },*/
+            /*'on afterLogin' => function ($event) {
+
             },
             'on beforeLogout' => function ($event) {
-                //
+
             },
             'on afterLogout' => function ($event) {
-                //
-            },
+
+            },*/
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend

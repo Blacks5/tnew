@@ -16,7 +16,7 @@ class LoginForm extends Model
 
     private $_user;
 
-
+    const LOGIN_LOG = 'loginlog';
     /**
      * @inheritdoc
      */
@@ -87,10 +87,14 @@ class LoginForm extends Model
     }
 
     /**
+     * 2016-11-07 涂鸿修改
+     * 本方法以及弃用，改为事件处理方式
+     *
+     *
      * 登录 记录
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function loginLog()
+    /*public function loginLog()
     {
         $userIP = Yii::$app->getRequest()->getUserIP();
         if(Yii::$app->getUser()->getIdentity()->username !== 'admin') {
@@ -102,5 +106,5 @@ class LoginForm extends Model
                 'data' => '',
             ])->execute();
         }
-    }
+    }*/
 }

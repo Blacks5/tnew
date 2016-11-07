@@ -8,6 +8,7 @@
  */
 namespace backend\controllers;
 
+use backend\events\LoginEvent;
 use common\models\LoginForm;
 use yii;
 use common\core\CoreCommonController;
@@ -34,10 +35,14 @@ class LoginController extends CoreCommonController
         }
         usleep(500);
         $model = new LoginForm();
-        if ($model->load(Yii::$app->getRequest()->post()) && $model->login()) {
-            $session = Yii::$app->getSession();
-            $session->set('logintime', $_SERVER['REQUEST_TIME']); // 记录一个登录时间，用于判断不重复登录
-            $model->loginLog();
+        if ($model->load(Yii::$app->getRequest()->post())) {
+
+            // 先綁定事件hander \yii\web\User里会trigger
+            // 写登录日志
+            Yii::$app->getUser()->on(yii\web\User::EVENT_AFTER_LOGIN, ['backend\events\LoginEvent', 'writeLoginLog']);
+
+            // 然后执行
+            $model->login();
             return $this->goBack();
         } else {
             return $this->render('login', [

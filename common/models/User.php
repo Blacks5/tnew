@@ -24,7 +24,6 @@ use common\core\CoreCommonActiveRecord;
  */
 class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
 {
-
     public $password_hash_1; // 重复密码
     public $old_password; // 原始密码
 
