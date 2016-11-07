@@ -9,9 +9,8 @@
 namespace backend\events;
 use backend\models\Log;
 use yii;
-use yii\base\Event;
 
-class LoginEvent extends  Event
+class LoginEvent
 {
     /**
      * 登录时写登录日志
