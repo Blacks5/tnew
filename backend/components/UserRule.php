@@ -3,6 +3,7 @@
 namespace backend\components;
 
 
+use common\models\User;
 use Yii;
 use yii\rbac\Rule;
 
@@ -18,7 +19,6 @@ class UserRule extends Rule
     {
         // 这里先设置为false,逻辑上后面再完善
         // 只有总经办角色和员工本人，可以修改自己的信息
-        // todo 只有总经办角色和员工本人，可以修改自己的信息
         /*/mnt/wcb_latest/backend/web/index.php:19:int 11 $user 操作者的用户id
 
 /mnt/wcb_latest/backend/web/index.php:19: item
@@ -33,8 +33,13 @@ object(yii\rbac\Permission)[105]
 
 /mnt/wcb_latest/backend/web/index.php:19:
 array (size=1)
-  'id' => string '12' (length=2) // 参数
+  'id' => string '12' (length=2) // 参数 User::find()->where(['id'=>$user, ''])->exists()
 */
-        return true;
+//        p($user, $params);
+        // wlb 或者员工本人才有权限
+        if(($user == 11) || ($user == $params['id'])){
+            return true;
+        }
+        return false;
     }
 }

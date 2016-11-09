@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr/>
             <?= $this->render('_form', [
                 'model' => $model,
-                'model1' => $model1,
+//                'model1' => $model1,
                 'item' => $item,
                 'all_province'=>$all_province,
                 'all_departments'=>$all_departments

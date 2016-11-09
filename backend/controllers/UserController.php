@@ -132,7 +132,7 @@ class UserController extends CoreBackendController
         Yii::$app->getView()->title = '新增员工';
 
         $model = new User();
-        $model1 = new AuthItem();
+//        $model1 = new AuthItem();
 
         $auth = Yii::$app->getAuthManager();
         $item = $auth->getRoles(); // 获取所有角色
@@ -144,8 +144,8 @@ class UserController extends CoreBackendController
             $post = $request->post();
             if ($model->createUser($post)) {
                 // 分配部门角色
-                $role = $auth->createRole($post['AuthItem']['name']);
-                $auth->assign($role, $model->id);
+                /*$role = $auth->createRole($post['AuthItem']['name']);
+                $auth->assign($role, $model->id);*/
                 return $this->success('添加成功！', Url::toRoute(['user/list']));
 //                return $this->redirect(['list']);
             }
@@ -155,7 +155,7 @@ class UserController extends CoreBackendController
         $all_departments = Department::getAllDepartments();
         return $this->render('create', [
             'model' => $model,
-            'model1' => $model1,
+//            'model1' => $model1,
             'item' => $item_one,
             'all_province' => $all_province,
             'all_departments' => $all_departments
@@ -169,7 +169,7 @@ class UserController extends CoreBackendController
      */
     public function actionUpdate()
     {
-        $item_name = Yii::$app->request->get('item_name');
+//        $item_name = Yii::$app->request->get('item_name');
         $id = Yii::$app->request->get('id');
         $model = User::find()->joinWith('usergroup')->where(['id' => $id])->one();
         $auth = Yii::$app->authManager;
@@ -195,10 +195,10 @@ class UserController extends CoreBackendController
             if ($model->validate()) {
                 $model->save();
                 //分配角色
-                $role = $auth->createRole($post['AuthAssignment']['item_name']);                //创建角色对象
+                /*$role = $auth->createRole($post['AuthAssignment']['item_name']);                //创建角色对象
                 $user_id = $id;                                             //获取用户id，此处假设用户id=1
                 $auth->revokeAll($user_id);
-                $auth->assign($role, $user_id);                           //添加对应关系
+                $auth->assign($role, $user_id); */                          //添加对应关系
                 return $this->success('修改成功');
             }else{
                 $msg = $model->getFirstErrors();

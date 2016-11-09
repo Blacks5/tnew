@@ -32,11 +32,11 @@ $this->title = '更新用户 ';
                 <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList($all_citys)->label('请选择城市', ['class' => 'sr-only']) ?>
                 <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList($all_countys)->label('请选择城县/区', ['class' => 'sr-only']) ?>
 
-                <?php if ($model->username == 'admin'): ?>
-                    <?= $form->field($model->usergroup, 'item_name')->dropDownList($item, ['disabled' => true])->label('用户组') ?>
-                <?php else: ?>
-                    <?= $form->field($model->usergroup, 'item_name')->dropDownList($item)->label('用户组') ?>
-                <?php endif; ?>
+                <?php /*if ($model->username == 'admin'): */?><!--
+                    <?/*= $form->field($model->usergroup, 'item_name')->dropDownList($item, ['disabled' => true])->label('用户组') */?>
+                <?php /*else: */?>
+                    <?/*= $form->field($model->usergroup, 'item_name')->dropDownList($item)->label('用户组') */?>
+                --><?php /*endif; */?>
                 <div class="form-group">
                     <?= Html::submitButton('保存', ['class' => 'btn btn-primary']) ?>
                 </div>
