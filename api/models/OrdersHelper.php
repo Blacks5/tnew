@@ -76,8 +76,8 @@ class OrdersHelper
             $images_model = new OrderImages();
             $images_model->oi_user_id = $userid;
             if(!$images_model->save(false)){
-                var_dump($images_model->errors);
-                throw new CustomApiException('images-errors');
+                $msg = $images_model->getFirstErrors();
+                throw new CustomApiException(reset($msg));
             }
             // 2写customer表
             if($customerModel = Customer::findOne(['c_customer_id_card'=>$params['c_customer_id_card']])){
@@ -96,8 +96,8 @@ class OrdersHelper
 
             $customerModel->load($data, 'data');
             if(!$customerModel->validate()){
-                var_dump($customerModel->errors);
-                throw new CustomApiException('customer-errors');
+                $msg = $customerModel->getFirstErrors();
+                throw new CustomApiException(reset($msg));
             }
             $customerModel->c_total_money = $total_price;//
             $customerModel->c_customer_addr_province = $params['c_customer_addr_province'];//
@@ -120,8 +120,8 @@ class OrdersHelper
             $ordersModel->o_customer_id = $customerModel->c_id;
             $ordersModel->o_is_auto_pay = $params['o_is_auto_pay']; // 银行代扣
             if(!$ordersModel->validate()){
-                var_dump($ordersModel->errors);
-                throw new CustomApiException('order-errors');
+                $msg = $customerModel->getFirstErrors();
+                throw new CustomApiException(reset($msg));
             }
             if(!$ordersModel->save(false)){
                 throw new CustomApiException('订单写入失败');
