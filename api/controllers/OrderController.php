@@ -87,7 +87,6 @@ class OrderController extends CoreApiController
         try{
             return $model->placeOrders(\Yii::$app->getRequest()->post());
         }catch(CustomApiException $e){
-            var_dump($e->getMessage());
             return ['status'=>0, 'message'=>$e->getMessage()];
         }catch(yii\base\Exception $e){
             var_dump($e->getMessage());

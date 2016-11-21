@@ -9,6 +9,7 @@
 
 namespace common\models;
 
+use api\components\CustomApiException;
 use common\models\chuanglan_sms\ChuangLanSms;
 use yii;
 
@@ -38,11 +39,11 @@ class Sms
     {
         $patt = '/^1(3[0-9]|4[57]|5[0-35-9]|7[01678]|8[0-9])\d{8}$/';
         if (!preg_match($patt, $phone)) {
-            throw new CustomException('请填写正确的手机号码');
+            throw new CustomApiException('请填写正确的手机号码');
         }
 
         if ($this->cache_handle->exists($phone)) {
-            throw new CustomException(Yii::$app->params['sms_timeout']/60 . '分钟内只能发送一次验证码');
+            throw new CustomApiException(Yii::$app->params['sms_timeout']/60 . '分钟内只能发送一次验证码');
         }
         // 发送短信并解析结果
         $code = mt_rand(10000, 99999);
@@ -57,7 +58,7 @@ class Sms
             return $this->cache_handle->set($phone, $code, Yii::$app->params['sms_timeout']); // 发送成功
         }
 
-        throw new CustomException('发送失败,请重试.');
+        throw new CustomApiException('发送失败,请重试.');
     }
 
     /**
