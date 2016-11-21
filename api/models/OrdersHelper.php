@@ -36,7 +36,7 @@ class OrdersHelper
         if(!$verify->verify($params['c_customer_cellphone'], '1234')){
 //            throw new CustomException('验证码错误');
         }
-        p($params['c_customer_cellphone']);
+//        p($params['c_customer_cellphone']);
         $data['data'] = $params;
         // 1客户表 2订单表 3产品表
 
