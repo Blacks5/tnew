@@ -76,6 +76,7 @@ class OrdersHelper
             $images_model = new OrderImages();
             $images_model->oi_user_id = $userid;
             if(!$images_model->save(false)){
+                var_dump($images_model->errors);
                 throw new CustomApiException('images-errors');
             }
             // 2写customer表
@@ -119,6 +120,7 @@ class OrdersHelper
             $ordersModel->o_customer_id = $customerModel->c_id;
             $ordersModel->o_is_auto_pay = $params['o_is_auto_pay']; // 银行代扣
             if(!$ordersModel->validate()){
+                var_dump($ordersModel->errors);
                 throw new CustomApiException('order-errors');
             }
             if(!$ordersModel->save(false)){
