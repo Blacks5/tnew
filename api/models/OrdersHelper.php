@@ -30,6 +30,7 @@ class OrdersHelper
  * */
     public function placeOrders($params)
     {
+        p($params);
         // 首先验证码
         $verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], '1234')){
