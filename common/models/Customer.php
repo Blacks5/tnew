@@ -92,7 +92,7 @@ class Customer extends CoreCommonActiveRecord
             }],
 
             [['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_customer_idcard_provider', 'c_family_marital_status', 'c_family_house_info', 'c_family_expenses', 'c_family_income', 'c_kinship_name', 'c_kinship_relation', 'c_kinship_cellphone', 'c_kinship_addr', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_addr_detail', 'c_customer_jobs_company', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone', 'c_other_people_relation', 'c_other_people_name', 'c_other_people_cellphone', 'c_bank', 'c_banknum', 'c_banknum_owner'], 'required'],
-            [['c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_family_marital_status', 'c_family_house_info', 'c_family_expenses', 'c_family_income', 'c_kinship_relation', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_other_people_relation', 'c_created_at', 'c_updated_at', 'c_status'], 'integer'],
+            [['c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_relation', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_other_people_relation', 'c_created_at', 'c_updated_at', 'c_status'], 'integer'],
             [['c_total_interest', 'c_total_money'], 'number'],
             [['c_customer_name'], 'string', 'max' => 5],
             [['c_customer_id_card'], 'string', 'max' => 18],
@@ -141,7 +141,7 @@ class Customer extends CoreCommonActiveRecord
             'c_family_marital_partner_name' => '配偶姓名',
             'c_family_marital_partner_cellphone' => '配偶电话',
             'c_family_house_info' => '住房情况：1自有 2租住 3父母房产 4单位提供福利',
-            'c_family_expenses' => '每月总支出',
+            'c_family_expenses' => '每月总支出', // 这个去掉
             'c_family_income' => '每月总收入',
             'c_kinship_name' => '亲属姓名',
             'c_kinship_relation' => '亲属关系：1父亲 2母亲 3兄弟 4姐妹 5子女 6表兄弟 7表姐妹 8其他',
