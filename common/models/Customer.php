@@ -138,7 +138,7 @@ class Customer extends CoreCommonActiveRecord
             'c_customer_wechat' => '客户微信',
             'c_customer_email' => '客户email',
             'c_family_marital_status' => '婚姻状况：0未婚 1已婚 2离异 3 丧偶',
-            'c_family_marital_partner_name' => '配偶姓名',
+            'c_family_marital_partner_name' => '配偶姓名1',
             'c_family_marital_partner_cellphone' => '配偶电话',
             'c_family_house_info' => '住房情况：1自有 2租住 3父母房产 4单位提供福利',
             'c_family_expenses' => '每月总支出', // 这个去掉
