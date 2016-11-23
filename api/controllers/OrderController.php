@@ -73,7 +73,7 @@ class OrderController extends CoreApiController
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>'获取失败', 'data'=>[]];
         }catch (yii\base\Exception $e){
-            return ['status'=>0, 'message'=>'获取失败', 'data'=>[]];
+            return ['status'=>0, 'message'=>'获取失败_sys', 'data'=>[]];
         }
     }
 
@@ -89,8 +89,7 @@ class OrderController extends CoreApiController
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage()];
         }catch(yii\base\Exception $e){
-            var_dump($e->getMessage());
-            return ['status'=>0, 'message'=>'系统错误'];
+            return ['status'=>0, 'message'=>'系统错误_sys'];
         }
     }
 
@@ -118,7 +117,7 @@ class OrderController extends CoreApiController
             });
             return ['status'=>1, 'message'=>'获取成功', 'data'=>$data];
         }catch(yii\base\Exception $e){
-            return ['status'=>0, 'message'=>'获取失败', 'data'=>[]];
+            return ['status'=>0, 'message'=>'获取失败_sys', 'data'=>[]];
         }
     }
 
@@ -224,7 +223,7 @@ class OrderController extends CoreApiController
             }
             return ['status'=>0, 'message'=>'图片不存在', 'data'=>[]];
         }catch(yii\base\Exception $e){
-            return ['status'=>0, 'message'=>'删除失败', 'data'=>[]];
+            return ['status'=>0, 'message'=>'删除失败_sys', 'data'=>[]];
         }
     }
 
@@ -309,7 +308,7 @@ class OrderController extends CoreApiController
             });
             return ['status'=>1, 'message'=>'获取成功', 'data'=>$data];
         }catch(yii\base\Exception $e){
-            return ['status'=>0, 'message'=>'获取失败', 'data'=>[]];
+            return ['status'=>0, 'message'=>'获取失败_sys', 'data'=>[]];
         }
     }
 
@@ -350,7 +349,7 @@ class OrderController extends CoreApiController
             });
             return ['status'=>1, 'message'=>'获取成功', 'data'=>$data];
         }catch(yii\base\Exception $e){
-            return ['status'=>0, 'message'=>'获取失败', 'data'=>[]];
+            return ['status'=>0, 'message'=>'获取失败_sys', 'data'=>[]];
         }
     }
 
@@ -418,7 +417,7 @@ class OrderController extends CoreApiController
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage(), 'data'=>[]];
         }catch(yii\base\ErrorException $e){
-            return ['status'=>0, 'message'=>'系统错误', 'data'=>[]];
+            return ['status'=>0, 'message'=>'系统错误_sys', 'data'=>[]];
         }
     }
 
