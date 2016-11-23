@@ -82,6 +82,7 @@ class OrdersHelper
                 throw new CustomApiException(reset($msg));
             }
             // 2写customer表
+            \Yii::error($params['c_family_marital_status']. '-'. $params['c_family_marital_partner_cellphone']. '-'. $params['c_family_marital_partner_name']);
             if($customerModel = Customer::findOne(['c_customer_id_card'=>$params['c_customer_id_card']])){
                 if($customerModel->c_is_forbidden == 1){
                     if($customerModel->c_forbidden_time > $_SERVER['REQUEST_TIME']){
@@ -95,7 +96,6 @@ class OrdersHelper
             }else{
                 $customerModel = new Customer();
             }
-
             $customerModel->load($data, 'data');
             if(!$customerModel->validate()){
                 $msg = $customerModel->getFirstErrors();
