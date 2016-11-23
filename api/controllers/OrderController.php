@@ -393,7 +393,7 @@ class OrderController extends CoreApiController
         $product_id = $get->get('product_id'); // 使用的产品
         $p_add_service_fee = $get->get('p_add_service_fee'); // 增值服务费
         $p_free_pack_fee = $get->get('p_free_pack_fee'); // 随心包服务费
-        p($total_money, $product_id, $p_add_service_fee, $p_free_pack_fee);
+        Yii::info($total_money.$product_id. $p_add_service_fee. $p_free_pack_fee);
         try{
             if(!$total_money || !$product_id){
                 throw new CustomApiException('请求错误');
