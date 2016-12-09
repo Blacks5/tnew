@@ -131,6 +131,7 @@ class OrderController extends CoreApiController
         $type = Yii::$app->getRequest()->post('type');
         $oid = Yii::$app->getRequest()->post('oid');
         $pic = yii\web\UploadedFile::getInstanceByName('pic'); // 获取图片
+//        p($type, $oid, $pic);
         $model = new UploadFile();
         $model->scenario = 'upload';
         $model->pic=$pic;
@@ -157,6 +158,7 @@ class OrderController extends CoreApiController
             $data = ['key'=>$key, 'url'=> $url];
             return ['status'=>1, 'message'=>'ok', 'data'=>$data];
         }
+        echo 1;
     }
 
     /**
