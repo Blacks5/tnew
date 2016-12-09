@@ -19,6 +19,7 @@ use common\core\CoreCommonActiveRecord;
  * @property string $oi_driving_license_one
  * @property string $oi_driving_license_two
  * @property string $oi_signature
+ * @property string $oi_video
  *
  * 二审合同相关图片
  * @property string $oi_after_contract
@@ -40,7 +41,7 @@ class OrderImages extends CoreCommonActiveRecord
     {
         return [
             [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank'], 'required'],
-            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two'], 'string', 'max' => 100],
+            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_video'], 'string', 'max' => 100],
         ];
     }
 
@@ -62,7 +63,8 @@ class OrderImages extends CoreCommonActiveRecord
             'oi_driving_license_two' => '驾照2',
 
             'oi_after_contract' => '合同1',
-            'oi_signature'=>'手写签名'
+            'oi_signature'=>'手写签名',
+            'oi_video'=>'手写签名'
         ];
     }
 }
