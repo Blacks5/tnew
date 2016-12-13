@@ -35,6 +35,6 @@ class AuthApi extends AuthMethod
      */
     public function handleFailure($response)
     {
-        throw new UnauthorizedHttpException('杯具啊，太久了');
+        throw new UnauthorizedHttpException('杯具啊，太久了，用户标示为null');
     }
 }
