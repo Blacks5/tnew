@@ -250,7 +250,8 @@ class OrderController extends CoreApiController
             }
             if($oi_model = OrderImages::findBySql("select * from ".OrderImages::tableName(). " where oi_id=:o_images_id and oi_user_id=".$user_id. " limit 1 for update", [':o_images_id'=>$model->o_images_id])->one()) {
                 if (!$oi_model->validate()) {
-                    throw new CustomApiException('上传失败3');
+                    $msg = $oi_model->getFirstErrors();
+                    throw new CustomApiException(reset($msg));
                 }
                 $model->o_status = Orders::STATUS_WAIT_CHECK;
                 if (!$model->save(false)) {
