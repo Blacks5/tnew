@@ -30,6 +30,7 @@ class OrdersHelper
  * */
     public function placeOrders($params)
     {
+        \Yii::$app->getLog()->getLogger()->log($params);
 //        p($params);
         // 首先验证码
         $verify = new Sms();
