@@ -169,8 +169,8 @@ class Customer extends CoreCommonActiveRecord
             'c_updated_at' => 'C Updated At',
             'c_total_interest' => '总支付利息',
             'c_total_money' => '总借款数',
-            'c_bank' => '总借款数',
-            'c_banknum' => '总借款数',
+            'c_bank' => '银行名称',
+            'c_banknum' => '银行卡号',
             'c_banknum_owner' => '总借款数',
             'c_status' => '客户状态 10正常 0拉黑',
         ];

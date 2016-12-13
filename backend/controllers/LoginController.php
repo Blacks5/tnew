@@ -29,6 +29,8 @@ class LoginController extends CoreCommonController
      */
     public function actionLogin()
     {
+//        phpinfo();die;
+        $_SESSION['a'] = 1;
         Yii::$app->getView()->title = '登录';
         if (!Yii::$app->getUser()->getIsGuest()) {
             return $this->goHome();
@@ -43,7 +45,8 @@ class LoginController extends CoreCommonController
 
             // 然后执行
             $model->login();
-            return $this->goBack();
+//            p($_SESSION);
+            return $this->redirect(['site/index']);
         } else {
             return $this->render('login', [
                 'model' => $model,

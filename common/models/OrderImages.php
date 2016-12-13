@@ -40,8 +40,8 @@ class OrderImages extends CoreCommonActiveRecord
     public function rules()
     {
         return [
-            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank'], 'required'],
-            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_video'], 'string', 'max' => 100],
+            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_video'], 'required'],
+            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two'], 'string', 'max' => 100],
         ];
     }
 
