@@ -13,6 +13,7 @@ use yii\filters\auth\AuthMethod;
 use yii\web\UnauthorizedHttpException;
 class AuthApi extends AuthMethod
 {
+//    public $optional = ['upload-pic']; // 这里的方法不需要登录  【业务：必须要登录才有用户id】
     public $tokenParam = 'access-token';
     public function authenticate($user, $request, $response)
     {
