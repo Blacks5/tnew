@@ -7,6 +7,11 @@ return [
             'username' => 'haytoo',
             'password' => 'hsd89h&hhOH09UH90jo',
             'charset' => 'utf8',
+            /*'attributes'=>[
+                'PDO::ATTR_TIMEOUT' => 150,
+                'PDO::ATTR_ERRMODE' => PDO::ERRMODE_EXCEPTION
+            ]*/
+
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
