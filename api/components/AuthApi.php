@@ -10,6 +10,7 @@ namespace api\components;
 
 use yii;
 use yii\filters\auth\AuthMethod;
+use yii\web\UnauthorizedHttpException;
 class AuthApi extends AuthMethod
 {
     public $tokenParam = 'access-token';
@@ -29,4 +30,11 @@ class AuthApi extends AuthMethod
         return null;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function handleFailure($response)
+    {
+        throw new UnauthorizedHttpException('杯具啊，太久了');
+    }
 }

@@ -65,7 +65,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
             throw $e;
         }
-
+        // @todo 上传大文件时，耗时太久，导致$identity为null
         if ($identity !== null || $this->isOptional($action)) {
             return true;
         } else {
