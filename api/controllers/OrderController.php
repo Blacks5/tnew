@@ -149,6 +149,7 @@ $a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
         }
 
         file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s, FILE_APPEND);
+        return;
 //        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s1, FILE_APPEND);
         // 入库
         $userinfo = Yii::$app->getUser()->getIdentity();
