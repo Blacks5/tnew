@@ -128,7 +128,6 @@ class OrderController extends CoreApiController
      */
     public function actionUploadPic()
     {
-        echo 1;die;
         $type = Yii::$app->getRequest()->post('type');
         $oid = Yii::$app->getRequest()->post('oid');
         $pic = yii\web\UploadedFile::getInstanceByName('pic'); // 获取图片
