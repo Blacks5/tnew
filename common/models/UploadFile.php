@@ -57,7 +57,7 @@ class UploadFile extends BaseUploadFile
     {
         return [
             [['oi_video'], 'safe'],
-            [['pic'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,jpeg,mp4', 'maxSize'=>1024*1024*1000, 'tooBig'=>'图片过大', 'wrongExtension'=>'图片格式错误', 'checkExtensionByMimeType'=>false], // 最大10m
+            [['pic'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,jpeg,mp4,3gp', 'maxSize'=>1024*1024*1000, 'tooBig'=>'图片过大', 'wrongExtension'=>'图片格式错误', 'checkExtensionByMimeType'=>false], // 最大10m
             [['type'], 'in', 'range'=>['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_driving_license_two', 'oi_driving_license_one', 'oi_family_card_two', 'oi_family_card_one', 'oi_video']],
             [['oid', 'key'], 'required']
         ];
