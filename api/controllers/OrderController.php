@@ -165,6 +165,7 @@ class OrderController extends CoreApiController
                 return ['status'=>0, 'message'=>'上传错误', 'data'=>[]];
             }
             $key = $model->upload();
+            file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $key, FILE_APPEND);
 //            $key = 'acb';
             $order_image_model->$type = $key;
             $order_image_model->save(false);
