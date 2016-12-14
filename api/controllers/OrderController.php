@@ -137,7 +137,12 @@ class OrderController extends CoreApiController
         $model->type = $type;
         $model->oid = $oid;
 $a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
-        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $a, FILE_APPEND);
+        if($a===true){
+            $s = 'ok';
+        }else{
+            $s = 'rigou';
+        }
+        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s, FILE_APPEND);
         // 入库
         $userinfo = Yii::$app->getUser()->getIdentity();
 //        if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){
