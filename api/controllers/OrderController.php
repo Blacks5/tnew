@@ -139,6 +139,8 @@ class OrderController extends CoreApiController
 $a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
         if($a===true){
             $s = 'ok';
+        }elseif($a === false){
+            $s = 'not ok';
         }else{
             $s = 'rigou';
         }
