@@ -137,7 +137,7 @@ class OrderController extends CoreApiController
         $model->type = $type;
         $model->oid = $oid;
 //        ob_start();
-//        var_dump($pic);
+        var_dump($pic);
 //        $s1 = ob_get_clean();
 $a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
         if($a===true){
