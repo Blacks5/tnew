@@ -137,7 +137,7 @@ class OrderController extends CoreApiController
         $model->type = $type;
         $model->oid = $oid;
 //        ob_start();
-        var_dump($pic);
+//        var_dump($pic);
 //        $s1 = ob_get_clean();
 $a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
         if($a===true){
@@ -149,7 +149,7 @@ $a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
         }
 
         file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s, FILE_APPEND);
-        return;
+        return ['status'=>1, 'message'=>'ok', 'data'=>$s];
 //        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s1, FILE_APPEND);
         // 入库
         $userinfo = Yii::$app->getUser()->getIdentity();
