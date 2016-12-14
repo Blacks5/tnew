@@ -139,17 +139,18 @@ class OrderController extends CoreApiController
 //        ob_start();
 //        var_dump($pic);
 //        $s1 = ob_get_clean();
-//$a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
-        /*if($a===true){
+$a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
+        if($a===true){
             $s = 'ok';
         }elseif($a === false){
             $s = 'not ok';
         }else{
             $s = 'rigou';
-        }*/
+        }
 
-//        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s, FILE_APPEND);
-//        return ['status'=>1, 'message'=>'ok', 'data'=>$s];
+        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s, FILE_APPEND);
+        $data = ['key'=>'123', 'url'=> '345'];
+        return ['status'=>1, 'message'=>'ok', 'data'=>$data];
 //        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s1, FILE_APPEND);
         // 入库
         $userinfo = Yii::$app->getUser()->getIdentity();
