@@ -137,12 +137,6 @@ class OrderController extends CoreApiController
         $model->type = $type;
         $model->oid = $oid;
 
-        $key = $model->upload();
-//        $order_image_model->$type = $key;
-//        $order_image_model->save(false);
-        $url = $model->getPicUrl($key);
-        $data = ['key'=>$key, 'url'=> $url];
-        return ['status'=>1, 'message'=>'ok', 'data'=>$data];
         // 入库
         $userinfo = Yii::$app->getUser()->getIdentity();
 //        if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){

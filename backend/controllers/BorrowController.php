@@ -346,4 +346,9 @@ class BorrowController extends CoreBackendController
             }
         }
     }
+
+    public function actionShowpics()
+    {
+        return $this->render('pics');
+    }
 }
