@@ -150,7 +150,8 @@ class OrderController extends CoreApiController
                 }
                 return ['status'=>0, 'message'=>'上传错误', 'data'=>[]];
             }
-            $key = $model->upload();
+//            $key = $model->upload();
+            $key = 'acb';
             $order_image_model->$type = $key;
             $order_image_model->save(false);
             $url = $model->getPicUrl($key);
