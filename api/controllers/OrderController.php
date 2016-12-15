@@ -130,51 +130,36 @@ class OrderController extends CoreApiController
     {
         $type = Yii::$app->getRequest()->post('type');
         $oid = Yii::$app->getRequest()->post('oid');
-        $pic = yii\web\UploadedFile::getInstanceByName('pic'); // 获取图片
+        $key = Yii::$app->getRequest()->post('key');
+//        $pic = yii\web\UploadedFile::getInstanceByName('pic'); // 获取图片
         $model = new UploadFile();
         $model->scenario = 'upload';
-        $model->pic=$pic;
+        $model->key=$key;
         $model->type = $type;
         $model->oid = $oid;
-//        ob_start();
-//        var_dump($pic);
-//        $s1 = ob_get_clean();
-$a = $pic->saveAs('/opt/remi/php56/root/var/lib/php/session/too.mp4');
-        if($a===true){
-            $s = 'ok';
-        }elseif($a === false){
-            $s = 'not ok';
-        }else{
-            $s = 'rigou';
-        }
-
-        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s, FILE_APPEND);
-        $data = ['key'=>'123', 'url'=> '345'];
-        return ['status'=>1, 'message'=>'ok', 'data'=>$data];
-//        file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $s1, FILE_APPEND);
         // 入库
         $userinfo = Yii::$app->getUser()->getIdentity();
-//        if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){
-        if($order_image_model = OrderImages::find()->leftJoin(Orders::tableName(), 'oi_id=o_images_id')->where(['o_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])->one()){
-            if(!$model->validate()){
-                p($model->errors, $model->getAttributes());
-                // 只返回图片错误信息
-//                p($model->errors);
-                if($message = $model->getFirstError('pic')){
-                    return ['status'=>0, 'message'=>$message, 'data'=>[]];
+        try {
+            if ($order_image_model = OrderImages::find()->leftJoin(Orders::tableName(), 'oi_id=o_images_id')->where(['o_id' => $oid, 'oi_user_id' => $userinfo->getId()])->one()) {
+                if (!$model->validate()) {
+                    $msg = $model->getFirstErrors();
+                    throw new CustomApiException(reset($msg));
                 }
-                return ['status'=>0, 'message'=>'上传错误', 'data'=>[]];
+//            $key = $model->upload();
+                $order_image_model->$type = $key;
+                $order_image_model->save(false);
+                $url = $model->getPicUrl($key);
+                $data = ['key' => $key, 'url' => $url];
+                return ['status' => 1, 'message' => 'ok', 'data' => $data];
             }
-            $key = $model->upload();
-            file_put_contents('/opt/remi/php56/root/var/lib/php/session/debug.txt', $key, FILE_APPEND);
-//            $key = 'acb';
-            $order_image_model->$type = $key;
-            $order_image_model->save(false);
-            $url = $model->getPicUrl($key);
-            $data = ['key'=>$key, 'url'=> $url];
-            return ['status'=>1, 'message'=>'ok', 'data'=>$data];
+            throw new CustomApiException('无效订单');
+        }catch (CustomApiException $e){
+            p($e->getMessage());
+            return ['status' => 0, 'message' => '上传失败', 'data' => []];
+        }catch (yii\base\Exception $e){
+            return ['status' => 0, 'message' => '系统错误', 'data' => []];
         }
-        echo 1;
+        echo 'qiguaidehen';
     }
 
     /**
