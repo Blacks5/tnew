@@ -30,7 +30,7 @@ class MsmController extends CoreApiController
             if($sender->sendSms($phone, $msg)){
                 return ['status'=>1, 'message'=> '发送成功'];
             }
-
+            throw new CustomApiException('发送失败');
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage()];
         }catch(Exception $e){
