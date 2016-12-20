@@ -8,6 +8,7 @@
 
 namespace common\models;
 //use crazyfd\qiniu\Qiniu;
+use Qiniu\Auth;
 use yii;
 use api\core\CoreApiModel;
 
@@ -29,7 +30,7 @@ class BaseUploadFile extends CoreApiModel
     {
         if($this->handle === null){
 //            $this->handle = new Qiniu($this->ak, $this->sk, $this->domain, $this->bucket);
-            $this->handle = new \Qiniu\Auth();
+            $this->handle = new Auth();
         }
     }
 
