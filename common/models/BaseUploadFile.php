@@ -42,7 +42,7 @@ class BaseUploadFile extends CoreApiModel
     protected function genTokenBase()
     {
         $key = Yii::$app->getSecurity()->generateRandomString();
-        $key = 'too';
+        $key = 'too123123123dewrdqdqswde1qdaswde';
         $policy = [
             'callbackUrl'=>''
         ];
