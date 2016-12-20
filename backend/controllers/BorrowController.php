@@ -231,6 +231,7 @@ class BorrowController extends CoreBackendController
     public function actionVerifyRefuse($order_id)
     {
         $request = Yii::$app->getRequest();
+        $trans = Yii::$app->db->beginTransaction();
         if ($request->getIsAjax()) {
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
@@ -244,18 +245,27 @@ class BorrowController extends CoreBackendController
                 if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
+
+                // todo 开始改变订单和客户的状态
+                // 把订单锁起来 客户锁起来
                 $model->o_status = Orders::STATUS_REFUSE;
                 $model->o_operator_id = $userinfo->id;
                 $model->o_operator_realname = $userinfo->realname;
                 $model->o_operator_date = $_SERVER['REQUEST_TIME'];
                 $model->o_operator_remark = $o_operator_remark;
+
+
+
                 if (!$model->save(false)) {
                     throw new CustomBackendException('操作订单失败', 5);
                 }
+                $trans->commit();
                 return ['status' => 1, 'message' => '拒绝订单成功，该客户三个月不能再次申请借款'];
             } catch (CustomBackendException $e) {
+                $trans->rollBack();
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
+                $trans->rollBack();
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
@@ -317,13 +327,13 @@ class BorrowController extends CoreBackendController
                 $o_operator_remark = trim($request->post('remark'));
                 $userinfo = Yii::$app->getUser()->getIdentity();
                 if (empty($o_operator_remark)) {
-                    throw new CustomBackendException('请填写取消原因', 0);
+                    throw new CustomBackendException('请填写原因', 0);
                 }
                 // 初审0 二审6 都可以取消
-                if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
+                if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
-                $model->o_status = Orders::STATUS_CANCEL;
+                $model->o_status = Orders::STATUS_NOT_COMPLETE;
                 $model->o_operator_id = $userinfo->id;
                 $model->o_operator_realname = $userinfo->realname;
                 $model->o_operator_date = $_SERVER['REQUEST_TIME'];
@@ -331,7 +341,7 @@ class BorrowController extends CoreBackendController
                 if (!$model->save(false)) {
                     throw new CustomBackendException('操作订单失败', 5);
                 }
-                return ['status' => 1, 'message' => '取消订单成功'];
+                return ['status' => 1, 'message' => '操作订单成功'];
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
