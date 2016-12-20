@@ -27,10 +27,14 @@ class MsmController extends CoreApiController
         try{
             \Yii::$app->getResponse()->format = 'json';
             $sender = new Sms();
-            if($sender->sendSms($phone, $msg)){
+            $res = $sender->sendSms($phone, $msg);
+            if($res){
                 return ['status'=>1, 'message'=> '发送成功'];
             }
-            \Yii::error(1);
+            ob_start();
+            var_dump($res);
+            $a= ob_get_clean();
+            file_put_contents('1.txt', $a);
             throw new CustomApiException('发送失败-');
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage()];
