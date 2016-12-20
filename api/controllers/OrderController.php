@@ -231,12 +231,12 @@ class OrderController extends CoreApiController
             $order_status = (new yii\db\Query())->from(Orders::tableName())->select(['o_status'])->where(['o_id'=>$oid, 'o_user_id'=>$userinfo->getId()])->scalar();
             // 只能删订单状态是 不完整 的
             if($order_status != Orders::STATUS_NOT_COMPLETE){
-                throw new \Exception('删除失败');
+                throw new \Exception('该订单状态不允许删除图片');
             }
 //            if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){
             if($order_image_model = OrderImages::find()->leftJoin(Orders::tableName(), 'oi_id=o_images_id')->where(['o_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])->one()){
                 $model->delFile($key); // 删除七牛上的
-                $order_image_model->$type = ''; // 情况数据库字段
+                $order_image_model->$type = ''; // 清空数据库字段
                 if($order_image_model->save(false) === false){
                     throw new \Exception('删除失败');
                 }
