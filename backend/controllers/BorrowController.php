@@ -231,8 +231,9 @@ class BorrowController extends CoreBackendController
     public function actionVerifyRefuse($order_id)
     {
         $request = Yii::$app->getRequest();
-        $trans = Yii::$app->db->beginTransaction();
+
         if ($request->getIsAjax()) {
+            $trans = Yii::$app->db->beginTransaction();
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
