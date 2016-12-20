@@ -30,7 +30,7 @@ class BaseUploadFile extends CoreApiModel
     {
         if($this->handle === null){
 //            $this->handle = new Qiniu($this->ak, $this->sk, $this->domain, $this->bucket);
-            $this->handle = new Auth();
+            $this->handle = new Auth($this->ak, $this->sk);
         }
     }
 
