@@ -69,28 +69,14 @@ class UploadFile extends BaseUploadFile
      * @throws yii\web\HttpException
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function upload()
+   /* public function upload()
     {
         $key = Yii::$app->getSecurity()->generateRandomString();
         $this->handle->uploadFile($this->pic->tempName, $key);
         return $key;
-    }
+    }*/
 
-    /**
-     * 获取图片外链
-     * @param $key
-     * @return string
-     * @author 涂鸿 <hayto@foxmail.com>
-     */
-    public function getPicUrl($key)
-    {
-        return $this->handle->getLink($key);
-    }
 
-    public function delePic($key)
-    {
-        return $this->handle->delete($key);
-    }
 
     /**
      * 生成token给客户端用
@@ -103,7 +89,7 @@ class UploadFile extends BaseUploadFile
     }
 
     /**
-     * 返回图片外链
+     * 返回图片外链 or null
      * @param $key
      * @return null|string
      * @author 涂鸿 <hayto@foxmail.com>
@@ -113,6 +99,21 @@ class UploadFile extends BaseUploadFile
         $url = null;
         if(!empty($key)){
             $url = $this->getUrlBase($key);
+        }
+        return $url;
+    }
+
+    /**
+     * 删除图片
+     * @param $key
+     * @return bool
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function delFile($key)
+    {
+        $url = false;
+        if(!empty($key)){
+            $url = $this->delFileBase($key);
         }
         return $url;
     }

@@ -63,9 +63,15 @@ class BaseUploadFile extends CoreApiModel
         return $this->domain. $key;
     }
 
-    protected function getFileBase($key)
+    /**
+     * 删除成功返回true， or false
+     * @param $key
+     * @return bool
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    protected function delFileBase($key)
     {
         $a = new BucketManager($this->handle);
-        $a->delete($this->bucket, $key);
+        return ($a->delete($this->bucket, $key) === null) ? true: false;
     }
 }

@@ -235,7 +235,7 @@ class OrderController extends CoreApiController
             }
 //            if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){
             if($order_image_model = OrderImages::find()->leftJoin(Orders::tableName(), 'oi_id=o_images_id')->where(['o_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])->one()){
-                $model->delePic($key); // 删除七牛上的
+                $model->delFile($key); // 删除七牛上的
                 $order_image_model->$type = ''; // 情况数据库字段
                 if($order_image_model->save(false) === false){
                     throw new \Exception('删除失败');
