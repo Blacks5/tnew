@@ -237,7 +237,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-refuse']))) { ?>
                                     <button class="btn btn-danger refuse">拒绝并拉黑</button>
                                 <?php } ?>
-                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-refuse']))) { ?>
+                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
                                     <button class="btn btn-danger refuse">照片不合格</button>
                                 <?php } ?>
                             </div>
