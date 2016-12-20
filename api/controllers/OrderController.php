@@ -182,7 +182,7 @@ class OrderController extends CoreApiController
 
 
 
-        if($data){
+        if(1){
             $model = new UploadFile();
             foreach($data as $k=>$v){
                 $url = '';
