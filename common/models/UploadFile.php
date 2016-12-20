@@ -89,7 +89,7 @@ class UploadFile extends BaseUploadFile
     }
 
     /**
-     * 返回图片外链 or null
+     * 返回图片原图外链 or null
      * @param $key
      * @return null|string
      * @author 涂鸿 <hayto@foxmail.com>

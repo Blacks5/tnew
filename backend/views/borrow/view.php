@@ -79,6 +79,12 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                 <p class="form-control-static"><?= $model['o_remark']; ?></p>
                             </div>
                         </div>
+                        <div>
+                            <label class="col-sm-2 control-label">图片：</label>
+                            <div class="col-sm-2">
+                                <a href="/borrow/showpics?oid=<?=$model['o_id']?>"><p class="form-control-static">点击查看</p></a>
+                            </div>
+                        </div>
                     </div>
 
 

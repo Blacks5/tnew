@@ -12,6 +12,7 @@ use backend\components\CustomBackendException;
 use common\components\CustomCommonException;
 use common\models\CalInterest;
 use common\models\Customer;
+use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
 use yii;
@@ -347,9 +348,27 @@ class BorrowController extends CoreBackendController
         }
     }
 
-    public function actionShowpics()
+    public function actionShowpics($oid)
     {
-        phpinfo();
-        return $this->render('pics');
+        /*
+         * `oi_front_id` varchar(100) NOT NULL DEFAULT '' COMMENT '身份证正面',
+  `oi_back_id` varchar(100) NOT NULL DEFAULT '' COMMENT '身份证背面',
+  `oi_customer` varchar(100) NOT NULL DEFAULT '' COMMENT '客户现场照',
+  `oi_front_bank` varchar(100) NOT NULL DEFAULT '' COMMENT '银行卡正面',
+  `oi_back_bank` varchar(100) NOT NULL DEFAULT '' COMMENT '银行卡背面',
+  `oi_family_card_one` varchar(100) NOT NULL DEFAULT '' COMMENT '户口本1',
+  `oi_family_card_two` varchar(100) NOT NULL DEFAULT '' COMMENT '户口本2',
+  `oi_driving_license_one` varchar(100) NOT NULL DEFAULT '' COMMENT '驾照1',
+  `oi_driving_license_two` varchar(100) NOT NULL DEFAULT '' COMMENT '驾照2',
+  `oi_after_contract` varchar(100) NOT NULL DEFAULT '' COMMENT '二审，合同图片1',
+  `oi_video` varchar(255) NOT NULL DEFAULT '' COMMENT '视频',*/
+        $select = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one',
+        'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_video'];
+        $data = Orders::find()->select($select)
+            ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
+            ->where(['o_id'=>$oid])
+            ->asArray()->one();
+//        p($data);
+        return $this->render('pics', ['data'=>$data]);
     }
 }
