@@ -48,7 +48,7 @@ class BaseUploadFile extends CoreApiModel
             'insertOnly'=>1
         ];
 //        return $this->handle->uploadToken($this->bucket);
-        return $this->handle->uploadToken($this->bucket/*, $key, 3600, $policy*/);
+        return $this->handle->uploadToken($this->bucket, $key, 5, $policy);
     }
 
 
