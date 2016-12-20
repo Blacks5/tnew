@@ -31,4 +31,14 @@ class BaseUploadFile extends CoreApiModel
             $this->handle = new Qiniu($this->ak, $this->sk, $this->domain, $this->bucket);
         }
     }
+
+    /**
+     * 生成token给客户端用
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    protected function genTokenBase()
+    {
+        return $this->handle->uploadToken($this->bucket);
+    }
 }

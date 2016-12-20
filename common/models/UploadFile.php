@@ -91,4 +91,14 @@ class UploadFile extends BaseUploadFile
     {
         return $this->handle->delete($key);
     }
+
+    /**
+     * 生成token给客户端用
+     * @return mixed|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function genToken()
+    {
+        return $this->genTokenBase();
+    }
 }

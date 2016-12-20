@@ -164,6 +164,7 @@ class OrderController extends CoreApiController
 
     /**
      * 获取已上传的图片
+     * 返回token给客户端
      *
      * 只获取 当前登录用户 且 订单状态为不完整的
      *
@@ -186,6 +187,8 @@ class OrderController extends CoreApiController
                 }
                 $data1[]=['type'=>$k,'url'=>$url, 'key'=>$v];
             }
+            $token = $model->genToken();
+            $data1['token']= $token;
             return ['status'=>1, 'message'=>'ok', 'data'=>$data1];
         }
         return ['status'=>0, 'message'=>'无数据', 'data'=>[]];
