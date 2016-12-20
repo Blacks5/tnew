@@ -9,6 +9,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
     public static $files = array (
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        '841780ea2e1d6545ea3a253239d59c05' => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -31,6 +32,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             'crazyfd\\qiniu\\' => 14,
             'cebe\\markdown\\' => 14,
+        ),
+        'Q' => 
+        array (
+            'Qiniu\\' => 6,
         ),
         'F' => 
         array (
@@ -82,6 +87,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'cebe\\markdown\\' => 
         array (
             0 => __DIR__ . '/..' . '/cebe/markdown',
+        ),
+        'Qiniu\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu',
         ),
         'Faker\\' => 
         array (

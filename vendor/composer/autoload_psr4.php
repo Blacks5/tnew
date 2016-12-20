@@ -17,5 +17,6 @@ return array(
     'mdm\\admin\\' => array($vendorDir . '/mdmsoft/yii2-admin'),
     'crazyfd\\qiniu\\' => array($vendorDir . '/crazyfd/yii2-qiniu'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
+    'Qiniu\\' => array($vendorDir . '/qiniu/php-sdk/src/Qiniu'),
     'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
 );
