@@ -9,6 +9,7 @@
 namespace common\models;
 //use crazyfd\qiniu\Qiniu;
 use Qiniu\Auth;
+use Qiniu\Storage\BucketManager;
 use yii;
 use api\core\CoreApiModel;
 
@@ -47,8 +48,9 @@ class BaseUploadFile extends CoreApiModel
 //            'saveKey'=>$key, // 客户端没有主动指定key时才有用
             'insertOnly'=>1 // 只能新增
         ];
-        return $this->handle->uploadToken($this->bucket, null, 3600, $policy);
+        return $this->handle->uploadToken($this->bucket, null, 10, $policy);
     }
+
 
     /**
      * 返回图片外链
@@ -61,4 +63,9 @@ class BaseUploadFile extends CoreApiModel
         return $this->domain. $key;
     }
 
+    protected function getFileBase($key)
+    {
+        $a = new BucketManager($this->handle);
+        $a->delete($this->bucket, $key);
+    }
 }
