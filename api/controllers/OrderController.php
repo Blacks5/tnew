@@ -179,10 +179,10 @@ class OrderController extends CoreApiController
         $data = (new yii\db\Query())->select($select)->from(Orders::tableName())->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->where(['o_id'=>$oid, 'o_status'=>Orders::STATUS_NOT_COMPLETE, 'o_user_id'=>Yii::$app->getUser()->getIdentity()->getId()])->one();
 
-        $model = new UploadFile();
-        $token = $model->genToken();
+
 
         if($data){
+            $model = new UploadFile();
             foreach($data as $k=>$v){
                 $url = '';
                 if(!empty($v)){
@@ -191,11 +191,17 @@ class OrderController extends CoreApiController
                 $data1[]=['type'=>$k,'url'=>$url, 'key'=>$v];
             }
 
-            $data1['token']= $token;
             return ['status'=>1, 'message'=>'ok', 'data'=>$data1];
         }
-        $data1['token']= $token;
-        return ['status'=>0, 'message'=>'无数据', 'data'=>$data1];
+//        $data1['token']= $token;
+        return ['status'=>0, 'message'=>'无数据', 'data'=>[]];
+    }
+
+    public function actionGetQntoken()
+    {
+        $model = new UploadFile();
+        $token = $model->genToken();
+        return ['status'=>1, 'message'=>'ok', 'data'=>$token];
     }
 
     /**
