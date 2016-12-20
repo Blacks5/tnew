@@ -47,7 +47,7 @@ class BaseUploadFile extends CoreApiModel
             'saveKey'=>$key
         ];
 //        return $this->handle->uploadToken($this->bucket);
-        return $this->handle->uploadToken($this->bucket, $key, 3600);
+        return $this->handle->uploadToken($this->bucket, $key, 3600, $policy);
     }
 
 
