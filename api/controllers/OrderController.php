@@ -181,14 +181,12 @@ class OrderController extends CoreApiController
             ->where(['o_id'=>$oid, 'o_status'=>Orders::STATUS_NOT_COMPLETE, 'o_user_id'=>Yii::$app->getUser()->getIdentity()->getId()])->one();
 
 
-
-        if(1){
+$data = ['Fkk1uWoMjh_zwbbeqZ26gaF5yy1j'];
+        if($data){
             $model = new UploadFile();
             foreach($data as $k=>$v){
                 $url = '';
                 if(!empty($v)){
-                    // todo 这个获取图片链接的方法废了
-                    $v = 'Fkk1uWoMjh_zwbbeqZ26gaF5yy1j';
                     $url = $model->getUrl($v);
                 }
                 $data1[]=['type'=>$k,'url'=>$url, 'key'=>$v];
