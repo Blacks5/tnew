@@ -232,10 +232,13 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                     <button class="btn btn-success verify-first">初审通过</button>
                                 <?php } ?>
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-cancel']))) { ?>
-                                    <button class="btn btn-info cancel">取消</button>
+                                    <button class="btn btn-info cancel">取消订单</button>
                                 <?php } ?>
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-refuse']))) { ?>
-                                    <button class="btn btn-danger refuse">拒绝</button>
+                                    <button class="btn btn-danger refuse">拒绝并拉黑</button>
+                                <?php } ?>
+                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-refuse']))) { ?>
+                                    <button class="btn btn-danger refuse">照片不合格</button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -250,10 +253,13 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                     <button class="btn btn-success verify-end">终审放款</button>
                                 <?php } ?>
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-cancel']))) { ?>
-                                    <button class="btn btn-info cancel">取消</button>
+                                    <button class="btn btn-info cancel">取消订单</button>
                                 <?php } ?>
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-refuse']))) { ?>
-                                    <button class="btn btn-danger refuse">拒绝</button>
+                                    <button class="btn btn-danger refuse">拒绝并拉黑</button>
+                                <?php } ?>
+                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
+                                    <button class="btn btn-danger refuse">照片不合格</button>
                                 <?php } ?>
                             </div>
                         </div>

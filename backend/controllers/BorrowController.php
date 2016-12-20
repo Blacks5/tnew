@@ -302,6 +302,45 @@ class BorrowController extends CoreBackendController
     }
 
     /**
+     * 照片不合格，状态设为2，需要重新提交商品
+     * @param $order_id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionVerifyFailpic($order_id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_operator_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                if (empty($o_operator_remark)) {
+                    throw new CustomBackendException('请填写取消原因', 0);
+                }
+                // 初审0 二审6 都可以取消
+                if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
+                    throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
+                }
+                $model->o_status = Orders::STATUS_CANCEL;
+                $model->o_operator_id = $userinfo->id;
+                $model->o_operator_realname = $userinfo->realname;
+                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
+                $model->o_operator_remark = $o_operator_remark;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+                return ['status' => 1, 'message' => '取消订单成功'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    /**
      * 撤销已经审核通过的借款
      * @param $o_id
      * @return mixed
