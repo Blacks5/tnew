@@ -112,7 +112,7 @@ class UploadFile extends BaseUploadFile
     {
         $url = null;
         if(!empty($key)){
-            $url = $this->genTokenBase($key);
+            $url = $this->getUrlBase($key);
         }
         return $url;
     }

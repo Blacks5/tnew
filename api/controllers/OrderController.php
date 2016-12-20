@@ -181,7 +181,7 @@ class OrderController extends CoreApiController
             ->where(['o_id'=>$oid, 'o_status'=>Orders::STATUS_NOT_COMPLETE, 'o_user_id'=>Yii::$app->getUser()->getIdentity()->getId()])->one();
 
 
-$data = ['Fkk1uWoMjh_zwbbeqZ26gaF5yy1j'];
+        $data = ['Fkk1uWoMjh_zwbbeqZ26gaF5yy1j'];
         if($data){
             $model = new UploadFile();
             foreach($data as $k=>$v){
