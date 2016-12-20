@@ -48,7 +48,7 @@ class BaseUploadFile extends CoreApiModel
 //            'saveKey'=>$key, // 客户端没有主动指定key时才有用
             'insertOnly'=>1 // 只能新增
         ];
-        return $this->handle->uploadToken($this->bucket, null, 10, $policy);
+        return $this->handle->uploadToken($this->bucket, null, 3600, $policy);
     }
 
 
