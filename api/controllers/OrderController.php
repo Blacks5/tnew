@@ -18,6 +18,7 @@ use common\models\Product;
 use common\models\Stores;
 use common\models\TooRegion;
 use common\models\UploadFile;
+use Qiniu\Processing\ImageUrlBuilder;
 use yii;
 use api\core\CoreApiController;
 
@@ -186,7 +187,9 @@ class OrderController extends CoreApiController
             foreach($data as $k=>$v){
                 $url = '';
                 if(!empty($v)){
-                    $url = $model->getPicUrl($v);
+                    // todo 这个获取图片链接的方法废了
+                    $v = 'Fkk1uWoMjh_zwbbeqZ26gaF5yy1j';
+                    $url = $model->getUrl($v);
                 }
                 $data1[]=['type'=>$k,'url'=>$url, 'key'=>$v];
             }
@@ -197,6 +200,11 @@ class OrderController extends CoreApiController
         return ['status'=>0, 'message'=>'无数据', 'data'=>[]];
     }
 
+    /**
+     * 客户端获取七牛上传token
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionGetQntoken()
     {
         $model = new UploadFile();

@@ -101,4 +101,19 @@ class UploadFile extends BaseUploadFile
     {
         return $this->genTokenBase();
     }
+
+    /**
+     * 返回图片外链
+     * @param $key
+     * @return null|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function getUrl($key)
+    {
+        $url = null;
+        if(!empty($key)){
+            $url = $this->genTokenBase($key);
+        }
+        return $url;
+    }
 }
