@@ -95,7 +95,7 @@ class OrderController extends CoreApiController
     }
 
     /**
-     * 待上传图片的订单
+     * 待上传图片的订单列表
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
@@ -149,7 +149,7 @@ class OrderController extends CoreApiController
 //            $key = $model->upload();
                 $order_image_model->$type = $key;
                 $order_image_model->save(false);
-                $url = $model->getPicUrl($key);
+                $url = $model->getUrl($key);
                 $data = ['key' => $key, 'url' => $url];
                 return ['status' => 1, 'message' => 'ok', 'data' => $data];
             }
