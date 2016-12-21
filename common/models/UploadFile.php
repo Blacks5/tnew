@@ -23,6 +23,7 @@ class UploadFile extends BaseUploadFile
     public $oi_family_card_two;
     public $oi_driving_license_one;
     public $oi_driving_license_two;
+    public $oi_after_contract;
     public $oi_video; // 视频
 
 //    public $pic;
