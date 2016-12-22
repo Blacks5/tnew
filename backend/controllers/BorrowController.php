@@ -223,7 +223,7 @@ class BorrowController extends CoreBackendController
      * 拒绝
      * 取消和拒绝的区别: 取消可以重提, 拒绝后该身份证三个月内都不能再提.
      * 1，锁定订单。2，修改客户信息，3，修改订单信息
-     * @param $o_id
+     * @param $order_id
      * @return array
      * @throws yii\db\Exception
      * @author 涂鸿 <hayto@foxmail.com>
@@ -242,24 +242,35 @@ class BorrowController extends CoreBackendController
                 if (empty($o_operator_remark)) {
                     throw new CustomBackendException('请填写拒绝原因', 0);
                 }
+
                 // 初审0 二审6 都可以取消
-                if (!$model = Orders::find()->where(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN], 'o_id' => $order_id])->one()) {
+                // for udpate加锁，防止并发
+                $sql = "select o_status,c_forbidden_time,c_status,c_id from orders left join customer on o_customer_id=c_id where o_id=:order_id for update";
+                $res = Orders::findBySql($sql, [':order_id'=>$order_id])->asArray()->one();
+//                $trans->rollBack();
+//                p($res);
+                if(!empty($res) === false){
+                    throw new CustomBackendException('订单不存在', 4);
+                }
+                if(($res['o_status'] != Orders::STATUS_WAIT_CHECK) && ($res['o_status'] != Orders::STATUS_WAIT_CHECK_AGAIN)){
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
 
-                // todo 开始改变订单和客户的状态
-                // 把订单锁起来 客户锁起来
-                $model->o_status = Orders::STATUS_REFUSE;
-                $model->o_operator_id = $userinfo->id;
-                $model->o_operator_realname = $userinfo->realname;
-                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
-                $model->o_operator_remark = $o_operator_remark;
 
+                $attr = ['o_status'=>Orders::STATUS_REFUSE, 'o_operator_id'=>$userinfo->getId(), 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'], 'o_operator_remark'=>$o_operator_remark];
 
-
-                if (!$model->save(false)) {
+                // 更新订单
+                if( 1 !== Orders::updateAll($attr, ['o_id'=>$order_id])){
                     throw new CustomBackendException('操作订单失败', 5);
                 }
+
+                // 更新客户
+                $c_forbidden_time = strtotime('+3 months');
+                $attr = ['c_forbidden_time'=>$c_forbidden_time, 'c_status'=>Customer::STATUS_NOT_OK];
+                if(1 !== Customer::updateAll($attr, ['c_id'=>$res['c_id']])){
+                    throw new CustomBackendException('操作客户失败', 5);
+                }
+
                 $trans->commit();
                 return ['status' => 1, 'message' => '拒绝订单成功，该客户三个月不能再次申请借款'];
             } catch (CustomBackendException $e) {

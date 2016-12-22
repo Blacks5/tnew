@@ -35,7 +35,7 @@ class OrdersHelper
         // 首先验证码
         $verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], '1234')){
-            throw new CustomApiException('验证码错误');
+//            throw new CustomApiException('验证码错误');
         }
 //        p($params['c_customer_cellphone']);
         $data['data'] = $params;
@@ -85,12 +85,12 @@ class OrdersHelper
             // 2写customer表
             \Yii::error($params['c_family_marital_status']. '-'. $params['c_family_marital_partner_cellphone']. '-'. $params['c_family_marital_partner_name']);
             if($customerModel = Customer::findOne(['c_customer_id_card'=>$params['c_customer_id_card']])){
-                if($customerModel->c_is_forbidden == 1){
+                if($customerModel->c_status == 0){
                     if($customerModel->c_forbidden_time > $_SERVER['REQUEST_TIME']){
                         throw new CustomApiException('提交的订单被拒绝过,在'.date('Y-m-d H:i:s', $customerModel->c_forbidden_time). '后才能再次借款');
                     }else{
                         // 解除黑名单
-                        $customerModel->c_is_forbidden = 0;
+                        $customerModel->c_status = 10;
                         $customerModel->c_forbidden_time = 0;
                     }
                 }
