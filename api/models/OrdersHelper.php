@@ -72,7 +72,7 @@ class OrdersHelper
         $transaction = \Yii::$app->db->beginTransaction();
         try{
             if(!$serial_id = Tools::generateId()){
-                throw new CustomApiException('订单错误');
+                throw new CustomApiException('生成订单号异常');
             }
             $userid = \Yii::$app->getUser()->getIdentity()->getId();
             // 1写order_images表

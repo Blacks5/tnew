@@ -82,7 +82,7 @@ $t = new \common\models\UploadFile();
                             <li>
                                 <p>身份证正面照</p>
                                 <?php if($model->s_photo_one){ ?>
-                                <img src="<?=$t->handle->getLink($model->s_photo_one);?>" alt="">
+                                <img src="<?=$t->getUrl($model->s_photo_one);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
                                 <?php } ?>
@@ -99,7 +99,7 @@ $t = new \common\models\UploadFile();
                             <li>
                                 <p>身份证背面照</p>
                                 <?php if($model->s_photo_two){ ?>
-                                    <img src="<?=$t->handle->getLink($model->s_photo_two);?>" alt="">
+                                    <img src="<?=$t->getUrl($model->s_photo_two);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
                                 <?php } ?>
@@ -115,7 +115,7 @@ $t = new \common\models\UploadFile();
                             <li>
                                 <p>身份证背面照</p>
                                 <?php if($model->s_photo_two){ ?>
-                                    <img src="<?=$t->handle->getLink($model->s_photo_three);?>" alt="">
+                                    <img src="<?=$t->getUrl($model->s_photo_three);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
                                 <?php } ?>
@@ -132,7 +132,7 @@ $t = new \common\models\UploadFile();
                             <li>
                                 <p>身份证背面照</p>
                                 <?php if($model->s_photo_two){ ?>
-                                    <img src="<?=$t->handle->getLink($model->s_photo_four);?>" alt="">
+                                    <img src="<?=$t->getUrl($model->s_photo_four);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
                                 <?php } ?>
@@ -148,7 +148,7 @@ $t = new \common\models\UploadFile();
                             <li>
                                 <p>身份证背面照</p>
                                 <?php if($model->s_photo_two){ ?>
-                                    <img src="<?=$t->handle->getLink($model->s_photo_five);?>" alt="">
+                                    <img src="<?=$t->getUrl($model->s_photo_five);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
                                 <?php } ?>

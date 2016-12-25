@@ -98,11 +98,11 @@ class StoresController extends CoreBackendController
     {
         if ($model = Stores::findOne($id)) {
             $t = new UploadFile();
-            $model->s_photo_one = $model->s_photo_one ? $t->handle->getLink($model->s_photo_one) : '';
-            $model->s_photo_two = $model->s_photo_two ? $t->handle->getLink($model->s_photo_two) : '';
-            $model->s_photo_three = $model->s_photo_three ? $t->handle->getLink($model->s_photo_three) : '';
-            $model->s_photo_four = $model->s_photo_four ? $t->handle->getLink($model->s_photo_four) : '';
-            $model->s_photo_five = $model->s_photo_five ? $t->handle->getLink($model->s_photo_five) : '';
+            $model->s_photo_one = $model->s_photo_one ? $t->getUrl($model->s_photo_one) : '';
+            $model->s_photo_two = $model->s_photo_two ? $t->getUrl($model->s_photo_two) : '';
+            $model->s_photo_three = $model->s_photo_three ? $t->getUrl($model->s_photo_three) : '';
+            $model->s_photo_four = $model->s_photo_four ? $t->getUrl($model->s_photo_four) : '';
+            $model->s_photo_five = $model->s_photo_five ? $t->getUrl($model->s_photo_five) : '';
             $all_sales = User::find()->select(['realname'])
                 ->where(['belong_stores_id' => $id, 'county' => $model->s_county, 'status' => User::STATUS_ACTIVE])
                 ->indexBy('id')->asArray()->column();
