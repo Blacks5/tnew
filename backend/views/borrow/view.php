@@ -116,7 +116,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             <div class="col-sm-2">
                                 <p class="form-control-static">
                                     <?= Helper::getAddrName($model['c_customer_province']) . '-' .
-                                    Helper::getAddrName($model['c_customer_city']) . '-' . Helper::getAddrName($model['c_customer_county']); ?></p>
+                                    Helper::getAddrName($model['c_customer_city']) . '-' . Helper::getAddrName($model['c_customer_county']). '-'.$model['c_customer_idcard_detail_addr']; ?></p>
                             </div>
                         </div>
                         <div>
