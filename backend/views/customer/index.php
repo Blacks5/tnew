@@ -57,10 +57,10 @@ use yii\widgets\LinkPager;
                                             <i class="fa fa-mobile" style="color: #00a2d4;"></i>
                                             <?= $vo['c_customer_cellphone']; ?>
                                         </td>
-                                        <td>
+                                        <!--<td>
                                             <i class="fa fa-envelope" style="color: #00a2d4;"></i>
-                                            &nbsp;<?= $vo['c_customer_email']; ?>
-                                        </td>
+                                            &nbsp;<?/*= $vo['c_customer_email']; */?>
+                                        </td>-->
                                         <td><?= $vo['c_total_money'] ?></td>
                                         <td><?= $vo['c_updated_at'] ?></td>
                                         <td>
