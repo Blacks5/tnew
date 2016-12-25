@@ -16,7 +16,7 @@ use common\core\CoreCommonActiveRecord;
  * @property integer $c_customer_city
  * @property integer $c_customer_province
  * @property integer $c_customer_gender
- * @property string $c_customer_idcard_provider
+ * @property string $c_customer_idcard_detail_addr
  * @property string $c_customer_qq
  * @property string $c_customer_wechat
  * @property string $c_customer_email
@@ -91,13 +91,13 @@ class Customer extends CoreCommonActiveRecord
                 return $this->c_family_marital_status == '2'; // 2是已婚
             }],
 
-            [['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_customer_idcard_provider', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_name', 'c_kinship_relation', 'c_kinship_cellphone', 'c_kinship_addr', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_addr_detail', 'c_customer_jobs_company', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone', 'c_other_people_relation', 'c_other_people_name', 'c_other_people_cellphone', 'c_bank', 'c_banknum'/*, 'c_banknum_owner'*/], 'required'],
+            [['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_customer_idcard_detail_addr', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_name', 'c_kinship_relation', 'c_kinship_cellphone', 'c_kinship_addr', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_addr_detail', 'c_customer_jobs_company', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone', 'c_other_people_relation', 'c_other_people_name', 'c_other_people_cellphone', 'c_bank', 'c_banknum'/*, 'c_banknum_owner'*/], 'required'],
             [['c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_relation', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_other_people_relation', 'c_created_at', 'c_updated_at', 'c_status'], 'integer'],
             [['c_total_interest', 'c_total_money'], 'number'],
             [['c_customer_name'], 'string', 'max' => 5],
             [['c_customer_id_card'], 'string', 'max' => 18],
             [['c_customer_cellphone', 'c_family_marital_partner_cellphone', 'c_kinship_cellphone', 'c_other_people_cellphone'], 'string', 'max' => 11],
-            [['c_customer_idcard_provider'], 'string', 'max' => 255],
+            [['c_customer_idcard_detail_addr'], 'string', 'max' => 255],
             [['c_customer_qq'], 'string', 'max' => 13],
             [['c_customer_wechat'], 'string', 'max' => 30],
             [['c_customer_email'], 'string', 'max' => 30],
@@ -133,7 +133,7 @@ class Customer extends CoreCommonActiveRecord
             'c_customer_city' => '客户户籍-市',
             'c_customer_province' => '客户户籍-省',
             'c_customer_gender' => '客户性别：1男 0女',
-            'c_customer_idcard_provider' => '客户身份证签发机关',
+            'c_customer_idcard_detail_addr' => '客户身份详细地址',
             'c_customer_qq' => '客户qq号码',
             'c_customer_wechat' => '客户微信',
             'c_customer_email' => '客户email',

@@ -89,6 +89,8 @@ $this->title = $model['c_customer_name'] . '借款详情';
 
 
                     <div class="hr-line-dashed"></div>
+
+
                     <!--客户信息部分-->
                     <div class="form-group">
                         <div>
@@ -190,18 +192,19 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">单位地址：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= Helper::getAddrName($model['c_customer_jobs_province']) . '-' . Helper::getAddrName($model['c_customer_jobs_city']) . '-' . Helper::getAddrName($model['c_customer_jobs_county']) . '-' . $model['c_customer_jobs_detail_addr']; ?></p>
-                            </div>
-                        </div>
-                        <div>
                             <label class="col-sm-2 control-label">工作单位：</label>
                             <div class="col-sm-2">
                                 <p class="form-control-static"><?= $model['c_customer_jobs_company'] . '-' . Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) . '-' . $model['c_customer_jobs_section'] . '-' . $model['c_customer_jobs_title'] . '-' . Helper::getCompanyTypeString($model['c_customer_jobs_type']). '-' . '0281234'; ?>
                                 </p>
                             </div>
                         </div>
+                        <div>
+                            <label class="col-sm-2 control-label">单位地址：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= Helper::getAddrName($model['c_customer_jobs_province']) . '-' . Helper::getAddrName($model['c_customer_jobs_city']) . '-' . Helper::getAddrName($model['c_customer_jobs_county']) . '-' . $model['c_customer_jobs_detail_addr']; ?></p>
+                            </div>
+                        </div>
+
                         <div>
                             <label class="col-sm-2 control-label">其他联系人：</label>
                             <div class="col-sm-2">
@@ -222,6 +225,22 @@ $this->title = $model['c_customer_name'] . '借款详情';
                         </div>
                     </div>
 
+                    <div class="hr-line-dashed"></div>
+                    <!--商户信息-->
+                    <div class="form-group">
+                        <div>
+                            <label class="col-sm-2 control-label">商户名：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['s_name']. '('."{$model['s_owner_phone']}".')'; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">业务员：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['realname']. '('."{$model['cellphone']}".')'; ?></p>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="hr-line-dashed"></div>
 

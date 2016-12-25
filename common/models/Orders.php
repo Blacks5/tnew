@@ -99,16 +99,20 @@ class Orders extends CoreCommonActiveRecord
     }
 
     /**
-     * 取一个完整的借款 包含 product，customer，order
+     * 取一个完整的借款 包含 product，customer，order,store
      * @param $order_id
      * @return array|null|\yii\db\ActiveRecord
      * @author 涂鸿 <hayto@foxmail.com>
      */
     public static function getOne($order_id)
     {
-        return self::find()->select('*')->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
+        return self::find()->select('*')
+            ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
             ->leftJoin(Product::tableName(), 'p_id=o_product_id')
-            ->where('o_id=:o_id', [':o_id'=>$order_id])->asArray()->one();
+            ->leftJoin(Stores::tableName(), 'o_store_id=s_id') // 商户
+            ->leftJoin(User::tableName(), 'id=o_user_id') // 读业务员
+            ->where('o_id=:o_id', [':o_id'=>$order_id])
+            ->asArray()->one();
 //        $select = ['*'];
 //        $data = self::find()->alias('orders')->select($select)
 //            ->leftJoin(Product::tableName(). ' product', 'product.p_id=orders.o_product_id') // 关联产品

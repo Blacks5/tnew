@@ -58,8 +58,9 @@ class Helper
      */
     public static function getBankNameById($id)
     {
-        if($s = isset(array_column(\Yii::$app->params['bank_list'], 'bank_name', 'bank_id')[$id])){
-            return $s;
+        $bl = array_column(\Yii::$app->params['bank_list'], 'bank_name', 'bank_id');
+        if(isset($bl[$id])){
+            return $bl[$id];
         }
         return false;
     }

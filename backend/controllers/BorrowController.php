@@ -126,6 +126,7 @@ class BorrowController extends CoreBackendController
     public function actionView($order_id)
     {
         if ($model = Orders::getOne($order_id)) {
+//            p($model);
             return $this->render('view', ['model' => $model]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
