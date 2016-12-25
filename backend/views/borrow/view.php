@@ -198,7 +198,8 @@ $this->title = $model['c_customer_name'] . '借款详情';
                         <div>
                             <label class="col-sm-2 control-label">工作单位：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['c_customer_jobs_company'] . '-' . Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) . '-' . $model['c_customer_jobs_section'] . '-' . $model['c_customer_jobs_title'] . '-' . Helper::getCompanyTypeString($model['c_customer_jobs_type']); ?></p>
+                                <p class="form-control-static"><?= $model['c_customer_jobs_company'] . '-' . Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) . '-' . $model['c_customer_jobs_section'] . '-' . $model['c_customer_jobs_title'] . '-' . Helper::getCompanyTypeString($model['c_customer_jobs_type']). '-' . '0281234'; ?>
+                                </p>
                             </div>
                         </div>
                         <div>
