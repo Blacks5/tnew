@@ -175,7 +175,7 @@ class OrderController extends CoreApiController
     public function actionGetPics()
     {
         $oid = Yii::$app->getRequest()->get('oid');
-        $select = ['oi_front_id','oi_back_id','oi_customer','oi_front_bank','oi_back_bank','oi_family_card_one','oi_family_card_two', 'oi_after_contract',
+        $select = ['oi_front_id','oi_back_id','oi_customer','oi_front_bank'/*,'oi_back_bank'*/,'oi_family_card_one','oi_family_card_two', 'oi_after_contract',
             'oi_driving_license_one','oi_driving_license_two', 'oi_video'];
         $data = (new yii\db\Query())->select($select)->from(Orders::tableName())->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->where(['o_id'=>$oid, 'o_status'=>Orders::STATUS_NOT_COMPLETE, 'o_user_id'=>Yii::$app->getUser()->getIdentity()->getId()])->one();
