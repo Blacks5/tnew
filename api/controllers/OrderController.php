@@ -316,7 +316,7 @@ class OrderController extends CoreApiController
     public function actionGetLatest()
     {
         $limit_time = ($_SERVER['REQUEST_TIME']-24*3600);
-        $limit_time = 0;
+//        $limit_time = 0;
         $where = ['and',
             ['>=', 'o_created_at', $limit_time], // 最近24小时
             ['o_user_id'=>Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
