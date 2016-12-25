@@ -147,12 +147,12 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                 <p class="form-control-static"><?= $model['c_customer_wechat']; ?></p>
                             </div>
                         </div>
-                        <div>
+                        <!--<div>
                             <label class="col-sm-2 control-label">Email：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['c_customer_email']; ?></p>
+                                <p class="form-control-static"><?/*= $model['c_customer_email']; */?></p>
                             </div>
-                        </div>
+                        </div>-->
                         <div>
                             <label class="col-sm-2 control-label">婚姻状况：</label>
                             <div class="col-sm-2">
