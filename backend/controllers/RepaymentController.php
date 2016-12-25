@@ -44,6 +44,32 @@ class RepaymentController extends CoreBackendController
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        array_walk($data, function(&$v){
+            $n = 2;
+            $v['o_total_price'] = round($v['o_total_price'], $n);
+            $v['o_total_deposit'] = round($v['o_total_deposit'], $n);
+            $v['o_total_interest'] = round($v['o_total_interest'], $n);
+            $v['r_overdue_money'] = round($v['r_overdue_money'], $n);
+            $v['r_total_repay'] = round($v['r_total_repay'], $n);
+            $v['r_principal'] = round($v['r_principal'], $n);
+            $v['r_interest'] = round($v['r_interest'], $n);
+            $v['r_add_service_fee'] = round($v['r_add_service_fee'], $n);
+            $v['r_free_pack_fee'] = round($v['r_free_pack_fee'], $n);
+            $v['r_finance_mangemant_fee'] = round($v['r_finance_mangemant_fee'], $n);
+            $v['r_customer_management'] = round($v['r_customer_management'], $n);
+            /*'o_total_price' => string '10000.000' (length=9)
+      'o_total_deposit' => string '1000.000' (length=8)
+      'o_total_interest' => string '0.000'
+ 'r_overdue_money' => string '0.00000'
+'r_total_repay' => string '833.08575' (length=9)
+      'r_principal' => string '703.08300' (length=9)
+      'r_interest' => string '105.00300' (length=9)
+      'r_add_service_fee' => string '0.00000' (length=7)
+      'r_free_pack_fee' => string '0.00000' (length=7)
+      'r_finance_mangemant_fee' => string '12.00000' (length=8)
+      'r_customer_management' => string '13.00000*/
+        });
+//        p($data);
         return $this->render('waitrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,

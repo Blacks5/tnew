@@ -238,7 +238,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                     <button class="btn btn-danger refuse">拒绝并拉黑</button>
                                 <?php } ?>
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
-                                    <button class="btn btn-danger refuse">照片不合格</button>
+                                    <button class="btn btn-danger failpic">照片不合格</button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -259,7 +259,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                     <button class="btn btn-danger refuse">拒绝并拉黑</button>
                                 <?php } ?>
                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
-                                    <button class="btn btn-danger refuse">照片不合格</button>
+                                    <button class="btn btn-danger failpic">照片不合格</button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -435,6 +435,44 @@ $(".refuse").click(function(){
         },
     }) 
 });
+
+// 照片不合格
+$(".failpic").click(function(){
+       var index = layer.open({
+        type: 1,
+        title:"填写备注",
+        area: ["auto", "auto"], //宽高
+        content:$("#remark-box"),
+        btn: ["确认", "取消"],
+        btn1:function(){
+            var loading = layer.load(4);
+            var remark = $("#xx").val();
+            $.ajax({
+                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-failpic', 'order_id' => $model['o_id']]) . '",
+                type: "post",
+                dataType: "json",
+                data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        },
+        btn2:function(){
+            layer.close(index);
+        },
+    }) 
+});
 ');
 ?>
 <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
+

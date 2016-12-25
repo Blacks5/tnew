@@ -67,16 +67,16 @@ use yii\helpers\Url;
                                                            class="client-link">客户姓名</a></th>
                                                     <th>客户电话</th>
                                                     <th>本月应还总金额</th>
-                                                    <th>本金</th>
-                                                    <th>利息</th>
-                                                    <th>增值服务费</th>
-                                                    <th>随心包服务费</th>
-                                                    <th>财务管理费</th>
-                                                    <th>客户管理费</th>
+                                                    <th>本金(元)</th>
+                                                    <th>利息(元)</th>
+                                                    <th>增值服务费(元)</th>
+                                                    <th>随心包服务费(元)</th>
+                                                    <th>财务管理费(元)</th>
+                                                    <th>客户管理费(元)</th>
                                                     <th>期数</th>
                                                     <th>应还款时间</th>
                                                     <th>逾期天数</th>
-                                                    <th>逾期滞纳金</th>
+                                                    <th>逾期滞纳金(元)</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -90,10 +90,10 @@ use yii\helpers\Url;
                                                         <td><?= $_v['c_customer_name'] ?></td>
                                                         <td><?= $_v['c_customer_cellphone'] ?></td>
                                                         <td class="client-status"><?= $_v['r_total_repay'] + 0; ?>元</td>
-                                                        <td class="client-status"><?= $_v['r_principal']; ?>元</td>
-                                                        <td class="client-status"><?= $_v['r_interest']; ?>元</td>
+                                                        <td class="client-status"><?= $_v['r_principal']; ?></td>
+                                                        <td class="client-status"><?= $_v['r_interest']; ?></td>
                                                         <td class="client-status"><?= $_v['r_add_service_fee']; ?>元</td>
-                                                        <td class="client-status"><?= $_v['r_free_pack_fee']; ?>元</td>
+                                                        <td class="client-status"><?= $_v['r_free_pack_fee']; ?></td>
                                                         <td class="client-status"><?= $_v['r_finance_mangemant_fee']; ?>
                                                             元
                                                         </td>
@@ -102,8 +102,8 @@ use yii\helpers\Url;
                                                         </td>
                                                         <td class="client-status"><?= $_v['r_serial_no'] . '/' . $_v['r_serial_total']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['r_pre_repay_date']) ?></td>
-                                                        <td class="client-status"><?= $_v['r_overdue_day']; ?>天</td>
-                                                        <td class="client-status"><?= $_v['r_overdue_money']; ?>元</td>
+                                                        <td class="client-status"><?= $_v['r_overdue_day']; ?></td>
+                                                        <td class="client-status"><?= $_v['r_overdue_money']; ?></td>
                                                         <td>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))) { ?>
                                                                 <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>"

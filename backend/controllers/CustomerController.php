@@ -44,6 +44,7 @@ class CustomerController extends CoreBackendController
             $v['c_updated_at'] = date('Y-m-d H:i:s', $v['c_updated_at']);
         });
 //        p($model->getAttributes());
+//        p($data);
         return $this->render('index', [
             'sear' => $model->getAttributes(),
             'model' => $data,
