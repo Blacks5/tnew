@@ -70,10 +70,11 @@ class UploadFile extends BaseUploadFile
      * @throws yii\web\HttpException
      * @author 涂鸿 <hayto@foxmail.com>
      */
-   /* public function upload()
+    /*public function upload()
     {
         $key = Yii::$app->getSecurity()->generateRandomString();
-        $this->handle->uploadFile($this->pic->tempName, $key);
+        $ret = $this->uploadFile($key, $this->pic->tempName);
+        p($ret);
         return $key;
     }*/
 

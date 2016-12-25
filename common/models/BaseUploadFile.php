@@ -10,6 +10,7 @@ namespace common\models;
 //use crazyfd\qiniu\Qiniu;
 use Qiniu\Auth;
 use Qiniu\Storage\BucketManager;
+use Qiniu\Storage\UploadManager;
 use yii;
 use api\core\CoreApiModel;
 
@@ -36,7 +37,7 @@ class BaseUploadFile extends CoreApiModel
     }
 
     /**
-     * 生成token给客户端用
+     * 生成token给app用
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
@@ -73,5 +74,19 @@ class BaseUploadFile extends CoreApiModel
     {
         $a = new BucketManager($this->handle);
         return ($a->delete($this->bucket, $key) === null) ? true: false;
+    }
+
+    /**
+     * web端用
+     * 上传图片到七牛云
+     * @param $file
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function uploadFile($key, $file)
+    {
+        $uper = new UploadManager();
+        $token = $this->genTokenBase();
+        return $uper->putFile($token, $key, $file->tempName);
     }
 }

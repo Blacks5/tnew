@@ -223,12 +223,21 @@ class StoresController extends CoreBackendController
         }
     }
 
+    /**
+     * 上传商户图片
+     * @return bool|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionUpload()
     {
         $pic = yii\web\UploadedFile::getInstanceByName('file'); // 获取图片
         $key = Yii::$app->getSecurity()->generateRandomString();
         $handle = new UploadFile();
-        $handle->handle->uploadFile($pic->tempName, $key);
+        $ret = $handle->uploadFile($key, $pic);
+        $key = false;
+        if(end($ret) === null){
+            $key = reset($ret)['key'];
+        }
         return $key;
     }
 
