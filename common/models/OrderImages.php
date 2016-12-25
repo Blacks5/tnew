@@ -41,8 +41,7 @@ class OrderImages extends CoreCommonActiveRecord
     {
         return [
             [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank'], 'required'],
-//            [['oi_video', 'oi_after_contract'], 'required', 'when'=>''],
-            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract'], 'string', 'max' => 100],
+            [['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_back_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_video'], 'string', 'max' => 100],
         ];
     }
 
