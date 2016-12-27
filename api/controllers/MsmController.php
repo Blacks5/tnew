@@ -28,6 +28,7 @@ class MsmController extends CoreApiController
             \Yii::$app->getResponse()->format = 'json';
             $sender = new Sms();
             $res = $sender->sendSms($phone, $msg);
+//            p($res);
             if($res){
                 return ['status'=>1, 'message'=> '发送成功'];
             }

@@ -90,7 +90,6 @@ class OrderController extends CoreApiController
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage()];
         }catch(yii\base\Exception $e){
-//            p($e);
             return ['status'=>0, 'message'=>'系统错误_sys'];
         }
     }

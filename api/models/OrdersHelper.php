@@ -34,8 +34,8 @@ class OrdersHelper
 //        p($params);
         // 首先验证码
         $verify = new Sms();
-        if(!$verify->verify($params['c_customer_cellphone'], '1234')){
-            throw new CustomApiException('验证码错误');
+        if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
+            throw new CustomApiException('验证码错误1');
         }
 //        p($params['c_customer_cellphone']);
         $data['data'] = $params;
