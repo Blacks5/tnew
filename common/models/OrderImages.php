@@ -64,7 +64,9 @@ class OrderImages extends CoreCommonActiveRecord
 
             'oi_after_contract' => '合同',
             'oi_signature'=>'手写签名',
-            'oi_video'=>'录制视频'
+            'oi_video'=>'录制视频',
+            'oi_pick_goods'=>'提货照',
+            'oi_serial_num'=>'串码照'
         ];
     }
 }
