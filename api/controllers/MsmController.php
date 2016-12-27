@@ -32,10 +32,10 @@ class MsmController extends CoreApiController
             if($res){
                 return ['status'=>1, 'message'=> '发送成功'];
             }
-            ob_start();
-            var_dump($res);
-            $a= ob_get_clean();
-            file_put_contents('/home/web/wcb_latest/api/runtime/logs/xx.txt', $a);
+//            ob_start();
+//            var_dump($res);
+//            $a= ob_get_clean();
+//            file_put_contents('/home/web/wcb_latest/api/runtime/logs/xx.txt', $a);
             throw new CustomApiException('发送失败-');
         }catch(CustomApiException $e){
             return ['status'=>0, 'message'=>$e->getMessage()];
