@@ -18,9 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="row">
                         <div class="col-sm-3">
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/create']))) { ?>
-                            <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/create']) ?>"
-                               class="btn btn-success">新增团队</a>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/addsale']))) { ?>
+                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/addsale', 't_id' => $sear['tu_tid']]) ?>"
+                                   class="btn btn-success">新增成员</a>
                             <?php } ?>
                         </div>
                     </div>
@@ -28,8 +28,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!--                    <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="Team[t_name]" placeholder="团队名"
-                                   value="<?php echo $sear['t_name']; ?>" class="input form-control">
+                            <input type="text" name="TeamUser[realname]" placeholder="成员姓名"
+                                   value="<?php echo isset($sear['realname']) ? $sear['realname'] : ''; ?>"
+                                   class="input form-control">
                         </div>
                         <div class="col-sm-3">
                             <span class="input-group-btn">
@@ -49,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <tr>
                                                     <th class="client-avatar">id</th>
                                                     <th><a data-toggle="tab" href="#contact-3"
-                                                           class="client-link">团队名</a></th>
+                                                           class="client-link">成员姓名</a></th>
                                                     <!--<th>商户店名</th>
                                                     <th class="contact-type"></th>
                                                     <th>邮箱</th>
@@ -64,40 +65,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     ?>
 
                                                     <tr>
-                                                        <td class="client-avatar"><?= $_v['t_id'] ?></td>
+                                                        <td class="client-avatar"><?= $_v['tu_id'] ?></td>
                                                         <td><a data-toggle="tab" href="#contact-3"
-                                                               class="client-link"><?= $_v['t_name'] ?></a></td>
+                                                               class="client-link"><?= $_v['realname'] ?></a></td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/teamuserindex']))) { ?>
-                                                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/teamuserindex', 'tu_tid' => $_v['t_id']]); ?>"
-                                                                   class="btn btn-primary btn-xs"><i
-                                                                        class="fa fa-folder"></i> 成员</a>
-                                                            <?php } ?>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/view']))) { ?>
-                                                            <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/view', 't_id' => $_v['t_id']]); ?>"
-                                                               class="btn btn-primary btn-xs"><i
-                                                                    class="fa fa-folder"></i> 详情</a>
-                                                            <?php } ?>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/update']))) { ?>
-                                                            <a class="btn btn-primary btn-xs"
-                                                               href="<?= Yii::$app->getUrlManager()->createUrl(['team/update', 't_id' => $_v['t_id']]); ?>"><i
-                                                                    class="fa fa-pencil"></i> 编辑</a>
-                                                            <?php } ?>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/delete']))) { ?>
-                                                            <a class="btn btn-danger btn-xs"
-                                                               href="javascript:del('<?= $_v['t_name'] ?>', <?= $_v['t_id'] ?>)"><i
-                                                                    class="fa fa-close"></i> 删除</a>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/deletesale']))) { ?>
+                                                                <a class="btn btn-danger btn-xs"
+                                                                   href="javascript:del('<?= $_v['realname'] ?>', <?= $_v['tu_id'] ?>, <?= $_v['tu_tid'] ?>)"><i
+                                                                        class="fa fa-close"></i> 删除</a>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
                                                 <script>
-                                                    function del(name, id) {
+                                                    function del(name, id, tid) {
                                                         layer.confirm('是否删除团队: ' + name, {
                                                             icon: 3,
                                                             title: '删除团队'
                                                         }, function (index) {
-                                                            location.href = "<?= Yii::$app->getUrlManager()->createUrl(['team/delete']); ?>" + "?t_id=" + id;
+                                                            location.href = "<?= Yii::$app->getUrlManager()->createUrl(['team/deletesale']); ?>" + "?tu_id=" + id + "&tu_tid=" + tid;
                                                             layer.close(index);
                                                         });
 
