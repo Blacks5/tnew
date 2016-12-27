@@ -15,7 +15,7 @@ $this->title = '借款详情';
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <a href="javascript:history.go(-1);" class="btn btn-info">返回</a>
+                <!--                <a href="javascript:history.go(-1);" class="btn btn-info">返回</a>-->
                 <div class="ibox-content">
 
 
@@ -27,14 +27,21 @@ $this->title = '借款详情';
                                 ?>
                                 <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
                                    data-gallery="">
-                                    <img src="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>">
+                                    <img height="200" width="200"
+                                         src="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>">
                                 </a>
                                 <?php
                             }
                         }
                         ?>
                         <?php ?>
-                        <video controls="controls" src="<?= (new \common\models\UploadFile())->getUrl($video); ?>"></video>
+                        <a style="display: inline-block;
+    vertical-align: bottom;" href="#" data-gallery="">
+                            <video width="200" height="200" controls="controls"
+                                   src="<?= (new \common\models\UploadFile())->getUrl($video); ?>">
+                                您的浏览器不支持该视频播放
+                            </video>
+                        </a>
                         <?php ?>
 
 
