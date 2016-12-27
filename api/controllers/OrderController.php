@@ -175,11 +175,10 @@ class OrderController extends CoreApiController
     public function actionGetPics()
     {
         $oid = Yii::$app->getRequest()->get('oid');
-        $select = ['oi_front_id','oi_back_id','oi_customer','oi_front_bank'/*,'oi_back_bank'*/,'oi_family_card_one','oi_family_card_two', 'oi_after_contract',
+        $select = ['o_status', 'oi_front_id','oi_back_id','oi_customer','oi_front_bank'/*,'oi_back_bank'*/,'oi_family_card_one','oi_family_card_two', 'oi_after_contract',
             'oi_driving_license_one','oi_driving_license_two', 'oi_video'];
         $data = (new yii\db\Query())->select($select)->from(Orders::tableName())->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->where(['o_id'=>$oid, 'o_status'=>Orders::STATUS_NOT_COMPLETE, 'o_user_id'=>Yii::$app->getUser()->getIdentity()->getId()])->one();
-
 
         if($data){
             $model = new UploadFile();
@@ -190,10 +189,10 @@ class OrderController extends CoreApiController
                 }
                 $data1[]=['type'=>$k,'url'=>$url, 'key'=>$v];
             }
-
-            return ['status'=>1, 'message'=>'ok', 'data'=>$data1];
+            $res['data'] = $data1;
+            $res['order_status'] = $data['o_status']; // 订单状态，方便客户端知道该验证哪个阶段的比传图片
+            return ['status'=>1, 'message'=>'ok', 'data'=>$res];
         }
-//        $data1['token']= $token;
         return ['status'=>0, 'message'=>'无数据', 'data'=>[]];
     }
 
