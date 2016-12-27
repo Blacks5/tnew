@@ -20,17 +20,22 @@ $this->title = '借款详情';
 
 
                     <div class="lightBoxGallery">
-                        <?php foreach ($data as $v){
-                            if(!empty($v)) {
+                        <?php
+                        $video = trim(array_pop($data));
+                        foreach ($data as $v) {
+                            if (!empty($v)) {
                                 ?>
-
                                 <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
                                    data-gallery="">
                                     <img src="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>">
                                 </a>
                                 <?php
                             }
-                            } ?>
+                        }
+                        ?>
+                        <?php ?>
+                        <video controls="controls" src="<?= (new \common\models\UploadFile())->getUrl($video); ?>"></video>
+                        <?php ?>
 
 
                         <div id="blueimp-gallery" class="blueimp-gallery">
