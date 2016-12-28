@@ -15,6 +15,7 @@ use common\models\Customer;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Product;
+use common\models\Sms;
 use common\models\Stores;
 use common\models\TooRegion;
 use common\models\UploadFile;
@@ -264,6 +265,8 @@ class OrderController extends CoreApiController
     {
         $user_id = Yii::$app->getUser()->getIdentity()->getId();
         $oid = Yii::$app->getRequest()->post('oid');
+        $c_customer_cellphone = Yii::$app->getRequest()->post('c_customer_cellphone');
+        $verify_code = Yii::$app->getRequest()->post('verify_code');
 
         $trans = Yii::$app->db->beginTransaction();
         try {
@@ -290,6 +293,10 @@ class OrderController extends CoreApiController
                 $model->o_status = Orders::STATUS_WAIT_CHECK;
                 if (!$model->save(false)) {
                     throw new CustomApiException('上传失败2');
+                }
+                $verify = new Sms();
+                if(!$verify->verify($c_customer_cellphone, $verify_code)){
+                    throw new CustomApiException('验证码错误5');
                 }
                 $trans->commit();
                 return ['status' => 1, 'message' => '上传成功', 'data' => []];
