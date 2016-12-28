@@ -493,10 +493,10 @@ class OrderController extends CoreApiController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionGetContract()
+    public function actionGetContract($o_id)
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = "我是合同，屌不屌";
+        $data = "我是合同，屌不屌". $o_id;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
 }
