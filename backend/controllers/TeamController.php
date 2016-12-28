@@ -12,6 +12,8 @@ use backend\core\CoreBackendController;
 use common\models\Team;
 use common\models\TeamUser;
 use common\components\Helper;
+use common\models\User;
+use common\models\UserSearch;
 use yii;
 use backend\components\CustomBackendException;
 
@@ -161,7 +163,7 @@ class TeamController extends CoreBackendController
      * 添加团队成员
      * @author lzz <leewangyi@126.com>
      */
-    public function actionAddsale($t_id)
+    public function actionAddsale($tu_tid)
     {
         try {
             $this->getView()->title = '添加销售';
@@ -169,22 +171,25 @@ class TeamController extends CoreBackendController
 
             $request = Yii::$app->getRequest();
             if ($request->getIsPost()) {
-                if (!Team::findOne($t_id)) {
+                if (!Team::findOne($tu_tid)) {
                     throw new CustomBackendException('团队不存在');
                 }
 
                 if (TeamUser::findOne(['tu_sale_id' => $request->post('tu_sale_id')])) {
                     throw new CustomBackendException('该成员已在团队, 不能添加');
                 }
-                $model->tu_tid = $request->post('tu_tid');
+                $model->tu_tid = $tu_tid;
                 $model->tu_sale_id = $request->post('tu_sale_id');
                 $model->save();
-                return $this->success('操作成功', yii\helpers\Url::toRoute(['team/teamuserindex', 'tu_tid' => $t_id]));
+                return $this->success('操作成功', yii\helpers\Url::toRoute(['team/teamuserindex', 'tu_tid' => $tu_tid]));
             }
+            return $this->render('addsale', [
+                'model' => $model
+            ]);
         } catch (CustomBackendException $e) {
-            return $this->error($e->getMessage(), yii\helpers\Url::toRoute(['team/team']));
+            return $this->error($e->getMessage(), yii\helpers\Url::toRoute(['team/index']));
         } catch (yii\base\Exception $e) {
-            return $this->error('系统错误', yii\helpers\Url::toRoute(['team/team']));
+            return $this->error('系统错误', yii\helpers\Url::toRoute(['team/index']));
         }
     }
 
@@ -210,5 +215,42 @@ class TeamController extends CoreBackendController
             return $this->error('系统错误', yii\helpers\Url::toRoute(['team/index']));
         }
     }
+
+
+    public function actionGetusers()
+    {
+
+        $user_model = new User();
+        $realname = Yii::$app->getRequest()->get('realname') ? Yii::$app->getRequest()->get('realname') : '';
+        $where = "username != 'admin' and status != " . User::STATUS_DELETE;
+        if ($realname) {
+            $where .= " and realname like '%$realname%'";
+        }
+        $data = $user_model->find()->where($where);
+        $lists = $data
+            ->limit(10)->orderBy("id asc")
+            ->asArray()
+            ->all();
+        if ($lists) {
+            $msg = array();
+            $msg['status'] = 1;
+            $str = '';
+            foreach ($lists as $k => $row) {
+                $str .= "<li class='userlist' onclick=\"select_one('$row[id]','$row[realname]');\" ><span class='userid' style='display: none;'>$row[id]</span><a class='usernme'>$row[realname]</a></li>";
+            }
+            $msg['name'] = $str;
+            echo json_encode($msg);
+            exit();
+        } else {
+            $msg = array();
+            $msg['status'] = 2;
+            $msg['text'] = '暂无数据!';
+            echo json_encode($msg);
+            exit();
+        }
+    }
+
+
+
 }
 

@@ -71,7 +71,7 @@ class TeamUser extends CoreCommonActiveRecord
         $select = ['team_user.*', 'user.*'];
         $this->scenario = 'search';
         $this->load($data, 'data');
-        // p($params,$this->attributes());
+        //p($params,$this->attributes(),$this->realname);
         $query = TeamUser::find()
             ->select($select)
             ->leftJoin(User::tableName(), 'tu_sale_id=id')
@@ -87,7 +87,7 @@ class TeamUser extends CoreCommonActiveRecord
         /*            ->andFilterWhere(['like', 'user.username', $this->username])
                     ->andFilterWhere(['like', 'user.email', $this->email]);*/
 
-        //   echo  $query->createCommand()->getRawSql();die;
+        //echo  $query->createCommand()->getRawSql();die;
         return $query;
     }
 }

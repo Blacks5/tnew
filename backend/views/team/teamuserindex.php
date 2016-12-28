@@ -19,13 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-sm-3">
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/addsale']))) { ?>
-                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/addsale', 't_id' => $sear['tu_tid']]) ?>"
+                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['team/addsale', 'tu_tid' => $sear['tu_tid']]) ?>"
                                    class="btn btn-success">新增成员</a>
                             <?php } ?>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
-                    <!--                    <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
+                    <!-- <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
                             <input type="text" name="TeamUser[realname]" placeholder="成员姓名"
@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="col-sm-3">
                             <span class="input-group-btn">
+                                <input type="hidden" name="tu_tid" value="<?php echo $sear['tu_tid']; ?>">
                                 <button type="submit" class="btn btn-primary"> <i class="fa fa-search"></i> 搜索</button>
                             </span>
                         </div>
