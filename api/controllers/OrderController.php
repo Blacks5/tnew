@@ -479,4 +479,17 @@ class OrderController extends CoreApiController
     {
 
     }
+
+
+    /**
+     * 给客户端返回合同内容
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionGetContract()
+    {
+        Yii::$app->getResponse()->format = 'json';
+        $data = "我是合同，屌不屌";
+        return ['status'=>1, 'message'=>'ok', 'data'=>$data];
+    }
 }
