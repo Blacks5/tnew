@@ -265,8 +265,9 @@ class OrderController extends CoreApiController
     {
         $user_id = Yii::$app->getUser()->getIdentity()->getId();
         $oid = Yii::$app->getRequest()->post('oid');
-        $c_customer_cellphone = Yii::$app->getRequest()->post('c_customer_cellphone');
-        $verify_code = Yii::$app->getRequest()->post('verify_code');
+        $c_customer_cellphone = Yii::$app->getRequest()->post('c_customer_cellphone'); // 手机号
+        $verify_code = Yii::$app->getRequest()->post('verify_code'); // 验证码
+        $order_status = Yii::$app->getRequest()->post('order_status'); // 订单状态
 
         $trans = Yii::$app->db->beginTransaction();
         try {
