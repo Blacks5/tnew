@@ -79,10 +79,12 @@ class TeamUser extends CoreCommonActiveRecord
             ->andWhere(['!=', 'user.username', 'admin'])
             ->andWhere(['tu_tid' => $this->tu_tid]);
         if (!$this->validate()) {
-            p($this->errors);
+            //p($this->errors);
             return $query->andWhere('0=1');
         }
-
+        if (Yii::$app->getRequest()->get('realname')) {
+            $this->realname = Yii::$app->getRequest()->get('realname');
+        }
         $query->andFilterWhere(['like', 'user.realname', $this->realname]);
         /*            ->andFilterWhere(['like', 'user.username', $this->username])
                     ->andFilterWhere(['like', 'user.email', $this->email]);*/

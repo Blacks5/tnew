@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!-- <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="TeamUser[realname]" placeholder="成员姓名"
+                            <input type="text" name="realname" placeholder="成员姓名"
                                    value="<?php echo isset($sear['realname']) ? $sear['realname'] : ''; ?>"
                                    class="input form-control">
                         </div>
