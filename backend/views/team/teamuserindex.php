@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['team/deletesale']))) { ?>
                                                                 <a class="btn btn-danger btn-xs"
                                                                    href="javascript:del('<?= $_v['realname'] ?>', <?= $_v['tu_id'] ?>, <?= $_v['tu_tid'] ?>)"><i
-                                                                        class="fa fa-close"></i> 删除</a>
+                                                                            class="fa fa-close"></i> 删除</a>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>
