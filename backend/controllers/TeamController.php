@@ -216,6 +216,10 @@ class TeamController extends CoreBackendController
         }
     }
 
+    /**
+     * 获取员工列表
+     * @author lzz <leewangyi@126.com>
+     */
 
     public function actionGetusers()
     {
