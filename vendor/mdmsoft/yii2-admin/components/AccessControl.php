@@ -73,6 +73,7 @@ class AccessControl extends \yii\base\ActionFilter
                 throw new ForbiddenHttpException('该账户已经在别处登录！如不是本人操作，请尽快修改密码！', 55);
             }
         }
+        //用户ID是1，且username是admin  不需要验证权限
         if (($user->getIdentity()->getId() === 1) && ($user->getIdentity()->username === 'admin')) {
             return true;
         }
