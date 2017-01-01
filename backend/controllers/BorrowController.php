@@ -318,7 +318,8 @@ class BorrowController extends CoreBackendController
                 }
 
                 // 更新客户信息
-                $attr = ['c_total_money'=>"c_total_money-{$model['o_total_price']}-{$model['o_total_deposit']}"]; // 此处要减掉客户的累积借款金额
+                $x = $model['o_total_price']- $model['o_total_deposit'];
+                $attr = ['c_total_money'=>"c_total_money-$x"]; // 此处要减掉客户的累积借款金额
                 if(1 !== Customer::updateAll($attr, ['c_id'=>$model['o_customer_id']])){
                     throw new CustomBackendException('操作客户失败', 5);
                 }
