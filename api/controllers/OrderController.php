@@ -104,7 +104,7 @@ class OrderController extends CoreApiController
     public function actionWaitUploadImages()
     {
         $where = ['and',
-            ['o_status'=>[Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]], // 不完整的订单
+            ['o_status' => [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]], // 不完整的订单
             ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
         ];
         try {
@@ -184,7 +184,9 @@ class OrderController extends CoreApiController
             ->from(Orders::tableName())
             ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
-            ->where(['o_id' => $oid, 'o_status' => Orders::STATUS_NOT_COMPLETE, 'o_user_id' => Yii::$app->getUser()->getIdentity()->getId()])->one();
+            ->where(['o_id' => $oid, 'o_user_id' => Yii::$app->getUser()->getIdentity()->getId()])
+            ->andWhere(['o_status'=>[Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]])
+            ->one();
 
         if ($data) {
             $model = new UploadFile();
@@ -298,7 +300,7 @@ class OrderController extends CoreApiController
                     throw new CustomApiException('上传失败2');
                 }
                 $verify = new Sms();
-                if(!$verify->verify($c_customer_cellphone, $verify_code)){
+                if (!$verify->verify($c_customer_cellphone, $verify_code)) {
                     throw new CustomApiException('验证码错误5');
                 }
                 $trans->commit();
@@ -499,7 +501,7 @@ class OrderController extends CoreApiController
     public function actionGetContract($o_id)
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = "我是合同，屌不屌". $o_id;
+        $data = "我是合同，屌不屌" . $o_id;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
 }
