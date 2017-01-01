@@ -24,6 +24,8 @@ class UploadFile extends BaseUploadFile
     public $oi_driving_license_one;
     public $oi_driving_license_two;
     public $oi_after_contract;
+    public $oi_pick_goods; // 提货照片
+    public $oi_serial_num; // 串码照片
     public $oi_video; // 视频
 
 //    public $pic;
@@ -59,7 +61,7 @@ class UploadFile extends BaseUploadFile
         return [
 //            [['oi_video'], 'safe'],
 //            [['pic'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png,jpg,jpeg,mp4,3gp', 'maxSize'=>1024*1024*1000, 'tooBig'=>'图片过大', 'wrongExtension'=>'图片格式错误', 'checkExtensionByMimeType'=>false], // 最大10m
-            [['type'], 'in', 'range'=>['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', /*'oi_back_bank',*/ 'oi_driving_license_two', 'oi_driving_license_one', 'oi_family_card_two', 'oi_family_card_one', 'oi_video', 'oi_after_contract']],
+            [['type'], 'in', 'range'=>['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', /*'oi_back_bank',*/ 'oi_driving_license_two', 'oi_driving_license_one', 'oi_family_card_two', 'oi_family_card_one', 'oi_video', 'oi_after_contract', 'oi_pick_goods', 'oi_serial_num']],
             [['oid', 'key'], 'required']
         ];
     }

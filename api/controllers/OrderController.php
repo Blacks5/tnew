@@ -149,6 +149,7 @@ class OrderController extends CoreApiController
                     $msg = $model->getFirstErrors();
                     throw new CustomApiException(reset($msg));
                 }
+                Yii::error('print_photo');
 //            $key = $model->upload();
                 $order_image_model->$type = $key;
                 $order_image_model->save(false);
@@ -158,7 +159,6 @@ class OrderController extends CoreApiController
             }
             throw new CustomApiException('无效订单');
         } catch (CustomApiException $e) {
-            p($e->getMessage());
             return ['status' => 0, 'message' => '上传失败', 'data' => []];
         } catch (yii\base\Exception $e) {
             return ['status' => 0, 'message' => '系统错误', 'data' => []];
