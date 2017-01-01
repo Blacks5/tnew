@@ -327,6 +327,7 @@ class BorrowController extends CoreBackendController
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
+                p($e->getMessage());
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
