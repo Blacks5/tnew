@@ -425,7 +425,7 @@ class BorrowController extends CoreBackendController
   `oi_after_contract` varchar(100) NOT NULL DEFAULT '' COMMENT '二审，合同图片1',
   `oi_video` varchar(255) NOT NULL DEFAULT '' COMMENT '视频',*/
         $select = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank'/*, 'oi_back_bank'*/, 'oi_family_card_one',
-        'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_video'];
+        'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_pick_goods', 'oi_serial_num'];
         $data = Orders::find()->select($select)
             ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->where(['o_id'=>$oid])
