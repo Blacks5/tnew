@@ -76,7 +76,7 @@ use yii\widgets\LinkPager;
                                                         class="fa fa-edit"></i>查看
                                                 </a>
                                             <?php } ?>
-                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/update']), ['id' => $vo['id']])) { ?>
+                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/update'])/*, ['id' => $vo['id']]*/)) { ?>
                                                 <a class="btn btn-primary btn-xs"
                                                    href="<?= Url::toRoute(['user/update', 'id' => $vo['id']]) ?>"><i
                                                         class="fa fa-edit"></i>编辑
