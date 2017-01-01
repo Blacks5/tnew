@@ -289,15 +289,20 @@ class OrderController extends CoreApiController
 
                 // 如果是初审通过，订单状态是6， 就需要'oi_video', 'oi_after_contract' 都必须上传了
                 if ($model->o_status == Orders::STATUS_WAIT_CHECK_AGAIN) {
-                    /*if (!empty($oi_model->oi_video) === false) {
-                        throw new CustomApiException('请上传视频');
-                    }*/
+                    if (!empty($oi_model->oi_pick_goods) === false) {
+                        throw new CustomApiException('请上传提货照');
+                    }
+                    if (!empty($oi_model->oi_serial_num) === false) {
+                        throw new CustomApiException('请上传串码照');
+                    }
                     if (!empty($oi_model->oi_after_contract) === false) {
                         throw new CustomApiException('请上传合同照片');
                     }
+                }else{
+                    $model->o_status = Orders::STATUS_WAIT_CHECK;
                 }
 
-                $model->o_status = Orders::STATUS_WAIT_CHECK;
+
                 if (!$model->save(false)) {
                     throw new CustomApiException('上传失败2');
                 }
