@@ -430,7 +430,7 @@ class BorrowController extends CoreBackendController
             ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->where(['o_id'=>$oid])
             ->asArray()->one();
-//        p($data);
+        p($data);
         return $this->render('pics', ['data'=>$data]);
     }
 }
