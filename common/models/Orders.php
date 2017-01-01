@@ -112,6 +112,7 @@ class Orders extends CoreCommonActiveRecord
             ->leftJoin(Stores::tableName(), 'o_store_id=s_id') // 商户
             ->leftJoin(User::tableName(), 'id=o_user_id') // 读业务员
             ->where('o_id=:o_id', [':o_id'=>$order_id])
+            ->andWhere(['o_status'=>[Orders::STATUS_PAY_OVER, Orders::STATUS_PAYING]]) // 只读已还清和还款中的订单
             ->asArray()->one();
 //        $select = ['*'];
 //        $data = self::find()->alias('orders')->select($select)
