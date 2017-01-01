@@ -104,12 +104,13 @@ class OrderController extends CoreApiController
     public function actionWaitUploadImages()
     {
         $where = ['and',
-            ['o_status', [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]], // 不完整的订单
+            ['o_status'=>[Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]], // 不完整的订单
             ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
         ];
         try {
             $query = (new yii\db\Query())->select(['o_serial_id', 'o_id', 'o_created_at', 'o_status', 'c_customer_name', 'o_operator_remark'])
-                ->from(Orders::tableName())->leftJoin(Customer::tableName(), 'o_customer_id=c_id')->where($where);
+                ->from(Orders::tableName())->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
+                ->where($where);
             $count_query = clone $query;
             $total_count = $count_query->count();
             $pages = new yii\data\Pagination(['totalCount' => $total_count]);
