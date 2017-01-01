@@ -21,7 +21,6 @@ $this->title = '借款详情';
 
                     <div class="lightBoxGallery">
                         <?php
-                        $video = trim(array_pop($data));
                         foreach ($data as $v) {
                             if (!empty($v)) {
                                 ?>
@@ -34,15 +33,6 @@ $this->title = '借款详情';
                             }
                         }
                         ?>
-                        <?php ?>
-                        <a style="display: inline-block;
-    vertical-align: bottom;" href="#" data-gallery="">
-                            <video width="200" height="200" controls="controls"
-                                   src="<?= (new \common\models\UploadFile())->getUrl($video); ?>">
-                                您的浏览器不支持该视频播放
-                            </video>
-                        </a>
-                        <?php ?>
 
 
                         <div id="blueimp-gallery" class="blueimp-gallery">
