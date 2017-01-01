@@ -238,8 +238,8 @@ class OrderController extends CoreApiController
         try {
             $order_status = (new yii\db\Query())->from(Orders::tableName())->select(['o_status'])->where(['o_id' => $oid, 'o_user_id' => $userinfo->getId()])->scalar();
             // 只能删订单状态是 不完整 的
-            if ($order_status != Orders::STATUS_NOT_COMPLETE) {
-                throw new \Exception('该订单状态不允许删除图片');
+            if (($order_status != Orders::STATUS_NOT_COMPLETE) && ($order_status != Orders::STATUS_WAIT_CHECK_AGAIN)) {
+                throw new CustomApiException('该订单状态不允许删除图片');
             }
 //            if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){
             if ($order_image_model = OrderImages::find()->leftJoin(Orders::tableName(), 'oi_id=o_images_id')->where(['o_id' => $oid, 'oi_user_id' => $userinfo->getId()])->one()) {
@@ -251,6 +251,8 @@ class OrderController extends CoreApiController
                 return ['status' => 1, 'message' => '删除成功', 'data' => []];
             }
             return ['status' => 0, 'message' => '图片不存在', 'data' => []];
+        } catch (CustomApiException $e){
+            return ['status' => 0, 'message' => $e->getMessage(), 'data' => []];
         } catch (yii\base\Exception $e) {
             return ['status' => 0, 'message' => '删除失败_sys', 'data' => []];
         }
