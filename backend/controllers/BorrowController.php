@@ -267,7 +267,8 @@ class BorrowController extends CoreBackendController
 
                 // 更新客户
                 $c_forbidden_time = strtotime('+3 months');
-                $attr = ['c_forbidden_time'=>$c_forbidden_time, 'c_status'=>Customer::STATUS_NOT_OK];
+
+                $attr = ['c_forbidden_time'=>$c_forbidden_time, 'c_status'=>Customer::STATUS_NOT_OK, 'c_total_money'=>"c_total_money-{$res['o_total_price']}-{$res['o_total_deposit']}"]; // 此处要减掉客户的累积借款金额
                 if(1 !== Customer::updateAll($attr, ['c_id'=>$res['c_id']])){
                     throw new CustomBackendException('操作客户失败', 5);
                 }
