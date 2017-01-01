@@ -97,13 +97,14 @@ class OrderController extends CoreApiController
 
     /**
      * 待上传图片的订单列表
+     * 包括订单状态2(待初审)和6(待复审)的
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
     public function actionWaitUploadImages()
     {
         $where = ['and',
-            ['=', 'o_status', Orders::STATUS_NOT_COMPLETE], // 不完整的叮当
+            ['o_status', [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]], // 不完整的订单
             ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
         ];
         try {
