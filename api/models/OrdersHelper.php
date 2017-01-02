@@ -104,7 +104,7 @@ class OrdersHelper
             }
 //            $customerModel->c_total_money += $total_price - $total_deposit; //加上原来的借款总额  放到终审去做2017-01-02
             $customerModel->c_customer_addr_province = $params['c_customer_addr_province'];//
-            $customerModel->c_total_borrow_times += 1;// 总借款次数
+//            $customerModel->c_total_borrow_times += 1;// 总借款次数 放到终审去做
             $customerModel->c_created_at = $_SERVER['REQUEST_TIME'];//
             if(!$customerModel->save(false)){
                 throw new CustomApiException('用户写入失败');

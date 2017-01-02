@@ -193,7 +193,7 @@ class BorrowController extends CoreBackendController
                 $o_operator_remark = trim($request->post('remark'));
                 $userinfo = Yii::$app->getUser()->getIdentity();
                 // 状态必须为6（初审通过）的才可以终审
-                if(!$model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id'=>$order_id])->one()){
+                if (!$model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one()) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
                 $model->o_status = Orders::STATUS_PAYING;
@@ -209,9 +209,10 @@ class BorrowController extends CoreBackendController
                 CalInterest::genRefundPlan($order_id);
 
                 // 累积 客户的 总借款金额
-                $sql = "select * from customer where c_id=".$model->o_customer_id. " limit 1 for update";
+                $sql = "select * from customer where c_id=" . $model->o_customer_id . " limit 1 for update";
                 $c = Customer::findBySql($sql)->one();
-                $c->c_total_money += $model->o_total_price- $model->o_total_deposit;
+                $c->c_total_money += $model->o_total_price - $model->o_total_deposit;
+                $c->c_total_borrow_times += 1; // 借款次数加一
                 $c->save(false);
 
                 $trans->commit();
@@ -253,29 +254,29 @@ class BorrowController extends CoreBackendController
                 // 初审0 二审6 都可以取消
                 // for udpate加锁，防止并发
                 $sql = "select o_status,c_forbidden_time,c_status,c_id from orders left join customer on o_customer_id=c_id where o_id=:order_id for update";
-                $res = Orders::findBySql($sql, [':order_id'=>$order_id])->asArray()->one();
+                $res = Orders::findBySql($sql, [':order_id' => $order_id])->asArray()->one();
 //                $trans->rollBack();
 //                p($res);
-                if(!empty($res) === false){
+                if (!empty($res) === false) {
                     throw new CustomBackendException('订单不存在', 4);
                 }
-                if(($res['o_status'] != Orders::STATUS_WAIT_CHECK) && ($res['o_status'] != Orders::STATUS_WAIT_CHECK_AGAIN)){
+                if (($res['o_status'] != Orders::STATUS_WAIT_CHECK) && ($res['o_status'] != Orders::STATUS_WAIT_CHECK_AGAIN)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
 
 
-                $attr = ['o_status'=>Orders::STATUS_REFUSE, 'o_operator_id'=>$userinfo->getId(), 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'], 'o_operator_remark'=>$o_operator_remark];
+                $attr = ['o_status' => Orders::STATUS_REFUSE, 'o_operator_id' => $userinfo->getId(), 'o_operator_realname' => $userinfo->realname, 'o_operator_date' => $_SERVER['REQUEST_TIME'], 'o_operator_remark' => $o_operator_remark];
 
                 // 更新订单
-                if( 1 !== Orders::updateAll($attr, ['o_id'=>$order_id])){
+                if (1 !== Orders::updateAll($attr, ['o_id' => $order_id])) {
                     throw new CustomBackendException('操作订单失败', 5);
                 }
 
                 // 更新客户
                 $c_forbidden_time = strtotime('+3 months');
 
-                $attr = ['c_forbidden_time'=>$c_forbidden_time, 'c_status'=>Customer::STATUS_NOT_OK, 'c_total_money'=>"c_total_money-{$res['o_total_price']}-{$res['o_total_deposit']}"]; // 此处要减掉客户的累积借款金额
-                if(1 !== Customer::updateAll($attr, ['c_id'=>$res['c_id']])){
+                $attr = ['c_forbidden_time' => $c_forbidden_time, 'c_status' => Customer::STATUS_NOT_OK];
+                if (1 !== Customer::updateAll($attr, ['c_id' => $res['c_id']])) {
                     throw new CustomBackendException('操作客户失败', 5);
                 }
 
@@ -324,11 +325,11 @@ class BorrowController extends CoreBackendController
                 }
 
                 // 更新客户信息
-                $x = $model['o_total_price']- $model['o_total_deposit'];
+                $x = $model['o_total_price'] - $model['o_total_deposit'];
                 $e = new yii\db\Expression("c_total_money=c_total_money-$x");
-                $attr = ["c_total_money"=>$e]; // 此处要减掉客户的累积借款金额
+                $attr = ["c_total_money" => $e]; // 此处要减掉客户的累积借款金额
 
-                if(1 !== Customer::updateAll($attr, ['c_id'=>$model['o_customer_id']])){
+                if (1 !== Customer::updateAll($attr, ['c_id' => $model['o_customer_id']])) {
                     throw new CustomBackendException('操作客户失败', 5);
                 }
 
@@ -397,12 +398,12 @@ class BorrowController extends CoreBackendController
                 Yii::$app->getResponse()->format = 'json';
 
                 $sql = 'select * from ' . Orders::tableName() . ' where o_id=:o_id and o_status=' . Orders::STATUS_PAYING . ' limit 1 for update';
-                if(!$order_model = Orders::findBySql($sql, [':o_id' => $o_id])->one()){
+                if (!$order_model = Orders::findBySql($sql, [':o_id' => $o_id])->one()) {
                     throw new CustomBackendException('订单不存在', 2);
                 }
 
                 $limit_time = 60 * 60; // 1个小时
-                if(($order_model->o_operator_date + $limit_time) <= $_SERVER['REQUEST_TIME']){
+                if (($order_model->o_operator_date + $limit_time) <= $_SERVER['REQUEST_TIME']) {
                     throw new CustomBackendException('订单已过可撤销时限', 2);
                 }
 
@@ -418,10 +419,10 @@ class BorrowController extends CoreBackendController
                 }
 
                 // 更新客户表 总借款金额
-                $sql = "select * from customer where c_id=".$order_model->o_customer_id. " limit 1 for update";
+                $sql = "select * from customer where c_id=" . $order_model->o_customer_id . " limit 1 for update";
                 $c = Customer::findBySql($sql)->one();
-                $c->c_total_money -= $order_model->o_total_price- $order_model->o_total_deposit;
-                $c->c_total_borrow_times -=1;
+                $c->c_total_money -= $order_model->o_total_price - $order_model->o_total_deposit;
+                $c->c_total_borrow_times -= 1;
                 $c->save(false);
 
                 $trans->commit();
@@ -451,12 +452,12 @@ class BorrowController extends CoreBackendController
   `oi_after_contract` varchar(100) NOT NULL DEFAULT '' COMMENT '二审，合同图片1',
   `oi_video` varchar(255) NOT NULL DEFAULT '' COMMENT '视频',*/
         $select = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank'/*, 'oi_back_bank'*/, 'oi_family_card_one',
-        'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_pick_goods', 'oi_serial_num'];
+            'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_pick_goods', 'oi_serial_num'];
         $data = Orders::find()->select($select)
             ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
-            ->where(['o_id'=>$oid])
+            ->where(['o_id' => $oid])
             ->asArray()->one();
 //        p($data);
-        return $this->render('pics', ['data'=>$data]);
+        return $this->render('pics', ['data' => $data]);
     }
 }
