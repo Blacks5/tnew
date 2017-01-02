@@ -208,6 +208,12 @@ class BorrowController extends CoreBackendController
                 // 生成还款计划
                 CalInterest::genRefundPlan($order_id);
 
+                // 累积 客户的 总借款金额
+                $sql = "select * from customer where c_id=".$model->o_customer_id. " limit 1 for update";
+                $c = Customer::findBySql($sql)->one();
+                $c->c_total_money += $model->o_total_price- $model->o_total_deposit;
+                $c->save(false);
+
                 $trans->commit();
                 return ['status' => 1, 'message' => '终审并放款成功，已生成还款计划！'];
             } catch (CustomBackendException $e) {
@@ -395,7 +401,7 @@ class BorrowController extends CoreBackendController
                     throw new CustomBackendException('订单不存在', 2);
                 }
 
-                $limit_time = 30 * 60; // 半个小时
+                $limit_time = 60 * 60; // 1个小时
                 if(($order_model->o_operator_date + $limit_time) <= $_SERVER['REQUEST_TIME']){
                     throw new CustomBackendException('订单已过可撤销时限', 2);
                 }
@@ -410,6 +416,14 @@ class BorrowController extends CoreBackendController
                 if (!Repayment::deleteAll(['r_orders_id' => $o_id])) {
                     throw new CustomBackendException('还款计划操作失败', 5);
                 }
+
+                // 更新客户表 总借款金额
+                $sql = "select * from customer where c_id=".$order_model->o_customer_id. " limit 1 for update";
+                $c = Customer::findBySql($sql)->one();
+                $c->c_total_money -= $order_model->o_total_price- $order_model->o_total_deposit;
+                $c->c_total_borrow_times -=1;
+                $c->save(false);
+
                 $trans->commit();
                 return ['status' => 1, 'message' => '撤销订单成功'];
             } catch (CustomBackendException $e) {

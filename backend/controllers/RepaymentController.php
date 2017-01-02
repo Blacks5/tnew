@@ -11,6 +11,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
+use common\models\Customer;
 use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\Repayment;
@@ -157,6 +158,11 @@ class RepaymentController extends CoreBackendController
                         throw new CustomBackendException('还款操作失败', 5);
                     }
                 }
+                /*累积客户的 总支付利息*/
+                $sql = "select * from customer where c_id=".$repay_model->r_customer_id. " limit 1 for update";
+                $c = Customer::findBySql($sql)->one();
+                $c->c_total_interest += $repay_model->r_total_repay;
+                $c->save(false);
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '还款操作成功'];

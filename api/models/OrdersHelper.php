@@ -102,7 +102,7 @@ class OrdersHelper
                 $msg = $customerModel->getFirstErrors();
                 throw new CustomApiException(reset($msg));
             }
-            $customerModel->c_total_money += $total_price - $total_deposit; //加上原来的借款总额
+//            $customerModel->c_total_money += $total_price - $total_deposit; //加上原来的借款总额  放到终审去做2017-01-02
             $customerModel->c_customer_addr_province = $params['c_customer_addr_province'];//
             $customerModel->c_total_borrow_times += 1;// 总借款次数
             $customerModel->c_created_at = $_SERVER['REQUEST_TIME'];//
