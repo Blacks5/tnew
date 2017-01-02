@@ -103,7 +103,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">亲属：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_kinship_name']. '-'.$model['c_kinship_relation']. '-'. $model['c_kinship_cellphone']. '-'. $model['c_kinship_addr']; ?></p>
+                                <?= $model['c_kinship_name']. '-'.$model['c_kinship_relation']. '-'. $model['c_kinship_cellphone']/*. '-'. $model['c_kinship_addr']*/; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -111,7 +111,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">其他联系人：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_other_people_name']. '-'.$model['c_other_people_relation']. '-'. $model['c_other_people_cellphone']. '-'. $model['c_kinship_addr']; ?></p>
+                                <?= $model['c_other_people_name']. '-'.$model['c_other_people_relation']. '-'. $model['c_other_people_cellphone']/*. '-'. $model['c_kinship_addr'];*/ ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

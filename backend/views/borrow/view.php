@@ -182,7 +182,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                         <div>
                             <label class="col-sm-2 control-label">亲属：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= Helper::getKindShipString($model['c_kinship_relation']) . '-' . $model['c_kinship_name'] . '-' . $model['c_kinship_cellphone'] . '-' . $model['c_kinship_addr']; ?></p>
+                                <p class="form-control-static"><?= Helper::getKindShipString($model['c_kinship_relation']) . '-' . $model['c_kinship_name'] . '-' . $model['c_kinship_cellphone'] /*. '-' . $model['c_kinship_addr']*/; ?></p>
                             </div>
                         </div>
                         <div>

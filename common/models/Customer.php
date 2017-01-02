@@ -91,7 +91,7 @@ class Customer extends CoreCommonActiveRecord
                 return $this->c_family_marital_status == '2'; // 2是已婚
             }],
 
-            [['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_customer_idcard_detail_addr', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_name', 'c_kinship_relation', 'c_kinship_cellphone', 'c_kinship_addr', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_addr_detail', 'c_customer_jobs_company', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone', 'c_other_people_relation', 'c_other_people_name', 'c_other_people_cellphone', 'c_bank', 'c_banknum'/*, 'c_banknum_owner'*/], 'required'],
+            [['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_customer_idcard_detail_addr', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_name', 'c_kinship_relation', 'c_kinship_cellphone', /*'c_kinship_addr', */'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_addr_detail', 'c_customer_jobs_company', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone', 'c_other_people_relation', 'c_other_people_name', 'c_other_people_cellphone', 'c_bank', 'c_banknum'/*, 'c_banknum_owner'*/], 'required'],
             [['c_customer_id_card_endtime', 'c_customer_county', 'c_customer_city', 'c_customer_province', 'c_customer_gender', 'c_family_marital_status', 'c_family_house_info'/*, 'c_family_expenses'*/, 'c_family_income', 'c_kinship_relation', 'c_customer_addr_province', 'c_customer_addr_city', 'c_customer_addr_county', 'c_customer_jobs_industry', 'c_customer_jobs_type', 'c_customer_jobs_is_shebao', 'c_customer_jobs_province', 'c_customer_jobs_city', 'c_customer_jobs_county', 'c_other_people_relation', 'c_created_at', 'c_updated_at', 'c_status'], 'integer'],
             [['c_total_interest', 'c_total_money'], 'number'],
             [['c_customer_name'], 'string', 'max' => 5],
@@ -103,7 +103,7 @@ class Customer extends CoreCommonActiveRecord
 //            [['c_customer_email'], 'string', 'max' => 30],
             [['c_family_marital_partner_name', 'c_other_people_name'], 'string', 'max' => 10],
             [['c_kinship_name'], 'string', 'max' => 15],
-            [['c_kinship_addr', 'c_customer_addr_detail'], 'string', 'max' => 100],
+            [[/*'c_kinship_addr', */'c_customer_addr_detail'], 'string', 'max' => 100],
             [['c_customer_jobs_company', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone'], 'string', 'max' => 20],
 
             [['c_created_at', 'c_updated_at', 'c_total_interest', 'c_status', 'c_total_borrow_times'], 'safe']
@@ -146,7 +146,7 @@ class Customer extends CoreCommonActiveRecord
             'c_kinship_name' => '亲属姓名',
             'c_kinship_relation' => '亲属关系：1父亲 2母亲 3兄弟 4姐妹 5子女 6表兄弟 7表姐妹 8其他',
             'c_kinship_cellphone' => '亲属手机号',
-            'c_kinship_addr' => '亲属联系地址',
+//            'c_kinship_addr' => '亲属联系地址',
             'c_customer_addr_province' => '客户现居住省',
             'c_customer_addr_city' => '客户现居住市',
             'c_customer_addr_county' => '客户现居住县',
