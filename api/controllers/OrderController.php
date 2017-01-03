@@ -15,6 +15,7 @@ use common\models\Customer;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Product;
+use common\models\Repayment;
 use common\models\Sms;
 use common\models\Stores;
 use common\models\TooRegion;
@@ -375,22 +376,25 @@ class OrderController extends CoreApiController
      */
     public function actionGetOrdersLists()
     {
-        $limit_time = ($_SERVER['REQUEST_TIME'] - 24 * 3600);
-        $limit_time = 0;
+//        $limit_time = ($_SERVER['REQUEST_TIME'] - 24 * 3600);
+//        $limit_time = 0;
         $where = ['and',
-            ['>=', 'o_created_at', $limit_time], // 最近24小时
+//            ['>=', 'o_created_at', $limit_time], // 最近24小时
             ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
         ];
+        $where = ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()];
+        $c_customer_name = Yii::$app->getRequest()->get('c_customer_name');
         try {
             $query = (new yii\db\Query())->select(['o_serial_id', 'o_id', 'p_name', 'o_total_price', 'o_total_deposit', 'o_created_at', 'o_status', 'c_customer_name', 'o_operator_remark'])
                 ->from(Orders::tableName())
                 ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
                 ->leftJoin(Product::tableName(), 'o_product_id=p_id')
                 ->where($where);
+            $query->andFilterWhere(['like', 'c_customer_name', $c_customer_name]); // 用户名 搜索
             $count_query = clone $query;
             $total_count = $count_query->count();
             $pages = new yii\data\Pagination(['totalCount' => $total_count]);
-            $pages->pageSize = Yii::$app->params['page_size'];
+            $pages->pageSize = Yii::$app->params['page_size']; // common里的
             $data = $query->orderBy(['o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
             array_walk($data, function (&$v) {
 //                $v['o_created_at'] = date('Y-m-d H:i:s', $v['o_created_at']);
@@ -445,7 +449,6 @@ class OrderController extends CoreApiController
         $p_add_service_fee = $get->get('p_add_service_fee'); // 增值服务费
         $p_free_pack_fee = $get->get('p_free_pack_fee'); // 随心包服务费
 
-        Yii::error('debug一下');
 
         try {
             if (!$total_money || !$product_id) {
@@ -490,13 +493,32 @@ class OrderController extends CoreApiController
         return ['status' => 0, 'message' => '身份证号码不正确'];
     }
 
+
     /**
-     * 获取当前登录用户一个县的商铺
+     * 获取所有逾期的客户
+     * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    private function getStores()
+    public function actionGetOverdueByUid()
     {
+        /*
+         * 订单表 通过订单id 关联 还款表
+         * */
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
+        $userinfo = Yii::$app->getUser();
+        $uid = $userinfo->getId();
+        $select = ['max(c_customer_name) as c_customer_name', 'max(c_customer_cellphone) as c_customer_cellphone',
+        'sum(r_total_repay+r_overdue_money) as r_total_repay', 'sum(r_overdue_day)as r_overdue_day'];
+        $data = Orders::find()->select($select)
+            ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
+            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
+            ->where(['o_user_id'=>$uid])
+            ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]) // 还没还的，
+            ->andWhere(['<', 'r_pre_repay_date', $_SERVER['REQUEST_TIME']]) // 当前时间 大于 应还时间 [逾期]
+            ->groupBy('o_customer_id')
+            ->asArray()->all();
+        return ['status'=>1, 'message'=>'ok', 'data'=>$data];
     }
 
 
