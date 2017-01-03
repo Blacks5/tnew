@@ -501,9 +501,6 @@ class OrderController extends CoreApiController
      */
     public function actionGetOverdueByUid()
     {
-        /*
-         * 订单表 通过订单id 关联 还款表
-         * */
         Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
         $userinfo = Yii::$app->getUser();
