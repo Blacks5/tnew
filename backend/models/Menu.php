@@ -70,7 +70,7 @@ class Menu extends \yii\db\ActiveRecord
         $uid = Yii::$app->user->identity->getId();
 
         // 特殊用户直接读出所有菜单
-        if ($uid === Yii::$app->params['SuperDiao']) {
+        if (in_array($uid, Yii::$app->params['SuperDiao'])) {
             $sql = "SELECT * FROM `menu` ORDER BY `order` ASC";
             $menu = Yii::$app->db->createCommand($sql)->queryAll();
             $menu = self::list_to_tree2($menu, 'id', 'parent');

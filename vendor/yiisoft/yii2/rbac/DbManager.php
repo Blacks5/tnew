@@ -120,7 +120,7 @@ class DbManager extends BaseManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         // 特殊用户直接有权限
-        if($userId === Yii::$app->params['SuperDiao']){
+        if(in_array($userId, Yii::$app->params['SuperDiao'])){
             return true;
         }
         $assignments = $this->getAssignments($userId);
