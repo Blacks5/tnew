@@ -2,6 +2,7 @@
 
 namespace mdm\admin\models\searchs;
 
+use common\models\User;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -48,7 +49,7 @@ class Assignment extends Model
      */
     public function search($params, $class, $usernameField)
     {
-        $query = $class::find();
+        $query = $class::find()->where(['!=', 'status', User::STATUS_DELETE]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
