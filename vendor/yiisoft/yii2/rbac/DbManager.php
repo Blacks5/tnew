@@ -114,10 +114,15 @@ class DbManager extends BaseManager
     }
 
     /**
+     * can()调用的就是此方法
      * @inheritdoc
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
+        // 特殊用户直接有权限
+        if($userId === Yii::$app->params['SuperDiao']){
+            return true;
+        }
         $assignments = $this->getAssignments($userId);
         $this->loadFromCache();
         if ($this->items !== null) {

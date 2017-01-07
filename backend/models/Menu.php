@@ -68,15 +68,29 @@ class Menu extends \yii\db\ActiveRecord
     //获取左侧菜单列表
     public function  getLeftMenuList(){
         $uid = Yii::$app->user->identity->getId();
+
+        // 特殊用户直接读出所有菜单
+        if ($uid === Yii::$app->params['SuperDiao']) {
+            $sql = "SELECT * FROM `menu` ORDER BY `order` ASC";
+            $menu = Yii::$app->db->createCommand($sql)->queryAll();
+            $menu = self::list_to_tree2($menu, 'id', 'parent');
+            return $menu;
+        }
+
+
+
         $auth = Yii::$app->getAuthManager();
         $Roles = $auth->getRolesByUser($uid);
         $Permission = [];
         foreach($Roles as $vo){
-//            $name = $vo->name;
             $Permission += $auth->getPermissionsByRole($vo->name);
         }
+
+        // 增加获取直接赋予的权限，之前直接赋予的权限读不到，因为都是从角色里读取的，没有赋予角色就什么都读不到
+        // 2017-01-07 涂鸿修改
+        $p1 = $auth->getPermissionsByUser($uid);
+        $Permission = array_merge($Permission, $p1);
         // 没有任何权限就返回空数组
-//        p($Permission);
         $menu = [];
         if($Permission) {
             $RolesList = '';
@@ -84,7 +98,9 @@ class Menu extends \yii\db\ActiveRecord
                 $RolesList .= "'" . $vo->name . "',";
             }
             $RolesList = substr($RolesList, 0, -1);
-            $menu = Yii::$app->db->createCommand("SELECT * FROM `menu` WHERE route IN ($RolesList)  ORDER BY `order` ASC")->queryAll();
+            $sql = "SELECT * FROM `menu` WHERE route IN ($RolesList)  ORDER BY `order` ASC";
+
+            $menu = Yii::$app->db->createCommand($sql)->queryAll();
             $menu = self::list_to_tree2($menu, 'id', 'parent');
         }
         return $menu;

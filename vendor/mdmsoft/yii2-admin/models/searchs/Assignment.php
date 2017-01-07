@@ -54,7 +54,9 @@ class Assignment extends Model
             'query' => $query,
         ]);
 
-        $query->andWhere(['!=', 'username', 'admin']);
+        // 排除特殊用户
+        $query->andWhere(['not in', 'id', Yii::$app->params['SuperDiao']]);
+
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
