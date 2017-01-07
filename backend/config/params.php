@@ -1,5 +1,5 @@
 <?php
 return [
     'adminEmail' => 'admin@example.com',
-    'SuperDiao'=>[], // ChaoDiao
+    'SuperDiao'=>[1], // ChaoDiao
 ];
