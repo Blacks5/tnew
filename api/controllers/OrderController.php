@@ -530,4 +530,16 @@ class OrderController extends CoreApiController
         $data = "我是合同，屌不屌" . $o_id;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
+
+    /**
+     * 给客户端返回订单详情
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionGetOrderDetail($o_id=8)
+    {
+        Yii::$app->getResponse()->format = 'json';
+        $data = "我是详情，屌不屌" . $o_id;
+        return ['status' => 1, 'message' => 'ok', 'data' => $data];
+    }
 }
