@@ -114,4 +114,6 @@ class Helper
     {
         return array_column(\Yii::$app->params['company_type'], 'company_type_name', 'company_type_id')[$id];
     }
+
+
 }
