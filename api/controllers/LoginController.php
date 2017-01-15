@@ -46,4 +46,16 @@ class LoginController extends Controller
         }
         return ['status'=>0, 'message'=>'登录异常', 'data'=>[]];
     }
+
+    /**
+     * @todo 还没使用
+     * 给客户端返回请求的地址
+     * @return array
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionReturnUrl()
+    {
+        $url = 'http://211.149.163.238/';
+        return ['status' => 1, 'message' => 'ok', 'data' => $url];
+    }
 }
