@@ -31,7 +31,7 @@ class LoginController extends Controller
         $model = new LoginForm();
         $model->username = $request->post('username');
         $model->password = $request->post('password');
-        usleep(500);
+        usleep(500); // 防止暴力破解密码
         if(!$model->validate()){
             return ['status'=>0, 'message'=>'用户名或密码错误', 'data'=>[]];
         }
