@@ -55,7 +55,7 @@ class LoginController extends Controller
      */
     public function actionReturnUrl()
     {
-        $url = 'http://211.149.163.238/';
+        $url = 'http://211.149.163.238:80/';
         return ['status' => 1, 'message' => 'ok', 'data' => $url];
     }
 }
