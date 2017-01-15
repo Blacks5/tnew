@@ -10,6 +10,7 @@ namespace api\controllers;
 
 use api\components\CustomApiException;
 use api\models\OrdersHelper;
+use common\components\Contract;
 use common\models\CalInterest;
 use common\models\Customer;
 use common\models\OrderImages;
@@ -528,6 +529,7 @@ class OrderController extends CoreApiController
     {
         Yii::$app->getResponse()->format = 'json';
         $data = "我是合同，屌不屌" . $o_id;
+        $data = Contract::genContractForOid($o_id);
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
 
