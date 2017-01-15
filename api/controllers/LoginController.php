@@ -49,7 +49,7 @@ class LoginController extends Controller
 
     /**
      * @todo 还没使用
-     * 给客户端返回请求的地址
+     * 给客户端返回api请求的地址
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
