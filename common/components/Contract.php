@@ -368,5 +368,6 @@ VIP服务包：
 
 
 EOD;
+        return $content;
     }
 }
