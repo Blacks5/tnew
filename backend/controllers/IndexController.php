@@ -25,7 +25,7 @@ class IndexController extends CoreBackendController
         //$action = Yii::$app->controller->module->requestedRoute;
         //var_dump(\Yii::$app->user->can('/site/index'));exit;
         //最近登录记录
-        $log = Log::find()->limit(20)->orderBy('id desc')->asArray()->all();
+        $log = Log::find()->limit(Yii::$app->params['page_size'])->orderBy('id desc')->asArray()->all();
         return $this->render('welcome',[
             'log' => $log,
         ]);

@@ -42,7 +42,7 @@ class RepaymentController extends CoreBackendController
         $query = $query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 20;//Yii::$app->params['page_size'];
+        $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         array_walk($data, function(&$v){

@@ -36,7 +36,7 @@ class TeamController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query_count = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $query_count->count()]);
-        $pages->pageSize = 3;//Yii::$app->params['page_size'];
+        $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['t_id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('index', [
             'model' => $data,

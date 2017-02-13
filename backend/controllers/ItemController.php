@@ -52,7 +52,7 @@ class ItemController extends CoreBackendController
         $model = new AuthItem();
         //分页
         $curPage = Yii:: $app-> request->get( 'page',1);
-        $pageSize = 10;
+        $pageSize = Yii::$app->params['page_size'];
         //搜索
         $type = Yii:: $app-> request->get( 'type', '');
         $value = Yii:: $app-> request->get( 'value', '');
@@ -69,7 +69,7 @@ class ItemController extends CoreBackendController
         $model = new AuthItem();
         //分页
         $curPage = Yii:: $app-> request->get( 'page',1);
-        $pageSize = 10;
+        $pageSize = Yii::$app->params['page_size'];
         //搜索
         $type = Yii:: $app-> request->get( 'type', '');
         $value = Yii:: $app-> request->get( 'value', '');

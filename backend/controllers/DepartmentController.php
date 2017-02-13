@@ -133,7 +133,7 @@ class DepartmentController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 3;//Yii::$app->params['page_size'];
+        $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('index', [
             'sear' => $model->getAttributes(),

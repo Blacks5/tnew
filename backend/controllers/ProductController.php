@@ -20,7 +20,7 @@ class ProductController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
-        $pages->pageSize = 3;
+        $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['p_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
         return $this->render('index', [
