@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">图片：</label>
-                <div class="col-sm-3">
+                <div class="col-sm-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
                             <div class="carousel slide" id="carousel1">
