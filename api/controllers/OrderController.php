@@ -552,9 +552,6 @@ class OrderController extends CoreApiController
 <b>配偶电话</b>：110<br>
 住房情况：自有住房
 公租房/廉租房<br>
-
-
-<b>text3:</b>  Text with a " + "<a href=\"http://www.google.com\">link</a>
 EOF;
 ;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
