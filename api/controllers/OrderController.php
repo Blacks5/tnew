@@ -542,6 +542,21 @@ class OrderController extends CoreApiController
     {
         Yii::$app->getResponse()->format = 'json';
         $data = "我是详情，屌不屌". $o_id ;
+        $data = <<<EOF
+姓名：李四<br>
+借款金额：1888<br>
+电话：18000000000<br>
+单位地址：内蒙古自治区-鄂尔多斯市-杭锦旗-gggggg<br>
+婚姻状况：未婚<br>
+配偶姓名：李四<br>
+<b>配偶电话</b>：110<br>
+住房情况：自有住房
+公租房/廉租房<br>
+
+
+<b>text3:</b>  Text with a " + "<a href=\"http://www.google.com\">link</a>
+EOF;
+;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
 }
