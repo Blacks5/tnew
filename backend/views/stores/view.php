@@ -106,6 +106,50 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="form-group">
                 <label class="col-sm-3 control-label">图片：</label>
                 <div class="col-sm-9">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="carousel slide" id="carousel1">
+                                <div class="carousel-inner">
+                                    <?php if ($model->s_photo_one) { ?>
+                                        <div class="item active">
+                                            <?= \yii\helpers\Html::img($model->s_photo_one,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if ($model->s_photo_two) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_two,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if ($model->s_photo_three) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_three,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if ($model->s_photo_four) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_four,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if ($model->s_photo_five) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_five,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                                <a data-slide="prev" href="carousel.html#carousel1" class="left carousel-control">
+                                    <span class="icon-prev"></span>
+                                </a>
+                                <a data-slide="next" href="carousel.html#carousel1" class="right carousel-control">
+                                    <span class="icon-next"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <?php if ($model->s_photo_one) { ?>
                         <div class="">
                             <?=\yii\helpers\Html::img($model->s_photo_one,
@@ -165,5 +209,6 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-
-
+<?= \yii\bootstrap\Html::jsFile('@web/js-too/bootstrap.min.js') ?>
+<?= \yii\bootstrap\Html::jsFile('@web/js-too/jquery.min.js') ?>
+<?= \yii\bootstrap\Html::jsFile('@web/js-too/content.min.js') ?>
