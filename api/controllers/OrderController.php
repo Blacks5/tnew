@@ -541,7 +541,7 @@ class OrderController extends CoreApiController
     public function actionGetOrderDetail($o_id=8)
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = "我是详情，屌不屌" . $o_id;
+        $data = "我是详情，屌不屌". $o_id ;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
 }
