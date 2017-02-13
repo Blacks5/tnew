@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">图片：</label>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
                             <div class="carousel slide" id="carousel1">
@@ -150,36 +150,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
                         </div>
                     </div>
-                    <?php if ($model->s_photo_one) { ?>
-                        <div class="">
-                            <?=\yii\helpers\Html::img($model->s_photo_one,
-                                ['class'=>'img-circle', 'alt'=>'图片'])?>
-                        </div>
-                    <?php } ?>
-                    <?php if ($model->s_photo_two) { ?>
-                        <div class="">
-                            <?=\yii\helpers\Html::img($model->s_photo_two,
-                                ['class'=>'img-circle', 'alt'=>'图片'])?>
-                        </div>
-                    <?php } ?>
-                    <?php if ($model->s_photo_three) { ?>
-                        <div class="">
-                            <?=\yii\helpers\Html::img($model->s_photo_three,
-                                ['class'=>'img-circle', 'alt'=>'图片'])?>
-                        </div>
-                    <?php } ?>
-                    <?php if ($model->s_photo_four) { ?>
-                        <div class="">
-                            <?=\yii\helpers\Html::img($model->s_photo_four,
-                                ['class'=>'img-circle', 'alt'=>'图片'])?>
-                        </div>
-                    <?php } ?>
-                    <?php if ($model->s_photo_five) { ?>
-                        <div class="">
-                            <?=\yii\helpers\Html::img($model->s_photo_five,
-                                ['class'=>'img-circle', 'alt'=>'图片'])?>
-                        </div>
-                    <?php } ?>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
