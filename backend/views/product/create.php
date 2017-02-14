@@ -81,7 +81,7 @@
                         <div class="form-group <?php if ($model->hasErrors('p_add_service_fee')) {
                             echo 'has-error';
                         } ?>">
-                            <label class="col-sm-2 control-label">增值服务费</label>
+                            <label class="col-sm-2 control-label">增值服务费(%)</label>
 
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="p_add_service_fee" value="<?=$model->p_add_service_fee?>">
@@ -94,7 +94,7 @@
                         <div class="form-group <?php if ($model->hasErrors('p_free_pack_fee')) {
                             echo 'has-error';
                         } ?>">
-                            <label class="col-sm-2 control-label">随心包服务费</label>
+                            <label class="col-sm-2 control-label">随心包服务费(元/每月)</label>
 
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="p_free_pack_fee" value="<?=$model->p_free_pack_fee?>">
@@ -107,7 +107,7 @@
                         <div class="form-group <?php if ($model->hasErrors('p_finance_mangemant_fee')) {
                             echo 'has-error';
                         } ?>">
-                            <label class="col-sm-2 control-label">财务管理费</label>
+                            <label class="col-sm-2 control-label">财务管理费(%)</label>
 
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="p_finance_mangemant_fee" value="<?=$model->p_finance_mangemant_fee?>">
@@ -120,7 +120,7 @@
                         <div class="form-group <?php if ($model->hasErrors('p_customer_management')) {
                             echo 'has-error';
                         } ?>">
-                            <label class="col-sm-2 control-label">客户管理费</label>
+                            <label class="col-sm-2 control-label">客户管理费(%)</label>
 
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="p_customer_management" value="<?=$model->p_customer_management?>">

@@ -61,7 +61,7 @@ class CalInterest
         $p_add_service_fee = 0;
         $p_free_pack_fee = 0;
         if((int)$order_info['o_is_add_service_fee'] === 1){
-            $p_add_service_fee = $order_info['p_add_service_fee'];
+            $p_add_service_fee = $total_borrow_money * $order_info['p_add_service_fee'] / 100;
         }
         if((int)$order_info['o_is_free_pack_fee'] === 1){
             $p_free_pack_fee = $order_info['p_free_pack_fee'];
@@ -72,12 +72,12 @@ class CalInterest
             $_temp['r_customer_id'] = $order_info['o_customer_id']; // 客户id
             $_temp['r_orders_id'] = $order_info['o_id']; // 订单id
             $_temp['r_total_repay'] = $month_benjinTotal + $p_add_service_fee + $p_free_pack_fee + $order_info['p_finance_mangemant_fee'] + $order_info['p_customer_management']; // 每月总额
-            $_temp['r_interest'] = round($total_borrow_money * $order_info['p_month_rate'], 3); // 每月利息
+            $_temp['r_interest'] = round($total_borrow_money * $order_info['p_month_rate'] / 100, 3); // 每月利息
             $_temp['r_principal'] = round($month_benjinTotal - $_temp['r_interest'], 3); // 每月本金
             $_temp['r_add_service_fee'] = $p_add_service_fee; // 增值服务费
             $_temp['r_free_pack_fee'] = $p_free_pack_fee;// 随心包服务费
-            $_temp['r_finance_mangemant_fee'] = $order_info['p_finance_mangemant_fee']; // 财务管理费
-            $_temp['r_customer_management'] = $order_info['p_customer_management']; // 客户管理费
+            $_temp['r_finance_mangemant_fee'] = $total_borrow_money * $order_info['p_finance_mangemant_fee'] / 100; // 财务管理费
+            $_temp['r_customer_management'] = $total_borrow_money * $order_info['p_customer_management'] / 100; // 客户管理费
             $_temp['r_pre_repay_date'] = strtotime('+'. $i+1 . 'months'); // 下个月的明天
             $_temp['r_is_last'] = ($i+1==$order_info['p_period'])? 1: 2; // 1是 2不是最后一期
             $_temp['r_serial_no'] = $i+1;
