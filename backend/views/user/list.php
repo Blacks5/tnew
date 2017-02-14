@@ -45,7 +45,7 @@ use yii\widgets\LinkPager;
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>员工编号</th>
                                     <th>用户名</th>
                                     <th>真实姓名</th>
                                     <th>所属部门</th>
