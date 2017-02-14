@@ -82,7 +82,7 @@ $form = ActiveForm::begin(
                 <div class="wraper">
                     <ul id="file-list-one" class="file-list">
                         <li>
-                            <p>身份证正面照</p>
+                            <p>营业执照</p>
                             <?= Html::img('@web/img/image.png'); ?>
                         </li>
                     </ul>
@@ -95,7 +95,7 @@ $form = ActiveForm::begin(
                 <div class="wraper">
                     <ul id="file-list-two" class="file-list">
                         <li>
-                            <p>身份证背面照</p>
+                            <p>开户许可证</p>
                             <?= Html::img('@web/img/image.png'); ?>
                         </li>
                     </ul>
@@ -107,7 +107,7 @@ $form = ActiveForm::begin(
                 <div class="wraper">
                     <ul id="file-list-three" class="file-list">
                         <li>
-                            <p>身份证背面照</p>
+                            <p>法人身份证</p>
                             <?= Html::img('@web/img/image.png'); ?>
                         </li>
                     </ul>
@@ -120,7 +120,7 @@ $form = ActiveForm::begin(
                 <div class="wraper">
                     <ul id="file-list-four" class="file-list">
                         <li>
-                            <p>身份证背面照</p>
+                            <p>门店照片</p>
                             <?= Html::img('@web/img/image.png'); ?>
                         </li>
                     </ul>
@@ -132,7 +132,7 @@ $form = ActiveForm::begin(
                 <div class="wraper">
                     <ul id="file-list-five" class="file-list">
                         <li>
-                            <p>身份证背面照</p>
+                            <p>店内照片</p>
                             <?= Html::img('@web/img/image.png'); ?>
                         </li>
                     </ul>
