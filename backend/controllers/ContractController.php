@@ -11,8 +11,18 @@ namespace backend\controllers;
 use yii\web\Controller;
 class ContractController extends Controller
 {
+    /**
+     * 借款合同
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->renderPartial('index');
+    }
+
+    public function actionPaymentdesc()
+    {
+        return $this->renderPartial('paymentdesc');
     }
 }
