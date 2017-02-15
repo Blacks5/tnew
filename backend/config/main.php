@@ -26,6 +26,7 @@ return [
 //            '*',
             'login/login',
             'contract/index', // 订单合同页面，Android app里webview用
+            'contract/paymentdesc', // 代扣说明页面，Android app里webview用
         ]
     ],
 
