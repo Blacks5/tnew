@@ -60,4 +60,6 @@ class LoginController extends Controller
 //        $url = 'http://192.168.0.194:889/'; // win
         return ['status' => 1, 'message' => 'ok', 'data' => $url];
     }
+
+
 }

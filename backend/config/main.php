@@ -25,6 +25,7 @@ return [
             //controller/action
 //            '*',
             'login/login',
+            'contract/index', // 订单合同页面，Android app里webview用
         ]
     ],
 

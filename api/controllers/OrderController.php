@@ -530,7 +530,7 @@ class OrderController extends CoreApiController
         Yii::$app->getResponse()->format = 'json';
         $data = "我是合同，屌不屌" . $o_id;
         $data = Contract::genContractForOid($o_id);
-        return ['status' => 1, 'message' => 'ok', 'data' => $data];
+        return ['status' => 1, 'message' => 'ok', 'data' => 'http://www.tooto.cc'];
     }
 
     /**
