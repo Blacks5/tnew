@@ -60,7 +60,7 @@
             <dd>首次还款日：<span class="info_box_span"> </span></dd>
             <dd>每月还款日期：<span class="info_box_span"> </span></dd>
             <dd>还款说明：<span class="info_box_span"> 佰信分期将在还款日从借款人银行卡自动扣除应还金额</span></dd>
-            <dd style="text-align: right;"><a href="#">查看详细说明</a></dd>
+            <dd style="text-align: right;"><a href="/contract/paymentdesc">查看详细说明</a></dd>
         </dl>
     </div>
     <div class="w_div">
