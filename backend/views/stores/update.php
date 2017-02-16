@@ -71,6 +71,7 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_photo_three')->hiddenInput(['class'=>'form-control'])->label('');?>
             <?= $form->field($model, 's_photo_four')->hiddenInput(['class'=>'form-control'])->label('');?>
             <?= $form->field($model, 's_photo_five')->hiddenInput(['class'=>'form-control'])->label('');?>
+            <?= $form->field($model, 's_photo_six')->hiddenInput(['class'=>'form-control'])->label('');?>
 
 
 
@@ -114,7 +115,7 @@ $t = new \common\models\UploadFile();
                         <ul id="file-list-three" class="file-list">
                             <li>
                                 <p>身份证背面照</p>
-                                <?php if($model->s_photo_two){ ?>
+                                <?php if($model->s_photo_three){ ?>
                                     <img src="<?=$t->getUrl($model->s_photo_three);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
@@ -131,7 +132,7 @@ $t = new \common\models\UploadFile();
                         <ul id="file-list-four" class="file-list">
                             <li>
                                 <p>身份证背面照</p>
-                                <?php if($model->s_photo_two){ ?>
+                                <?php if($model->s_photo_four){ ?>
                                     <img src="<?=$t->getUrl($model->s_photo_four);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
@@ -147,7 +148,7 @@ $t = new \common\models\UploadFile();
                         <ul id="file-list-five" class="file-list">
                             <li>
                                 <p>身份证背面照</p>
-                                <?php if($model->s_photo_two){ ?>
+                                <?php if($model->s_photo_five){ ?>
                                     <img src="<?=$t->getUrl($model->s_photo_five);?>" alt="">
                                 <?php }else{ ?>
                                     <img src="/statics/images/image.png" alt="">
@@ -157,6 +158,22 @@ $t = new \common\models\UploadFile();
                         <div class="btn-wraper">
                             <input type="button" value="选择文件..." id="browse-five" />
                             <button id="start_upload_five" type="button">开始上传</button>
+                        </div>
+                    </div>
+                    <div class="wraper">
+                        <ul id="file-list-six" class="file-list">
+                            <li>
+                                <p>法人身份证反面</p>
+                                <?php if($model->s_photo_six){ ?>
+                                    <img src="<?=$t->getUrl($model->s_photo_six);?>" alt="">
+                                <?php }else{ ?>
+                                    <img src="/statics/images/image.png" alt="">
+                                <?php } ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-six" />
+                            <button id="start_upload_six" type="button">开始上传</button>
                         </div>
                     </div>
                 </div>
@@ -245,6 +262,7 @@ $t = new \common\models\UploadFile();
     loadinit('three');
     loadinit('four');
     loadinit('five');
+    loadinit('six');
 </script>
 <?php
 $this->registerJs('

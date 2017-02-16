@@ -103,6 +103,7 @@ class StoresController extends CoreBackendController
             $model->s_photo_three = $model->s_photo_three ? $t->getUrl($model->s_photo_three) : '';
             $model->s_photo_four = $model->s_photo_four ? $t->getUrl($model->s_photo_four) : '';
             $model->s_photo_five = $model->s_photo_five ? $t->getUrl($model->s_photo_five) : '';
+            $model->s_photo_six = $model->s_photo_six ? $t->getUrl($model->s_photo_six) : '';
             $all_sales = User::find()->select(['realname'])
                 ->where(['belong_stores_id' => $id, 'county' => $model->s_county, 'status' => User::STATUS_ACTIVE])
                 ->indexBy('id')->asArray()->column();

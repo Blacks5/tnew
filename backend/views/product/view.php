@@ -39,7 +39,7 @@ use yii\widgets\DetailView;
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">月利率：</label>
+                        <label class="col-sm-3 control-label">月利率(%)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
                                 <?= $model['p_month_rate']; ?>
@@ -48,28 +48,28 @@ use yii\widgets\DetailView;
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">增值服务费：</label>
+                        <label class="col-sm-3 control-label">增值服务费(%)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static"><?= $model['p_add_service_fee']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">随心包：</label>
+                        <label class="col-sm-3 control-label">随心包(元/每月)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static"><?= $model['p_free_pack_fee']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">财务管理费：</label>
+                        <label class="col-sm-3 control-label">财务管理费(%)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static"><?= $model['p_finance_mangemant_fee']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">客户管理费：</label>
+                        <label class="col-sm-3 control-label">客户管理费(%)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static"><?= $model['p_customer_management']; ?></p>
                         </div>

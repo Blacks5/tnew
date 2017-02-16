@@ -35,6 +35,7 @@ use common\core\CoreCommonActiveRecord;
  * @property string $s_photo_three
  * @property string $s_photo_four
  * @property string $s_photo_five
+ * @property string $s_photo_six
  * @property integer $s_created_at
  * @property integer $s_updated_at
  */
@@ -76,7 +77,7 @@ class Stores extends CoreCommonActiveRecord
             [['s_owner_phone'], 'string', 'max' => 11],
             [['s_remark', 's_refuse_reason'], 'string', 'max' => 250],
             [['s_county', 's_bank_sub', 's_bank_name', 's_city', 's_province'], 'string', 'max' => 20],
-            [['s_addr', 's_photo_one', 's_photo_two', 's_photo_three', 's_photo_four', 's_photo_five'], 'string', 'max' => 50],
+            [['s_addr', 's_photo_one', 's_photo_two', 's_photo_three', 's_photo_four', 's_photo_five', 's_photo_six'], 'string', 'max' => 50],
 
             [['s_owner_phone'], 'match', 'pattern' => '/^1[3|5|8]\d{9}/', 'except' => 'search'],
             [['s_owner_email'], 'email', 'except' => 'search']
