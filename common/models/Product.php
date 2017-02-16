@@ -49,8 +49,8 @@ class Product extends CoreCommonActiveRecord
     {
         return [
             [['p_name', 'p_type', 'p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'required', 'except'=>'search'],
-            [['p_period', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management', 'p_status', 'p_created_at', 'p_updated_at'], 'integer'],
-            [['p_month_rate'], 'number', 'max'=>'100', 'min'=>'0.0001'],
+            [['p_period', 'p_free_pack_fee', 'p_status', 'p_created_at', 'p_updated_at'], 'integer'],
+            [['p_month_rate', 'p_add_service_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'number', 'max'=>'100', 'min'=>'0.0001'],
 //            [['p_name'], 'string', 'max' => 30],
             [['p_status'], 'in', 'range'=>[10, 1]],
 
