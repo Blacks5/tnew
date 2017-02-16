@@ -447,7 +447,7 @@ class OrderController extends CoreApiController
         $get = Yii::$app->getRequest();
         $total_money = $get->get('total_money'); // 借款额
         $product_id = $get->get('product_id'); // 使用的产品
-        $p_add_service_fee = $get->get('p_add_service_fee'); // 增值服务费
+        $p_add_service_fee = $get->get('p_add_service_fee'); // 贵宾服务包
         $p_free_pack_fee = $get->get('p_free_pack_fee'); // 随心包服务费
 
 

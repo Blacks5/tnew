@@ -42,7 +42,7 @@ use yii\helpers\Url;
                                                     <th>本月应还总金额</th>
                                                     <th>本金</th>
                                                     <th>利息</th>
-                                                    <th>增值服务费</th>
+                                                    <th>贵宾服务包</th>
                                                     <th>随心包服务费</th>
                                                     <th>财务管理费</th>
                                                     <th>客户管理费</th>

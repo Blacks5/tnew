@@ -40,7 +40,7 @@ use yii\widgets\LinkPager;
                                     <th>产品名</th>
                                     <th>月利率(%)</th>
                                     <th>期数</th>
-                                    <th>增值服务费(%)</th>
+                                    <th>贵宾服务包(%)</th>
                                     <th>随心包(元/每月)</th>
                                     <th>财务管理费(%)</th>
                                     <th>客户管理费(%)</th>

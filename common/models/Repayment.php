@@ -73,7 +73,7 @@ class Repayment extends CoreCommonActiveRecord
             'r_orders_id' => '订单id',
             'r_principal' => '应还本金',
             'r_interest' => '应还利息',
-            'r_add_service_fee' => '增值服务费',
+            'r_add_service_fee' => '贵宾服务包',
             'r_free_pack_fee' => '随心包服务费',
             'r_finance_mangemant_fee' => '财务管理费',
             'r_customer_management' => '客户管理费',

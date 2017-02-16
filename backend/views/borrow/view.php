@@ -38,7 +38,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">增值服务费：</label>
+                            <label class="col-sm-2 control-label">贵宾服务包：</label>
                             <div class="col-sm-2">
                                 <p class="form-control-static"><?= $model['p_add_service_fee']; ?></p>
                             </div>

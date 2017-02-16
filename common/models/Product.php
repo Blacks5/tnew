@@ -76,7 +76,7 @@ class Product extends CoreCommonActiveRecord
             'p_name' => '产品名',
             'p_period' => '产品期数',
             'p_month_rate' => '月利率',
-            'p_add_service_fee' => '增值服务费',
+            'p_add_service_fee' => '贵宾服务包',
             'p_free_pack_fee' => '随心包服务费',
             'p_finance_mangemant_fee' => '财务管理费',
             'p_customer_management' => '客户管理费',

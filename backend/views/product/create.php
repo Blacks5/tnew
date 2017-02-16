@@ -81,7 +81,7 @@
                         <div class="form-group <?php if ($model->hasErrors('p_add_service_fee')) {
                             echo 'has-error';
                         } ?>">
-                            <label class="col-sm-2 control-label">增值服务费(%)</label>
+                            <label class="col-sm-2 control-label">贵宾服务包(%)</label>
 
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="p_add_service_fee" value="<?=$model->p_add_service_fee?>">
