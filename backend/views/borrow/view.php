@@ -14,7 +14,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div>
-                            <label class="col-sm-2 control-label">订单号：</label>
+                            <label class="col-sm-2 control-label">订单编号：</label>
                             <div class="col-sm-2">
                                 <p class="form-control-static"><?= $model['o_serial_id']; ?></p>
                             </div>

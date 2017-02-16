@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <table class="table table-striped table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th class="client-avatar">id</th>
+                                                    <th class="client-avatar">编号</th>
                                                     <th>订单使用的产品id</th>
                                                     <th>客户姓名</th>
                                                     <th>涉及产品数</th>

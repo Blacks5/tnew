@@ -17,7 +17,7 @@ use mdm\admin\components\MenuHelper;
                 <li class="nav-header">
                     <div class="dropdown profile-element">
                         <span><img alt="image" width="64ps" height="64px" class="img-circle"
-                                   src="<?php echo Url::to('@web/img/a3.jpg'); ?>"/></span>
+                                   src="<?php echo Url::to('@web/img/tianniu.jpg'); ?>"/></span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
                                <span class="block m-t-xs"><strong

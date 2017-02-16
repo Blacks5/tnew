@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <table class="table table-striped table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th class="client-avatar">id</th>
+                                                    <th class="client-avatar">编号</th>
                                                     <th><a data-toggle="tab" href="#contact-3"
                                                            class="client-link">成员姓名</a></th>
                                                     <!--<th>商户店名</th>

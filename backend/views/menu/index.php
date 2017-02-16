@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>编号</th>
                                         <th>名称</th>
                                         <th>父级</th>
                                         <th>路由</th>
