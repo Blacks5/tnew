@@ -52,6 +52,13 @@ class Stores extends CoreCommonActiveRecord
     // 是否对私账户
     const BANK_PRIVATE = 1;
     const BANK_PRIVATE_NOT = 0;
+    public static function getAllBankType()
+    {
+        return [
+            1=>'是',
+            0=>'否'
+        ];
+    }
 
     /**
      * @inheritdoc

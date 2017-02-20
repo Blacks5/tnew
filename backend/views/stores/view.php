@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="form-group">
                 <label class="col-sm-3 control-label">是否对私账户：</label>
                 <div class="col-sm-8">
-                    <p class="form-control-static"><?= $model->s_bank_is_private; ?></p>
+                    <p class="form-control-static"><?= \common\models\Stores::getAllBankType()[$model->s_bank_is_private]; ?></p>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
