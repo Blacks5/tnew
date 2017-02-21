@@ -50,7 +50,7 @@ class Orders extends CoreCommonActiveRecord
     {
         return [
             self::STATUS_WAIT_CHECK=>'待审核',
-            self::STATUS_WAIT_CHECK_AGAIN=>'待二审',
+            self::STATUS_WAIT_CHECK_AGAIN=>'初审通过', // 待二审
             self::STATUS_REFUSE=>'已拒绝',
             self::STATUS_PAYING=>'还款中',
             self::STATUS_PAY_OVER=>'已还清',
