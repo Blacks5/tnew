@@ -1,6 +1,6 @@
 <?php
 //app\assets\PccAsset::register($this);
-//app\assets\MainAsset::register($this);
+//app\assets\MainAsset::register($this);1
 $this->title = $model->s_name;
 $this->params['breadcrumbs'][] = ['label' => '商户列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
