@@ -40,8 +40,8 @@ use yii\widgets\LinkPager;
                                     <th>产品名</th>
                                     <th>月利率(%)</th>
                                     <th>期数</th>
-                                    <th>贵宾服务包(%)</th>
-                                    <th>随心包(元/每月)</th>
+                                    <th>贵宾服务包(元/每月)</th>
+                                    <th>个人保障计划(%)</th>
                                     <th>财务管理费(%)</th>
                                     <th>客户管理费(%)</th>
                                     <th>状态</th>
@@ -54,11 +54,11 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['p_name'] ?></td>
                                         <td><?= $vo['p_month_rate'] ?></td>
                                         <td><?= $vo['p_period'] ?></td>
-                                        <td><?= $vo['p_add_service_fee'] ?></td>
                                         <td><?= $vo['p_free_pack_fee'] ?></td>
+                                        <td><?= $vo['p_add_service_fee'] ?></td>
                                         <td><?= $vo['p_finance_mangemant_fee'] ?></td>
                                         <td><?= $vo['p_customer_management'] ?></td>
-                                        <td><?= $vo['p_status'] ?></td>
+                                        <td><?= \common\models\Product::getAllStatus()[$vo['p_status']]; ?></td>
                                         <td>
 
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/view']))) { ?>

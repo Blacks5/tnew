@@ -447,8 +447,8 @@ class OrderController extends CoreApiController
         $get = Yii::$app->getRequest();
         $total_money = $get->get('total_money'); // 借款额
         $product_id = $get->get('product_id'); // 使用的产品
-        $p_add_service_fee = $get->get('p_add_service_fee'); // 贵宾服务包
-        $p_free_pack_fee = $get->get('p_free_pack_fee'); // 随心包服务费
+        $p_add_service_fee = $get->get('p_add_service_fee'); // 个人保障计划
+        $p_free_pack_fee = $get->get('p_free_pack_fee'); // 贵宾服务包
 
 
         try {
@@ -460,12 +460,19 @@ class OrderController extends CoreApiController
                 throw new CustomApiException('请求错误');
             }
             $every_month_repay = CalInterest::calEveryMonth($total_money, $data['p_period'], $data['p_month_rate']);
+            // 个人保障计划
             if ($p_add_service_fee == 1) {
-                $every_month_repay += $data['p_add_service_fee'];
+                $every_month_repay += round($total_money * $data['p_add_service_fee']/100, 4);
             }
+            // 贵宾服务包
             if ($p_free_pack_fee == 1) {
                 $every_month_repay += $data['p_free_pack_fee'];
             }
+            // 财务管理费
+            $p_finance_mangemant_fee = round($total_money * $data['p_finance_mangemant_fee']/100, 4);
+            // 客户管理费
+            $p_customer_management = round($total_money * $data['p_customer_management']/100, 4);
+            $every_month_repay += $p_finance_mangemant_fee + $p_customer_management;
             $res = [];
             for ($i = 0; $i < $data['p_period']; $i++) {
                 $res[$i]['time'] = strtotime('+' . $i + 1 . 'months'); // 下个月的明天
