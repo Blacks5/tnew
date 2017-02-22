@@ -74,6 +74,12 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             </div>
                         </div>
                         <div>
+                            <label class="col-sm-2 control-label">月供：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static" style="color: orangered"><?= round($model['month_repayment'], 2); ?> 元/月</p>
+                            </div>
+                        </div>
+                        <div>
                             <label class="col-sm-2 control-label">注释：</label>
                             <div class="col-sm-2">
                                 <p class="form-control-static"><?= $model['o_remark']; ?></p>

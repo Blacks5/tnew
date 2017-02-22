@@ -146,6 +146,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 ['class' => 'img-responsive', 'alt' => '图片']) ?>
                                         </div>
                                     <?php } ?>
+                                    <?php if ($model->s_photo_seven) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_seven,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if ($model->s_photo_eight) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_eight,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                                 <a data-slide="prev" href="carousel.html#carousel1" class="left carousel-control">
                                     <span class="icon-prev"></span>
