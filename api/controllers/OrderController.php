@@ -506,7 +506,7 @@ class OrderController extends CoreApiController
 
     /**
      * 获取所有逾期的客户
-     *
+     *按订单显示一条
     SELECT
         sum(r_overdue_money) AS total_overdue_money,
         max(c_customer_name) as c_customer_name,
@@ -520,6 +520,24 @@ class OrderController extends CoreApiController
         r_status = 2 and o_status=10 and o_user_id=员工id
     GROUP BY
         o_id
+     *
+     *
+     *
+     * 按还款计划显示多条
+     * SELECT
+    r_overdue_money,
+    c_customer_name,
+    c_customer_cellphone,
+    r_overdue_day,
+    (max(r_balance)+sum(r_overdue_money)) as total_debt
+    FROM
+    orders
+    LEFT JOIN repayment ON o_id = r_orders_id
+    left join customer on o_customer_id=c_id
+    WHERE
+    r_status = 2 and o_status=10 and o_user_id=11 and r_overdue_day>=0
+    GROUP BY
+    r_id
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
@@ -529,21 +547,29 @@ class OrderController extends CoreApiController
 
         $userinfo = Yii::$app->getUser();
         $uid = $userinfo->getId();
-        $select = [
+        $days = Yii::$app->getRequest()->get('days', 1);
+        /*$select = [
             'sum(r_overdue_money) AS total_overdue_money',
             'max(c_customer_name) as c_customer_name',
             'max(c_customer_cellphone) as c_customer_cellphone',
             'sum(r_overdue_day) as total_overduy_day',
             '(max(r_balance)+sum(r_overdue_money)) as total_debt'
+        ];*/
+        $select = [
+            'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt'
         ];
-        $data = Orders::find()->select($select)
+        $query = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
             ->where(['o_user_id'=>$uid])
-            ->andWhere(['r_status'=>Repayment::STATUS_OVERDUE]) // 状态为逾期，
-//            ->andWhere(['<', 'r_pre_repay_date', $_SERVER['REQUEST_TIME']]) // 当前时间 大于 应还时间 [逾期]
-            ->groupBy('o_id')
-            ->asArray()->all();
+            ->andWhere(['r_status'=>Repayment::STATUS_OVERDUE]); // 状态为逾期，
+
+        $data = $query->andFilterWhere(['>=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
+
+        array_walk($data, function(&$v){
+            $v['r_overdue_money'] = round($v['r_overdue_money'], 2);
+            $v['total_debt'] = round($v['total_debt'], 2);
+        });
         return ['status'=>1, 'message'=>'ok', 'data'=>$data];
     }
 
