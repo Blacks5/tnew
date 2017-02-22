@@ -9,7 +9,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="ibox-content">
                 <div class="row">
             <div class="col-sm-3">
-                <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/sales', 'store_id'=>$model->s_id])  ?>" class="btn btn-success">销售人员</a>
+                <a href="<?= Yii::$app->getUrlManager()->createUrl(['stores/salemanindex', 'ss_store_id' => $model->s_id]) ?>"
+                   class="btn btn-success">销售人员</a>
             </div>
         </div>
         <div class="hr-line-dashed"></div>

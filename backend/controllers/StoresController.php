@@ -192,6 +192,106 @@ class StoresController extends CoreBackendController
     }
 
     /**
+     * 店铺销售人员列表
+     * @param $tu_tid
+     * @return string
+     * @author lzz <leewangyi@126.com>
+     */
+
+    public function actionSalemanindex()
+    {
+        $this->getView()->title = '店铺销售人员列表';
+        $model = new StoresSaleman();
+        //p(Yii::$app->getRequest()->getQueryParams());
+        $query = $model->search(Yii::$app->getRequest()->get());
+        $query_count = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $query_count->count()]);
+        $pages->pageSize = 3;//Yii::$app->params['page_size'];
+        $data = $query->orderBy(['ss_store_id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        //p($model->getAttributes());
+        return $this->render('salemanindex', [
+            'model' => $data,
+            'sear' => $model->getAttributes(),
+            'totalpage' => $pages,
+        ]);
+
+    }
+    /**
+     * 添加销售人员
+     * @author lzz <leewangyi@126.com>
+     */
+    public function actionAddsale($ss_store_id)
+    {
+        try {
+            $this->getView()->title = '添加销售';
+            $model = new StoresSaleman();
+
+            $request = Yii::$app->getRequest();
+            if ($request->getIsPost()) {
+                if (!Stores::findOne($ss_store_id)) {
+                    throw new CustomBackendException('店铺不存在');
+                }
+
+                if (StoresSaleman::findOne(['ss_saleman_id' => $request->post('ss_saleman_id')])) {
+                    throw new CustomBackendException('该销售已添加, 无法重复添加');
+                }
+                $model->ss_store_id = $ss_store_id;
+                $model->ss_saleman_id = $request->post('ss_saleman_id');
+                $model->save();
+                return $this->success('操作成功', yii\helpers\Url::toRoute(['stores/salemanindex', 'ss_store_id' => $ss_store_id]));
+            }
+            return $this->render('addsale', [
+                'model' => $model
+            ]);
+        } catch (CustomBackendException $e) {
+            return $this->error($e->getMessage(), yii\helpers\Url::toRoute(['stores/index']));
+        } catch (yii\base\Exception $e) {
+            return $this->error('系统错误', yii\helpers\Url::toRoute(['stores/index']));
+        }
+    }
+
+
+    /**
+     * 删除销售成员
+     * @param $id
+     * @return mixed
+     * @author lzz <leewangyi@126.com>
+     */
+    public function actionDeletesale($ss_id, $ss_store_id)
+    {
+        try {
+            $this->getView()->title = '删除销售';
+            if (!StoresSaleman::findOne(['ss_id' => $ss_id])) {
+                throw new CustomBackendException('信息不存在');
+            }
+            StoresSaleman::deleteAll(['ss_id' => $ss_id]);
+            return $this->success('操作成功', yii\helpers\Url::toRoute(['stores/salemanindex', 'ss_store_id' => $ss_store_id]));
+
+        } catch (CustomBackendException $e) {
+            return $this->error($e->getMessage(), yii\helpers\Url::toRoute(['stores/index']));
+        } catch (yii\base\Exception $e) {
+            return $this->error('系统错误', yii\helpers\Url::toRoute(['stores/index']));
+        }
+    }
+    /**
+     * 上传商户图片
+     * @return bool|string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionUpload()
+    {
+        $pic = yii\web\UploadedFile::getInstanceByName('file'); // 获取图片
+        $key = Yii::$app->getSecurity()->generateRandomString();
+        $handle = new UploadFile();
+        $ret = $handle->uploadFile($key, $pic);
+        $key = false;
+        if(end($ret) === null){
+            $key = reset($ret)['key'];
+        }
+        return $key;
+    }
+
+    /**
      * 捆绑销售人员到店铺
      * @param $store_id
      * @return array|bool
@@ -223,25 +323,6 @@ class StoresController extends CoreBackendController
             }
         }
     }
-
-    /**
-     * 上传商户图片
-     * @return bool|string
-     * @author 涂鸿 <hayto@foxmail.com>
-     */
-    public function actionUpload()
-    {
-        $pic = yii\web\UploadedFile::getInstanceByName('file'); // 获取图片
-        $key = Yii::$app->getSecurity()->generateRandomString();
-        $handle = new UploadFile();
-        $ret = $handle->uploadFile($key, $pic);
-        $key = false;
-        if(end($ret) === null){
-            $key = reset($ret)['key'];
-        }
-        return $key;
-    }
-
     /**
      * 绑定销售人员
      * @param $store_id

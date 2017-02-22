@@ -58,7 +58,7 @@ $form = ActiveForm::begin(
             <div class="form-group">
                 <div class="col-sm-8 col-sm-offset-3">
                     <?= \yii\helpers\Html::submitButton('提交', ['class' => 'btn btn-primary']); ?>
-                    <?= \yii\helpers\Html::a('返回', Yii::$app->getUrlManager()->createUrl(['stores/index']), ['class' => 'btn btn-default']); ?>
+                    <?= \yii\helpers\Html::a('返回', Yii::$app->getUrlManager()->createUrl(['team/index']), ['class' => 'btn btn-default']); ?>
                 </div>
             </div>
         </div>
