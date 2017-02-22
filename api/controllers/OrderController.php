@@ -386,10 +386,11 @@ class OrderController extends CoreApiController
         $where = ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()];
         $c_customer_name = Yii::$app->getRequest()->get('c_customer_name');
         try {
-            $query = (new yii\db\Query())->select(['o_serial_id', 'o_id', 'p_name', 'o_total_price', 'o_total_deposit', 'o_created_at', 'o_status', 'c_customer_name', 'o_operator_remark'])
+            $query = (new yii\db\Query())->select(['o_serial_id', 'o_id', 'p_name', 'p_type', 'o_total_price', 'o_total_deposit', 'o_created_at', 'o_status', 'c_customer_name', 'c_customer_cellphone', 'o_operator_remark', 's_name'])
                 ->from(Orders::tableName())
                 ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
                 ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+                ->leftJoin(Stores::tableName(), 'o_store_id=s_id')
                 ->where($where);
             $query->andFilterWhere(['like', 'c_customer_name', $c_customer_name]); // 用户名 搜索
             $count_query = clone $query;
@@ -399,7 +400,7 @@ class OrderController extends CoreApiController
             $data = $query->orderBy(['o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
             array_walk($data, function (&$v) {
 //                $v['o_created_at'] = date('Y-m-d H:i:s', $v['o_created_at']);
-                $v['o_total_price'] += 0;
+//                $v['o_total_price'] += 0;
                 $v['o_total_deposit'] += 0;
                 $v['o_total_borrow_money'] = $v['o_total_price'] - $v['o_total_deposit'];
                 $v['o_status'] = Orders::getAllStatus()[$v['o_status']];
