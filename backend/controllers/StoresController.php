@@ -200,7 +200,7 @@ class StoresController extends CoreBackendController
      * @throws yii\db\Exception
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionSales()
+    public function actionSales_bak()
     {
         $request = Yii::$app->getRequest();
         Yii::$app->getResponse()->format = 'json';
@@ -250,7 +250,7 @@ class StoresController extends CoreBackendController
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionSales_bak($store_id)
+    public function actionSales($store_id)
     {
         $request = Yii::$app->getRequest();
         $this->getView()->title = '分配销售人员';
