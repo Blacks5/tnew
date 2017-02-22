@@ -400,10 +400,12 @@ class OrderController extends CoreApiController
             $data = $query->orderBy(['o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
             array_walk($data, function (&$v) {
 //                $v['o_created_at'] = date('Y-m-d H:i:s', $v['o_created_at']);
-//                $v['o_total_price'] += 0;
+                $v['o_total_price'] += 0;
                 $v['o_total_deposit'] += 0;
                 $v['o_total_borrow_money'] = $v['o_total_price'] - $v['o_total_deposit'];
                 $v['o_status'] = Orders::getAllStatus()[$v['o_status']];
+                // 不显示以下数据
+                unset($v['o_total_price']);
             });
             return ['status' => 1, 'message' => '获取成功', 'data' => $data];
         } catch (yii\base\Exception $e) {
