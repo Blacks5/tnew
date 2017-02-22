@@ -29,8 +29,9 @@ use common\core\CoreCommonActiveRecord;
 class Repayment extends CoreCommonActiveRecord
 {
 
-    const STATUS_ALREADY_PAY = 10;
-    const STATUS_NOT_PAY = 1;
+    const STATUS_ALREADY_PAY = 10; // 已还
+    const STATUS_NOT_PAY = 1; // 未还
+    const STATUS_OVERDUE = 2; // 已逾期
     const OVERDUE = 1;
     const NOT_OVERDUE = 0;
     /**
@@ -96,7 +97,7 @@ class Repayment extends CoreCommonActiveRecord
      */
     public static function getAllRepaymentByOrderid($order_id)
     {
-        return self::find()->where(['r_orders_id'=>$order_id])->asArray()->asArray();
+        return self::find()->where(['r_orders_id'=>$order_id])->asArray();
     }
 
 }

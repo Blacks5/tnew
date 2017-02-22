@@ -343,15 +343,16 @@ class OrderController extends CoreApiController
             ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
         ];
         try {
-            $query = (new yii\db\Query())->select(['o_serial_id', 'o_id', 'p_name', 'o_total_price', 'o_total_deposit', 'o_created_at', 'o_status', 'c_customer_name', 'o_operator_remark'])
+            $query = (new yii\db\Query())->select(['o_serial_id', 'o_id', 'p_name', 'p_type', 'o_total_price', 'o_total_deposit', 'o_created_at', 'o_status', 'c_customer_name', 'c_customer_cellphone', 'o_operator_remark', 's_name'])
                 ->from(Orders::tableName())
                 ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
                 ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+                ->leftJoin(Stores::tableName(), 'o_store_id=s_id')
                 ->where($where);
             $count_query = clone $query;
             $total_count = $count_query->count();
             $pages = new yii\data\Pagination(['totalCount' => $total_count]);
-            $pages->pageSize = Yii::$app->params['page_size'];
+            $pages->pageSize = Yii::$app->params['page_size']; // common里的
             $data = $query->orderBy(['o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
             array_walk($data, function (&$v) {
 //                $v['o_created_at'] = date('Y-m-d H:i:s', $v['o_created_at']);
@@ -359,6 +360,8 @@ class OrderController extends CoreApiController
                 $v['o_total_deposit'] += 0;
                 $v['o_total_borrow_money'] = $v['o_total_price'] - $v['o_total_deposit'];
                 $v['o_status'] = Orders::getAllStatus()[$v['o_status']];
+                // 不显示以下数据
+                unset($v['o_total_price']);
             });
             return ['status' => 1, 'message' => '获取成功', 'data' => $data];
         } catch (yii\base\Exception $e) {
@@ -429,10 +432,6 @@ class OrderController extends CoreApiController
         }
     }
 
-    public function actionDebx()
-    {
-        CalInterest::debx();
-    }
 
     /**
      * 理论上：总借款额度，使用的产品id
@@ -507,6 +506,20 @@ class OrderController extends CoreApiController
 
     /**
      * 获取所有逾期的客户
+     *
+    SELECT
+        sum(r_overdue_money) AS total_overdue_money,
+        max(c_customer_name) as c_customer_name,
+        max(c_customer_cellphone) as c_customer_cellphone,
+        sum(r_overdue_day) as total_overduy_day,
+        (max(r_balance)+sum(r_overdue_money)) as total_debt
+    FROM  orders
+    LEFT JOIN repayment ON o_id = r_orders_id
+    left join customer on o_customer_id=c_id
+    WHERE
+        r_status = 2 and o_status=10 and o_user_id=员工id
+    GROUP BY
+        o_id
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
@@ -516,15 +529,20 @@ class OrderController extends CoreApiController
 
         $userinfo = Yii::$app->getUser();
         $uid = $userinfo->getId();
-        $select = ['max(c_customer_name) as c_customer_name', 'max(c_customer_cellphone) as c_customer_cellphone',
-        'sum(r_total_repay+r_overdue_money) as r_total_repay', 'sum(r_overdue_day)as r_overdue_day'];
+        $select = [
+            'sum(r_overdue_money) AS total_overdue_money',
+            'max(c_customer_name) as c_customer_name',
+            'max(c_customer_cellphone) as c_customer_cellphone',
+            'sum(r_overdue_day) as total_overduy_day',
+            '(max(r_balance)+sum(r_overdue_money)) as total_debt'
+        ];
         $data = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
             ->where(['o_user_id'=>$uid])
-            ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]) // 还没还的，
-            ->andWhere(['<', 'r_pre_repay_date', $_SERVER['REQUEST_TIME']]) // 当前时间 大于 应还时间 [逾期]
-            ->groupBy('o_customer_id')
+            ->andWhere(['r_status'=>Repayment::STATUS_OVERDUE]) // 状态为逾期，
+//            ->andWhere(['<', 'r_pre_repay_date', $_SERVER['REQUEST_TIME']]) // 当前时间 大于 应还时间 [逾期]
+            ->groupBy('o_id')
             ->asArray()->all();
         return ['status'=>1, 'message'=>'ok', 'data'=>$data];
     }
@@ -567,4 +585,5 @@ EOF;
 ;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
     }
+
 }
