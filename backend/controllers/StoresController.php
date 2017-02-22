@@ -8,6 +8,7 @@
 
 namespace backend\controllers;
 
+use backend\components\CustomBackendException;
 use common\components\Helper;
 use common\models\UploadFile;
 use common\models\AllOrdersWithStoreSearch;
@@ -208,7 +209,7 @@ class StoresController extends CoreBackendController
         $query = $model->search(Yii::$app->getRequest()->get());
         $query_count = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $query_count->count()]);
-        $pages->pageSize = 3;//Yii::$app->params['page_size'];
+        $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['ss_store_id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         //p($model->getAttributes());
         return $this->render('salemanindex', [

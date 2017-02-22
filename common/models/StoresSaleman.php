@@ -76,7 +76,7 @@ class StoresSaleman extends CoreCommonActiveRecord
         $query = StoresSaleman::find()
             ->select($select)
             ->leftJoin(User::tableName(), 'ss_saleman_id=id')
-            ->where(['!=', 'status', User::STATUS_DELETE])
+            ->where(['status'=>User::STATUS_ACTIVE])
             ->andWhere(['!=', 'user.username', 'admin'])
             ->andWhere(['ss_store_id' => $this->ss_store_id]);
         if (!$this->validate()) {
