@@ -360,6 +360,7 @@ class OrderController extends CoreApiController
                 $v['o_total_deposit'] += 0;
                 $v['o_total_borrow_money'] = $v['o_total_price'] - $v['o_total_deposit'];
                 $v['o_status'] = Orders::getAllStatus()[$v['o_status']];
+                $v['p_type'] = Yii::$app->params['goods_type'][$v['p_type']-1]['t_name'];
                 // 不显示以下数据
                 unset($v['o_total_price']);
             });
@@ -407,6 +408,7 @@ class OrderController extends CoreApiController
                 $v['o_total_deposit'] += 0;
                 $v['o_total_borrow_money'] = $v['o_total_price'] - $v['o_total_deposit'];
                 $v['o_status'] = Orders::getAllStatus()[$v['o_status']];
+                $v['p_type'] = Yii::$app->params['goods_type'][$v['p_type']-1]['t_name'];
                 // 不显示以下数据
                 unset($v['o_total_price']);
             });
