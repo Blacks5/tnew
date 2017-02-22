@@ -39,6 +39,41 @@ class CalInterest
     }
 
     /**
+     * 计算月供【包含了各种管理费之后】
+     * @param $total_money
+     * @param $product_id
+     * @param $p_add_service_fee
+     * @param $p_free_pack_fee
+     * @return float|mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function calRepayment($total_money, $product_id, $p_add_service_fee, $p_free_pack_fee)
+    {
+        if (!$total_money || !$product_id) {
+            throw new CustomApiException('请求错误');
+        }
+        $select = ['p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'];
+        if (!$data = Product::find()->select($select)->where(['p_id' => $product_id])->asArray()->one()) {
+            throw new CustomApiException('请求错误');
+        }
+        $every_month_repay = CalInterest::calEveryMonth($total_money, $data['p_period'], $data['p_month_rate']);
+        // 个人保障计划
+        if ($p_add_service_fee == 1) {
+            $every_month_repay += round($total_money * $data['p_add_service_fee']/100, 4);
+        }
+        // 贵宾服务包
+        if ($p_free_pack_fee == 1) {
+            $every_month_repay += $data['p_free_pack_fee'];
+        }
+        // 财务管理费
+        $p_finance_mangemant_fee = round($total_money * $data['p_finance_mangemant_fee']/100, 4);
+        // 客户管理费
+        $p_customer_management = round($total_money * $data['p_customer_management']/100, 4);
+        $every_month_repay += $p_finance_mangemant_fee + $p_customer_management;
+        return $every_month_repay;
+    }
+
+    /**
      * 二审（放款）+生成还款计划
      * 加了for update ，但是没有开启事务，需要外部调用者开启事务
      * @param $order_id

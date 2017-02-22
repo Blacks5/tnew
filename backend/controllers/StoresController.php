@@ -104,6 +104,8 @@ class StoresController extends CoreBackendController
             $model->s_photo_four = $model->s_photo_four ? $t->getUrl($model->s_photo_four) : '';
             $model->s_photo_five = $model->s_photo_five ? $t->getUrl($model->s_photo_five) : '';
             $model->s_photo_six = $model->s_photo_six ? $t->getUrl($model->s_photo_six) : '';
+            $model->s_photo_seven = $model->s_photo_seven ? $t->getUrl($model->s_photo_seven) : '';
+            $model->s_photo_eight = $model->s_photo_eight ? $t->getUrl($model->s_photo_eight) : '';
             $all_sales = User::find()->select(['realname'])
                 ->where(['belong_stores_id' => $id, 'county' => $model->s_county, 'status' => User::STATUS_ACTIVE])
                 ->indexBy('id')->asArray()->column();
@@ -298,7 +300,7 @@ class StoresController extends CoreBackendController
      * @throws yii\db\Exception
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionSales()
+    public function actionSales_bak()
     {
         $request = Yii::$app->getRequest();
         Yii::$app->getResponse()->format = 'json';
@@ -329,7 +331,7 @@ class StoresController extends CoreBackendController
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionSales_bak($store_id)
+    public function actionSales($store_id)
     {
         $request = Yii::$app->getRequest();
         $this->getView()->title = '分配销售人员';
