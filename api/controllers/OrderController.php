@@ -13,6 +13,7 @@ use api\models\OrdersHelper;
 use common\components\Contract;
 use common\models\CalInterest;
 use common\models\Customer;
+use common\models\Goods;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Product;
@@ -592,23 +593,62 @@ class OrderController extends CoreApiController
 
     /**
      * 给客户端返回订单详情
+     *
+    SELECT *
+    from orders
+    LEFT JOIN customer on c_id = o_customer_id
+    LEFT JOIN product on o_product_id = p_id
+    LEFT JOIN stores on s_id=o_store_id
+    WHERE
+    o_id = 8
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
     public function actionGetOrderDetail($o_id=8)
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = "我是详情，屌不屌". $o_id ;
+
+        $data = Orders::find()->select('*')
+            ->leftJoin(Customer::tableName(), 'c_id=o_customer_id')
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+            ->leftJoin(Stores::tableName(), 's_id=o_store_id')
+            ->where('o_id=:o_id', [':o_id'=>$o_id])
+            ->asArray()->one();
+        $data['data_goods'] = Goods::find()->where(['g_order_id'=>$o_id])->asArray()->all();
+//        p($data);
+        $total_borrow_money = $data['o_total_price']-$data['o_total_price'];
         $data = <<<EOF
-姓名：李四<br>
-借款金额：1888<br>
-电话：18000000000<br>
-单位地址：内蒙古自治区-鄂尔多斯市-杭锦旗-gggggg<br>
-婚姻状况：未婚<br>
-配偶姓名：李四<br>
-<b>配偶电话</b>：110<br>
-住房情况：自有住房
-公租房/廉租房<br>
+订单号：{$data['o_serial_id']}<br>
+<strong>客户信息：</strong><br>
+客户姓名：{$data['c_customer_name']}<br>
+客户电话：{$data['c_customer_cellphone']}<br>
+客户身份证地址：{$data['c_customer_idcard_detail_addr']}<br>
+客户银行卡号：{$data['c_customer_idcard_detail_addr']}<br>
+单位地址：{$data['c_customer_name']}<br>
+婚姻状况：{$data['c_customer_name']}<br>
+配偶姓名：{$data['c_customer_name']}<br>
+贷款金额：{$total_borrow_money}<br>
+首付金额：{$data['o_total_deposit']}<br>
+住房情况：{$data['c_customer_name']}<br>
+<strong>客户信息：</strong><br>
+客户姓名：{$data['c_customer_name']}<br>
+客户电话：{$data['c_customer_cellphone']}<br>
+客户身份证地址：{$data['c_customer_idcard_detail_addr']}<br>
+客户银行卡号：{$data['c_customer_idcard_detail_addr']}<br>
+单位地址：{$data['c_customer_name']}<br>
+婚姻状况：{$data['c_customer_name']}<br>
+配偶姓名：{$data['c_customer_name']}<br>
+贷款金额：{$total_borrow_money}<br>
+首付金额：{$data['o_total_deposit']}<br>
+住房情况：{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
+{$data['c_customer_name']}<br>
 EOF;
 ;
         return ['status' => 1, 'message' => 'ok', 'data' => $data];
