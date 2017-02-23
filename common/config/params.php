@@ -60,8 +60,6 @@ return [
     'bank_list'=>[
         ['bank_id'=>1, 'bank_name'=>'中国银行股份有限公司 '],
         ['bank_id'=>2, 'bank_name'=>'中国工商银行股份有限公司'],
-//        ['bank_id'=>3, 'bank_name'=>'成都银行'],
-//        ['bank_id'=>4, 'bank_name'=>'招商银行'],
         ['bank_id'=>3, 'bank_name'=>'中国农业银行股份有限公司 '],
         ['bank_id'=>4, 'bank_name'=>'中国建设银行股份有限公司 '],
     ],

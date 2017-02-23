@@ -10,6 +10,7 @@ namespace api\controllers;
 
 use api\components\CustomApiException;
 use api\models\OrdersHelper;
+use common\components\Helper;
 use common\components\Contract;
 use common\models\CalInterest;
 use common\models\Customer;
@@ -551,6 +552,7 @@ class OrderController extends CoreApiController
         $userinfo = Yii::$app->getUser();
         $uid = $userinfo->getId();
         $days = Yii::$app->getRequest()->get('days', 1);
+        $days = 0;
         /*$select = [
             'sum(r_overdue_money) AS total_overdue_money',
             'max(c_customer_name) as c_customer_name',
@@ -604,7 +606,7 @@ class OrderController extends CoreApiController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionGetOrderDetail($o_id=8)
+    public function actionGetOrderDetail($o_id)
     {
         Yii::$app->getResponse()->format = 'json';
         $o_id = 8;
@@ -615,22 +617,40 @@ class OrderController extends CoreApiController
             ->where('o_id=:o_id', [':o_id'=>$o_id])
             ->asArray()->one();
         $data['data_goods'] = Goods::find()->where(['g_order_id'=>$o_id])->asArray()->all();
+
+
         $total_borrow_money = $data['o_total_price']-$data['o_total_deposit'];
-        $data['o_id'] = $data['o_id'];
-        $data_end = <<<AAA
-订单号：{$data['o_id']}<br>
+        $id_address = Helper::getAddrName($data['c_customer_province']). Helper::getAddrName($data['c_customer_city']). Helper::getAddrName($data['c_customer_county']). $data['c_customer_idcard_detail_addr'];
+        $data['c_bank'] = Yii::$app->params['bank_list'][$data['c_bank']-1]['bank_name'];
+        $data['c_customer_gender'] = Customer::getAllGender()[$data['c_customer_gender']];
+        $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']]['marital_str'];
+        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']]['kinship_str'];
+        $now_address = Helper::getAddrName($data['c_customer_addr_province']). Helper::getAddrName($data['c_customer_addr_city']). Helper::getAddrName($data['c_customer_addr_county']). $data['c_customer_idcard_detail_addr'];
+        $data_end = <<<"AAA"
+        
 <h5 style="color:red">客户信息：</h5>
-客户姓名：{$data['c_customer_name']}<br>
-客户电话：{$data['c_customer_cellphone']}<br>
-客户身份证地址：{$data['c_customer_idcard_detail_addr']}<br>
-客户银行卡号：{$data['c_customer_idcard_detail_addr']}<br>
+姓名：{$data['c_customer_name']}<br>
+性别：{$data['c_customer_gender']}<br>
+电话：{$data['c_customer_cellphone']}<br>
+身份证号码：{$data['c_customer_id_card']}<br>
+身份证地址：{$id_address}<br>
+现居地址：{$now_address}<br>
+客户银行：{$data['c_bank']}<br>
+客户银行卡号：{$data['c_banknum']}<br>
+婚姻状况：{$data['c_family_marital_status']}<br>
+配偶姓名：{$data['c_family_marital_partner_name']}<br>
+配偶手机号：{$data['c_family_marital_partner_cellphone']}<br>
+亲属关系：{$data['c_kinship_relation']}<br>
+亲属姓名：{$data['c_kinship_name']}<br>
+亲属手机号：{$data['c_kinship_cellphone']}<br>
 单位地址：{$data['c_customer_name']}<br>
-婚姻状况：{$data['c_customer_name']}<br>
-配偶姓名：{$data['c_customer_name']}<br>
 贷款金额：$total_borrow_money<br>
 首付金额：{$data['o_total_deposit']}<br>
 住房情况：{$data['c_customer_name']}<br>
-<strong>客户信息：</strong><br>
+
+<strong>订单信息：</strong><br>
+订单号：{$data['o_id']}<br>
+<strong>商品信息：</strong><br>
 客户姓名：{$data['c_customer_name']}<br>
 客户电话：{$data['c_customer_cellphone']}<br>
 客户身份证地址：{$data['c_customer_idcard_detail_addr']}<br>
@@ -640,6 +660,9 @@ class OrderController extends CoreApiController
 配偶姓名：{$data['c_customer_name']}<br>
 首付金额：{$data['o_total_deposit']}<br>
 住房情况：{$data['c_customer_name']}<br>
+
+<strong>商户信息：</strong><br>
+
 AAA;
 
         return ['status' => 1, 'message' => 'ok', 'data' => $data_end];

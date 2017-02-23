@@ -71,6 +71,16 @@ class Customer extends CoreCommonActiveRecord
         return 'customer';
     }
 
+    const GENDER_MAN = 1;
+    const GENDER_WOMAN = 0;
+    public static function getAllGender()
+    {
+        return [
+            self::GENDER_WOMAN =>'女',
+            self::GENDER_MAN =>'男',
+        ];
+    }
+
     const STATUS_OK = 10;
     const STATUS_NOT_OK = 0;
     public static function getAllStatus()
