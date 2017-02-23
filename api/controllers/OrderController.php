@@ -609,7 +609,6 @@ class OrderController extends CoreApiController
     public function actionGetOrderDetail($o_id)
     {
         Yii::$app->getResponse()->format = 'json';
-        $o_id = 8;
         $data = Orders::find()->select('*')
             ->leftJoin(Customer::tableName(), 'c_id=o_customer_id')
             ->leftJoin(Product::tableName(), 'o_product_id=p_id')
