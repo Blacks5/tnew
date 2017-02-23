@@ -626,6 +626,8 @@ class OrderController extends CoreApiController
         $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']]['marital_str'];
         $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']]['kinship_str'];
         $now_address = Helper::getAddrName($data['c_customer_addr_province']). Helper::getAddrName($data['c_customer_addr_city']). Helper::getAddrName($data['c_customer_addr_county']). $data['c_customer_idcard_detail_addr'];
+        $job_address = Helper::getAddrName($data['c_customer_jobs_province']). Helper::getAddrName($data['c_customer_jobs_city']). Helper::getAddrName($data['c_customer_jobs_county']). $data['c_customer_jobs_detail_addr'];
+
         $data_end = <<<"AAA"
         
 <h5 style="color:red">客户信息：</h5>
@@ -643,26 +645,42 @@ class OrderController extends CoreApiController
 亲属关系：{$data['c_kinship_relation']}<br>
 亲属姓名：{$data['c_kinship_name']}<br>
 亲属手机号：{$data['c_kinship_cellphone']}<br>
-单位地址：{$data['c_customer_name']}<br>
+
+工作单位：{$data['c_customer_jobs_company']}<br>
+工作行业：{$data['c_customer_jobs_type']}<br>
+单位性质：{$data['c_customer_jobs_industry']}<br>
+单位电话：{$data['c_customer_jobs_phone']}<br>
+单位地址：{$job_address}<br>
+是否购买社保：{$data['c_customer_jobs_is_shebao']}<br>
+其他联系人关系：{$data['c_other_people_relation']}<br>
+其他联系人姓名：{$data['c_other_people_name']}<br>
+其他联系人电话：{$data['c_other_people_cellphone']}<br>
+
+住房情况：{$data['c_family_house_info']}<br>
+住房情况：{$data['c_customer_name']}<br>
+
+<h5 style="color:red">订单信息：</h5>
+订单号：{$data['o_id']}<br>
+总金额：{$data['o_total_price']}<br>
 贷款金额：$total_borrow_money<br>
 首付金额：{$data['o_total_deposit']}<br>
-住房情况：{$data['c_customer_name']}<br>
+是否使用个人保障计划：{$data['o_is_add_service_fee']}<br>
+是否使用贵宾服务包：{$data['o_is_free_pack_fee']}<br>
+是否使用银行代扣：{$data['o_is_auto_pay']}<br>
 
-<strong>订单信息：</strong><br>
-订单号：{$data['o_id']}<br>
-<strong>商品信息：</strong><br>
-客户姓名：{$data['c_customer_name']}<br>
-客户电话：{$data['c_customer_cellphone']}<br>
-客户身份证地址：{$data['c_customer_idcard_detail_addr']}<br>
-客户银行卡号：{$data['c_customer_idcard_detail_addr']}<br>
-单位地址：{$data['c_customer_name']}<br>
-婚姻状况：{$data['c_customer_name']}<br>
-配偶姓名：{$data['c_customer_name']}<br>
-首付金额：{$data['o_total_deposit']}<br>
-住房情况：{$data['c_customer_name']}<br>
+<h5 style="color:red">产品信息：</h5>
+产品名：{$data['p_name']}<br>
+期数：{$data['p_period']}<br>
+月利率：{$data['p_month_rate']}%<br>
+财务管理费利率：{$data['p_finance_mangemant_fee']}%<br>
+客户管理费利率：{$data['p_customer_management']}%<br>
+
 
 <strong>商户信息：</strong><br>
-
+商户名：{$data['s_name']}<br>
+负责人姓名：{$data['s_owner_name']}<br>
+负责人电话：{$data['s_owner_phone']}<br>
+负责人邮箱：{$data['s_owner_email']}<br>
 AAA;
 
         return ['status' => 1, 'message' => 'ok', 'data' => $data_end];
