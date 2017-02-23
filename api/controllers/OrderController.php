@@ -607,7 +607,7 @@ class OrderController extends CoreApiController
     public function actionGetOrderDetail($o_id=8)
     {
         Yii::$app->getResponse()->format = 'json';
-
+        $o_id = 8;
         $data = Orders::find()->select('*')
             ->leftJoin(Customer::tableName(), 'c_id=o_customer_id')
             ->leftJoin(Product::tableName(), 'o_product_id=p_id')
@@ -615,11 +615,11 @@ class OrderController extends CoreApiController
             ->where('o_id=:o_id', [':o_id'=>$o_id])
             ->asArray()->one();
         $data['data_goods'] = Goods::find()->where(['g_order_id'=>$o_id])->asArray()->all();
-//        p($data);
-        $total_borrow_money = $data['o_total_price']-$data['o_total_price'];
-        $data = <<<EOF
-订单号：{$data['o_serial_id']}<br>
-<strong>客户信息：</strong><br>
+        $total_borrow_money = $data['o_total_price']-$data['o_total_deposit'];
+        $data['o_id'] = $data['o_id'];
+        $data_end = <<<AAA
+订单号：{$data['o_id']}<br>
+<h5 style="color:red">客户信息：</h5>
 客户姓名：{$data['c_customer_name']}<br>
 客户电话：{$data['c_customer_cellphone']}<br>
 客户身份证地址：{$data['c_customer_idcard_detail_addr']}<br>
@@ -627,7 +627,7 @@ class OrderController extends CoreApiController
 单位地址：{$data['c_customer_name']}<br>
 婚姻状况：{$data['c_customer_name']}<br>
 配偶姓名：{$data['c_customer_name']}<br>
-贷款金额：{$total_borrow_money}<br>
+贷款金额：$total_borrow_money<br>
 首付金额：{$data['o_total_deposit']}<br>
 住房情况：{$data['c_customer_name']}<br>
 <strong>客户信息：</strong><br>
@@ -638,20 +638,12 @@ class OrderController extends CoreApiController
 单位地址：{$data['c_customer_name']}<br>
 婚姻状况：{$data['c_customer_name']}<br>
 配偶姓名：{$data['c_customer_name']}<br>
-贷款金额：{$total_borrow_money}<br>
 首付金额：{$data['o_total_deposit']}<br>
 住房情况：{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-{$data['c_customer_name']}<br>
-EOF;
-;
-        return ['status' => 1, 'message' => 'ok', 'data' => $data];
+AAA;
+
+        return ['status' => 1, 'message' => 'ok', 'data' => $data_end];
     }
+
 
 }
