@@ -56,8 +56,8 @@ class LoginController extends Controller
     public function actionReturnUrl()
     {
         $url = 'http://211.149.163.238:89/'; // online
-//        $url = 'http://192.168.0.8:889'; // mac
-        $url = 'http://192.168.0.194:889/'; // win
+        $url = 'http://192.168.50.8:889'; // mac and thinkpad
+//        $url = 'http://192.168.0.194:889/'; // win
         return ['status' => 1, 'message' => 'ok', 'data' => $url];
     }
 
