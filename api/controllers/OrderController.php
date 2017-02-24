@@ -629,7 +629,7 @@ class OrderController extends CoreApiController
 
         $data_end = <<<"AAA"
         
-<h5 style="color:red">客户信息：</h5>
+<h5 style="color:red;font-align:center">客户信息：</h5>
 姓名：{$data['c_customer_name']}<br>
 性别：{$data['c_customer_gender']}<br>
 电话：{$data['c_customer_cellphone']}<br>
