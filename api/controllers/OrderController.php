@@ -622,12 +622,22 @@ class OrderController extends CoreApiController
         $id_address = Helper::getAddrName($data['c_customer_province']). Helper::getAddrName($data['c_customer_city']). Helper::getAddrName($data['c_customer_county']). $data['c_customer_idcard_detail_addr'];
         $data['c_bank'] = Yii::$app->params['bank_list'][$data['c_bank']-1]['bank_name'];
         $data['c_customer_gender'] = Customer::getAllGender()[$data['c_customer_gender']];
-        var_dump(Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str']);die;
+//        var_dump(Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str']);die;
         $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str'];
 //        var_dump(Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str']);die;
         $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str'];
         $now_address = Helper::getAddrName($data['c_customer_addr_province']). Helper::getAddrName($data['c_customer_addr_city']). Helper::getAddrName($data['c_customer_addr_county']). $data['c_customer_idcard_detail_addr'];
         $job_address = Helper::getAddrName($data['c_customer_jobs_province']). Helper::getAddrName($data['c_customer_jobs_city']). Helper::getAddrName($data['c_customer_jobs_county']). $data['c_customer_jobs_detail_addr'];
+        $data['o_is_add_service_fee'] = $data['o_is_add_service_fee'] ==1?'是':'否';
+        $data['o_is_free_pack_fee'] = $data['o_is_free_pack_fee'] ==1?'是':'否';
+        $data['o_is_auto_pay'] = $data['o_is_auto_pay'] ==1?'是':'否';
+        $data['c_customer_jobs_is_shebao'] = $data['c_customer_jobs_is_shebao'] ==1?'是':'否';
+        $data['c_family_house_info'] = Yii::$app->params['house_info'][$data['c_family_house_info']-1]['house_info_str'];
+
+
+        $data['c_customer_jobs_industry'] = Yii::$app->params['company_kind'][$data['c_customer_jobs_industry']-1]['company_kind_name'];
+
+        $data['c_customer_jobs_type'] = Yii::$app->params['company_type'][$data['c_customer_jobs_type']-1]['company_type_name'];
 
         $data_end = <<<"AAA"
 <h2 style="color:red;text-align:center;margin-bottom:5px;">客户信息</h2>
