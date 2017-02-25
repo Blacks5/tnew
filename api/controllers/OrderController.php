@@ -584,17 +584,29 @@ class OrderController extends CoreApiController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionGetContract($o_id)
+    public function actionGetContract()
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = Contract::genContractForOid($o_id);
-        $url = 'http://211.149.163.238/contract/index?o_id='.$o_id;
+        try {
+            $o_id = Yii::$app->getRequest()->post('oid');
+            if (!empty($o_id) === false) {
+//                $x = json_encode(Yii::$app->getRequest()->post());
+                throw new CustomApiException('无效订单');
+//                throw new CustomApiException($x);
+            }
+            $data = Contract::genContractForOid($o_id);
+            $url = 'http://211.149.163.238/contract/index?o_id=' . $o_id;
 //        $url = 'http://192.168.50.8:888/contract/index?o_id='.$o_id;
 
-        // 生成合同html
-        $html = $this->renderPartial('contract', ['data'=>$data]);
+            // 生成合同html
+            $html = $this->renderPartial('contract', ['data' => $data]);
 
-        return ['status' => 1, 'message' => 'ok', 'data' => $url];
+            return ['status' => 1, 'message' => 'ok', 'data' => $url];
+        }catch (CustomApiException $e){
+            return ['status' => 0, 'message' => $e->getMessage(), 'data' => []];
+        }catch (\Exception $e){
+            return ['status' => 0, 'message' => '系统错误', 'data' => []];
+        }
     }
 
     /**
