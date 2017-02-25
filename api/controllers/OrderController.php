@@ -587,9 +587,12 @@ class OrderController extends CoreApiController
     public function actionGetContract($o_id=8)
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = "我是合同，屌不屌" . $o_id;
         $data = Contract::genContractForOid($o_id);
         $url = 'http://211.149.163.238/contract/index';
+
+        // 生成合同html
+        $html = $this->renderPartial('contract', ['data'=>$data]);
+
         return ['status' => 1, 'message' => 'ok', 'data' => $url];
     }
 
@@ -641,14 +644,14 @@ class OrderController extends CoreApiController
         $data['c_customer_jobs_type'] = Yii::$app->params['company_type'][$data['c_customer_jobs_type']-1]['company_type_name'];
 
         // 生成html内容，返回给Android客户端
-        $a = $this->renderPartial('detail', ['data'=>$data, 'now_address'=>$now_address,
+        $html = $this->renderPartial('detail', ['data'=>$data, 'now_address'=>$now_address,
             'total_borrow_money'=>$total_borrow_money,
             'id_address'=>$id_address, 'job_address'=>$job_address]);
 
 
 
         return ['status' => 1, 'message' => 'ok',
-            'data' => $a
+            'data' => $html
         ];
     }
 
