@@ -18,7 +18,8 @@ class ContractController extends Controller
      */
     public function actionIndex()
     {
-        return $this->renderPartial('index');
+        $o_id = \Yii::$app->getRequest()->get('o_id');
+        return $this->renderPartial('index', ['data'=>'sdfaf', 'o_id'=>$o_id]);
     }
 
     public function actionPaymentdesc()

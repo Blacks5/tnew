@@ -43,8 +43,8 @@
     <div class="w_div">
         <dl class="info_box">
             <dt class="info_box_dt">商户信息：</dt>
-            <dd>商户名称：<span class="info_box_span"> </span></dd>
-            <dd>商户代码：<span class="info_box_span"> </span></dd>
+            <dd>商户名称：<span class="info_box_span"> <?=$data;?></span></dd>
+            <dd>商户代码：<span class="info_box_span"> <?=$o_id?></span></dd>
             <dd>销售顾问：<span class="info_box_span"> </span></dd>
         </dl>
     </div>
