@@ -589,7 +589,7 @@ class OrderController extends CoreApiController
         Yii::$app->getResponse()->format = 'json';
         $data = Contract::genContractForOid($o_id);
         $url = 'http://211.149.163.238/contract/index?o_id='.$o_id;
-        $url = 'http://192.168.50.8:888/contract/index?o_id='.$o_id;
+//        $url = 'http://192.168.50.8:888/contract/index?o_id='.$o_id;
 
         // 生成合同html
         $html = $this->renderPartial('contract', ['data'=>$data]);
