@@ -616,14 +616,16 @@ class OrderController extends CoreApiController
             ->where('o_id=:o_id', [':o_id'=>$o_id])
             ->asArray()->one();
         $data['data_goods'] = Goods::find()->where(['g_order_id'=>$o_id])->asArray()->all();
-
+//var_dump(Yii::$app->params['kinship'][$data['c_kinship_relation']-1], $data['c_kinship_relation']-1);die;
 
         $total_borrow_money = $data['o_total_price']-$data['o_total_deposit'];
         $id_address = Helper::getAddrName($data['c_customer_province']). Helper::getAddrName($data['c_customer_city']). Helper::getAddrName($data['c_customer_county']). $data['c_customer_idcard_detail_addr'];
         $data['c_bank'] = Yii::$app->params['bank_list'][$data['c_bank']-1]['bank_name'];
         $data['c_customer_gender'] = Customer::getAllGender()[$data['c_customer_gender']];
-        $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']]['marital_str'];
-        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']]['kinship_str'];
+        var_dump(Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str']);die;
+        $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str'];
+//        var_dump(Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str']);die;
+        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str'];
         $now_address = Helper::getAddrName($data['c_customer_addr_province']). Helper::getAddrName($data['c_customer_addr_city']). Helper::getAddrName($data['c_customer_addr_county']). $data['c_customer_idcard_detail_addr'];
         $job_address = Helper::getAddrName($data['c_customer_jobs_province']). Helper::getAddrName($data['c_customer_jobs_city']). Helper::getAddrName($data['c_customer_jobs_county']). $data['c_customer_jobs_detail_addr'];
 
@@ -769,10 +771,6 @@ class OrderController extends CoreApiController
         <tr>
             <th align="right">客户银行卡号：</th>
             <td style="padding-left:5px;">{$data['c_banknum']}</td>
-        </tr>
-        <tr>
-            <th align="right">婚姻状况：</th>
-            <td style="padding-left:5px;">{$data['c_family_marital_status']}</td>
         </tr>
     </tbody>
 </table> 
