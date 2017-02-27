@@ -561,7 +561,7 @@ class OrderController extends CoreApiController
             '(max(r_balance)+sum(r_overdue_money)) as total_debt'
         ];*/
         $select = [
-            'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt'
+            'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt', 'o_id'
         ];
         $query = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
