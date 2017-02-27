@@ -43,7 +43,7 @@
     <tr>
         <th align="right">婚姻状况：</th>
         <td style="padding-left:5px;"><?=$data['c_family_marital_status']?></td>
-        +
+
     </tr>
 
     <?php if($data['c_family_marital_status']=='已婚'){ ?>
