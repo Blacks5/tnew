@@ -66,6 +66,17 @@ use yii\helpers\Url;
                                                 </thead>
                                                 <tbody>
                                                 <?php
+
+                                                    function btn_color($status=null)
+                                                    {
+                                                        $btn_color = 'btn-danger';
+                                                        if($status == 6){
+                                                            $btn_color = 'btn-warning';
+                                                        }
+                                                        return $btn_color;
+                                                    }
+                                                ?>
+                                                <?php
                                                     foreach ($model as $_k=>$_v){
                                                 ?>
 
@@ -79,7 +90,7 @@ use yii\helpers\Url;
                                                     <td class="client-status"><?= $_v['o_total_price']-$_v['o_total_deposit'];?>元</td>
                                                     <td class="client-status"><?= $_v['c_total_borrow_times'];?>次</td>
                                                     <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
-                                                    <td><button class="btn btn-xs btn-danger"><?= \common\models\Orders::getAllStatus()[$_v['o_status']]?></button></td>
+                                                    <td><button class="btn btn-xs <?=btn_color($_v['o_status']);?>"><?= \common\models\Orders::getAllStatus()[$_v['o_status']]?></button></td>
                                                     <td>
                                                         <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))){ ?>
                                                         <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>" class="btn btn-primary btn-xs">详情</a>
