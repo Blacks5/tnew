@@ -21,8 +21,8 @@ return [
         ['t_id'=>4, 't_name'=>'其他'],
         ['t_id'=>5, 't_name'=>'测试'],
         ['t_id'=>6, 't_name'=>'摩托车'],
-        ['t_id'=>8, 't_name'=>'电动车'],
-        ['t_id'=>7, 't_name'=>'有钱花'],
+        ['t_id'=>7, 't_name'=>'电动车'],
+        ['t_id'=>8, 't_name'=>'有钱花'],
 
     ],
     // 客户等级暗号
@@ -44,7 +44,7 @@ return [
         ['house_info_id'=>2, 'house_info_str'=>'出租房'],
         ['house_info_id'=>3, 'house_info_str'=>'父母房'],
         ['house_info_id'=>4, 'house_info_str'=>'宿舍'],
-        ['house_info_id'=>4, 'house_info_str'=>'公租房/廉租房'],
+        ['house_info_id'=>5, 'house_info_str'=>'公租房/廉租房'],
     ], // 住房情况
     'kinship'=>[
         ['kinship_id'=>1, 'kinship_str'=>'父亲'],
@@ -52,7 +52,7 @@ return [
         ['kinship_id'=>3, 'kinship_str'=>'兄弟姐妹'],
         ['kinship_id'=>4, 'kinship_str'=>'朋友'],
         ['kinship_id'=>5, 'kinship_str'=>'同事'],
-        ['kinship_id'=>8, 'kinship_str'=>'其他'],
+        ['kinship_id'=>6, 'kinship_str'=>'其他'],
         //        ['kinship_id'=>6, 'kinship_str'=>'表兄弟'],
 //        ['kinship_id'=>7, 'kinship_str'=>'表姐妹'],
     ], // 亲属关系
@@ -69,7 +69,7 @@ return [
         ['company_type_id'=>1, 'company_type_name'=>'股份有限制公司'],
         ['company_type_id'=>2, 'company_type_name'=>'私营企业'],
         ['company_type_id'=>3, 'company_type_name'=>'国有企业'],
-        ['company_type_id'=>3, 'company_type_name'=>'个体工商户'],
+        ['company_type_id'=>4, 'company_type_name'=>'个体工商户'],
     ],
 
     // 所属行业
@@ -79,19 +79,19 @@ return [
         ['company_kind_id'=>3, 'company_kind_name'=>'建筑、装修'],
         ['company_kind_id'=>4, 'company_kind_name'=>'文化、运动、娱乐、传媒、广告设计'],
         ['company_kind_id'=>5, 'company_kind_name'=>'教育'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'金融机构、专业性事务机构'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'政府机构、社会团队'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'计算机、通信、通讯'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'制造、快速消费品、耐用消费品'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'能源、化工、矿产'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'军队'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'电力、煤气、水的生成和供应'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'房地产'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'个体、自营、退休、居住、家政和其他服务'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'科研、地质勘探和技术服务'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'事业单位、公共设施、医疗卫生、社会保障'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'租赁和商业服务'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'批发和零售贸易'],
-        ['company_kind_id'=>5, 'company_kind_name'=>'其他'],
+        ['company_kind_id'=>6, 'company_kind_name'=>'金融机构、专业性事务机构'],
+        ['company_kind_id'=>7, 'company_kind_name'=>'政府机构、社会团队'],
+        ['company_kind_id'=>8, 'company_kind_name'=>'计算机、通信、通讯'],
+        ['company_kind_id'=>9, 'company_kind_name'=>'制造、快速消费品、耐用消费品'],
+        ['company_kind_id'=>10, 'company_kind_name'=>'能源、化工、矿产'],
+        ['company_kind_id'=>11, 'company_kind_name'=>'军队'],
+        ['company_kind_id'=>12, 'company_kind_name'=>'电力、煤气、水的生成和供应'],
+        ['company_kind_id'=>13, 'company_kind_name'=>'房地产'],
+        ['company_kind_id'=>14, 'company_kind_name'=>'个体、自营、退休、居住、家政和其他服务'],
+        ['company_kind_id'=>15, 'company_kind_name'=>'科研、地质勘探和技术服务'],
+        ['company_kind_id'=>16, 'company_kind_name'=>'事业单位、公共设施、医疗卫生、社会保障'],
+        ['company_kind_id'=>17, 'company_kind_name'=>'租赁和商业服务'],
+        ['company_kind_id'=>18, 'company_kind_name'=>'批发和零售贸易'],
+        ['company_kind_id'=>19, 'company_kind_name'=>'其他'],
     ]
 ];

@@ -43,51 +43,47 @@
     <div class="w_div">
         <dl class="info_box">
             <dt class="info_box_dt">商户信息：</dt>
-            <dd>商户名称：<span class="info_box_span"> </span></dd>
-            <dd>商户代码：<span class="info_box_span"> </span></dd>
-            <dd>销售顾问：<span class="info_box_span"> </span></dd>
+            <dd>商户名称：<span class="info_box_span"> <?=$data['s_name'];?></span></dd>
+            <dd>商户负责人姓名：<span class="info_box_span"> <?=$data['s_owner_name']?></span></dd>
+            <dd>销售顾问：<span class="info_box_span"><?=$data['o_user_id']?> </span></dd>
         </dl>
     </div>
     <div class="w_div">
         <dl class="info_box">
             <dt class="info_box_dt">还款信息：</dt>
-            <dd>首付金额：<span class="info_box_span"> </span></dd>
-            <dd>尾款金额：<span class="info_box_span"> </span></dd>
-            <dd>个人保障计划：<span class="info_box_span"> </span></dd>
-            <dd>贵宾服务包：<span class="info_box_span"> </span></dd>
-            <dd>分期月数：<span class="info_box_span"> </span></dd>
-            <dd>每月还款：<span class="info_box_span"> </span></dd>
-            <dd>首次还款日：<span class="info_box_span"> </span></dd>
-            <dd>每月还款日期：<span class="info_box_span"> </span></dd>
+            <dd>贷款金额：<span class="info_box_span"> <?= $data['o_total_price'] - $data['o_total_deposit']?> 元</span></dd>
+            <dd>首付金额：<span class="info_box_span"> <?=$data['o_total_deposit']?> 元</span></dd>
+            <dd>是否参与个人保障计划：<span class="info_box_span"> <?=$data['o_is_add_service_fee'] ?></span></dd>
+            <dd>是否选择贵宾服务包：<span class="info_box_span"> <?=$data['o_is_free_pack_fee']?></span></dd>
+            <dd>分期月数：<span class="info_box_span"> <?=$data['p_period']?></span></dd>
+            <dd>每月还款：<span class="info_box_span"><?=round($every_month_repay, 2)?> 元</span></dd>
+            <dd>首次还款日：<span class="info_box_span"><?=date('Y-m-d', $data['first_repay_time'])?></span></dd>
+            <dd>每月还款日期：<span class="info_box_span"> <?=date('d', $data['first_repay_time'])?>日</span></dd>
             <dd>还款说明：<span class="info_box_span"> 佰信分期将在还款日从借款人银行卡自动扣除应还金额</span></dd>
             <dd style="text-align: right;"><a href="/contract/paymentdesc">查看详细说明</a></dd>
         </dl>
     </div>
     <div class="w_div">
-        <dl class="info_box">
-            <dt class="info_box_dt">商品信息：</dt>
-            <dd>商品类型：<span class="info_box_span"> </span></dd>
-            <dd>商品品牌：<span class="info_box_span"> </span></dd>
-            <dd>商品型号：<span class="info_box_span"> </span></dd>
-            <dd>商品价格：<span class="info_box_span"> </span></dd>
+        <?php foreach ($data['data_goods'] as $k=>$v){ ?>
+            <dl class="info_box">
+                <dt class="info_box_dt">商品信息(<?=$k+1?>)：</dt>
+                <dd>商品类型：<span class="info_box_span"><?= $v['g_goods_type']?> </span></dd>
+                <dd>商品品牌：<span class="info_box_span"> <?= $v['g_goods_name']?></span></dd>
+                <dd>商品型号：<span class="info_box_span"> <?= $v['g_goods_models']?></span></dd>
+                <dd>商品价格：<span class="info_box_span"> <?= $v['g_goods_price']?></span></dd>
         </dl>
+        <?php } ?>
     </div>
     <div class="w_div">
         <dl class="info_box">
             <dt class="info_box_dt">申请人信息：</dt>
-            <dd>合同编号：<span class="info_box_span"> </span></dd>
-            <dd>申请姓名：<span class="info_box_span"> </span></dd>
-            <dd>手机号码：<span class="info_box_span"> </span></dd>
-            <dd>身份证号：<span class="info_box_span"> </span></dd>
-            <dd>居住地址：<span class="info_box_span"> </span></dd>
-        </dl>
-    </div>
-    <div class="w_div">
-        <dl class="info_box">
-            <dt class="info_box_dt">借款人信息：</dt>
-            <dd>借款人姓名：<span class="info_box_span"> </span></dd>
-            <dd>开户银行：<span class="info_box_span"> </span></dd>
-            <dd>银行卡号：<span class="info_box_span"> </span></dd>
+            <dd>订单号：<span class="info_box_span"> <?=$data['o_serial_id']?></span></dd>
+            <dd>申请姓名：<span class="info_box_span"> <?=$data['c_customer_name']?></span></dd>
+            <dd>手机号码：<span class="info_box_span"> <?=$data['c_customer_cellphone']?></span></dd>
+            <dd>身份证号：<span class="info_box_span"> <?=$data['c_customer_id_card']?></span></dd>
+            <dd>居住地址：<span class="info_box_span"> <?=$now_address?></span></dd>
+            <dd>开户银行：<span class="info_box_span"> <?=$data['c_bank'] ?></span></dd>
+            <dd>银行卡号：<span class="info_box_span"> <?=$data['c_banknum'] ?></span></dd>
         </dl>
     </div>
 
@@ -98,7 +94,7 @@
             <dd>(3)：<span class="info_box_span"> 如购买的商品是货物，则借款人已取得该商品或取货凭证；并且商品与本合同中的描述一致，可以正常使用；</span></dd>
             <dd>(4)：<span class="info_box_span"> 如购买的商品是服务，无论借款人是否实际享受该服务，借款人必须按照借款服务合同的条款赔偿还借款。</span></dd>
             <dd>(5)：<span
-                        class="info_box_span"> 点击确认即视为认同该借款服务合同及其他相关合同等（如有），同时授权相关CA机构为您制作具法律效力的电子签章，并在前述合同上加盖电子签章。</span>
+                        class="info_box_span"> 点击确认即视为认同该借款服务合同及其他相关合同等（如有）。</span>
             </dd>
         </dl>
     </div>
@@ -123,59 +119,47 @@
             <table class="table table-bordered">
                 <tbody>
                 <tr>
-                    <td class="td_title">借款人姓名：</td>
+                    <td class="td_title">借款人姓名：<?=$data['c_customer_name']?></td>
                     <td></td>
-                    <td class="td_title">身份证号码：</td>
+                    <td class="td_title">身份证号码：<?=$data['c_customer_id_card']?></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">居住地址:</td>
+                    <td class="td_title">居住地址：<?=$now_address?></td>
                     <td colspan="3"></td>
                 </tr>
                 <tr>
-                    <td class="td_title">联系电话：</td>
-                    <td></td>
-                    <td class="td_title">门店代码：</td>
+                    <td class="td_title">联系电话：<?=$data['c_customer_cellphone']?></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">门店名称:</td>
+                    <td class="td_title">门店名称：<?=$data['s_name'];?></td>
                     <td colspan="3"></td>
                 </tr>
                 <tr>
-                    <td class="td_title">商品类型：</td>
+                    <td class="td_title">商品类型：<?= $v['g_goods_type']?></td>
                     <td></td>
-                    <td class="td_title">销售顾问：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">产品系列代码：</td>
-                    <td></td>
-                    <td class="td_title">销售人员代码：</td>
+                    <td class="td_title">销售顾问：<?=$data['o_user_id']?></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">产品代码：</td>
-                    <td></td>
-                    <td class="td_title">品牌/其他：</td>
+                    <td class="td_title">产品系列代码：<?=$data['p_name']?></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">商品总价：</td>
-                    <td></td>
-                    <td class="td_title">商品型号/其他：</td>
+                    <td class="td_title">商品总价：<?= $data['o_total_price'] ?></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">首付金额：</td>
+                    <td class="td_title">首付金额：<?=$data['o_total_deposit']?> 元</td>
                     <td></td>
-                    <td class="td_title">借款金额：</td>
+                    <td class="td_title">借款金额：<?= $data['o_total_price'] - $data['o_total_deposit']?> 元</td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">尾款金额：</td>
+                    <td class="td_title">财务管理费(%)：<?=$data['p_finance_mangemant_fee']?> </td>
                     <td></td>
-                    <td class="td_title">借款管理费：</td>
+                    <td class="td_title">客户管理费(%)：<?=$data['p_customer_management']?> </td>
                     <td></td>
                 </tr>
                 </tbody>
@@ -185,22 +169,22 @@
             <table class="table table-bordered">
                 <tbody>
                 <tr>
-                    <td class="td_title">每月还款日：</td>
+                    <td class="td_title">每月还款日：<?=date('Y-m-d', $data['o_created_at'])?></td>
                     <td></td>
-                    <td class="td_title">每月还款金额：</td>
+                    <td class="td_title">每月还款金额：<?=round($every_month_repay, 2)?> 元</td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">分期期数：</td>
+                    <td class="td_title">分期期数：<?=$data['p_period']?></td>
                     <td></td>
                     <td class="td_title">还款方式：</td>
                     <td>等额本息</td>
                 </tr>
                 <tr>
-                    <td class="td_title">参与综合保障计划：是/否</td>
-                    <td>金额:</td>
-                    <td class="td_title">购买贵宾服务包：是/否</td>
-                    <td>金额:</td>
+                    <td class="td_title">参与个人保障计划： <?=$data['o_is_add_service_fee'] ?></td>
+                    <td>金额:<?= round($data['p_add_service_fee'] * ($data['o_total_price'] - $data['o_total_deposit'])/100, 2)?>元/每月</td>
+                    <td class="td_title">购买贵宾服务包：<?=$data['o_is_free_pack_fee']?></td>
+                    <td>金额:<?=$data['p_free_pack_fee']?>元/每月</td>
                 </tr>
                 </tbody>
             </table>
@@ -208,9 +192,9 @@
     </dl>
     <dl class="info_box">
         <dd>借款人应在约定的每月还款日的至少前一日在还款账户中存入足够的金额并保证还款账户处于正常的可以划扣的状态。借款人同意且授权佰信分期或佰信分期委托的第三方从下述账户进行扣款。</dd>
-        <dd>银行名称：<span class="info_box_span"> </span></dd>
-        <dd>银行账户：<span class="info_box_span"> </span></dd>
-        <dd>账户名：<span class="info_box_span"> </span></dd>
+        <dd>银行名称：<span class="info_box_span"> <?=$data['c_bank'] ?></span></dd>
+        <dd>银行账户：<span class="info_box_span"> <?=$data['c_banknum'] ?></span></dd>
+        <dd>账户名：<span class="info_box_span"><?=$data['c_customer_name']?> </span></dd>
     </dl>
     <dl class="info_box">
         <dd>(1)<span class="info_box_span"> 以上信息真实，准确；</span></dd>
@@ -221,7 +205,7 @@
         <dd>(6)：<span class="info_box_span"> 本人已阅读并理解借款服务合同的通用条款并自愿遵守合同的规定。</span></dd>
     </dl>
     <div>
-        <p style="width: 50%;float: left;"><b>客户签名：</b></p>
+        <p style="width: 50%;float: left;"><b>客户签名：<?=$data['c_customer_name']?></b></p>
         <p style="width: 50%;float: left;"><b>佰信分期盖章：</b></p>
     </div>
     <dl class="info_box" style="margin-top: 50px;">
@@ -342,7 +326,7 @@
 
         <h4>亲爱的佰信分期客户：</h4>
 
-        <dd>您好！在您（姓名：<span>too</span>，身份证号：<span>too</span>)向深圳天牛互联网金融服务有限公司（以下简称“佰信分期”）或与佰信分期进行合作的第三方（以下简称“第三方”）申请分期付款或融资借款业务时，需要您同意并授权如下内容：
+        <dd>您好！在您（姓名：<span><?=$data['c_customer_name']?></span>，身份证号：<span><?=$data['c_customer_id_card']?></span>)向深圳天牛互联网金融服务有限公司（以下简称“佰信分期”）或与佰信分期进行合作的第三方（以下简称“第三方”）申请分期付款或融资借款业务时，需要您同意并授权如下内容：
         </dd>
         <dd>1、您同意并授权佰信分期、出借人或第三方按照相关法律、法规和监管要求，向中国人民银行金融信用信息基础数据库、其他依法设立的征信机构和获取您的个人信息、个人征信相关信息及其他反应您信用状况的信息。</dd>
         <dd>2、您同意并授权佰信分期、出借人或第三方通过公安部公民身份信息数据库、电信运营以及其他合法渠道核实您在申请分期付款或融资借款时提交的身份证件、联系电话、联系地址等信息的真实性。</dd>
@@ -357,136 +341,12 @@
         <dd>6、若您的分期付款或融资借款申请经有用或出借人或第三方审核不通过，未能向您提供分期或融资借款的，并影响本授权的效力。</dd>
         <dd>7、您同意并授权第三方通过有相应资质的资金支付平台将借款金额划付至佰信分期或天道计然(北京）信息科技有限责任公司的银行账户，并在扣除您应付第三方及佰信分期的居间服务费用后剩余款项支付至提供本次消费商品的相关商户。
         </dd>
-        <dd>8、您同意并授权出借人、第三方融资平台或佰信分期委托的第三方机构从您本人名下的银行账户（账号： <span>too</span> ，开户行：<span>too</span> ）扣划《借款服务合同》中约定的应付款项。
+        <dd>8、您同意并授权出借人、第三方融资平台或佰信分期委托的第三方机构从您本人名下的银行账户（账号： <span><?=$data['c_banknum']?></span> ，开户行：<span><?=$data['c_bank']?></span> ）扣划《借款服务合同》中约定的应付款项。
         </dd>
         <dd>您点击确认本授权书即表示同意签署本授权书，接受本授权书的全部条款和内容。</dd>
-        <dd>授权人：<span>too</span></dd>
-        <dd>日期 <span>too</span>年 <span>too</span>月 <span>too</span>日</dd>
+        <dd>授权人：<span><?=$data['c_customer_name']?></span></dd>
+        <dd>日期 <?= date('Y-m-d', $data['o_created_at'])?></dd>
     </dl>
-    <div class="w_div">
-        <h2><b>借款服务合同</b></h2>
-        <dl class="info_box">
-            <dt>
-            <h4>提示条款</h4></dt>
-            <dd>欢迎您与百信分期共同签署本《借款服务合同》成为佰信分期的客户!各服务条款前所列索引关键词仅为帮助您理解该条款表达的主旨之用，不影响或限制本合同条款的含义或解释。为维护您自身权益，建议您仔细阅读各条款具体表述。
-            <dd>
-            <dd><b>【审慎阅读】</b>您在“佰信分期”APP中点击同意本协议之前，应当认真阅读本协议。<b>请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款、法律适用和争议解决条款。免除或者限制责任的条款将以粗体下划线条标识，您应重点阅读。</b>如您对本合同有任何疑问，可向天牛金融客服咨询。
-                </b></dd>
-            <dd><b>【签约动作】</b>当您在分期付款服务申请程序中填写申请信息、阅读并同意本合同且完成全部申请程序后，即表示您已充分阅读、理解并接受本合同的全部内容，并与有用分期达成一致，成为佰信分期的客户。<b>阅读本合同的过程中，如果您不同意本合同或其中任何条款约定，您应立即停止申请程序。</b>
-            </dd>
-        </dl>
-    </div>
-    <h3>第一部分 借款明细</h3>
-    <dl class="info_box">
-        <dt>
-        <h4 style="width: 50%;float: left;">借款类型：商品贷</h4><h4 style="width: 50%;float: left;">合同编号：</h4></dt>
-        <dd>
-            <table class="table table-bordered">
-                <tbody>
-                <tr>
-                    <td class="td_title">借款人姓名：</td>
-                    <td></td>
-                    <td class="td_title">身份证号码：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">居住地址:</td>
-                    <td colspan="3"></td>
-                </tr>
-                <tr>
-                    <td class="td_title">联系电话：</td>
-                    <td></td>
-                    <td class="td_title">门店代码：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">门店名称:</td>
-                    <td colspan="3"></td>
-                </tr>
-                <tr>
-                    <td class="td_title">商品类型：</td>
-                    <td></td>
-                    <td class="td_title">销售顾问：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">产品系列代码：</td>
-                    <td></td>
-                    <td class="td_title">销售人员代码：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">产品代码：</td>
-                    <td></td>
-                    <td class="td_title">品牌/其他：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">商品总价：</td>
-                    <td></td>
-                    <td class="td_title">商品型号/其他：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">首付金额：</td>
-                    <td></td>
-                    <td class="td_title">借款金额：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">尾款金额：</td>
-                    <td></td>
-                    <td class="td_title">借款管理费：</td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </dd>
-        <dd>
-            <table class="table table-bordered">
-                <tbody>
-                <tr>
-                    <td class="td_title">每月还款日：</td>
-                    <td></td>
-                    <td class="td_title">每月还款金额：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="td_title">分期期数：</td>
-                    <td></td>
-                    <td class="td_title">还款方式：</td>
-                    <td>等额本息</td>
-                </tr>
-                <tr>
-                    <td class="td_title">参与综合保障计划：是/否</td>
-                    <td>金额:</td>
-                    <td class="td_title">购买贵宾服务包：是/否</td>
-                    <td>金额:</td>
-                </tr>
-                </tbody>
-            </table>
-        </dd>
-    </dl>
-    <dl class="info_box">
-        <dd>借款人应在约定的每月还款日的至少前一日在还款账户中存入足够的金额并保证还款账户处于正常的可以划扣的状态。借款人同意且授权佰信分期或佰信分期委托的第三方从下述账户进行扣款。</dd>
-        <dd>银行名称：<span class="info_box_span"> too</span></dd>
-        <dd>银行账户：<span class="info_box_span"> too</span></dd>
-        <dd>账户名：<span class="info_box_span"> too</span></dd>
-    </dl>
-    <dl class="info_box">
-        <dd>(1)<span class="info_box_span"> 以上信息真实，准确；</span></dd>
-        <dd>(2)<span class="info_box_span"> 借款人已支付首付金额；</span></dd>
-        <dd>(3)：<span class="info_box_span"> 借款服务合同与商品购买合同是独立的法律关系，佰信分期不对商户所提供商品的质量承担任何责任；</span></dd>
-        <dd>(4)：<span class="info_box_span"> 如购买的商品是货物，则借款人已取得该商品或取货凭证；并且商品与本合同中的描述一致，可以正常使用；</span></dd>
-        <dd>(5)：<span class="info_box_span"> 如购买的商品是服务，无论借款人是否实际享受该服务，借款人必须按照借款服务合同的条款赔偿还借款。</span></dd>
-        <dd>(6)：<span class="info_box_span"> 本人已阅读并理解借款服务合同的通用条款并自愿遵守合同的规定。</span></dd>
-    </dl>
-    <div>
-        <p style="width: 50%;float: left;"><b>客户签名：</b></p>
-        <p style="width: 50%;float: left;"><b>佰信分期盖章：</b></p>
-        <p style="width: 50%;float: left;"><b>日期： too 年 too 月 too 日</b></p>
-        <p style="width: 50%;float: left;"><b>日期： too 年 too 月</b></p>
-    </div>
 </div>
 </body>
 </html>

@@ -561,7 +561,7 @@ class OrderController extends CoreApiController
             '(max(r_balance)+sum(r_overdue_money)) as total_debt'
         ];*/
         $select = [
-            'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt'
+            'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt', 'o_id'
         ];
         $query = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
@@ -584,13 +584,29 @@ class OrderController extends CoreApiController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionGetContract($o_id=8)
+    public function actionGetContract()
     {
         Yii::$app->getResponse()->format = 'json';
-        $data = "我是合同，屌不屌" . $o_id;
-        $data = Contract::genContractForOid($o_id);
-        $url = 'http://211.149.163.238/contract/index';
-        return ['status' => 1, 'message' => 'ok', 'data' => $url];
+        try {
+            $o_id = Yii::$app->getRequest()->post('oid');
+            if (!empty($o_id) === false) {
+//                $x = json_encode(Yii::$app->getRequest()->post());
+                throw new CustomApiException('无效订单');
+//                throw new CustomApiException($x);
+            }
+            $data = Contract::genContractForOid($o_id);
+            $url = 'http://211.149.163.238/contract/index?o_id=' . $o_id;
+//        $url = 'http://192.168.50.8:888/contract/index?o_id='.$o_id;
+
+            // 生成合同html
+            $html = $this->renderPartial('contract', ['data' => $data]);
+
+            return ['status' => 1, 'message' => 'ok', 'data' => $url];
+        }catch (CustomApiException $e){
+            return ['status' => 0, 'message' => $e->getMessage(), 'data' => []];
+        }catch (\Exception $e){
+            return ['status' => 0, 'message' => '系统错误', 'data' => []];
+        }
     }
 
     /**
@@ -608,6 +624,8 @@ class OrderController extends CoreApiController
      */
     public function actionGetOrderDetail($o_id)
     {
+
+
         Yii::$app->getResponse()->format = 'json';
         $data = Orders::find()->select('*')
             ->leftJoin(Customer::tableName(), 'c_id=o_customer_id')
@@ -617,72 +635,37 @@ class OrderController extends CoreApiController
             ->asArray()->one();
         $data['data_goods'] = Goods::find()->where(['g_order_id'=>$o_id])->asArray()->all();
 
-
         $total_borrow_money = $data['o_total_price']-$data['o_total_deposit'];
         $id_address = Helper::getAddrName($data['c_customer_province']). Helper::getAddrName($data['c_customer_city']). Helper::getAddrName($data['c_customer_county']). $data['c_customer_idcard_detail_addr'];
         $data['c_bank'] = Yii::$app->params['bank_list'][$data['c_bank']-1]['bank_name'];
         $data['c_customer_gender'] = Customer::getAllGender()[$data['c_customer_gender']];
-        $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']]['marital_str'];
-        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']]['kinship_str'];
+//        var_dump(Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str']);die;
+        $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str'];
+//        var_dump(Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str']);die;
+        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str'];
         $now_address = Helper::getAddrName($data['c_customer_addr_province']). Helper::getAddrName($data['c_customer_addr_city']). Helper::getAddrName($data['c_customer_addr_county']). $data['c_customer_idcard_detail_addr'];
         $job_address = Helper::getAddrName($data['c_customer_jobs_province']). Helper::getAddrName($data['c_customer_jobs_city']). Helper::getAddrName($data['c_customer_jobs_county']). $data['c_customer_jobs_detail_addr'];
-
-        $data_end = <<<"AAA"
-        
-<h5 style="color:red">客户信息：</h5>
-姓名：{$data['c_customer_name']}<br>
-性别：{$data['c_customer_gender']}<br>
-电话：{$data['c_customer_cellphone']}<br>
-身份证号码：{$data['c_customer_id_card']}<br>
-身份证地址：{$id_address}<br>
-现居地址：{$now_address}<br>
-客户银行：{$data['c_bank']}<br>
-客户银行卡号：{$data['c_banknum']}<br>
-婚姻状况：{$data['c_family_marital_status']}<br>
-配偶姓名：{$data['c_family_marital_partner_name']}<br>
-配偶手机号：{$data['c_family_marital_partner_cellphone']}<br>
-亲属关系：{$data['c_kinship_relation']}<br>
-亲属姓名：{$data['c_kinship_name']}<br>
-亲属手机号：{$data['c_kinship_cellphone']}<br>
-
-工作单位：{$data['c_customer_jobs_company']}<br>
-工作行业：{$data['c_customer_jobs_type']}<br>
-单位性质：{$data['c_customer_jobs_industry']}<br>
-单位电话：{$data['c_customer_jobs_phone']}<br>
-单位地址：{$job_address}<br>
-是否购买社保：{$data['c_customer_jobs_is_shebao']}<br>
-其他联系人关系：{$data['c_other_people_relation']}<br>
-其他联系人姓名：{$data['c_other_people_name']}<br>
-其他联系人电话：{$data['c_other_people_cellphone']}<br>
-
-住房情况：{$data['c_family_house_info']}<br>
-住房情况：{$data['c_customer_name']}<br>
-
-<h5 style="color:red">订单信息：</h5>
-订单号：{$data['o_id']}<br>
-总金额：{$data['o_total_price']}<br>
-贷款金额：$total_borrow_money<br>
-首付金额：{$data['o_total_deposit']}<br>
-是否使用个人保障计划：{$data['o_is_add_service_fee']}<br>
-是否使用贵宾服务包：{$data['o_is_free_pack_fee']}<br>
-是否使用银行代扣：{$data['o_is_auto_pay']}<br>
-
-<h5 style="color:red">产品信息：</h5>
-产品名：{$data['p_name']}<br>
-期数：{$data['p_period']}<br>
-月利率：{$data['p_month_rate']}%<br>
-财务管理费利率：{$data['p_finance_mangemant_fee']}%<br>
-客户管理费利率：{$data['p_customer_management']}%<br>
+        $data['o_is_add_service_fee'] = $data['o_is_add_service_fee'] ==1?'是':'否';
+        $data['o_is_free_pack_fee'] = $data['o_is_free_pack_fee'] ==1?'是':'否';
+        $data['o_is_auto_pay'] = $data['o_is_auto_pay'] ==1?'是':'否';
+        $data['c_customer_jobs_is_shebao'] = $data['c_customer_jobs_is_shebao'] ==1?'是':'否';
+        $data['c_family_house_info'] = Yii::$app->params['house_info'][$data['c_family_house_info']-1]['house_info_str'];
 
 
-<strong>商户信息：</strong><br>
-商户名：{$data['s_name']}<br>
-负责人姓名：{$data['s_owner_name']}<br>
-负责人电话：{$data['s_owner_phone']}<br>
-负责人邮箱：{$data['s_owner_email']}<br>
-AAA;
+        $data['c_customer_jobs_industry'] = Yii::$app->params['company_kind'][$data['c_customer_jobs_industry']-1]['company_kind_name'];
 
-        return ['status' => 1, 'message' => 'ok', 'data' => $data_end];
+        $data['c_customer_jobs_type'] = Yii::$app->params['company_type'][$data['c_customer_jobs_type']-1]['company_type_name'];
+
+        // 生成html内容，返回给Android客户端
+        $html = $this->renderPartial('detail', ['data'=>$data, 'now_address'=>$now_address,
+            'total_borrow_money'=>$total_borrow_money,
+            'id_address'=>$id_address, 'job_address'=>$job_address]);
+
+
+
+        return ['status' => 1, 'message' => 'ok',
+            'data' => $html
+        ];
     }
 
 
