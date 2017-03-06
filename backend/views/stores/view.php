@@ -87,15 +87,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <p class="form-control-static"><?= $model->s_addr; ?></p>
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
+            <!--<div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">销售人员：</label>
                 <div class="col-sm-2">
                     <p>
-                        <?=implode('-', $all_sales);?>
+                        <?/*=implode('-', $all_sales);*/?>
                     </p>
                 </div>
-            </div>
+            </div>-->
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">状态：</label>
