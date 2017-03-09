@@ -47,11 +47,11 @@ class Sms
         }
         // 发送短信并解析结果
         $code = mt_rand(10000, 99999);
-        $code = 1234;
+//        $code = 1234;
         $msg .= $code;
 
-        /*$result = $this->sender->sendSMS($phone, $msg, $needstatus);
-        $result = $this->sender->execResult($result);*/
+        $result = $this->sender->sendSMS($phone, $msg, $needstatus);
+        $result = $this->sender->execResult($result);
         $result[1] = 0;
 
         if (isset($result[1]) && $result[1] == 0) {
