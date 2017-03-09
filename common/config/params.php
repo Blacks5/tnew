@@ -10,7 +10,7 @@ return [
     'overdue_money_everyday'=>5,
 
     // 提交订单时发送短信的模板
-    'submit_orders'=>'您好，您的验证码是:',
+    'submit_orders'=>'【深圳天牛金融服务有限公司】您好，您的验证码是:',
     'sms_timeout'=>300, // 短信验证码有效期 秒
 
     // 安装订单初始数据
