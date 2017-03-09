@@ -233,7 +233,7 @@ $t = new \common\models\UploadFile();
             silverlight_xap_url : 'js/Moxie.xap',
             filters: {
                 mime_types : [ //只允许上传图片文件
-                    { title : "图片文件", extensions : "jpg,gif,png" }
+                    { title : "图片文件", extensions : "jpg,gif,png,jpeg" }
                 ]
             },
             multipart_params: {

@@ -22,10 +22,19 @@ use api\core\CoreApiModel;
  */
 class BaseUploadFile extends CoreApiModel
 {
-    private $ak = 'AqCtkCB9tHRtjb6lc5Fvx6Yqtnqe7dhM4oNwc5_a';
-    private $sk = '8B-wvW43Rmdq7yQGAQnbzFd03lJzxYYYbkkglW9k';
-    private $domain = 'http://obuoq9z60.bkt.clouddn.com/';
-    private $bucket = 'wcb89';
+    // 我的
+//    private $ak = 'AqCtkCB9tHRtjb6lc5Fvx6Yqtnqe7dhM4oNwc5_a';
+//    private $sk = '8B-wvW43Rmdq7yQGAQnbzFd03lJzxYYYbkkglW9k';
+//    private $domain = 'http://obuoq9z60.bkt.clouddn.com/';
+//    private $bucket = 'wcb89';
+
+
+
+    // 天牛的
+    private $bucket = 'tianniu-backend-and-androidapp';
+    private $ak = 'xgjgQp0pBOODXs8Bweh-c018n40OeC8c06vYoU_Y';
+    private $sk = 'jzHiGI3gI83ryCVxaAL2iNrY5qHrmDRPT9MoZY7V';
+    private $domain = 'http://omjv2xrxm.bkt.clouddn.com/';
 
     public $handle=null;
     public function __construct()
@@ -61,7 +70,11 @@ class BaseUploadFile extends CoreApiModel
      */
     protected function getUrlBase($key)
     {
-        return $this->domain. $key;
+        // 1,原始url加工两个参数e和token
+        $url = $this->handle->privateDownloadUrl($this->domain. $key);
+        return $url;
+        // 2，计算token
+//        return $this->domain. $key;
     }
 
     /**

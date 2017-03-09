@@ -285,6 +285,7 @@ class StoresController extends CoreBackendController
     {
         $pic = yii\web\UploadedFile::getInstanceByName('file'); // 获取图片
         $key = Yii::$app->getSecurity()->generateRandomString();
+//        var_dump($key,$pic);die;
         $handle = new UploadFile();
         $ret = $handle->uploadFile($key, $pic);
         $key = false;
