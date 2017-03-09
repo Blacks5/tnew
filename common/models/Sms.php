@@ -46,7 +46,7 @@ class Sms
             throw new CustomApiException(Yii::$app->params['sms_timeout']/60 . '分钟内只能发送一次验证码');
         }
         // 发送短信并解析结果
-        $code = mt_rand(10000, 99999);
+        $code = mt_rand(100000, 999999);
 //        $code = 1234;
         $msg .= $code;
 
