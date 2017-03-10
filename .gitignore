@@ -6,3 +6,4 @@ protected/data/*.db
 themes/classic/views/
 /.svn
 .idea/*
+common/config/main-local.php
