@@ -27,7 +27,6 @@ class LoginController extends Controller
      */
     public function actionLogin()
     {
-        p(1111);
         $request = Yii::$app->getRequest();
         $model = new LoginForm();
         $model->username = $request->post('username');
