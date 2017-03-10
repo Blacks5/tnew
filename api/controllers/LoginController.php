@@ -59,7 +59,7 @@ class LoginController extends Controller
 //        $url = 'http://211.149.163.238:89/'; // online西数
         $url = 'http://119.23.15.90:89/'; // online阿里
 //        $url = 'http://192.168.50.8:889'; // mac and thinkpad
-        $url = 'http://192.168.0.194:889/'; // win
+//        $url = 'http://192.168.0.194:889/'; // win
         return ['status' => 1, 'message' => 'ok', 'data' => $url];
     }
 
