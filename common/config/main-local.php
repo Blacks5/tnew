@@ -12,7 +12,7 @@ return [
                         'dsn' => 'mysql:host=192.168.0.7;port=4546;dbname=wcb_latest',
                         'username' => 'root',
                         'password' => '123456',
-                        'charset' => 'utf8',*/
+                        'charset' => 'utf8',1*/
             /*'attributes'=>[
                 'PDO::ATTR_TIMEOUT' => 150,
                 'PDO::ATTR_ERRMODE' => PDO::ERRMODE_EXCEPTION
