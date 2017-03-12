@@ -3,9 +3,9 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:192.168.50.8;port=3306;dbname=wcb_latest',
-            'username' => 'root',
-            'password' => '123456',
+            'dsn' => 'mysql:rm-wz9dq7713h75el6e0o.mysql.rds.aliyuncs.com;port=3306;dbname=wcb_latest',
+            'username' => 'haytoo',
+            'password' => 'hsd89h&hhOH09UH90jo',
             'charset' => 'utf8',
 
             /*            'class' => 'yii\db\Connection',
