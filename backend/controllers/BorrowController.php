@@ -12,6 +12,7 @@ use backend\components\CustomBackendException;
 use common\components\CustomCommonException;
 use common\models\CalInterest;
 use common\models\Customer;
+use common\models\Goods;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
@@ -132,7 +133,9 @@ class BorrowController extends CoreBackendController
                 $model['o_is_add_service_fee'],
                 $model['o_is_free_pack_fee']
                 );
-            return $this->render('view', ['model' => $model]);
+            $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
+//            p($goods_data, $model);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }

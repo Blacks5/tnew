@@ -232,6 +232,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                     </div>
 
                     <div class="hr-line-dashed"></div>
+
                     <!--商户信息-->
                     <div class="form-group">
                         <div>
@@ -247,8 +248,28 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             </div>
                         </div>
                     </div>
-
                     <div class="hr-line-dashed"></div>
+
+
+                    <!--商品信息-->
+                    <?php foreach ($goods_data as $v){ ?>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-sm-2 control-label">商品类型：</label>
+                                <div class="col-sm-2">
+                                    <p class="form-control-static"><?= Yii::$app->params['goods_type'][$v['g_goods_type']-1]['t_name']; ?></p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="col-sm-2 control-label">商品品牌型号：</label>
+                                <div class="col-sm-2">
+                                    <p class="form-control-static"><?= $v['g_goods_name']. '('."{$v['g_goods_models']}".')'; ?></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    <?php } ?>
+
 
                     <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK) { ?>
                         <div class="form-group">
