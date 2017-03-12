@@ -3,7 +3,7 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:rm-wz9dq7713h75el6e0o.mysql.rds.aliyuncs.com;port=3306;dbname=wcb_latest',
+            'dsn' => 'mysql:rm-wz9dq7713h75el6e0.mysql.rds.aliyuncs.com;port=3306;dbname=wcb_latest',
             'username' => 'haytoo',
             'password' => 'hsd89h&hhOH09UH90jo',
             'charset' => 'utf8',
