@@ -15,10 +15,12 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 function p()
 {
-    array_walk(func_get_args(), function (&$v) {
+    echo "<pre>";
+    foreach (func_get_args() as $v){
         var_dump($v);
-    });
-    die;
+        echo "<hr>";
+    }
+    return;
 }
 $application = new yii\web\Application($config);
 $application->run();
