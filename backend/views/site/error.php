@@ -17,7 +17,7 @@ $this->title = $name;
     <h4 style="margin: 10px auto;text-align: center;background-color: <?= $code != 55 ? '#1ab394': 'red'?>; color: #ffffff;width: 500px;height: 50px;line-height: 50px;border-radius: 5px;"><?= nl2br(Html::encode($message)) ?></h4>
     <?php if($code == 55){ ?>
     <div style="text-align: center">
-        <a onclick="window.location.reload()" class="btn btn-success">去登录</a>
+        <a onclick="window.location.reload()" class="btn btn-success">去登录.</a>
     </div>
     <?php } ?>
 </div>
