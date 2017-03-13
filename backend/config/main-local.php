@@ -8,17 +8,7 @@ $config = [
             'cookieValidationKey' => '3X3GCw78PsgKB5ApPTYw8fexUweeKTq2',
         ],
 
-        'i18n' => [
-            'translations' => [
-                '*' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    //'basePath' => '/messages',
-                    'fileMap' => [
-                        'common' => 'common.php'
-                    ],
-                ],
-            ],
-        ],
+
     ],
 ];
 
