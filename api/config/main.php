@@ -49,6 +49,12 @@ return [
             'rules' => [
             ],
         ],
+        'request' => [
+            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'cookieValidationKey' => 'Pd8EdT0AfKjYucnwbnkjamdDJuzVHwxU',
+            // api不用验证csrf
+            'enableCsrfValidation'=>false
+        ],
         'response' => [
             'format' => yii\web\Response::FORMAT_JSON,
             'charset' => 'UTF-8',
