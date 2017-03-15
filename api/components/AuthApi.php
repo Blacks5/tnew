@@ -32,7 +32,7 @@ class AuthApi extends AuthMethod
             }
         }
         if ($accessToken !== null) {
-            throw new yii\web\UnauthorizedHttpException('token已失效,请重新登录');
+            throw new yii\web\UnauthorizedHttpException('登录已过期,请重新登录');
 //            return null;
 //            throw new yii\web\HttpException(200, 'token已失效,请重新登录');
         }
