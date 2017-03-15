@@ -366,7 +366,6 @@ class OrderController extends CoreApiController
                 // 不显示以下数据
                 unset($v['o_total_price']);
             });
-            p($data);
             return ['status' => 1, 'message' => '获取成功', 'data' => $data];
         } catch (yii\base\Exception $e) {
             return ['status' => 0, 'message' => '获取失败_sys', 'data' => []];
