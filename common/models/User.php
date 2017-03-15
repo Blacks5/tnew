@@ -302,4 +302,17 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
         }
         return true;
     }
+
+
+    /**
+     * 更新access_token ，保证安全
+     * @param User $user
+     * @return null
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function updateAccessToken(\common\models\User $user)
+    {
+        $user->access_token = Yii::$app->security->generatePasswordHash($user->password_hash);
+        return $user->save(false) ? : null;
+    }
 }

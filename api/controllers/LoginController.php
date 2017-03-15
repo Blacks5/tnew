@@ -8,6 +8,7 @@
  */
 namespace api\controllers;
 
+use common\models\User;
 use yii;
 use yii\rest\Controller;
 use common\models\LoginForm;
@@ -36,7 +37,13 @@ class LoginController extends Controller
             return ['status'=>0, 'message'=>'用户名或密码错误', 'data'=>[]];
         }
         if($model->login()){
+
             $user = Yii::$app->getUser()->getIdentity();
+            // 登录成功，更新access_token
+            if(null == User::updateAccessToken($user)){
+                return ['status'=>0, 'message'=>'登录失败', 'data'=>[]];
+            }
+
             $data = [
                 'id'=>$user->id,
                 'realname'=>$user->realname,
@@ -44,7 +51,7 @@ class LoginController extends Controller
             ];
             return ['status'=>1, 'message'=>'登录成功', 'data'=>$data];
         }
-        return ['status'=>0, 'message'=>'登录异常', 'data'=>[]];
+        return ['status'=>0, 'message'=>'登录失败', 'data'=>[]];
     }
 
     /**
