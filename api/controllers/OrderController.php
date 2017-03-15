@@ -338,7 +338,7 @@ class OrderController extends CoreApiController
      */
     public function actionGetLatest()
     {
-        $limit_time = ($_SERVER['REQUEST_TIME'] - 24 * 3600);
+        $limit_time = ($_SERVER['REQUEST_TIME'] - 24 * 3600 * 3);
 //        $limit_time = 0;
         $where = ['and',
             ['>=', 'o_created_at', $limit_time], // 最近24小时
@@ -366,6 +366,7 @@ class OrderController extends CoreApiController
                 // 不显示以下数据
                 unset($v['o_total_price']);
             });
+            p($data);
             return ['status' => 1, 'message' => '获取成功', 'data' => $data];
         } catch (yii\base\Exception $e) {
             return ['status' => 0, 'message' => '获取失败_sys', 'data' => []];
