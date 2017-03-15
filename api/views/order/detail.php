@@ -95,11 +95,11 @@
     </tr>
     <tr>
         <th align="right">其他联系人关系：</th>
-        <td style="padding-left:5px;"><?=$data['c_kinship_relation']?></td>
+        <td style="padding-left:5px;"><?=$data['c_other_people_relation']?></td>
     </tr>
     <tr>
         <th align="right">其他联系人姓名：</th>
-        <td style="padding-left:5px;"><?=$data['c_kinship_relation']?></td>
+        <td style="padding-left:5px;"><?=$data['c_other_people_name']?></td>
     </tr>
     <tr>
         <th align="right">其他联系人电话：</th>

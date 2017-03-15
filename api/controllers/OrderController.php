@@ -642,7 +642,10 @@ class OrderController extends CoreApiController
 //        var_dump(Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str']);die;
         $data['c_family_marital_status'] = Yii::$app->params['marital_status'][$data['c_family_marital_status']-1]['marital_str'];
 //        var_dump(Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str']);die;
-        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str'];
+
+        $data['c_kinship_relation'] = Yii::$app->params['kinship'][$data['c_kinship_relation']-1]['kinship_str']; // 亲属关系
+        $data['c_other_people_relation'] = Yii::$app->params['kinship'][$data['c_other_people_relation']-1]['kinship_str']; // 其他联系人关系
+
         $now_address = Helper::getAddrName($data['c_customer_addr_province']). Helper::getAddrName($data['c_customer_addr_city']). Helper::getAddrName($data['c_customer_addr_county']). $data['c_customer_idcard_detail_addr'];
         $job_address = Helper::getAddrName($data['c_customer_jobs_province']). Helper::getAddrName($data['c_customer_jobs_city']). Helper::getAddrName($data['c_customer_jobs_county']). $data['c_customer_jobs_detail_addr'];
         $data['o_is_add_service_fee'] = $data['o_is_add_service_fee'] ==1?'是':'否';
