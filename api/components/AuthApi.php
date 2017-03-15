@@ -32,9 +32,9 @@ class AuthApi extends AuthMethod
             }
         }
         if ($accessToken !== null) {
-//            throw new yii\web\UnauthorizedHttpException('token已失效,请重新登录');
+            throw new yii\web\UnauthorizedHttpException('token已失效,请重新登录');
 //            return null;
-            throw new yii\web\HttpException(200, 'token已失效,请重新登录');
+//            throw new yii\web\HttpException(200, 'token已失效,请重新登录');
         }
 
         return null;
@@ -45,7 +45,7 @@ class AuthApi extends AuthMethod
      */
     public function handleFailure($response)
     {
-//        throw new UnauthorizedHttpException('杯具啊，太久了，用户标示为null，请重新登录');
-        throw new yii\web\HttpException(200, '杯具啊，太久了，用户标示为null，请重新登录');
+        throw new UnauthorizedHttpException('杯具啊，太久了，用户标示为null，请重新登录');
+//        throw new yii\web\HttpException(200, '杯具啊，太久了，用户标示为null，请重新登录');
     }
 }

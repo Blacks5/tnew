@@ -40,6 +40,7 @@ return [
             ],
         ],
         'errorHandler' => [
+            'class'=>'api\components\ApiErrorHander',
             'errorAction' => 'site/error',
         ],
 
