@@ -10,33 +10,35 @@
 namespace common\models;
 
 
-
 class Tools
 {
     /**
-     * 生成订单号
+     * 生成订单号，长度最小15位，当日订单>=100万则16位
+     * w+年月+当天订单数+日+2位随机数
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
     public static function generateId()
     {
-        if($count = self::generateOrderSerial()) {
-            $id = 'W' . date('ymd') . $count . mt_rand(100, 999);
+        if ($count = self::generateOrderSerial()) {
+            $count = str_pad($count, 6, 0, STR_PAD_LEFT);
+            $id = 'W' . date('ym'. $count .'d') . mt_rand(10, 99);
             return $id;
         }
         return false;
     }
+
     /**
-     * 数据库
+     * 数据库生成 当天截止此时的总订单数
      * @return bool|int
      * @author 涂鸿 <hayto@foxmail.com>
      */
     private static function generateOrderSerial()
     {
         $date = date('Ymd');
-        if($model = OrderSerial::findOne(['serial_time'=>$date])) {
+        if ($model = OrderSerial::findOne(['serial_time' => $date])) {
             $model->serial_count += 1;
-        }else {
+        } else {
             $model = new OrderSerial();
             $model->serial_time = $date;
             $model->serial_count = 1;
