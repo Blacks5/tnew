@@ -595,7 +595,7 @@ class OrderController extends CoreApiController
 //                throw new CustomApiException($x);
             }
             $data = Contract::genContractForOid($o_id);
-            $url = 'http://211.149.163.238/contract/index?o_id=' . $o_id;
+            $url = 'http://119.23.15.90/contract/index?o_id=' . $o_id;
 //        $url = 'http://192.168.50.8:888/contract/index?o_id='.$o_id;
 
             // 生成合同html
