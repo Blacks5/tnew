@@ -35,7 +35,7 @@ class OrdersHelper
         // 首先验证码
         $verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
-            throw new CustomApiException('验证码错误1');
+            throw new CustomApiException('验证码错误');
         }
 //        p($params['c_customer_cellphone']);
         $data['data'] = $params;
@@ -84,6 +84,7 @@ class OrdersHelper
             }
             // 2写customer表
             \Yii::error($params['c_family_marital_status']. '-'. $params['c_family_marital_partner_cellphone']. '-'. $params['c_family_marital_partner_name']);
+
             if($customerModel = Customer::findOne(['c_customer_id_card'=>$params['c_customer_id_card']])){
                 if($customerModel->c_status == 0){
                     if($customerModel->c_forbidden_time > $_SERVER['REQUEST_TIME']){
