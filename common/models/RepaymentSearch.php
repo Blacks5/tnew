@@ -30,10 +30,11 @@ class RepaymentSearch extends CoreBackendModel
      */
     public function repaymenlist($params)
     {
-        $time = $_SERVER['REQUEST_TIME']+(3600*24*33); // 最近30天的
-        $query = Repayment::find()->select(['*'])->where(['<=', 'r_pre_repay_date', $time])
+        $query = Repayment::find()
+            ->select(['*'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
-            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
+            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id');
         $this->load($params);
         if(!$this->validate()){
             return $query->andwhere('1=2');

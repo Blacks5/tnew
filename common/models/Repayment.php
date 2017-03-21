@@ -31,7 +31,7 @@ class Repayment extends CoreCommonActiveRecord
 
     const STATUS_ALREADY_PAY = 10; // 已还
     const STATUS_NOT_PAY = 1; // 未还
-    const STATUS_OVERDUE = 2; // 已逾期
+    const STATUS_OVERDUE = 2; // 已逾期【没用了】
     const OVERDUE = 1;
     const NOT_OVERDUE = 0;
     /**
