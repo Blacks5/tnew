@@ -106,7 +106,9 @@ class Customer extends CoreCommonActiveRecord
             [['c_total_interest', 'c_total_money'], 'number'],
             [['c_customer_name'], 'string', 'max' => 5],
             [['c_customer_id_card'], 'string', 'max' => 18],
-            [['c_customer_cellphone', 'c_family_marital_partner_cellphone', 'c_kinship_cellphone', 'c_other_people_cellphone'], 'string', 'max' => 11],
+
+            [['c_customer_cellphone', 'c_family_marital_partner_cellphone', 'c_kinship_cellphone', 'c_other_people_cellphone'], 'match', 'pattern' => '/^(?=\d{11}$)^1(?:3\d|4[57]|5[^4\D]|7[^249\D]|8\d)\d{8}$/'],
+
             [['c_customer_idcard_detail_addr'], 'string', 'max' => 255],
             [['c_customer_qq'], 'string', 'max' => 13],
             [['c_customer_wechat'], 'string', 'max' => 30],
@@ -115,6 +117,7 @@ class Customer extends CoreCommonActiveRecord
             [['c_kinship_name'], 'string', 'max' => 15],
             [[/*'c_kinship_addr', */'c_customer_addr_detail'], 'string', 'max' => 100],
             [['c_customer_jobs_company', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone'], 'string', 'max' => 20],
+
 
             [['c_created_at', 'c_updated_at', 'c_total_interest', 'c_status', 'c_total_borrow_times'], 'safe']
         ];
@@ -143,7 +146,7 @@ class Customer extends CoreCommonActiveRecord
             'c_customer_city' => '客户户籍-市',
             'c_customer_province' => '客户户籍-省',
             'c_customer_gender' => '客户性别：1男 0女',
-            'c_customer_idcard_detail_addr' => '客户身份详细地址',
+            'c_customer_idcard_detail_addr' => '客户身份证详细地址',
             'c_customer_qq' => '客户qq号码',
             'c_customer_wechat' => '客户微信',
 //            'c_customer_email' => '客户email',

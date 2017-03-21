@@ -35,7 +35,7 @@ class OrdersHelper
         // 首先验证码
         $verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
-            throw new CustomApiException('验证码错误');
+//            throw new CustomApiException('验证码错误11');
         }
 //        p($params['c_customer_cellphone']);
         $data['data'] = $params;
@@ -124,7 +124,7 @@ class OrdersHelper
             $ordersModel->o_customer_id = $customerModel->c_id;
             $ordersModel->o_is_auto_pay = $params['o_is_auto_pay']; // 银行代扣
             if(!$ordersModel->validate()){
-                $msg = $customerModel->getFirstErrors();
+                $msg = $ordersModel->getFirstErrors();
                 throw new CustomApiException(reset($msg));
             }
             if(!$ordersModel->save(false)){
