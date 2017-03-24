@@ -208,13 +208,12 @@ $this->title = $model['c_customer_name'] . '借款详情';
                         <label class="col-sm-2 control-label">工作单位：</label>
                         <div class="col-sm-2">
                             <p class="form-control-static">
-                                <?= $model['c_customer_jobs_company'] . '-' .
-//                                Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) . '-' .
-                                $model['c_customer_jobs_section'] . '-' .
-                                $model['c_customer_jobs_title'] . '-'
-//                                Helper::getCompanyTypeString($model['c_customer_jobs_type']) . '-' .
-                                 ?>
-                               <a href="tel:<?=$model['c_customer_jobs_phone'];?>"><?=$model['c_customer_jobs_phone'];?></a>
+                                <?= $model['c_customer_jobs_company'];/*公司名*/ ?><br>
+                                <?=Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) ; /*行业*/ ?><br>
+                                <?=$model['c_customer_jobs_section'] ; /*部门*/ ?><br>
+                                <?=$model['c_customer_jobs_title']; /*职位*/ ?><br>
+                                <?=Helper::getCompanyTypeString($model['c_customer_jobs_type']); /*工作行业*/ ?> <br>
+                               <a href="tel:<?=$model['c_customer_jobs_phone'];?>"><?=$model['c_customer_jobs_phone']; /*工作座机*/ ?></a>
                             </p>
                         </div>
                     </div>
