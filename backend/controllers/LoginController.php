@@ -43,7 +43,6 @@ class LoginController extends CoreCommonController
 
             // 然后执行
             $model->login();
-//            p($_SESSION);
             return $this->redirect(['site/index']);
         } else {
             return $this->render('login', [
