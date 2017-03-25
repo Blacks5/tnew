@@ -211,20 +211,25 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             <p class="form-control-static"><?= Helper::getMaritalStatusString($model['c_family_marital_status']); ?></p>
                         </div>
                     </div>
-                    <div>
-                        <label class="col-sm-2 control-label">配偶姓名：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['c_family_marital_partner_name']; ?></p>
+
+                    <?php /*已婚才显示这两个*/if(2==$model['c_family_marital_status']){ ?>
+                        <div>
+                            <label class="col-sm-2 control-label">配偶姓名：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['c_family_marital_partner_name']; ?></p>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <label class="col-sm-2 control-label">配偶电话：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static">
-                                <a href="tel:<?= $model['c_family_marital_partner_cellphone']; ?>"><?= $model['c_family_marital_partner_cellphone']; ?></a>
-                            </p>
+                        <div>
+                            <label class="col-sm-2 control-label">配偶电话：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static">
+                                    <a href="tel:<?= $model['c_family_marital_partner_cellphone']; ?>"><?= $model['c_family_marital_partner_cellphone']; ?></a>
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
+
+
                     <div>
                         <label class="col-sm-2 control-label">住房情况：</label>
                         <div class="col-sm-2">
