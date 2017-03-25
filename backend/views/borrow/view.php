@@ -4,13 +4,23 @@ use \common\components\Helper;
 $this->title = $model['c_customer_name'] . '借款详情';
 ?>
 <?= \yii\helpers\Html::cssFile('@web/css/style.css') ?>
+<style>
+    .center{
+        text-align: center;
+    }
+    .color-orange{
+        color: orangered;
+    }
 
+</style>
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
             <!--订单信息部分-->
             <section class="content-header">
-                <h2><?= $this->title; ?></h2>
+                <h2 class="center"><?= $this->title; ?></h2>
+
+                <h3 class="center color-orange">订单信息</h3>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div>
@@ -19,6 +29,69 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             <p class="form-control-static"><?= $model['o_serial_id']; ?></p>
                         </div>
                     </div>
+
+                    <div>
+                        <label class="col-sm-2 control-label">订单总价格：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_total_price']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">贷款总金额：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_total_price'] - $model['o_total_deposit']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">月供：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"
+                               style="color: orangered"><?= round($model['month_repayment'], 2); ?> 元/月</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="col-sm-2 control-label">个人保障计划：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"
+                               style="color: orangered"><?= $model['o_is_add_service_fee']==1?"是":"否"; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">贵宾服务包：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"
+                               style="color: orangered"><?=$model['o_is_free_pack_fee']==1?"是":"否"; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">是否代扣：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"
+                               style="color: orangered"><?=$model['o_is_auto_pay']==1?"是":"否"; ?></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_remark']?:"无"; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">图片：</label>
+                        <div class="col-sm-2">
+                            <a href="/borrow/showpics?oid=<?= $model['o_id'] ?>"><p class="form-control-static">点击查看</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <h3 class="center color-orange">所用产品信息</h3>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
                     <div>
                         <label class="col-sm-2 control-label">使用产品：</label>
                         <div class="col-sm-2">
@@ -61,44 +134,11 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             <p class="form-control-static"><?= $model['p_customer_management']; ?></p>
                         </div>
                     </div>
-                    <div>
-                        <label class="col-sm-2 control-label">订单总价格：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['o_total_price']; ?></p>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="col-sm-2 control-label">贷款总金额：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['o_total_price'] - $model['o_total_deposit']; ?></p>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="col-sm-2 control-label">月供：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static"
-                               style="color: orangered"><?= round($model['month_repayment'], 2); ?> 元/月</p>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="col-sm-2 control-label">注释：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['o_remark']; ?></p>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="col-sm-2 control-label">图片：</label>
-                        <div class="col-sm-2">
-                            <a href="/borrow/showpics?oid=<?= $model['o_id'] ?>"><p class="form-control-static">点击查看</p>
-                            </a>
-                        </div>
-                    </div>
                 </div>
 
 
+                <h3 class="center color-orange">客户信息</h3>
                 <div class="hr-line-dashed"></div>
-
-
                 <!--客户信息部分-->
                 <div class="form-group">
                     <div>
@@ -213,7 +253,7 @@ $this->title = $model['c_customer_name'] . '借款详情';
                                 <?=$model['c_customer_jobs_section'] ; /*部门*/ ?><br>
                                 <?=$model['c_customer_jobs_title']; /*职位*/ ?><br>
                                 <?=Helper::getCompanyTypeString($model['c_customer_jobs_type']); /*工作行业*/ ?> <br>
-                               <a href="tel:<?=$model['c_customer_jobs_phone'];?>"><?=$model['c_customer_jobs_phone']; /*工作座机*/ ?></a>
+                                <a href="tel:<?=$model['c_customer_jobs_phone'];?>"><?=$model['c_customer_jobs_phone']; /*工作座机*/ ?></a>
                             </p>
                         </div>
                     </div>
@@ -244,8 +284,9 @@ $this->title = $model['c_customer_name'] . '借款详情';
                     </div>
                 </div>
 
-                <div class="hr-line-dashed"></div>
 
+                <h3 class="center color-orange">商户信息</h3>
+                <div class="hr-line-dashed"></div>
                 <!--商户信息-->
                 <div class="form-group">
                     <div>
@@ -261,8 +302,14 @@ $this->title = $model['c_customer_name'] . '借款详情';
                         </div>
                     </div>
                 </div>
-                <div class="hr-line-dashed"></div>
 
+
+
+
+
+
+                <h3 class="center color-orange">商品信息</h3>
+                <div class="hr-line-dashed"></div>
 
                 <!--商品信息-->
                 <?php foreach ($goods_data as $v) { ?>
