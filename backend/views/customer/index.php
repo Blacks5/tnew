@@ -42,7 +42,7 @@ use yii\widgets\LinkPager;
                                     <th>姓名</th>
                                     <th>身份证号</th>
                                     <th>手机号码</th>
-                                    <th>邮箱</th>
+<!--                                    <th>邮箱</th>-->
                                     <th>总借款金额</th>
                                     <th>最近借款时间</th>
                                     <th>操作</th>

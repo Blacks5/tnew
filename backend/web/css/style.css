@@ -5548,7 +5548,7 @@ dd.project-people {
 
 .clients-list .tab-pane {
     position: relative;
-    height: 600px;
+    height: 100%;
 }
 
 .client-detail {
