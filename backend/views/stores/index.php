@@ -71,6 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
+
                                                 <tbody>
                                                 <?php foreach ($model as $_k => $_v) { ?>
 
