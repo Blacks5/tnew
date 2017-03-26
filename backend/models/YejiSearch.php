@@ -33,6 +33,7 @@ class YejiSearch extends CoreBackendModel{
         $query =  $userlist = User::find()
             ->select(['user.id', 'user.username', 'user.realname'])
             ->where(['!=', 'username', 'admin'])
+            ->andwhere(['!=', 'status', \common\models\User::STATUS_DELETE])
             ->filterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'realname', $this->realname]);
 
@@ -43,7 +44,6 @@ class YejiSearch extends CoreBackendModel{
 
         $userlist = $query->offset($pages->offset)->limit($pages->limit)
             ->asArray()->all();
-        ;
 
         foreach ($userlist as $_k=>$_v){
             $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']])->andWhere(['!=', 'o_status', '2']);
