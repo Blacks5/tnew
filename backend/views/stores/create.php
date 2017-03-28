@@ -197,7 +197,9 @@ $form = ActiveForm::begin(
 <?= \yii\bootstrap\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 <?= \yii\bootstrap\Html::jsFile('@web/js/plugins/puupload/plupload.full.min.js') ?>
     <script>
+        var loading = null;
         function loadinit($name) {
+
             var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
                 browse_button: 'browse-' + $name,
                 url: '<?= Yii::$app->getUrlManager()->createUrl(['stores/upload']);?>',
@@ -227,6 +229,8 @@ $form = ActiveForm::begin(
             });
 
             uploader.bind('FileUploaded', function (uploader, file, responseObject) {
+                layer.close(loading);
+
                 layer.msg('上传成功', {icon: 1});
                 var key = responseObject.response;
                 $('#stores-s_photo_' + $name).val(key);
@@ -259,6 +263,7 @@ $form = ActiveForm::begin(
             }
 
             document.getElementById('start_upload_' + $name).onclick = function () {
+                loading = layer.load(3);
                 uploader.start(); //调用实例对象的start()方法开始上传文件，当然你也可以在其他地方调用该方法
             }
         }
