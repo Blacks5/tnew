@@ -53,6 +53,12 @@ class OrdersHelper
             if(!isset($params['g_goods_models'][$n], $params['g_goods_price'][$n], $params['g_goods_type'][$n], $params['g_goods_deposit'][$n])){
                 continue;
             }
+            if(0 >= $params['g_goods_price'][$n]){
+                throw new CustomApiException('商品价格异常');
+            }
+            if(0 >= $params['g_goods_deposit'][$n]){
+                throw new CustomApiException('首付金额异常');
+            }
             $data_goods[$n][]  = $params['g_goods_name'][$n];
             $data_goods[$n][]  = $params['g_goods_models'][$n];
             $data_goods[$n][]  = $params['g_goods_price'][$n];
