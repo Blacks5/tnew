@@ -230,7 +230,6 @@ class BorrowController extends CoreBackendController
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
                 $trans->rollBack();
-                p($e->getMessage());
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
