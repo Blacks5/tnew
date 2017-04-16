@@ -15,6 +15,8 @@ use common\core\CoreCommonActiveRecord;
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
+ * @property string $id_card_num
+ * @property string $address
  * @property string $county
  * @property string $city
  * @property string $province
@@ -65,7 +67,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             [['created_at', 'updated_at'], 'safe'],
             ['password_hash', 'required', 'on'=>'create', 'message'=>'{attribute}必须填写'],
             ['email', 'email', 'message'=>'{attribute}错误'],
-            [['username', 'realname', 'email', 'county', 'city', 'province', 'password_hash_1', 'password_hash', 'old_password'], 'required',
+            [['username', 'realname', 'email', 'county', 'city', 'province', 'password_hash_1', 'password_hash', 'old_password', 'id_card_num', 'address'], 'required',
                 'message'=>'{attribute}必须填写'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key'], 'string', 'max' => 32],
@@ -74,17 +76,20 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             [['county', 'city', 'province'], 'string', 'max' => 20],
             ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => '{attribute}已存在', 'on'=>'create'],
 //            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => '邮箱已存在', 'on'=>'create'],
-            [['cellphone'], 'match', 'pattern' => '/^1[3|5|8]\d{9}$/', 'message'=>'错误的手机号码'],
+            [['cellphone'], 'match', 'pattern' => '/^1[3|5|7|8]\d{9}$/', 'message'=>'错误的手机号码'],
 
             [['password_hash_1'], 'compare', 'compareAttribute'=>'password_hash', 'message'=>'两次密码不一致'],
-            [['department_id', 'job_id'], 'safe']
+            [['department_id', 'job_id'], 'safe'],
+
+            ['address', 'string', 'min'=>10, 'max'=>'150', 'tooShort'=>'地址太短了', 'tooLong'=>'地址太长了'],
+            ['id_card_num', 'match', 'pattern'=>'/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message'=>'身份证号码错误']
         ];
     }
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['create'] = ['username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
-        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id'];
+        $scen['create'] = ['id_card_num', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
+        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
 //        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
         return $scen;
@@ -101,6 +106,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             'realname' => '真实姓名',
             'auth_key' => 'Auth Key', // cookie登录用
             'password_hash' => '密码',
+            'address'=>'联系地址',
+            'id_card_num'=>'身份证号码',
             'password_hash_1' => '密码',
             'password_reset_token' => 'Password Reset Token',
             'email' => '邮箱',

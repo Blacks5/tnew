@@ -23,6 +23,8 @@ $this->title = '更新用户 ';
 
 
                 <?= $form->field($model, 'email')->textInput(['email' => true])->label('邮箱') ?>
+                <?= $form->field($model, 'id_card_num')->textInput(['id_card_num' => true])->label('身份证号码') ?>
+                <?= $form->field($model, 'address')->textInput(['address' => true])->label('联系地址') ?>
                 <?= $form->field($model, 'cellphone')->textInput(['cellphone' => true])->label('手机号码') ?>
 
                 <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only'])->label('所属部门') ?>

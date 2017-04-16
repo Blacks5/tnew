@@ -23,6 +23,27 @@ use yii\widgets\DetailView;
                         </div>
                     </div>
 
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">手机号码：</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static"><?= $model['cellphone']; ?></p>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">身份证号码：</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static"><?= $model['id_card_num']; ?></p>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">联系地址：</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static"><?= $model['address']; ?></p>
+                        </div>
+                    </div>
 
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
