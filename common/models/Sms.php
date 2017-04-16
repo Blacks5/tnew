@@ -37,7 +37,7 @@ class Sms
      */
     public function sendSms($phone, $msg, $needstatus = 'true')
     {
-        $patt = '/^1(3[0-9]|4[57]|5[0-35-9]|7[01678]|8[0-9])\d{8}$/';
+        $patt = '/^1(3[0-9]|4[57]|5[0-35-9]|7[013678]|8[0-9])\d{8}$/';
         if (!preg_match($patt, $phone)) {
             throw new CustomApiException('请填写正确的手机号码');
         }
