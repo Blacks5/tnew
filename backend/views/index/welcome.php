@@ -27,7 +27,7 @@ use yii\helpers\Url;
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-info pull-right">日</span>
-                    <h5>新增订单&nbsp;&nbsp;<small>总借出金额：<?=$total_borrow_money;?>元</small></h5>
+                    <h5>新增订单&nbsp;&nbsp;<small class="text-danger">[总借出金额：<?=$total_borrow_money;?>元]</small></h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins"><?=$order['newOrder'];?></h1>
