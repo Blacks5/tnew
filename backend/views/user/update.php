@@ -43,13 +43,13 @@ $this->title = '更新用户 ';
                             <ul id="file-list-one" class="file-list">
                                 <li>
 <!--                                    <p>身份证照片</p>-->
-<!--                                    --><?//= Html::img('@web/img/image.png'); ?>
+<!--                                    -->
                                     <?php
                                     $t = new \common\models\UploadFile();
                                     if($model->id_card_pic_one){ ?>
-                                        <img src="<?=$t->getUrl($model->id_card_pic_one);?>" alt="">
+                                        <?= Html::img($t->getUrl($model->id_card_pic_one)); ?>
                                     <?php }else{ ?>
-                                        <img src="/statics/images/image.png" alt="">
+                                        <?= Html::img('@web/img/image.png'); ?>
                                     <?php } ?>
                                 </li>
 
