@@ -86,6 +86,16 @@ use yii\widgets\DetailView;
 
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
+                        <label class="col-sm-3 control-label">身份证照片：</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static">
+                                <img src="<?=$model["id_card_pic_one"]?>" alt="员工身份证照片">
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">锁定状态：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">

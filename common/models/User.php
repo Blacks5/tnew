@@ -20,6 +20,7 @@ use common\core\CoreCommonActiveRecord;
  * @property string $county
  * @property string $city
  * @property string $province
+ * @property string $id_card_pic_one
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -64,7 +65,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'id_card_pic_one'], 'safe'],
             ['password_hash', 'required', 'on'=>'create', 'message'=>'{attribute}必须填写'],
             ['email', 'email', 'message'=>'{attribute}错误'],
             [['username', 'realname', 'email', 'county', 'city', 'province', 'password_hash_1', 'password_hash', 'old_password', 'id_card_num', 'address'], 'required',
@@ -88,8 +89,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['create'] = ['id_card_num', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
-        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address'];
+        $scen['create'] = ['id_card_num', 'id_card_pic_one', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
+        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'id_card_pic_one', 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
 //        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
         return $scen;
@@ -115,6 +116,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             'city' => '市',
             'province' => '省',
             'status' => '状态', // 10正常 0删除 1禁用 2离职
+            'id_card_pic_one' => '身份证照片', //
             'created_at' => '创建时间',
             'updated_at' => 'Updated At',
         ];

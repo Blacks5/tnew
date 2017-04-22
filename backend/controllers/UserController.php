@@ -11,6 +11,7 @@ use common\components\Helper;
 use common\models\Department;
 use common\models\Jobs;
 use common\models\TooRegion;
+use common\models\UploadFile;
 use common\models\User;
 use yii\data\Pagination;
 //use backend\models\User;
@@ -57,6 +58,11 @@ class UserController extends CoreBackendController
             ->leftJoin(Department::tableName() . ' as d', 'department_id=d_id')
             ->where(['id' => $id])
             ->asArray()->one();
+
+        $t = new UploadFile();
+//        var_dump($model);die;
+        $model['id_card_pic_one'] = $model['id_card_pic_one'] ? $t->getUrl($model['id_card_pic_one']) : '';
+
         $model['province'] = Helper::getAddrName($model['province']);
         $model['city'] = Helper::getAddrName($model['city']);
         $model['county'] = Helper::getAddrName($model['county']);
@@ -150,7 +156,7 @@ class UserController extends CoreBackendController
 //                return $this->redirect(['list']);
             }
         }
-//        p($model->errors);
+//        var_dump($model->attributes);die;
         $all_province = Helper::getAllProvince();
         $all_departments = Department::getAllDepartments();
         return $this->render('create', [
@@ -184,7 +190,7 @@ class UserController extends CoreBackendController
 //        $model1 = $this->findModel($id);
         $model->scenario = 'update';
         if ($model->load(Yii::$app->request->post())) {
-            $post = Yii::$app->request->post();
+//            $post = Yii::$app->request->post();
             //更新密码
             /*if(!empty($post['User']['auth_key_new'])){
                 $model1->setPassword($post['User']['auth_key_new']);
