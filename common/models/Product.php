@@ -50,7 +50,7 @@ class Product extends CoreCommonActiveRecord
         return [
             [['p_name', 'p_type', 'p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'required', 'except'=>'search'],
             [['p_period', 'p_free_pack_fee', 'p_status', 'p_created_at', 'p_updated_at'], 'integer'],
-            [['p_month_rate', 'p_add_service_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'number', 'max'=>'100', 'min'=>'0.0001'],
+            [['p_month_rate', 'p_add_service_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'number', 'max'=>'100', 'min'=>'0'],
             [['p_name'], 'unique', 'message' => '{attribute}不能重复'],
             [['p_status'], 'in', 'range'=>[10, 1]],
 
@@ -75,11 +75,11 @@ class Product extends CoreCommonActiveRecord
             'p_id' => 'ID',
             'p_name' => '产品名',
             'p_period' => '产品期数',
-            'p_month_rate' => '月利率',
+            'p_month_rate' => '月利率', // 可0
             'p_add_service_fee' => '贵宾服务包',
             'p_free_pack_fee' => '随心包服务费',
-            'p_finance_mangemant_fee' => '财务管理费',
-            'p_customer_management' => '客户管理费',
+            'p_finance_mangemant_fee' => '财务管理费', // 可0
+            'p_customer_management' => '客户管理费', // 可0
             'p_status' => '状态 10 正常 1 禁用',
             'p_created_at' => '添加时间',
             'p_updated_at' => '编辑时间',

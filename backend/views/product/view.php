@@ -48,14 +48,14 @@ use yii\widgets\DetailView;
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">贵宾服务包(%)：</label>
+                        <label class="col-sm-3 control-label">个人保障计划(%)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static"><?= $model['p_add_service_fee']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">随心包(元/每月)：</label>
+                        <label class="col-sm-3 control-label">贵宾服务包(元/每月)：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static"><?= $model['p_free_pack_fee']; ?></p>
                         </div>

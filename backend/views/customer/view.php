@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Helper;
 /* @var $this yii\web\View */
 /* @var $model backend\models\User */
 
@@ -48,7 +48,7 @@ use yii\widgets\DetailView;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">总借款次数：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?= $model['c_total_money']; ?>次</p>
+                            <p class="form-control-static"><?= round($model['c_total_money']); ?>次</p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -56,7 +56,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">户籍地址：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_customer_province']. $model['c_customer_city']. $model['c_customer_county']; ?>
+                                <?= Helper::getAddrName($model['c_customer_province']). Helper::getAddrName($model['c_customer_city']). Helper::getAddrName($model['c_customer_county']); ?>
                             </p>
                         </div>
                     </div>
@@ -65,7 +65,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">现居住地址：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_customer_addr_province']. $model['c_customer_addr_city']. $model['c_customer_addr_county']. $model['c_customer_addr_detail']; ?></p>
+                                <?= Helper::getAddrName($model['c_customer_addr_province']). Helper::getAddrName($model['c_customer_addr_city']). Helper::getAddrName($model['c_customer_addr_county']). $model['c_customer_addr_detail']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -79,7 +79,7 @@ use yii\widgets\DetailView;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">是否购买社保：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?= $model['c_customer_jobs_is_shebao']; ?></p>
+                            <p class="form-control-static"><?= ($model['c_customer_jobs_is_shebao']==1)?'是':'否'; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -94,7 +94,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">单位地址：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_customer_jobs_province']. $model['c_customer_jobs_city']. $model['c_customer_jobs_county']. $model['c_customer_jobs_detail_addr']; ?></p>
+                                <?= Helper::getAddrName($model['c_customer_jobs_province']). Helper::getAddrName($model['c_customer_jobs_city']). Helper::getAddrName($model['c_customer_jobs_county']). $model['c_customer_jobs_detail_addr']; ?></p>
                         </div>
                     </div>
 
@@ -103,7 +103,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">亲属：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_kinship_name']. '-'.$model['c_kinship_relation']. '-'. $model['c_kinship_cellphone']/*. '-'. $model['c_kinship_addr']*/; ?></p>
+                                <?= $model['c_kinship_name']. '-'. Helper::getKindShipString($model['c_kinship_relation']). '-'. $model['c_kinship_cellphone']/*. '-'. $model['c_kinship_addr']*/; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -111,7 +111,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">其他联系人：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <?= $model['c_other_people_name']. '-'.$model['c_other_people_relation']. '-'. $model['c_other_people_cellphone']/*. '-'. $model['c_kinship_addr'];*/ ?></p>
+                                <?= $model['c_other_people_name']. '-'.Helper::getKindShipString($model['c_other_people_relation']). '-'. $model['c_other_people_cellphone']/*. '-'. $model['c_kinship_addr'];*/ ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

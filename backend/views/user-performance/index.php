@@ -33,8 +33,8 @@
                                                            class="client-link">用户名</a></th>
                                                     <th><a data-toggle="tab" href="#contact-3"
                                                            class="client-link">真实姓名</a></th>
-                                                    <th>增值服务捆绑率</th>
-                                                    <th>随心包捆绑率</th>
+                                                    <th>个人保障计划捆绑率</th>
+                                                    <th>贵宾服务包捆绑率</th>
                                                     <th class="client-status">总提单</th>
                                                     <th>成功提单</th>
                                                     <th>总借出金额</th>
