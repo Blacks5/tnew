@@ -660,7 +660,7 @@ class OrderController extends CoreApiController
         $data['c_customer_jobs_type'] = Yii::$app->params['company_type'][$data['c_customer_jobs_type']-1]['company_type_name'];
 
         // 月供
-        $r_total_repay = round(Repayment::find()->select(['r_total_repay'])->where(['r_orders_id'=>$o_id])->limit(1)->scalar(), 3);
+        $r_total_repay = round(Repayment::find()->select(['r_total_repay'])->where(['r_orders_id'=>$o_id])->limit(1)->scalar(), 1);
 
         // 生成html内容，返回给Android客户端
         $html = $this->renderPartial('detail', ['data'=>$data, 'now_address'=>$now_address,

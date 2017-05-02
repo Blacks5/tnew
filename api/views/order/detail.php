@@ -133,12 +133,12 @@
         <td style="padding-left:5px;"><?=$total_borrow_money?></td>
     </tr>
     <tr>
-        <th align="right">月供：</th>
-        <td style="padding-left:5px;"><?=$r_total_repay?></td>
-    </tr>
-    <tr>
         <th align="right">首付金额：</th>
         <td style="padding-left:5px;"><?=$data['o_total_deposit']?></td>
+    </tr>
+    <tr>
+        <th align="right">月供：</th>
+        <td style="padding-left:5px;"><?=$r_total_repay?></td>
     </tr>
     <tr>
         <th align="right">是否使用个人保障计划：</th>

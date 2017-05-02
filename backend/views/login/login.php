@@ -8,7 +8,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 /*问候语句*/
-$time_str = [
+/*$time_str = [
     '卧槽这么晚还上班，必须涨工资啊' =>[0, 6], // 0点到6点
     '早上好啊，吃过饭没？' =>[7, 8],
     '现在是上午，请搬砖' =>[9, 11],
@@ -25,7 +25,7 @@ foreach ($time_str as $key=>$value){
         $end_str = $key;
         break;
     }
-}
+}*/
 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <h1 class="logo-name">TN</h1>
 
         </div>
-        <h3><?=$end_str?></h3>
+<!--        <h3>--><?//=$end_str?><!--</h3>-->
 
 
         <div class="row">
