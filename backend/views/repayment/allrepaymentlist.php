@@ -87,12 +87,14 @@ use yii\helpers\Url;
                                                                     详情</a>
                                                             <?php } ?>
 
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
-                                                                <button data-value="<?= $_v['r_id'] ?>"
-                                                                        class="btn btn-info btn-xs repay"><i
-                                                                        class="fa fa-folder"></i>
-                                                                    还款
-                                                                </button>
+                                                            <?php if($_v['r_status'] !== '10') {?>
+                                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
+                                                                    <button data-value="<?= $_v['r_id'] ?>"
+                                                                            class="btn btn-info btn-xs repay"><i
+                                                                            class="fa fa-folder"></i>
+                                                                        还款
+                                                                    </button>
+                                                                <?php } ?>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>
