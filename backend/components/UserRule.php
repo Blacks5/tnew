@@ -37,6 +37,7 @@ array (size=1)
 */
 //        p($user, $params);
         // wlb 或者员工本人才有权限
+//        var_dump($user, $item, $params);die;
         if(($user == 11) || ($user == $params['id'])){
             return true;
         }
