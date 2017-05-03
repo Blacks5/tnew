@@ -306,6 +306,12 @@ $this->title = $model['c_customer_name'] . '借款详情';
                             <p class="form-control-static"><?= $model['realname'] . '(' . "{$model['cellphone']}" . ')'; ?></p>
                         </div>
                     </div>
+                    <div>
+                        <label class="col-sm-2 control-label">审核人员：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_operator_realname'] ; ?></p>
+                        </div>
+                    </div>
                 </div>
 
 
