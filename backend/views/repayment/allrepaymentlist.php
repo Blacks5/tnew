@@ -48,6 +48,7 @@ use yii\helpers\Url;
                                                     <th>客户管理费</th>
                                                     <th>期数</th>
                                                     <th>应还款时间</th>
+                                                    <th>状态</th>
                                                     <th>逾期天数</th>
                                                     <th>逾期滞纳金</th>
                                                     <th>操作</th>
@@ -75,6 +76,7 @@ use yii\helpers\Url;
                                                         </td>
                                                         <td class="client-status"><?= $_v['r_serial_no'] . '/' . $_v['r_serial_total']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['r_pre_repay_date']) ?></td>
+                                                        <td class="client-status"><?= $_v['r_status'] === '10' ? "已还": "未还" ?></td>
                                                         <td class="client-status"><?= $_v['r_overdue_day']; ?>天</td>
                                                         <td class="client-status"><?= $_v['r_overdue_money']; ?>元</td>
                                                         <td>

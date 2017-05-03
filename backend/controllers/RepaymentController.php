@@ -223,6 +223,7 @@ class RepaymentController extends CoreBackendController
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+//        var_dump($data);
         return $this->render('allrepaymentlist', [
             'model' => $data,
             'totalpage' => $pages->pageCount,

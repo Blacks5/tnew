@@ -74,7 +74,7 @@ class AccessControl extends \yii\base\ActionFilter
             }
 
             //用户ID是1，且username是admin  不需要验证权限
-            /*if ($user->getIdentity()->getId() === 12) {
+            /*if ($user->getIdentity()->getId() == 1) {
                 $this->allowActions = ['*'];
                 return true;
             }*/
