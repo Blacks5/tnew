@@ -87,7 +87,7 @@ use yii\helpers\Url;
                                                                     详情</a>
                                                             <?php } ?>
 
-                                                            <?php if($_v['r_status'] !== '10') {?>
+                                                            <?php  if($_v['r_status'] !== '10') { /*未还款才显示*/ ?>
                                                                 <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
                                                                     <button data-value="<?= $_v['r_id'] ?>"
                                                                             class="btn btn-info btn-xs repay"><i
