@@ -16,10 +16,13 @@ class CustomerSearch extends CoreCommonModel
     public $c_customer_name;
     public $c_customer_cellphone;
     public $c_customer_id_card;
+    public $c_customer_province;
+    public $c_customer_city;
+    public $c_customer_county;
     public function rules()
     {
         return [
-            [['c_customer_name', 'c_customer_cellphone', 'c_customer_id_card'], 'safe']
+            [['c_customer_name', 'c_customer_cellphone', 'c_customer_id_card', 'c_customer_province', 'c_customer_city', 'c_customer_county'], 'safe']
         ];
     }
 
@@ -35,6 +38,10 @@ class CustomerSearch extends CoreCommonModel
         $query->andFilterWhere(['like', 'c_customer_name', $this->c_customer_name])
             ->andFilterWhere(['like', 'c_customer_cellphone', $this->c_customer_cellphone])
             ->andFilterWhere(['like', 'c_customer_id_card', $this->c_customer_id_card]);
+
+        $query->andFilterWhere(['c_customer_province'=>$this->c_customer_province]);
+        $query->andFilterWhere(['c_customer_city'=>$this->c_customer_city]);
+        $query->andFilterWhere(['c_customer_county'=>$this->c_customer_county]);
 
         return $query;
     }

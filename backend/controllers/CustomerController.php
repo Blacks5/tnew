@@ -8,6 +8,7 @@
 
 namespace backend\controllers;
 
+use common\components\Helper;
 use common\models\Customer;
 use common\models\CustomerSearch;
 use yii;
@@ -43,13 +44,13 @@ class CustomerController extends CoreBackendController
             $v['c_created_at'] = date('Y-m-d H:i:s', $v['c_created_at']);
             $v['c_updated_at'] = date('Y-m-d H:i:s', $v['c_updated_at']);
         });
-//        p($model->getAttributes());
-//        p($data);
+        $provinces = Helper::getAllProvince();
         return $this->render('index', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages'=>$pages
+            'pages'=>$pages,
+            'provinces'=>$provinces
         ]);
     }
 

@@ -27,11 +27,65 @@ use yii\widgets\LinkPager;
                                 <input type="text" name="CustomerSearch[c_customer_id_card]" value="<?=$sear['c_customer_id_card']; ?>"
                                        placeholder="身份证" class="input form-control">
                             </div>
-                            <div class="col-sm-3">
-                            <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
-                            </span>
+
+                            <div class="col-sm-1">
+                                <select class="input form-control" name="CustomerSearch[c_customer_province]" id="user-province">
+                                    <option value="">选择省</option>
+                                    <?php foreach ($provinces as $k=>$v){ ?>
+                                        <option <?php if($sear['c_customer_province'] == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
+                            <div class="col-md-1">
+                                <select class="input form-control" name="CustomerSearch[c_customer_city]" id="user-city">
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <select class="input form-control" name="CustomerSearch[c_customer_county]" id="user-county">
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                </span>
+                            </div>
+                            <script>
+
+                                var url = "<?=Url::toRoute(['user/get-sub-addr'])?>"; // 获取子地区
+
+                                // 省变化
+                                $("#user-province").change(function(){
+                                    var province_id = $(this).val();
+                                    $.get(url, {p_id:province_id}, function(data){
+                                        var dom = "<option value=''>选择市</option>";
+                                        var t = "<?=$sear['c_customer_city']?>";
+                                        $.each(data, function (k, v) {
+                                            dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                        })
+                                        $("#user-city").html(dom);
+
+                                        $("#user-city").trigger("change");
+                                    });
+                                });
+
+                                // 市变化
+                                $("#user-city").change(function(){
+                                    var city_id = $(this).val();
+                                    $.get(url, {p_id:city_id}, function(data){
+                                        var dom = "<option value=''>选择县</option>";
+                                        var t = "<?=$sear['c_customer_county']?>";
+                                        $.each(data, function (k, v) {
+                                            dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                        })
+                                        $("#user-county").html(dom);
+                                    });
+                                });
+                                // 初始化
+                                $("#user-province").trigger("change");
+                                $("#user-city").trigger("change");
+
+                            </script>
                         </form>
 
                         <div class="table-responsive">
@@ -42,7 +96,7 @@ use yii\widgets\LinkPager;
                                     <th>姓名</th>
                                     <th>身份证号</th>
                                     <th>手机号码</th>
-<!--                                    <th>邮箱</th>-->
+                                    <th>地区</th>
                                     <th>总借款金额</th>
                                     <th>最近借款时间</th>
                                     <th>操作</th>
@@ -57,10 +111,9 @@ use yii\widgets\LinkPager;
                                             <i class="fa fa-mobile" style="color: #00a2d4;"></i>
                                             <?= $vo['c_customer_cellphone']; ?>
                                         </td>
-                                        <!--<td>
-                                            <i class="fa fa-envelope" style="color: #00a2d4;"></i>
-                                            &nbsp;<?/*= $vo['c_customer_email']; */?>
-                                        </td>-->
+                                        <td>
+                                            <?= \common\components\Helper::getAddrName($vo['c_customer_province']).'-', \common\components\Helper::getAddrName($vo['c_customer_city']). '-'. \common\components\Helper::getAddrName($vo['c_customer_county']) ?>
+                                        </td>
                                         <td><?= $vo['c_total_money'] ?></td>
                                         <td><?= $vo['c_updated_at'] ?></td>
                                         <td>

@@ -27,7 +27,7 @@ use yii\widgets\LinkPager;
                                 <input type="text" name="UserSearch[username]" placeholder="用户名"
                                        value="<?php echo $sear['username']; ?>" class="input form-control">
                             </div>
-                            <div class="col-sm-1">
+                            <div class=" col-sm-1">
                                 <input type="text" name="UserSearch[realname]" value="<?php echo $sear['realname']; ?>"
                                        placeholder="真实姓名" class="input form-control">
                             </div>
@@ -45,7 +45,7 @@ use yii\widgets\LinkPager;
                                     <?php } ?>
                                 </select>
                             </div>
-                            <div class="col-sm-1">
+                            <div class="col-md-1">
                                 <select class="input form-control" name="UserSearch[city]" id="user-city">
                                 </select>
                             </div>
@@ -63,7 +63,7 @@ use yii\widgets\LinkPager;
                                 $("#user-province").change(function(){
                                     var province_id = $(this).val();
                                     $.get(url, {p_id:province_id}, function(data){
-                                        var dom = "<option value=''>市</option>";
+                                        var dom = "<option value=''>选择市</option>";
                                         var t = "<?=$sear['city']?>";
                                         $.each(data, function (k, v) {
                                             dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
@@ -78,7 +78,7 @@ use yii\widgets\LinkPager;
                                 $("#user-city").change(function(){
                                     var city_id = $(this).val();
                                     $.get(url, {p_id:city_id}, function(data){
-                                        var dom = "<option value=''>县</option>";
+                                        var dom = "<option value=''>选择县</option>";
                                         var t = "<?=$sear['county']?>";
                                         $.each(data, function (k, v) {
                                             dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
