@@ -22,7 +22,7 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'status', 'created_at', 'updated_at', 'province', 'city', 'county'], 'integer'],
             [['username', 'realname', 'email'], 'safe'],
         ];
     }
@@ -32,9 +32,8 @@ class UserSearch extends User
      */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent classDDD
         return [
-            'search' => ['username', 'realname', 'email']
+            'search' => ['username', 'realname', 'email', 'province', 'city', 'county']
         ];
     }
 
@@ -60,8 +59,10 @@ class UserSearch extends User
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'realname', $this->realname])
             ->andFilterWhere(['like', 'email', $this->email]);
+        $query->andFilterWhere(['province'=>$this->province]);
+        $query->andFilterWhere(['city'=>$this->city]);
+        $query->andFilterWhere(['county'=>$this->county]);
 
-//        echo  $query->createCommand()->getRawSql();die;
         return $query;
     }
 }

@@ -94,16 +94,16 @@ class UserController extends CoreBackendController
         $model = $query->search(Yii::$app->getRequest()->getQueryParams());
         $clone_model = clone $model;
         $pages = new Pagination(['totalCount' => $clone_model->count(), 'pageSize' => '20']);
-//        echo $model->orderBy(['id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->createCommand()->getRawSql();die;
         $user = $model->orderBy(['id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        /*foreach($user as $v){
-            $v->department_id = Department::find()->select(['d_name'])->where(['d_id'=>$v->department_id])->scalar();
-        }*/
-//        p($user);
+
+        $provinces = Helper::getAllProvince();
+//        array_unshift($provinces, '省');
+
         return $this->render('list', [
             'sear' => $query->getAttributes(),
             'user' => $user,
-            'pages' => $pages
+            'pages' => $pages,
+            'provinces'=>$provinces
         ]);
     }
     /**
