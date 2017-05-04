@@ -47,11 +47,13 @@ class StoresController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['s_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $provinces = Helper::getAllProvince();
         return $this->render('index', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages,
+            'provinces'=>$provinces
         ]);
     }
 

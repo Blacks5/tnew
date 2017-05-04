@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="hr-line-dashed"></div>
                     <!--                    <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>-->
                     <form class="row" method="get" action="">
-                        <div class="col-sm-2">
+                        <div class="col-sm-1">
                             <input type="text" name="Stores[s_owner_name]" placeholder="负责人姓名"
                                    value="<?php echo $sear['s_owner_name']; ?>" class="input form-control">
                         </div>
@@ -45,6 +45,59 @@ $this->params['breadcrumbs'][] = $this->title;
                                    value="<?php echo $sear['s_owner_email']; ?>" placeholder="负责人邮箱"
                                    class="input form-control">
                         </div>
+                        <div class="col-sm-1">
+                            <select class="input form-control" name="Stores[s_province]" id="user-province">
+                                <option value="">选择省</option>
+                                <?php foreach ($provinces as $k=>$v){ ?>
+                                    <option <?php if($sear['s_province'] == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <select class="input form-control" name="Stores[s_city]" id="user-city">
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="input form-control" name="Stores[s_county]" id="user-county">
+                            </select>
+                        </div>
+
+                        <script>
+
+                            var url = "<?=\yii\helpers\Url::toRoute(['user/get-sub-addr'])?>"; // 获取子地区
+
+                            // 省变化
+                            $("#user-province").change(function(){
+                                var province_id = $(this).val();
+                                $.get(url, {p_id:province_id}, function(data){
+                                    var dom = "<option value=''>选择市</option>";
+                                    var t = "<?=$sear['s_city']?>";
+                                    $.each(data, function (k, v) {
+                                        dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                    })
+                                    $("#user-city").html(dom);
+
+                                    $("#user-city").trigger("change");
+                                });
+                            });
+
+                            // 市变化
+                            $("#user-city").change(function(){
+                                var city_id = $(this).val();
+                                $.get(url, {p_id:city_id}, function(data){
+                                    var dom = "<option value=''>选择县</option>";
+                                    var t = "<?=$sear['s_county']?>";
+                                    $.each(data, function (k, v) {
+                                        dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                    })
+                                    $("#user-county").html(dom);
+                                });
+                            });
+                            // 初始化
+                            $("#user-province").trigger("change");
+                            $("#user-city").trigger("change");
+
+                        </script>
                         <div class="col-sm-3">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-primary"> <i class="fa fa-search"></i> 搜索</button>
@@ -66,6 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <th>负责人电话</th>
                                                     <th>商户店名</th>
                                                     <th>邮箱</th>
+                                                    <th>地区</th>
                                                     <th class="client-status">状态</th>
                                                     <th>添加时间</th>
                                                     <th>操作</th>
@@ -81,7 +135,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <td><i class="fa fa-mobile"> </i> <?= $_v['s_owner_phone'] ?>
                                                         </td>
                                                         <td><?= $_v['s_name'] ?></td>
-                                                        <td><i class="fa fa-envelope"> </i> <?= $_v['s_owner_email'] ?>
+                                                        <td><i class="fa fa-envelope"> </i> <?= $_v['s_owner_email'] ?></td>
+                                                        <td>
+                                                            <?= \common\components\Helper::getAddrName($_v['s_province']).'-', \common\components\Helper::getAddrName($_v['s_city']). '-'. \common\components\Helper::getAddrName($_v['s_county']) ?>
                                                         </td>
                                                         <td class="client-status"><?= $_v['s_status']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['s_created_at']) ?></td>

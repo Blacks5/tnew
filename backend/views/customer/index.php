@@ -15,7 +15,7 @@ use yii\widgets\LinkPager;
                     <div class="ibox-content">
 <!--                        <hr>-->
                         <form class="row" method="get" action="">
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <input type="text" name="CustomerSearch[c_customer_name]" placeholder="姓名"
                                        value="<?=$sear['c_customer_name']; ?>" class="input form-control">
                             </div>
