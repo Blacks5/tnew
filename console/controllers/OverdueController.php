@@ -13,6 +13,14 @@ use common\models\Repayment;
 use yii;
 use yii\console\Controller;
 
+
+/*
+ * 所有 应还款时间 大于 当前时间 的 还款列表 取出来
+ * 加行锁，计算逾期天数和逾期金额，更改后释放锁
+ *
+ * */
+
+
 /**
  * 每天0点，处理已经逾期的还款，并计算违约金
  * 用法 php56 ./yii overdue/work
