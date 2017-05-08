@@ -3,8 +3,10 @@
 /* @var $this yii\web\View */
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
-
+use common\components\Helper;
 $this->params['breadcrumbs'][] = $this->title;
+
+$user_all_status = \common\models\User::getAllStatus();
 ?>
 
 <div class="wrapper wrapper-content">
@@ -12,15 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-12">
             <div class="ibox">
                 <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/create-department']))) { ?>
-                                <a class="btn btn-info btn-sm"
-                                   href="<?= Yii::$app->getUrlManager()->createUrl(['department/create-department']) ?>">新增部门</a>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <hr/>
 
                     <!--                    <span class="text-muted small pull-right">最后更新：<i class="fa fa-clock-o"></i> 2015-09-01 12:00</span>
                     <form class="row" method="get" action="">
@@ -47,34 +40,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>部门编号</th>
-                                <th>部门名</th>
-                                <th>操作</th>
+                                <th>真实姓名</th>
+                                <th>用户名</th>
+                                <th>职位</th>
+                                <th>地区</th>
+                                <th>状态</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($model as $_k => $_v) { ?>
+                            <?php foreach ($data as $_k => $_v) { ?>
                                 <tr>
-                                    <td><?= $_v['d_id'] ?></td>
-                                    <td><?= $_v['d_name'] ?></td>
-                                    <td>
-                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/view-department']))) { ?>
-                                            <a href="<?= Yii::$app->getUrlManager()->createUrl(['department/view-department', 'd_id' => $_v['d_id']]); ?>"
-                                               class="btn btn-primary btn-xs">详情</a>
-                                        <?php } ?>
-                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/all-user']))) { ?>
-                                            <a href="<?= Yii::$app->getUrlManager()->createUrl(['department/all-user', 'd_id' => $_v['d_id']]); ?>"
-                                               class="btn btn-primary btn-xs">员工</a>
-                                        <?php } ?>
-                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/update-department']))) { ?>
-                                            <a class="btn btn-primary btn-xs"
-                                               href="<?= Yii::$app->getUrlManager()->createUrl(['department/update-department', 'd_id' => $_v['d_id']]); ?>">编辑</a>
-                                        <?php } ?>
-                                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['department/delete-department']))) { ?>
-                                            <a class="btn btn-danger btn-xs"
-                                               href="javascript:del('<?= $_v['d_name'] ?>', <?= $_v['d_id'] ?>)">删除</a>
-                                        <?php } ?>
-                                    </td>
+                                    <td><?= $_v['realname'] ?></td>
+                                    <td><?= $_v['username'] ?></td>
+                                    <td><?= Helper::getJobNameByjobid($_v['job_id']); ?></td>
+                                    <td><?= Helper::getAddrName($_v['province']).'-'. Helper::getAddrName($_v['city']).'-'. Helper::getAddrName($_v['county']) ?></td>
+                                    <td><?=$user_all_status[$_v['status']];?></td>
                                 </tr>
                             <?php } ?>
                             <script>

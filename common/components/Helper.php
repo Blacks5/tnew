@@ -7,6 +7,8 @@
  */
 namespace common\components;
 
+use common\models\Department;
+use common\models\Jobs;
 use common\models\TooRegion;
 use yii\db\Query;
 
@@ -115,5 +117,15 @@ class Helper
         return array_column(\Yii::$app->params['company_type'], 'company_type_name', 'company_type_id')[$id];
     }
 
+    /**
+     * 根据job id获取职位名
+     * @param $j_id
+     * @return false|null|string
+     * @author too <hayto@foxmail.com>
+     */
+    public static function getJobNameByjobid($j_id)
+    {
+        return (new Query())->select(['j_name'])->from(Jobs::tableName())->where(['j_id'=>$j_id])->scalar();
+    }
 
 }

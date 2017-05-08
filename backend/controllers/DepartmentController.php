@@ -11,6 +11,7 @@ namespace backend\controllers;
 use backend\core\CoreBackendController;
 use common\models\Department;
 use common\models\Jobs;
+use common\models\User;
 use yii;
 use backend\components\CustomBackendException;
 
@@ -312,6 +313,25 @@ class DepartmentController extends CoreBackendController
         if (Jobs::deleteAll(['j_id' => $j_id])) {
             return ['status' => 1, 'message' => '删除成功'];
         }
+    }
+
+
+    /**
+     * 获取部门下所有员工
+     * @param $d_id
+     * @return string
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionAllUser($d_id)
+    {
+        $query = (new yii\db\Query())->from(User::tableName())
+            ->where(['department_id'=>$d_id])->andWhere(['!=', 'status', User::STATUS_DELETE]);
+
+        $queryCount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount'=>$queryCount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->orderBy(['created_at'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('all-user', ['data'=>$data, 'pages'=>$pages]);
     }
 
 }
