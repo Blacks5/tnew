@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
+use common\models\CustomerSearch;
 
 ?>
     <div class="wrapper wrapper-content">
@@ -26,13 +27,21 @@ use yii\widgets\LinkPager;
                                 <input type="text" name="CustomerSearch[c_customer_name]" placeholder="姓名"
                                        value="<?=$sear['c_customer_name']; ?>" class="input form-control">
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-xs-2">
                                 <input type="text" name="CustomerSearch[c_customer_cellphone]" value="<?=$sear['c_customer_cellphone']; ?>"
                                        placeholder="手机号" class="input form-control">
                             </div>
                             <div class="col-sm-2">
                                 <input type="text" name="CustomerSearch[c_customer_id_card]" value="<?=$sear['c_customer_id_card']; ?>"
                                        placeholder="身份证" class="input form-control">
+                            </div>
+
+                            <div class="col-sm-1">
+                                <select class="input form-control" name="CustomerSearch[borrow_status]" id="user-province">
+                                        <option value="">借款状态</option>
+                                        <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_SUCCESS){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_SUCCESS?>">成功</option>
+                                        <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_FAIL){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_FAIL?>">失败</option>
+                                </select>
                             </div>
 
                             <div class="col-sm-1">
@@ -47,7 +56,7 @@ use yii\widgets\LinkPager;
                                 <select class="input form-control" name="CustomerSearch[c_customer_city]" id="user-city">
                                 </select>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <select class="input form-control" name="CustomerSearch[c_customer_county]" id="user-county">
                                 </select>
                             </div>

@@ -134,7 +134,7 @@ class BorrowController extends CoreBackendController
                 $model['o_is_free_pack_fee']
                 );
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
-//            p($goods_data, $model);
+//            var_dump($goods_data, $model);die;
             return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
@@ -345,7 +345,7 @@ class BorrowController extends CoreBackendController
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
-                p($e->getMessage());
+//                p($e->getMessage());
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }

@@ -20,10 +20,15 @@ class CustomerSearch extends CoreCommonModel
     public $c_customer_city;
     public $c_customer_county;
     public $u_id; // 销售人员id
+    public $borrow_status; // 借款状态，只要有一笔通过，就算成功
+
+    const BORROW_STATUS_SUCCESS = '1';  // 借款成功
+    const BORROW_STATUS_FAIL = '2'; // 借款失败
     public function rules()
     {
         return [
-            [['c_customer_name', 'c_customer_cellphone', 'c_customer_id_card', 'c_customer_province', 'c_customer_city', 'c_customer_county', 'u_id'], 'safe']
+            [['c_customer_name', 'c_customer_cellphone', 'c_customer_id_card', 'c_customer_province', 'c_customer_city', 'c_customer_county', 'u_id'], 'safe'],
+            ['borrow_status', 'in', 'range'=>[self::BORROW_STATUS_SUCCESS, self::BORROW_STATUS_FAIL]]
         ];
     }
 
@@ -52,6 +57,9 @@ class CustomerSearch extends CoreCommonModel
         if(!empty($this->u_id)){
             $subQuery = (new yii\db\Query())->select(['o_customer_id'])->from(Orders::tableName())->where(['o_user_id'=>$this->u_id])->groupBy('o_customer_id');
             $query->andWhere(['c_id'=>$subQuery]);
+        }
+        if(self::BORROW_STATUS_FAIL === $this->borrow_status){
+            $query->andWhere(['c_total_money'=>0]);
         }
 
         return $query;

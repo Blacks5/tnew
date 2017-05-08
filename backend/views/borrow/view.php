@@ -1,7 +1,8 @@
 <?php
 use \common\components\Helper;
-
-$this->title = $model['c_customer_name'] . '借款详情';
+$all_status = \common\models\Orders::getAllStatus();
+$msg = $all_status[$model['o_status']];
+$this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 ?>
 <?= \yii\helpers\Html::cssFile('@web/css/style.css') ?>
 <style>
