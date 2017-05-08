@@ -11,6 +11,8 @@ namespace backend\controllers;
 use common\components\Helper;
 use common\models\Customer;
 use common\models\CustomerSearch;
+use common\models\OrdersSearch;
+use common\models\User;
 use yii;
 use backend\core\CoreBackendController;
 
@@ -34,7 +36,16 @@ class CustomerController extends CoreBackendController
     {
         $this->getView()->title = '客户列表';
         $model = new CustomerSearch();
-        $query = $model->search(Yii::$app->getRequest()->getQueryParams());
+        $params = Yii::$app->getRequest()->getQueryParams();
+        $query = $model->search($params);
+
+        // 如果查看某个销售的客户，就执行
+        $user = null;
+        if(!empty($params["CustomerSearch"]['u_id'])){
+            $user['realname'] = (new yii\db\Query())->select(['realname'])->from(User::tableName())->where(['id'=>$params["CustomerSearch"]['u_id']])->scalar();
+            $user['u_id'] = $params["CustomerSearch"]['u_id'];
+        }
+
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -50,7 +61,8 @@ class CustomerController extends CoreBackendController
             'model' => $data,
             'totalpage' => $pages->pageCount,
             'pages'=>$pages,
-            'provinces'=>$provinces
+            'provinces'=>$provinces,
+            'user'=>$user
         ]);
     }
 
@@ -61,5 +73,37 @@ class CustomerController extends CoreBackendController
 //            $data['c_status'] = Customer::getAllStatus()[$data['c_status']];
             return $this->render('view', ['model'=>$data]);
         }
+    }
+
+    /**
+     * 获取某个客户的所有订单
+     * @return string
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionGetAllOrdersByCustomer()
+    {
+        $this->getView()->title = '所有订单';
+        $model = new OrdersSearch();
+        $params = Yii::$app->getRequest()->getQueryParams();
+        $query = $model->search($params);
+
+        // 如果查看某个客户的所有订单，就执行
+        $customer = null;
+        if(!empty($params["OrdersSearch"]['customer_id'])){
+            $customer['c_customer_name'] = (new yii\db\Query())->select(['c_customer_name'])->from(Customer::tableName())->where(['c_id'=>$params["OrdersSearch"]['customer_id']])->scalar();
+            $customer['customer_id'] = $params["OrdersSearch"]['customer_id'];
+        }
+
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        return $this->render('allordersbycustomer', [
+            'sear' => $model->getAttributes(),
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages,
+            'customer'=>$customer
+        ]);
     }
 }

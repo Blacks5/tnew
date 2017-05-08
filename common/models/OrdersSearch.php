@@ -27,10 +27,12 @@ class OrdersSearch extends CoreCommonModel
     public $goods_name;
     public $start_time;
     public $end_time;
+    public $customer_id; // customer_id 客户ID
     public function rules()
     {
         return [
-            [['customer_name', 'customer_cellphone', 'product_name', 'goods_name', 'start_time', 'end_time'], 'safe']
+            [['customer_name', 'customer_cellphone', 'product_name', 'goods_name', 'start_time', 'end_time'], 'safe'],
+            [['customer_id'], 'number']
         ];
     }
 
@@ -55,6 +57,10 @@ class OrdersSearch extends CoreCommonModel
         if(!$this->validate()){
             return $query->where('1=2');
         }
+
+        // 某个客户的订单
+        $query->andFilterWhere(['orders.o_customer_id'=>$this->customer_id]);
+
         // 有商品名搜索才关联
         if($this->goods_name){
             $query->leftJoin(Goods::tableName(). ' goods', 'goods.g_order_id=orders.o_id'); // 关联商品

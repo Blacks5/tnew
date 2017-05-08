@@ -121,18 +121,18 @@
                 </div>
             </div>
         </div>
-        <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+        <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+        <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
         <script>
 
 
-            /*$('#datepicker').datepicker({
+            $('#datepicker').datepicker({
              todayBtn: "linked",
              keyboardNavigation: true,
              forceParse: true,
              autoclose:true,
              format: "yyyy-mm-dd",
              todayHighlight: true
-             });*/
+             });
         </script>

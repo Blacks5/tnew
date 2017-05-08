@@ -8,6 +8,7 @@
  */
 namespace backend\controllers;
 use backend\models\YejiSearch;
+use common\components\Helper;
 use yii;
 use backend\core\CoreBackendController;
 
@@ -28,12 +29,12 @@ class UserPerformanceController extends CoreBackendController
     {
         $yejidrv = new YejiSearch();
         $list = $yejidrv->search(\yii::$app->request->getQueryParams());
-
-
+        $provinces = Helper::getAllProvince();
         return $this->render('index', [
             'data'=>$list,
             'sear'=>$list['sear'],
-            'pages'=>$list['pages']
+            'pages'=>$list['pages'],
+            'provinces'=>$provinces
         ]);
     }
 }

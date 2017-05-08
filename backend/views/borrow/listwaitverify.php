@@ -121,9 +121,9 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <script src="/statics/plugins/layer/layer.js"></script>
-        <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+        <script src="/plugins/layer/layer.js"></script>
+        <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+        <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script>
 
 

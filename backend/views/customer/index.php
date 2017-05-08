@@ -13,8 +13,15 @@ use yii\widgets\LinkPager;
                 <div class="ibox float-e-margins">
 
                     <div class="ibox-content">
-<!--                        <hr>-->
+                        <?php if($user){ ?>
+                            <h1>【<?=$user['realname']. '】的客户'?></h1>
+                        <?php } ?>
                         <form class="row" method="get" action="">
+                            <?php if($user){ ?>
+                                    <input type="hidden" name="CustomerSearch[u_id]" placeholder="uid"
+                                           value="<?=$sear['u_id']; ?>" class="input form-control">
+                            <?php } ?>
+
                             <div class="col-sm-1">
                                 <input type="text" name="CustomerSearch[c_customer_name]" placeholder="姓名"
                                        value="<?=$sear['c_customer_name']; ?>" class="input form-control">
@@ -120,8 +127,15 @@ use yii\widgets\LinkPager;
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/view']))) { ?>
                                                 <a class="btn btn-primary btn-xs"
                                                href="<?= Url::toRoute(['customer/view', 'c_id' => $vo['c_id']]) ?>"><i
-                                                    class="fa fa-edit"></i>查看
-                                            </a>
+                                                    class="fa fa-edit"></i>客户资料
+                                                </a>
+                                            <?php } ?>
+
+                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/get-all-orders-by-customer']))) { ?>
+                                                <a class="btn btn-primary btn-xs"
+                                                   href="<?= Url::toRoute(['customer/get-all-orders-by-customer', 'OrdersSearch[customer_id]' => $vo['c_id']]) ?>"><i
+                                                            class="fa fa-edit"></i>所有订单
+                                                </a>
                                             <?php } ?>
                                         </td>
                                     </tr>

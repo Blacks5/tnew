@@ -194,4 +194,6 @@ class Customer extends CoreCommonActiveRecord
     {
         return self::find()->where(['c_id'=>$c_id])->asArray()->one();
     }
+
+
 }

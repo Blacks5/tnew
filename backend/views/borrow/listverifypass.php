@@ -130,8 +130,8 @@
             </div>
         </div>
         <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
-        <link href="/statics/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <script src="/statics/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+        <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+        <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
         <?php
         $this->registerJs('
     $(".revoke").click(function(ev){
@@ -167,12 +167,12 @@
         <script>
 
 
-            /*$('#datepicker').datepicker({
+            $('#datepicker').datepicker({
              todayBtn: "linked",
              keyboardNavigation: true,
              forceParse: true,
              autoclose:true,
              format: "yyyy-mm-dd",
              todayHighlight: true
-             });*/
+             });
         </script>
