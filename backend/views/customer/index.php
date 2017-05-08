@@ -36,7 +36,7 @@ use common\models\CustomerSearch;
                                        placeholder="身份证" class="input form-control">
                             </div>
 
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                                 <select class="input form-control" name="CustomerSearch[borrow_status]" id="user-province">
                                         <option value="">借款状态</option>
                                         <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_SUCCESS){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_SUCCESS?>">成功</option>
