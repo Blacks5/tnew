@@ -11,10 +11,10 @@ use yii\helpers\Url;
         <div class="col-sm-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5><?= $model[0]['c_customer_name']; ?><small>的还款计划</small></h5>
-                    <div class="pull-right">
-                        <button class="btn btn-xs btn-danger" onclick="window.history.back()">返回</button>
-                    </div>
+                    <h2><?= $model[0]['c_customer_name']; ?><small>的还款计划</small><div class="pull-right">
+                            <button class="btn btn-sm btn-danger" onclick="window.history.back()">返回</button>
+                        </div></h2>
+
                 </div>
                 <div class="ibox-content">
 
