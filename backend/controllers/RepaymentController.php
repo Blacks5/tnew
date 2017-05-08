@@ -30,7 +30,7 @@ class RepaymentController extends CoreBackendController
 
 
     /**
-     * 最近30天待还的 计划
+     * 待还款列表
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
@@ -39,15 +39,12 @@ class RepaymentController extends CoreBackendController
         $this->getView()->title = '待还款列表';
         $model = new RepaymentSearch();
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
-        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
-        $query = $query
-            ->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])
-            ->andWhere(['<=', 'r_pre_repay_date', $time]);
+//        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
+        $query = $query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])/*->andWhere(['<=', 'r_pre_repay_date', $time])*/;
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
-        ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         array_walk($data, function(&$v){
             $n = 2;
             $v['o_total_price'] = round($v['o_total_price'], $n);
@@ -63,6 +60,44 @@ class RepaymentController extends CoreBackendController
             $v['r_customer_management'] = round($v['r_customer_management'], $n);
         });
         return $this->render('waitrepay', [
+            'sear' => $model->getAttributes(),
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
+    }
+
+    /**
+     * 已还款列表 2017-05-08新增
+     * @return string
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public function actionAlreadyRepay()
+    {
+        $this->getView()->title = '待还款列表';
+        $model = new RepaymentSearch();
+        $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
+//        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
+        $query = $query->andWhere(['r_status' => Repayment::STATUS_ALREADY_PAY])/*->andWhere(['<=', 'r_pre_repay_date', $time])*/;
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        array_walk($data, function(&$v){
+            $n = 2;
+            $v['o_total_price'] = round($v['o_total_price'], $n);
+            $v['o_total_deposit'] = round($v['o_total_deposit'], $n);
+            $v['o_total_interest'] = round($v['o_total_interest'], $n);
+            $v['r_overdue_money'] = round($v['r_overdue_money'], $n);
+            $v['r_total_repay'] = round($v['r_total_repay'], $n);
+            $v['r_principal'] = round($v['r_principal'], $n);
+            $v['r_interest'] = round($v['r_interest'], $n);
+            $v['r_add_service_fee'] = round($v['r_add_service_fee'], $n);
+            $v['r_free_pack_fee'] = round($v['r_free_pack_fee'], $n);
+            $v['r_finance_mangemant_fee'] = round($v['r_finance_mangemant_fee'], $n);
+            $v['r_customer_management'] = round($v['r_customer_management'], $n);
+        });
+        return $this->render('alreadyrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,

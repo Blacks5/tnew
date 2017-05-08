@@ -82,7 +82,7 @@ class Team extends CoreCommonActiveRecord
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['search'] = ['t_name'];
+        $scen['search'] = ['t_name', 't_province', 't_city', 't_county'];
         return $scen;
     }
 
@@ -96,6 +96,9 @@ class Team extends CoreCommonActiveRecord
         }
 
         $query->andFilterWhere(['like', 't_name', $this->t_name]);
+        $query->andFilterWhere(['t_province'=>$this->t_province])
+            ->andFilterWhere(['t_city'=>$this->t_city])
+            ->andFilterWhere(['t_county'=>$this->t_county]);
         return $query;
     }
 }

@@ -38,10 +38,13 @@ class TeamController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $query_count->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['t_id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
+        $provinces = Helper::getAllProvince();
         return $this->render('index', [
             'model' => $data,
             'sear' => $model->getAttributes(),
             'totalpage' => $pages,
+            'provinces'=>$provinces
         ]);
     }
 
