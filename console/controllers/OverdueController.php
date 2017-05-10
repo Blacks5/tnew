@@ -57,7 +57,8 @@ class OverdueController extends Controller
     {
         $result = [];
         foreach ($data as $v){
-            $r_overdue_day = $v['r_overdue_day'] +1; // 逾期天数
+            $_t1 = (new \DateTime())->setTimestamp(strtotime(date('Y-m-d', $v['r_pre_repay_date']))); // 还款日的0点0时
+            $r_overdue_day = $_t1->diff((new \DateTime()))->days; // 逾期天数
             $r_overdue_money = round($v['r_total_repay'] * $r_overdue_day / 100, 2); // 滞纳金 = 月供* 逾期天数%
             $result[$v['r_id']] = [
                 'r_overdue_day'=>$r_overdue_day,
@@ -88,9 +89,11 @@ class OverdueController extends Controller
         }
         $sql .= " end where r_id in (". $r_ids. ")";
 
-        if($num !== Yii::$app->getDb()->createCommand($sql)->execute()){
-            throw new CustomCommonException('更新失败');
-        }
+        /*$int = */Yii::$app->getDb()->createCommand($sql)->execute();
+        // 防止一天内多次运行时，$num和$int不相等
+        /*if($num !== $int){
+            throw new CustomCommonException("更新失败:用户 $num 人，只修改 $int 人");
+        }*/
         return $num;
     }
 
@@ -110,13 +113,13 @@ class OverdueController extends Controller
             $this->updateRepayment($result);
             $trans->commit();
             $error_log .= "operating success\r\n";
-            file_put_contents($log_file_path, $error_log, FILE_APPEND);
         }catch (CustomCommonException $e){
             $trans->rollBack();
             $error_log .= $e->getMessage()."\r\n";
-            file_put_contents($log_file_path, $error_log, FILE_APPEND);
         }catch (\Exception $e){
+            $trans->rollBack();
             $error_log .= $e->getMessage()."\r\n";
+        }finally{
             file_put_contents($log_file_path, $error_log, FILE_APPEND);
         }
     }
