@@ -85,7 +85,7 @@ use yii\helpers\Url;
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['r_pre_repay_date']) ?></td>
                                                         <td class="client-status"><span class="btn <?=$notice_class;?> btn-xs"><?= $notice_msg; ?></span></td>
                                                         <td class="client-status"><?= $_v['r_overdue_day']; ?>天</td>
-                                                        <td class="client-status"><?= $_v['r_overdue_money']; ?>元</td>
+                                                        <td class="client-status"><?= round($_v['r_overdue_money'], 2); ?>元</td>
                                                         <td>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))) { ?>
                                                                 <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>"

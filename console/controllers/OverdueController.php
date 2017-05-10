@@ -9,6 +9,7 @@
 
 namespace console\controllers;
 
+use common\components\CustomCommonException;
 use common\models\Repayment;
 use yii;
 use yii\console\Controller;
@@ -22,8 +23,8 @@ use yii\console\Controller;
 
 
 /**
- * 每天0点，处理已经逾期的还款，并计算违约金
- * 用法 php56 ./yii overdue/work
+ * 每天0点5分开始，处理已经逾期的还款，并计算违约金
+ * 用法 php /mnt/wcb_latest/yii overdue/work
  * Class OverdueController
  * @package app\commands
  * @author 涂鸿 <hayto@foxmail.com>
@@ -31,15 +32,18 @@ use yii\console\Controller;
 class OverdueController extends Controller
 {
     /**
-     * 获取所有已逾期的还款计划
+     * 获取 所有已逾期 该处理(90天内) 的还款计划
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
     private function getOverdueList()
     {
-        $data = (new yii\db\Query())->from(Repayment::tableName())
-            ->select(['r_overdue_day'])
-            ->where(['<', 'r_pre_repay_date', $_SERVER['REQUEST_TIME']])->all();
+        $_time = strtotime(date('Y-m-d')); // 当天零点整的时间戳
+        $sql = "select * from repayment where r_pre_repay_date<=". $_time. " and r_status=". Repayment::STATUS_NOT_PAY. " and r_overdue_day < 90 order by r_pre_repay_date desc for update";
+        $data = Yii::$app->getDb()->createCommand($sql)->queryAll();
+        if(false === !empty($data)){
+            throw new CustomCommonException('没有需要计算的逾期客户');
+        }
         return $data;
     }
 
@@ -51,26 +55,69 @@ class OverdueController extends Controller
      */
     private function calOverdueData($data)
     {
-        $result = [
-            'r_overdue_day'=>0,
-            'r_overdue_money'=>0
-        ];
+        $result = [];
         foreach ($data as $v){
-            $result['r_overdue_day'] = $data['r_overdue_day'] + 1;
-            $result['r_overdue_money'] = $result['r_overdue_day'] * 3;
+            $r_overdue_day = $v['r_overdue_day'] +1; // 逾期天数
+            $r_overdue_money = round($v['r_total_repay'] * $r_overdue_day / 100, 2); // 滞纳金 = 月供* 逾期天数%
+            $result[$v['r_id']] = [
+                'r_overdue_day'=>$r_overdue_day,
+                'r_overdue_money'=>$r_overdue_money
+            ];
         }
         return $result;
     }
 
     /**
-     * 每天违约金3块钱
+     * @param $data
+     * @return int 修改的还款计划行数
+     * @throws CustomCommonException
+     * @author too <hayto@foxmail.com>
+     */
+    private function updateRepayment($data)
+    {
+        $num = count($data); // 一共多少个用户
+        $r_ids = implode(',', array_keys($data));
+
+        $sql = "update repayment set r_overdue_day = case r_id";
+        foreach ($data as $k=>$v){
+            $sql .= " when ". $k. " then ". $v['r_overdue_day'];
+        }
+        $sql .= " end, r_overdue_money= case r_id";
+        foreach ($data as $k=>$v){
+            $sql .= " when ". $k. " then ". $v['r_overdue_money'];
+        }
+        $sql .= " end where r_id in (". $r_ids. ")";
+
+        if($num !== Yii::$app->getDb()->createCommand($sql)->execute()){
+            throw new CustomCommonException('更新失败');
+        }
+        return $num;
+    }
+
+    /**
+     *
      * @author 涂鸿 <hayto@foxmail.com>
      */
     public function actionWork()
     {
-        $price = Yii::$app->params['overdue_money_everyday'];
-        $sql = "update ". Repayment::tableName()." set r_overdue_day=r_overdue_day+1,r_overdue_money=r_overdue_day*". $price." where r_pre_repay_date > ". $_SERVER['REQUEST_TIME'];
-        $num = Yii::$app->db->createCommand($sql)->execute();
-        var_dump($num);
+        $error_log = date('Y-m-d H:i:s'). "任务日志\r\n";
+        $log_file_path = Yii::$app->basePath. DIRECTORY_SEPARATOR. 'logs'. DIRECTORY_SEPARATOR. 'overdue_operating_record.csv';
+
+        $trans = Yii::$app->getDb()->beginTransaction();
+        try{
+            $data = $this->getOverdueList();
+            $result = $this->calOverdueData($data);
+            $this->updateRepayment($result);
+            $trans->commit();
+            $error_log .= "operating success\r\n";
+            file_put_contents($log_file_path, $error_log, FILE_APPEND);
+        }catch (CustomCommonException $e){
+            $trans->rollBack();
+            $error_log .= $e->getMessage()."\r\n";
+            file_put_contents($log_file_path, $error_log, FILE_APPEND);
+        }catch (\Exception $e){
+            $error_log .= $e->getMessage()."\r\n";
+            file_put_contents($log_file_path, $error_log, FILE_APPEND);
+        }
     }
 }

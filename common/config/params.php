@@ -7,6 +7,7 @@ return [
     'page_size'=>15, // Android 列表
 
     // 违约金每天5块
+    // update:2017-05-10 这个配置没用了
     'overdue_money_everyday'=>5,
 
     // 提交订单时发送短信的模板
