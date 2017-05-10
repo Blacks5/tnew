@@ -567,7 +567,7 @@ class OrderController extends CoreApiController
         $query = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
-            ->where(['o_user_id'=>$uid])
+//            ->where(['o_user_id'=>$uid])
             ->andWhere(['r_status'=>Repayment::STATUS_OVERDUE]); // 状态为逾期，
 
         $data = $query->andFilterWhere(['>=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
@@ -576,7 +576,6 @@ class OrderController extends CoreApiController
             $v['r_overdue_money'] = round($v['r_overdue_money'], 2);
             $v['total_debt'] = round($v['total_debt'], 2);
         });
-        $data = "<h1>开发中</h1>";
         return ['status'=>1, 'message'=>'ok', 'data'=>$data];
     }
 
