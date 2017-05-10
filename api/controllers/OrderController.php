@@ -568,7 +568,7 @@ class OrderController extends CoreApiController
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
 //            ->where(['o_user_id'=>$uid])
-            ->andWhere(['r_status'=>Repayment::STATUS_OVERDUE]); // 状态为逾期，
+            ->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
 
         $data = $query->andFilterWhere(['>=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
 
