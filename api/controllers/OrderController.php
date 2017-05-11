@@ -553,7 +553,7 @@ class OrderController extends CoreApiController
         $userinfo = Yii::$app->getUser();
         $uid = $userinfo->getId();
         $days = Yii::$app->getRequest()->get('days', 1);
-        $days = 0;
+//        $days = 0;
         /*$select = [
             'sum(r_overdue_money) AS total_overdue_money',
             'max(c_customer_name) as c_customer_name',
