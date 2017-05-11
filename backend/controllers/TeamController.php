@@ -309,7 +309,7 @@ class TeamController extends CoreBackendController
                 // 总提单
                 $sub_total__orders = (new yii\db\Query())->select(['count(*)'])->from('orders')->where(['o_user_id'=>$sub_users]);
                 // 总借出
-                $sub_total_borrow = (new yii\db\Query())->select(['sum(o_total_price)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
+                $sub_total_borrow = (new yii\db\Query())->select(['sum(o_total_price)-sum(o_total_deposit)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
 
                 $dv = new yii\validators\DateValidator();
                 $dv->format = 'php:Y-m-d';
