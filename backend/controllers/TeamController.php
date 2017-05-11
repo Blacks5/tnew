@@ -8,15 +8,14 @@
 
 namespace backend\controllers;
 
+use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
+use common\components\Helper;
 use common\models\Orders;
 use common\models\Team;
 use common\models\TeamUser;
-use common\components\Helper;
 use common\models\User;
-use common\models\UserSearch;
 use yii;
-use backend\components\CustomBackendException;
 
 class TeamController extends CoreBackendController
 {
@@ -293,13 +292,9 @@ class TeamController extends CoreBackendController
                 $st = $request->get('st');
                 $et = $request->get('et');
                 $teamid = $request->get('teamid');
-                $dv = new yii\validators\DateValidator();
-                $dv->format = 'php:Y-m-d';
-                if((false === $dv->validate($st)) || (false === $dv->validate($et))) {
-                    throw new CustomBackendException('时间格式错误');
-                }
-                $st = strtotime($st);
-                $et = strtotime($et. ' 23:59:59');
+
+
+
                     // 订单成功的状态
                 $success_status = [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER];
                 // 团队的所有成员
@@ -316,6 +311,30 @@ class TeamController extends CoreBackendController
                 // 总借出
                 $sub_total_borrow = (new yii\db\Query())->select(['sum(o_total_price)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
 
+                $dv = new yii\validators\DateValidator();
+                $dv->format = 'php:Y-m-d';
+                if(!empty($st)){
+                    if(false === $dv->validate($st)) {
+                        throw new CustomBackendException('时间格式错误');
+                    }
+                    $st = strtotime($st);
+                    $sub_o_is_add_service_fee->andWhere(['>=', 'o_created_at', $st]);
+                    $sub_o_is_free_pack_fee->andWhere(['>=', 'o_created_at', $st]);
+                    $sub_total_success_orders->andWhere(['>=', 'o_created_at', $st]);
+                    $sub_total__orders->andWhere(['>=', 'o_created_at', $st]);
+                    $sub_total_borrow->andWhere(['>=', 'o_created_at', $st]);
+                }
+                if(!empty($et)){
+                    if(false === $dv->validate($et)) {
+                        throw new CustomBackendException('时间格式错误');
+                    }
+                    $et = strtotime($et. ' 23:59:59');
+                    $sub_o_is_add_service_fee->andWhere(['<=', 'o_created_at', $et]);
+                    $sub_o_is_free_pack_fee->andWhere(['<=', 'o_created_at', $et]);
+                    $sub_total_success_orders->andWhere(['<=', 'o_created_at', $et]);
+                    $sub_total__orders->andWhere(['<=', 'o_created_at', $et]);
+                    $sub_total_borrow->andWhere(['<=', 'o_created_at', $et]);
+                }
 
                 $data = (new yii\db\Query())->from('orders')->select([
                     'total_success_o_is_add_service_fee'=>$sub_o_is_add_service_fee,// 个人保障计划捆绑成功 总数
@@ -326,8 +345,8 @@ class TeamController extends CoreBackendController
                 ])->where(['o_user_id'=>$sub_users])->one();
 
                 $data = [
-                    'o_is_add_service_fee'=>round($data['total_success_o_is_add_service_fee']/$data['total_success_orders']*100, 2). '%', // 个人保证计划捆绑率
-                    'o_is_free_pack_fee'=>round($data['total_success_o_is_free_pack_fee']/$data['total_success_orders']*100, 2). '%', // 贵宾服务包捆绑率
+                    'o_is_add_service_fee'=>($data['total_success_orders'] != 0)? round($data['total_success_o_is_add_service_fee']/$data['total_success_orders']*100, 2). '%' : '0%', // 个人保证计划捆绑率
+                    'o_is_free_pack_fee'=>($data['total_success_orders'] != 0)? round($data['total_success_o_is_free_pack_fee']/$data['total_success_orders']*100, 2). '%' : '0%', // 贵宾服务包捆绑率
                     'total_orders'=>$data['sub_total__orders'], // 总提单
                     'success_total_orders'=>$data['total_success_orders'], // 成功提单
                     'total_borrow_money'=>round($data['total_o_total_price'], 2) // 总借出金额
@@ -336,6 +355,7 @@ class TeamController extends CoreBackendController
             }catch (CustomBackendException $e){
                 return ['status'=>0, 'message'=>$e->getMessage()];
             }catch (\Exception $e){
+                p($e->getMessage());
                 return ['status'=>0, 'message'=>'网络错误'];
             }
 
