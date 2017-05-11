@@ -123,6 +123,11 @@ class CustomerController extends CoreBackendController
   string(56) "WjdxbW9hZ3gMbThfH1MKDxtaGFgtECMuKHtGGjonLBIoWkE3KjkEMQ=="
 }
 */
+    /**
+     * 修改客户还款银行卡相关信息
+     * @return array
+     * @author too <hayto@foxmail.com>
+     */
     public function actionChangeBankInfo()
     {
         if(Yii::$app->getRequest()->getIsAjax()){
