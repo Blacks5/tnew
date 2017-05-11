@@ -167,7 +167,7 @@ class CustomerController extends CoreBackendController
                     throw new CustomBackendException('更新银行卡图片失败');
                 }
                 $trans->commit();
-                return ['status'=>1, '更新银行卡信息成功'];
+                return ['status'=>1, 'message'=>'更新银行卡信息成功'];
             }catch (CustomBackendException $e){
                 $trans->rollBack();
                 return ['status'=>0, 'message'=>$e->getMessage()];

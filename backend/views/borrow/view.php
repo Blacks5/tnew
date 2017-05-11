@@ -281,12 +281,14 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                     <div>
                         <label class="col-sm-2 control-label">还款卡号信息：</label>
                         <div class="col-sm-2">
-                            <p class="form-control-static">
+                            <p id="bank_info" class="form-control-static">
                                 <?= Helper::getBankNameById($model['c_bank']);/*银行名*/ ?><br>
-                                <?=$model['c_banknum'] ; /*卡号*/ ?><br>
+                                <?=$model['c_banknum'] ; /*卡号*/ ?>
                             </p>
-                            <button id="changeBankInfo" class="btn btn-danger btn-xs">修改</button>
 
+                            <?php if(Yii::$app->getUser()->can(Yii::$app->getUrlManager()->createUrl(['customer/change-bank-info']))){ ?>
+                                <button id="changeBankInfo" class="btn btn-danger btn-xs">修改</button>
+                            <?php } ?>
                         </div>
                     </div>
                     <div>
@@ -315,9 +317,9 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 
                                 <div class="col-sm-8">
                                     <select class="form-control" name="c_bank" id="">
-                                        <option value="1">1</option>
-                                        <option value="1">1</option>
-                                        <option value="1">1</option>
+                                        <?php foreach (Yii::$app->params['bank_list'] as $v){ ?>
+                                            <option value="<?=$v['bank_id']?>"><?=$v['bank_name']?></option>
+                                        <?php } ?>
                                     </select>
                                 </div>
                             </div>
@@ -457,7 +459,6 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
         </div>
     </div>
 </div>
-
 <!--弹窗内容-->
 <style>
     #xx {
@@ -702,6 +703,8 @@ $(".failpic").click(function(){
                     success: function (res) {
                         if (res.status == 1) {
                             layer.close(index);
+                            var $_ = $("select[name=c_bank]").find('option:selected').text()+'<br>'+ c_banknum;
+                            $("#bank_info").html($_);
                             return layer.alert(res.message);
                         } else {
                             // 弹出错误信息
