@@ -345,11 +345,16 @@ class TeamController extends CoreBackendController
                 ])->where(['o_user_id'=>$sub_users])->one();
 
                 $data = [
-                    'o_is_add_service_fee'=>($data['total_success_orders'] != 0)? round($data['total_success_o_is_add_service_fee']/$data['total_success_orders']*100, 2). '%' : '0%', // 个人保证计划捆绑率
-                    'o_is_free_pack_fee'=>($data['total_success_orders'] != 0)? round($data['total_success_o_is_free_pack_fee']/$data['total_success_orders']*100, 2). '%' : '0%', // 贵宾服务包捆绑率
-                    'total_orders'=>$data['sub_total__orders'], // 总提单
-                    'success_total_orders'=>$data['total_success_orders'], // 成功提单
-                    'total_borrow_money'=>round($data['total_o_total_price'], 2) // 总借出金额
+                    // 个人保证计划捆绑率
+                    'o_is_add_service_fee'=>($data['total_success_orders'] != 0)? round($data['total_success_o_is_add_service_fee']/$data['total_success_orders']*100, 2). '%' : '0%',
+                    // 贵宾服务包捆绑率
+                    'o_is_free_pack_fee'=>($data['total_success_orders'] != 0)? round($data['total_success_o_is_free_pack_fee']/$data['total_success_orders']*100, 2). '%' : '0%',
+                    // 总提单
+                    'total_orders'=>$data['sub_total__orders'],
+                    // 成功提单
+                    'success_total_orders'=>$data['total_success_orders'],
+                    // 总借出金额
+                    'total_borrow_money'=>round($data['total_o_total_price'], 2)
                 ];
                 return ['status'=>1, 'data'=>$data, 'message'=>'success'];
             }catch (CustomBackendException $e){
