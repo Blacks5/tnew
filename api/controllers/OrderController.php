@@ -574,7 +574,7 @@ class OrderController extends CoreApiController
 
 //        $query->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
 
-        $data = $query->andFilterWhere(['>=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
+        $data = $query->andFilterWhere(['<=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
 
         array_walk($data, function(&$v){
             $v['r_overdue_money'] = round($v['r_overdue_money'], 2);
