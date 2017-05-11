@@ -56,6 +56,7 @@ class OrderImages extends CoreCommonActiveRecord
             'oi_back_id' => '身份证背面',
             'oi_customer' => '客户现场照',
             'oi_front_bank' => '银行卡正面',
+//            'oi_front_bank_two' => '银行卡正面[后台补充]',
 //            'oi_back_bank' => '银行卡背面',
             'oi_family_card_one' => '户口本1',
             'oi_family_card_two' => '户口本2',

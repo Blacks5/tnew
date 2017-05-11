@@ -176,18 +176,18 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <p class="form-control-static"><?= $model['c_customer_gender'] == 1 ? '男' : '女'; ?></p>
                         </div>
                     </div>
-                    <div>
+                    <!--<div>
                         <label class="col-sm-2 control-label">还款银行：</label>
                         <div class="col-sm-2">
-                            <p class="form-control-static"><?= Helper::getBankNameById($model['c_bank']); ?></p>
+                            <p class="form-control-static"><?/*= Helper::getBankNameById($model['c_bank']); */?></p>
                         </div>
                     </div>
                     <div>
                         <label class="col-sm-2 control-label">还款银行卡号：</label>
                         <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['c_banknum']; ?></p>
+                            <p class="form-control-static"><?/*= $model['c_banknum']; */?></p>
                         </div>
-                    </div>
+                    </div>-->
                     <div>
                         <label class="col-sm-2 control-label">QQ号：</label>
                         <div class="col-sm-2">
@@ -250,19 +250,8 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <p class="form-control-static"><?= Helper::getAddrName($model['c_customer_addr_province']) . Helper::getAddrName($model['c_customer_addr_city']) . '-' . Helper::getAddrName($model['c_customer_addr_county']) . '-' . $model['c_customer_addr_detail']; ?></p>
                         </div>
                     </div>
-                    <div>
-                        <label class="col-sm-2 control-label">工作单位：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static">
-                                <?= $model['c_customer_jobs_company'];/*公司名*/ ?><br>
-                                <?=Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) ; /*行业*/ ?><br>
-                                <?=$model['c_customer_jobs_section'] ; /*部门*/ ?><br>
-                                <?=$model['c_customer_jobs_title']; /*职位*/ ?><br>
-                                <?=Helper::getCompanyTypeString($model['c_customer_jobs_type']); /*工作行业*/ ?> <br>
-                                <a href="tel:<?=$model['c_customer_jobs_phone'];?>"><?=$model['c_customer_jobs_phone']; /*工作座机*/ ?></a>
-                            </p>
-                        </div>
-                    </div>
+
+
                     <div>
                         <label class="col-sm-2 control-label">单位地址：</label>
                         <div class="col-sm-2">
@@ -287,6 +276,92 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div class="col-sm-2">
                             <p class="form-control-static"><?= $model['c_total_money']; ?></p>
                         </div>
+                    </div>
+
+                    <div>
+                        <label class="col-sm-2 control-label">还款卡号信息：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static">
+                                <?= Helper::getBankNameById($model['c_bank']);/*银行名*/ ?><br>
+                                <?=$model['c_banknum'] ; /*卡号*/ ?><br>
+                            </p>
+                            <button id="changeBankInfo" class="btn btn-danger btn-xs">修改</button>
+
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">工作单位：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static">
+                                <?= $model['c_customer_jobs_company'];/*公司名*/ ?><br>
+                                <?=Helper::getCompanyIndustryString($model['c_customer_jobs_industry']) ; /*行业*/ ?><br>
+                                <?=$model['c_customer_jobs_section'] ; /*部门*/ ?><br>
+                                <?=$model['c_customer_jobs_title']; /*职位*/ ?><br>
+                                <?=Helper::getCompanyTypeString($model['c_customer_jobs_type']); /*工作行业*/ ?> <br>
+                                <a href="tel:<?=$model['c_customer_jobs_phone'];?>"><?=$model['c_customer_jobs_phone']; /*工作座机*/ ?></a>
+                            </p>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!--修改银行卡信息弹窗-->
+                <div id="pop_change_bank_info" class="ibox float-e-margins" style="display: none">
+                    <div class="ibox-content">
+                        <form class="form-horizontal" id="pop_form_data">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择银行：</label>
+
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="c_bank" id="">
+                                        <option value="1">1</option>
+                                        <option value="1">1</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">银行卡号：</label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" placeholder="请输入银行卡号" class="form-control" name="c_banknum">
+                                </div>
+                            </div>
+
+                            <!--上传银行卡照片-->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">银行卡照片：</label>
+                                <input type="hidden" name="oi_front_bank">
+                                <div class="col-sm-8">
+                                    <div class="wraper">
+                                        <ul id="file-list-oi_front_bank" class="file-list">
+                                            <!--                                            <li>-->
+                                            <?php
+                                            /*                                                $t = new \common\models\UploadFile();
+                                                                                            if($model->id_card_pic_one){ */?><!--
+                                                    <?/*= \yii\helpers\Html::img($t->getUrl($model->id_card_pic_one)); */?>
+                                                <?php /*}else{ */?>
+                                                    <?/*= \yii\helpers\Html::img('@web/img/image.png'); */?>
+                                                --><?php /*} */?>
+                                            <?= \yii\helpers\Html::img('@web/img/image.png'); ?>
+                                            <!--                                            </li>-->
+
+
+                                        </ul>
+                                        <div class="btn-wraper">
+                                            <input type="button" value="选择文件..." id="browse-oi_front_bank"/>
+                                            <button id="start_upload_oi_front_bank" type="button">开始上传</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </form>
+
+
+
                     </div>
                 </div>
 
@@ -314,11 +389,6 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         </div>
                     </div>
                 </div>
-
-
-
-
-
 
                 <h3 class="center color-orange">商品信息</h3>
                 <div class="hr-line-dashed"></div>
@@ -388,7 +458,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
     </div>
 </div>
 
-
+<?php p($model) ?>
 <!--弹窗内容-->
 <style>
     #xx {
@@ -593,5 +663,138 @@ $(".failpic").click(function(){
 });
 ');
 ?>
+
 <?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 
+<script>
+    $("#changeBankInfo").on('click', function () {
+        var params = {
+            type: 1,
+            title: '修改银行卡信息',
+            area: '500px',
+            content: $('#pop_change_bank_info'),
+            btn: ['确认', '取消'],
+            yes: function (index) {
+                // layer.close(index);
+                var c_banknum = $("input[name='c_banknum']").val(); // 卡号
+                var oi_front_bank = $("input[name='oi_front_bank']").val(); // picture
+
+                var _csrfparam = "<?=Yii::$app->getRequest()->csrfParam?>";
+                var _csrfvalue = "<?=Yii::$app->getRequest()->getCsrfToken()?>";
+                var c_bank = $("select[name=c_bank]").val();
+                if ('' == c_bank) {
+                    return layer.warn("请选择银行");
+                }
+                if ('' == c_banknum) {
+                    return layer.warn("请填写银行卡号");
+                }
+                if ('' == oi_front_bank) {
+                    return layer.warn("请上传银行卡照片");
+                }
+                var customer_id = "<?=$model['o_customer_id']?>";
+                var o_images_id = "<?=$model['o_images_id']?>";
+                var data = {customer_id: customer_id, c_bank: c_bank, c_banknum: c_banknum, oi_front_bank: oi_front_bank, o_images_id: o_images_id};
+                data[_csrfparam] = _csrfvalue;
+                var params = {
+                    url: "<?= Yii::$app->getUrlManager()->createUrl(['customer/change-bank-info']);?>",
+                    dataType: "json",
+                    type: "post",
+                    data: data,
+                    success: function (res) {
+                        if (res.status == 1) {
+                            layer.close(index);
+                            return layer.alert(res.message);
+                        } else {
+                            // 弹出错误信息
+                            return layer.error(res.message);
+                        }
+                    },
+                    error: function () {
+                        that.showErrorNotice();
+                    },
+                    complete: function () {
+                        that.hideLoading();
+                    },
+                };
+                $.ajax(params);
+            }
+        };
+        layer.open(params);
+    });
+</script>
+
+<?= \yii\bootstrap\Html::jsFile('@web/js/plugins/puupload/plupload.full.min.js') ?>
+<script>
+    var loading = null;
+    function loadinit($name) {
+
+        var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
+            browse_button: 'browse-' + $name,
+            url: '<?= Yii::$app->getUrlManager()->createUrl(['customer/upload']);?>',
+
+            silverlight_xap_url: 'js/Moxie.xap',
+            filters: {
+                mime_types: [ //只允许上传图片文件
+                    {title: "图片文件", extensions: "jpg,gif,png"}
+                ]
+            },
+            multipart_params: {
+                '_csrf-backend': '<?= Yii::$app->getRequest()->getCsrfToken(); ?>'
+            }
+        });
+        uploader.init(); //初始化
+
+        //绑定文件添加进队列事件
+        uploader.bind('FilesAdded', function (uploader, files) {
+            for (var i = 0, len = files.length; i < len; i++) {
+                //构造html来更新UI
+                !function (i) {
+                    previewImage(files[i], function (imgsrc) {
+                        $('#file-list-' + $name + '  img').replaceWith('<img src="' + imgsrc + '" />');
+                    })
+                }(i);
+            }
+        });
+
+        uploader.bind('FileUploaded', function (uploader, file, responseObject) {
+            layer.close(loading);
+
+            layer.msg('上传成功', {icon: 1});
+            var key = responseObject.response;
+            $("input[name='" + $name+"']").val(key);
+        });
+
+        //plupload中为我们提供了mOxie对象
+        //有关mOxie的介绍和说明请看：https://github.com/moxiecode/moxie/wiki/API
+        //如果你不想了解那么多的话，那就照抄本示例的代码来得到预览的图片吧
+        function previewImage(file, callback) {//file为plupload事件监听函数参数中的file对象,callback为预览图片准备完成的回调函数
+            if (!file || !/image\//.test(file.type)) return; //确保文件是图片
+            if (file.type == 'image/gif') {//gif使用FileReader进行预览,因为mOxie.Image只支持jpg和png
+                var fr = new mOxie.FileReader();
+                fr.onload = function () {
+                    callback(fr.result);
+                    fr.destroy();
+                    fr = null;
+                }
+                fr.readAsDataURL(file.getSource());
+            } else {
+                var preloader = new mOxie.Image();
+                preloader.onload = function () {
+                    preloader.downsize(300, 300);//先压缩一下要预览的图片,宽300，高300
+                    var imgsrc = preloader.type == 'image/jpeg' ? preloader.getAsDataURL('image/jpeg', 80) : preloader.getAsDataURL(); //得到图片src,实质为一个base64编码的数据
+                    callback && callback(imgsrc); //callback传入的参数为预览图片的url
+                    preloader.destroy();
+                    preloader = null;
+                };
+                preloader.load(file.getSource());
+            }
+        }
+
+        document.getElementById('start_upload_' + $name).onclick = function () {
+            loading = layer.load(3);
+            uploader.start(); //调用实例对象的start()方法开始上传文件，当然你也可以在其他地方调用该方法
+        }
+    }
+
+    loadinit('oi_front_bank');
+</script>

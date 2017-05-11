@@ -21,9 +21,11 @@ $this->title = '借款详情';
 
                     <div class="lightBoxGallery">
                         <?php
-                        foreach ($data as $v) {
+                        $_notice_name = (new \common\models\OrderImages())->attributeLabels();
+                        foreach ($data as $k=>$v) {
                             if (!empty($v)) {
                                 ?>
+                                <strong><?=$_notice_name[$k];?></strong>
                                 <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
                                    data-gallery="">
                                     <img height="200" width="200"
