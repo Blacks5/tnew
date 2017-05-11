@@ -71,6 +71,7 @@ class BaseUploadFile extends CoreApiModel
     protected function getUrlBase($key)
     {
         // 1,原始url加工两个参数e和token
+//        $url = $this->handle->privateDownloadUrl($this->domain. $key. "?imageslim"); // 图片瘦身用法，要收费
         $url = $this->handle->privateDownloadUrl($this->domain. $key);
         return $url;
         // 2，计算token
