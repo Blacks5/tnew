@@ -552,7 +552,7 @@ class OrderController extends CoreApiController
 
         $userinfo = Yii::$app->getUser();
         $uid = $userinfo->getId();
-        $days = Yii::$app->getRequest()->get('days', 1);
+        $days = Yii::$app->getRequest()->get('days', 0);
 //        $days = 0;
         /*$select = [
             'sum(r_overdue_money) AS total_overdue_money',
@@ -572,7 +572,7 @@ class OrderController extends CoreApiController
             $query->where(['o_user_id'=>$uid]);
         }
 
-        $query->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
+//        $query->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
 
         $data = $query->andFilterWhere(['>=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
 
