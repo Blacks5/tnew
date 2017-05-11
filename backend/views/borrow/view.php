@@ -458,7 +458,6 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
     </div>
 </div>
 
-<?php p($model) ?>
 <!--弹窗内容-->
 <style>
     #xx {
