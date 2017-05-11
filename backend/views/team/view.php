@@ -39,19 +39,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                 $("#calTeamYJ").on('click', function () {
+                    var index = layer.loading(3);
+
                     var st = $("input[name='start_time']").val();
                     var et = $("input[name='end_time']").val();
                     var teamid = "<?=$model->t_id;?>";
                     var url = "<?=\yii\helpers\Url::to(['team/cal-yj'])?>";
                     $.getJSON(url, {st: st, et: et, teamid: teamid}, function (res) {
                         if (1 == res.status) {
+                            layer.close(index);
                             $("#o_is_add_service_fee").text(res.data.o_is_add_service_fee);
                             $("#o_is_free_pack_fee").text(res.data.o_is_free_pack_fee);
                             $("#total_orders").text(res.data.total_orders+" 笔");
                             $("#success_total_orders").text(res.data.success_total_orders+" 笔");
                             $("#total_borrow_money").text(res.data.total_borrow_money+" 元");
                             $("#calYj").show();
-                            console.log(res.data);
                         } else {
                             layer.error(res.message);
                         }
