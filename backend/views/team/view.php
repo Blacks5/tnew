@@ -3,9 +3,64 @@ $this->title = $model->t_name;
 $this->params['breadcrumbs'][] = ['label' => '团队列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 <div class="ibox float-e-margins">
     <div class="ibox-content">
+
+
+
+
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate" action="" method="post">
+            <div class="row">
+                    <div class="col-sm-2 col-lg-push-2">
+                        <div class="input-daterange input-group" id="datepicker">
+                            <input type="text" class="form-control" name="start_time" placeholder="开始时间">
+                            <span class="input-group-addon ">到</span>
+                            <input type="text" class="form-control" name="end_time" placeholder="结束时间">
+                        </div>
+                    </div>
+                    <div class="col-sm-2  col-lg-push-2">
+                                <span class="input-group-btn">
+                                    <button id="calTeamYJ" type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 统计团队业绩</button>
+                                </span>
+                    </div>
+
+            </div>
+            <script>
+                $('#datepicker').datepicker({
+                    todayBtn: "linked",
+                    keyboardNavigation: true,
+                    forceParse: true,
+                    autoclose:true,
+                    format: "yyyy-mm-dd",
+                    todayHighlight: true
+                });
+
+
+                $("#calTeamYJ").on('click', function () {
+                    var st = $("input[name='start_time']").val();
+                    var et = $("input[name='end_time']").val();
+                    var teamid = "<?=$model->t_id;?>";
+                    var url = "<?=\yii\helpers\Url::to(['team/cal-yj'])?>";
+                    $.getJSON(url, {st: st, et: et, teamid: teamid}, function (res) {
+                        if(1 == res.status){
+                            console.log(res.data);
+                        }else{
+                            layer.error(res.message);
+                        }
+                    })
+                });
+            </script>
+            <p>个人保证计划捆绑率：10%</p>
+            <p>贵宾服务包捆绑率：10%</p>
+            <p>总提单：10%</p>
+            <p>成功提单：10%</p>
+            <p>总借出金额：10%</p>
+
+
+            <br>
             <div class="form-group">
                 <strong class="col-sm-3 text-right">团队名：</strong>
                 <div class="col-sm-8">

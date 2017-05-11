@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 use backend\core\CoreBackendController;
+use common\models\Orders;
 use common\models\Team;
 use common\models\TeamUser;
 use common\components\Helper;
@@ -113,7 +114,9 @@ class TeamController extends CoreBackendController
     public function actionView($t_id)
     {
         if ($model = Team::findOne(['t_id' => $t_id])) {
-            return $this->render('view', ['model' => $model]);
+            $sear['start_time'] = 1;
+            $sear['end_time'] = 1;
+            return $this->render('view', ['model' => $model, 'sear'=>$sear]);
         } else {
             return Yii::$app->getRespontse()->redirect(['index']);
         }
@@ -258,6 +261,86 @@ class TeamController extends CoreBackendController
     }
 
 
+    /*<p>个人保证计划捆绑率：10%</p>
+            <p>贵宾服务包捆绑率：10%</p>
+            <p>总提单：10%</p>
+            <p>成功提单：10%</p>
+            <p>总借出金额：10%</p>*/
+    /**
+     * 以团队为单位 统计业绩
+     *
+     *
+    /*select
+    (select sum(o_is_add_service_fee) from orders where o_user_id in (select tu_sale_id from team_user where tu_tid=9) and o_status in (5, 10)) as total_success_o_is_add_service_fee  -- 总成功数量  个人保证计划
+    ,(select sum(o_is_free_pack_fee) from orders where o_user_id in (select tu_sale_id from team_user where tu_tid=9) and o_status in (5, 10))  as total_success_o_is_free_pack_fee -- 总成功数量 贵宾包
+    ,count(*) as total -- 总提单
+    ,(select count(*) from orders where o_user_id in (select tu_sale_id from team_user where tu_tid=9) and o_status in (5, 10)) as total_success -- 总成功提单
+    ,(select sum(o_total_price) from orders where o_user_id in (select tu_sale_id from team_user where tu_tid=9) and o_status in (5, 10)) as total_o_total_price -- 总借出金额
+    from orders where o_user_id in (select tu_sale_id from team_user where tu_tid=9)
+
+    o_created_at
+
+     *
+     * @return array
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionCalYj()
+    {
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
+            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+            try{
+                $st = $request->get('st');
+                $et = $request->get('et');
+                $teamid = $request->get('teamid');
+                $dv = new yii\validators\DateValidator();
+                $dv->format = 'php:Y-m-d';
+                if((false === $dv->validate($st)) || (false === $dv->validate($et))) {
+                    throw new CustomBackendException('时间格式错误');
+                }
+                $st = strtotime($st);
+                $et = strtotime($et. ' 23:59:59');
+                    // 订单成功的状态
+                $success_status = [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER];
+                // 团队的所有成员
+                $sub_users = (new yii\db\Query())->from('team_user')->select(['tu_sale_id'])->where(['tu_tid'=>$teamid]);
+
+                // 个人保障计划捆绑成功 总数
+                $sub_o_is_add_service_fee = (new yii\db\Query())->select(['sum(o_is_add_service_fee)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
+                // 贵宾服务包捆绑成功 总数
+                $sub_o_is_free_pack_fee = (new yii\db\Query())->select(['sum(o_is_free_pack_fee)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
+                // 总成功提单
+                $sub_total_success_orders = (new yii\db\Query())->select(['count(*)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
+                // 总提单
+                $sub_total__orders = (new yii\db\Query())->select(['count(*)'])->from('orders')->where(['o_user_id'=>$sub_users]);
+                // 总借出
+                $sub_total_borrow = (new yii\db\Query())->select(['sum(o_total_price)'])->from('orders')->where(['o_user_id'=>$sub_users])->andWhere(['o_status'=>$success_status]);
+
+
+                $data = (new yii\db\Query())->from('orders')->select([
+                    'total_success_o_is_add_service_fee'=>$sub_o_is_add_service_fee,// 个人保障计划捆绑成功 总数
+                    'total_success_o_is_free_pack_fee'=>$sub_o_is_free_pack_fee,// 贵宾服务包捆绑成功 总数
+                    'total_success_orders'=>$sub_total_success_orders,// 总成功提单
+                    'total_o_total_price'=>$sub_total_borrow,// 总借出
+                    'sub_total__orders'=>$sub_total__orders // 总提单
+                ])->where(['o_user_id'=>$sub_users])->one();
+
+                $data = [
+                    'o_is_add_service_fee'=>round($data['total_success_o_is_add_service_fee']/$data['total_success_orders']*100, 2). '%', // 个人保证计划捆绑率
+                    'o_is_free_pack_fee'=>round($data['total_success_o_is_free_pack_fee']/$data['total_success_orders']*100, 2). '%', // 贵宾服务包捆绑率
+                    'total_orders'=>$data['sub_total__orders'], // 总提单
+                    'success_total_orders'=>$data['total_success_orders'], // 成功提单
+                    'total_borrow_money'=>round($data['total_o_total_price'], 2) // 总借出金额
+                ];
+                return ['status'=>1, 'data'=>$data, 'message'=>'success'];
+            }catch (CustomBackendException $e){
+                return ['status'=>0, 'message'=>$e->getMessage()];
+            }catch (\Exception $e){
+                return ['status'=>0, 'message'=>'网络错误'];
+            }
+
+        }
+    }
 
 }
 
