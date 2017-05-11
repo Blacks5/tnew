@@ -566,9 +566,13 @@ class OrderController extends CoreApiController
         ];
         $query = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
-            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
-//            ->where(['o_user_id'=>$uid])
-            ->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
+            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
+        // uid为1的可以看所有的
+        if(1 != $uid){
+            $query->where(['o_user_id'=>$uid]);
+        }
+
+        $query->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
 
         $data = $query->andFilterWhere(['>=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
 
