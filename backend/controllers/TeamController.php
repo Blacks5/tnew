@@ -360,7 +360,6 @@ class TeamController extends CoreBackendController
             }catch (CustomBackendException $e){
                 return ['status'=>0, 'message'=>$e->getMessage()];
             }catch (\Exception $e){
-                p($e->getMessage());
                 return ['status'=>0, 'message'=>'网络错误'];
             }
 

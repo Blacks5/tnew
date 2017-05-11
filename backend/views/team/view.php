@@ -10,22 +10,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="ibox-content">
 
 
-
-
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate" action="" method="post">
             <div class="row">
-                    <div class="col-sm-2 col-lg-push-2">
-                        <div class="input-daterange input-group" id="datepicker">
-                            <input type="text" class="form-control" name="start_time" placeholder="开始时间">
-                            <span class="input-group-addon ">到</span>
-                            <input type="text" class="form-control" name="end_time" placeholder="结束时间">
-                        </div>
+                <div class="col-sm-2">
+                    <div class="input-daterange input-group" id="datepicker">
+                        <input type="text" class="form-control" name="start_time" placeholder="开始时间">
+                        <span class="input-group-addon ">到</span>
+                        <input type="text" class="form-control" name="end_time" placeholder="结束时间">
                     </div>
-                    <div class="col-sm-2  col-lg-push-2">
+                </div>
+                <div class="col-sm-2">
                                 <span class="input-group-btn">
-                                    <button id="calTeamYJ" type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 统计团队业绩</button>
+                                    <button id="calTeamYJ" type="submit" class="btn btn-primary"><i
+                                                class="fa fa-search"></i> 统计团队业绩</button>
                                 </span>
-                    </div>
+                </div>
 
             </div>
             <script>
@@ -33,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     todayBtn: "linked",
                     keyboardNavigation: true,
                     forceParse: true,
-                    autoclose:true,
+                    autoclose: true,
                     format: "yyyy-mm-dd",
                     todayHighlight: true
                 });
@@ -45,30 +44,62 @@ $this->params['breadcrumbs'][] = $this->title;
                     var teamid = "<?=$model->t_id;?>";
                     var url = "<?=\yii\helpers\Url::to(['team/cal-yj'])?>";
                     $.getJSON(url, {st: st, et: et, teamid: teamid}, function (res) {
-                        if(1 == res.status){
+                        if (1 == res.status) {
+                            $("#o_is_add_service_fee").text(res.data.o_is_add_service_fee);
+                            $("#o_is_free_pack_fee").text(res.data.o_is_free_pack_fee);
+                            $("#total_orders").text(res.data.total_orders+" 笔");
+                            $("#success_total_orders").text(res.data.success_total_orders+" 笔");
+                            $("#total_borrow_money").text(res.data.total_borrow_money+" 元");
+                            $("#calYj").show();
                             console.log(res.data);
-                        }else{
+                        } else {
                             layer.error(res.message);
                         }
                     })
                 });
             </script>
-            <p>个人保证计划捆绑率：10%</p>
-            <p>贵宾服务包捆绑率：10%</p>
-            <p>总提单：10%</p>
-            <p>成功提单：10%</p>
-            <p>总借出金额：10%</p>
+            <span id="calYj" style="display: none">
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <strong class="col-sm-2 text-right">个人保证计划捆绑率：</strong>
+                    <div class="col-sm-8">
+                        <span class="form-control-static label label-success" id="o_is_add_service_fee">1</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <strong class="col-sm-2 text-right">贵宾服务包捆绑率：</strong>
+                    <div class="col-sm-8">
+                        <span class="form-control-static label label-success" id="o_is_free_pack_fee">1</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <strong class="col-sm-2 text-right">总提单：</strong>
+                    <div class="col-sm-8">
+                        <span class="form-control-static label label-success" id="total_orders">1</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <strong class="col-sm-2 text-right">成功提单：</strong>
+                    <div class="col-sm-8">
+                        <span class="form-control-static label label-success" id="success_total_orders">1</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <strong class="col-sm-2 text-right">总借出金额：</strong>
+                    <div class="col-sm-8">
+                        <span class="form-control-static label label-success" id="total_borrow_money">1</span>
+                    </div>
+                </div>
+            </span>
 
-
-            <br>
             <div class="form-group">
-                <strong class="col-sm-3 text-right">团队名：</strong>
+                <strong class="col-sm-2 text-right">团队名：</strong>
                 <div class="col-sm-8">
                     <span class="form-control-static label label-warning"><?= $model->t_name; ?></span>
                 </div>
             </div>
             <div class="form-group">
-                <strong class="col-sm-3 text-right">负责区域：</strong>
+                <strong class="col-sm-2 text-right">负责区域：</strong>
                 <div class="col-sm-2">
                     <span class="form-control-static label label-info">
                         <?= \common\components\Helper::getAddrName($model->t_province); ?>
@@ -82,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-8 col-sm-offset-3">
+                <div class="col-sm-3 col-sm-offset-2">
                     <!--<a class="btn btn-primary" href="<? /*=Yii::$app->getUrlManager()->createUrl(['team/update', 'id'=>$model->t_id])*/ ?>">编辑</a>-->
                     <a class="btn btn-default"
                        href="<?= Yii::$app->getUrlManager()->createUrl(['team/index']) ?>">返回</a>
