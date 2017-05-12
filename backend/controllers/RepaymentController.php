@@ -140,7 +140,7 @@ class RepaymentController extends CoreBackendController
         $model = new RepaymentSearch();
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
         $query = $query
-            ->andWhere(['>', 'r_overdue_day', 0]);
+            ->andWhere(['>', 'r_overdue_day', 0])->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
