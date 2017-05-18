@@ -201,7 +201,8 @@ class BorrowController extends CoreBackendController
                 $o_operator_remark = trim($request->post('remark'));
                 $userinfo = Yii::$app->getUser()->getIdentity();
                 // 状态必须为6（初审通过）的才可以终审
-                if (!$model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one()) {
+                $model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one();
+                if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
                 $model->o_status = Orders::STATUS_PAYING;
@@ -214,6 +215,9 @@ class BorrowController extends CoreBackendController
                 }
 
                 // 生成还款计划
+                if(Repayment::find()->where(['r_orders_id'=>$order_id])->exists()){
+                    throw new CustomBackendException('', 5);
+                }
                 CalInterest::genRefundPlan($order_id);
 
                 // 累积 客户的 总借款金额
