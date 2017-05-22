@@ -84,6 +84,34 @@ class OrderController extends CoreApiController
     }
 
     /**
+     * 根据商品类型选择对应的产品
+     * 2017-05-22新增
+     * @return array
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionGetProductsByType()
+    {
+        // 可选产品
+        try {
+            $p_type = Yii::$app->getRequest()->get('p_type');
+            $select = ['p_id', 'p_name', 'p_month_rate', 'p_period', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'];
+            $products = (new yii\db\Query())->select($select)
+                ->from(Product::tableName())->where(['p_status' => Product::STATUS_OK, 'p_type' => $p_type])->all();
+            if(false === !empty($products)){
+                throw new CustomApiException('没有相关产品');
+            }
+            return ['status' => 1, 'data' => $products, 'message'=>'获取成功'];
+        }catch (CustomApiException $e){
+            return ['status' => 0, 'data'=>[], 'message' => $e->getMessage()];
+        }catch (\Exception $e){
+            return ['status' => 0, 'data'=>[], 'message' => '网络异常'];
+        }
+    }
+
+
+
+
+    /**
      * 提交订单
      * @author 涂鸿 <hayto@foxmail.com>
      */
