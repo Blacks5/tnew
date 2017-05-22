@@ -108,6 +108,34 @@ class OrderController extends CoreApiController
         }
     }
 
+    /**
+     * 根据当前登录的销售，获取对应的商户
+     * 2017-05-22新增
+     * @return array
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionGetStoresByUser()
+    {
+        // 可选产品
+        try {
+            $userinfo = Yii::$app->getUser()->getIdentity();
+            // select * from stores where s_id in (select ss_store_id from stores_saleman where ss_saleman_id =$id)
+            $sub = (new yii\db\Query())->from('stores_saleman')->select(['ss_store_id'])->where(['ss_saleman_id'=>$userinfo['id']]);
+
+            // 可选商户 同一个区县
+            $stores = (new yii\db\Query())->select(['s_id', 's_name'])
+                ->from(Stores::tableName())->where(['s_status' => Stores::STATUS_ACTIVE, 's_county' => $userinfo->county, 's_id'=>$sub])->all();
+            if(false === !empty($stores)){
+                throw new CustomApiException('该销售代表尚未绑定商户，请联系相关负责人进行绑定');
+            }
+            return ['status' => 1, 'data' => $stores, 'message'=>'获取成功'];
+        }catch (CustomApiException $e){
+            return ['status' => 0, 'data'=>[], 'message' => $e->getMessage()];
+        }catch (\Exception $e){
+            return ['status' => 0, 'data'=>[], 'message' => '网络异常'];
+        }
+    }
+
 
 
 
