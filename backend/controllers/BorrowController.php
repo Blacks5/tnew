@@ -165,7 +165,7 @@ class BorrowController extends CoreBackendController
                 if (!$model = Orders::find()->where(['o_status' => Orders::STATUS_WAIT_CHECK, 'o_id' => $order_id])->one()) {
                     throw new CustomBackendException('订单状态已经改变，不可审核！', 4);
                 }
-                $model->o_status = Orders::STATUS_WAIT_CHECK_AGAIN;
+                $model->o_status = Orders::STATUS_WAIT_APP_UPLOAD_AGAIN;
                 $model->o_operator_id = $userinfo->id;
                 $model->o_operator_realname = $userinfo->realname;
                 $model->o_operator_date = $_SERVER['REQUEST_TIME'];

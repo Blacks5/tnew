@@ -164,7 +164,7 @@ class OrderController extends CoreApiController
     public function actionWaitUploadImages()
     {
         $where = ['and',
-            ['o_status' => [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]], // 不完整的订单
+            ['o_status' => [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_APP_UPLOAD_AGAIN]], // 不完整的订单
             ['o_user_id' => Yii::$app->getUser()->getIdentity()->getId()], // 只读当前登录用户的
         ];
         try {
@@ -298,7 +298,7 @@ class OrderController extends CoreApiController
         try {
             $order_status = (new yii\db\Query())->from(Orders::tableName())->select(['o_status'])->where(['o_id' => $oid, 'o_user_id' => $userinfo->getId()])->scalar();
             // 只能删订单状态是 不完整 的
-            if (($order_status != Orders::STATUS_NOT_COMPLETE) && ($order_status != Orders::STATUS_WAIT_CHECK_AGAIN)) {
+            if (($order_status != Orders::STATUS_NOT_COMPLETE) && ($order_status != Orders::STATUS_WAIT_APP_UPLOAD_AGAIN)) {
                 throw new CustomApiException('该订单状态不允许删除图片');
             }
 //            if($order_image_model = OrderImages::findOne(['oi_id'=>$oid, 'oi_user_id'=>$userinfo->getId()])){

@@ -34,6 +34,7 @@ class Orders extends CoreCommonActiveRecord
     const STATUS_REFUSE = 1; // 拒绝
     const STATUS_WAIT_CHECK = 0; // 待审核
     const STATUS_WAIT_CHECK_AGAIN = 6; // 待二审
+    const STATUS_WAIT_APP_UPLOAD_AGAIN = 7; // 待APP再次上传
     const STATUS_PAYING = 10; // 还款中
     const STATUS_PAY_OVER = 5; // 已还清
     const STATUS_CANCEL = 4; // 取消
