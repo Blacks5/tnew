@@ -247,7 +247,7 @@ class OrderController extends CoreApiController
             ->where(['o_id' => $oid, 'o_user_id' => Yii::$app->getUser()->getIdentity()->getId()])
             ->andWhere(['o_status'=>[Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]])
             ->one();
-
+var_dump($data);die;
         if ($data) {
             $model = new UploadFile();
             foreach ($data as $k => $v) {
