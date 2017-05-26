@@ -58,7 +58,7 @@ class Orders extends CoreCommonActiveRecord
             self::STATUS_CANCEL=>'已取消',
             self::STATUS_REVOKE=>'已撤销',
             self::STATUS_NOT_COMPLETE=>'未上传图片',
-            self::STATUS_WAIT_APP_UPLOAD_AGAIN=>'待APP再次上传',
+            self::STATUS_WAIT_APP_UPLOAD_AGAIN=>'待再次上传照片',
         ];
     }
 
