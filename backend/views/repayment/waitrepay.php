@@ -92,7 +92,7 @@ use yii\helpers\Url;
                                                         <td class="client-status"><?= $_v['r_total_repay'] + 0; ?>元</td>
                                                         <td class="client-status"><?= $_v['r_principal']; ?></td>
                                                         <td class="client-status"><?= $_v['r_interest']; ?></td>
-                                                        <td class="client-status"><?= $_v['r_add_service_fee']; ?>元</td>
+                                                        <td class="client-status"><?= $_v['r_add_service_fee']; ?></td>
                                                         <td class="client-status"><?= $_v['r_free_pack_fee']; ?></td>
                                                         <td class="client-status"><?= $_v['r_finance_mangemant_fee']; ?>
 
