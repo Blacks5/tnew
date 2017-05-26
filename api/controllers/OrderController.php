@@ -388,6 +388,8 @@ class OrderController extends CoreApiController
                     if (!empty($oi_model->oi_after_contract) === false) {
                         throw new CustomApiException('请上传合同照片');
                     }
+
+                    $model->o_status = Orders::STATUS_WAIT_CHECK_AGAIN; // 最后一次上传照片
                 }else{
                     $model->o_status = Orders::STATUS_WAIT_CHECK;
                 }
