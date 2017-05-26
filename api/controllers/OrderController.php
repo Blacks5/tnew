@@ -278,6 +278,7 @@ class OrderController extends CoreApiController
         if ($data) {
             $model = new UploadFile();
             foreach ($data as $k => $v) {
+                if(in_array($k, ['o_id', 'c_customer_cellphone', 'o_status'])) continue;
                 $url = '';
                 if (!empty($v)) {
                     $url = $model->getUrl($v);
