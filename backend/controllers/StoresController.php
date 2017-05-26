@@ -236,8 +236,9 @@ class StoresController extends CoreBackendController
                 if (!Stores::findOne($ss_store_id)) {
                     throw new CustomBackendException('店铺不存在');
                 }
+//                var_dump($request->post('ss_saleman_id'));die;
 
-                if (StoresSaleman::findOne(['ss_saleman_id' => $request->post('ss_saleman_id')])) {
+                if (StoresSaleman::findOne(['ss_saleman_id' => $request->post('ss_saleman_id'), 'ss_store_id'=>$ss_store_id])) {
                     throw new CustomBackendException('该销售已添加, 无法重复添加');
                 }
                 $model->ss_store_id = $ss_store_id;
