@@ -10,6 +10,7 @@
 namespace api\models;
 
 use api\components\CustomApiException;
+use common\models\Product;
 use common\models\Sms;
 use common\models\Tools;
 use common\models\Customer;
@@ -48,11 +49,21 @@ class OrdersHelper
         $total_deposit = 0; // 总首付
         $goods_num = 0; // 订单包含的商品数
         // 构造商品信息数组 todo 差个order_id
+
         $columns_goods = ['g_goods_name', 'g_goods_models', 'g_goods_price', 'g_goods_type', 'g_goods_deposit', 'g_order_id'];
+
         for($n=0; $n<$length; $n++){
             if(!isset($params['g_goods_models'][$n], $params['g_goods_price'][$n], $params['g_goods_type'][$n], $params['g_goods_deposit'][$n])){
                 continue;
             }
+            if(false === (new \yii\db\Query())->from(Product::tableName())->where(
+                [
+                    'p_status' => Product::STATUS_OK, 'p_type' => $params['g_goods_type'][$n],
+                    'p_id'=>$params['o_product_id']
+                ])->exists()){
+                throw new CustomApiException('商品和产品类型不匹配');
+            }
+
             if(0 >= $params['g_goods_price'][$n]){
                 throw new CustomApiException('商品价格异常');
             }
