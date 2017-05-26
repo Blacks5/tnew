@@ -287,6 +287,8 @@ class OrderController extends CoreApiController
             $res['data'] = $data1;
             $res['order_status'] = $data['o_status']; // 订单状态，方便客户端知道该验证哪个阶段的比传图片
             $res['c_customer_cellphone'] = $data['c_customer_cellphone']; // 客户手机号码，发验证码用
+
+            var_dump($data,$res);die;
             return ['status' => 1, 'message' => 'ok', 'data' => $res];
         }
         return ['status' => 0, 'message' => '无数据', 'data' => []];
