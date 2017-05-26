@@ -69,7 +69,7 @@ use yii\helpers\Url;
                                                     <th>本月应还总金额</th>
                                                     <th>本金(元)</th>
                                                     <th>利息(元)</th>
-                                                    <th>个人保证计划(%)</th>
+                                                    <th>个人保障计划(%)</th>
                                                     <th>贵宾服务包(元/月)</th>
                                                     <th>财务管理费(元)</th>
                                                     <th>客户管理费(元)</th>
@@ -95,10 +95,10 @@ use yii\helpers\Url;
                                                         <td class="client-status"><?= $_v['r_add_service_fee']; ?>元</td>
                                                         <td class="client-status"><?= $_v['r_free_pack_fee']; ?></td>
                                                         <td class="client-status"><?= $_v['r_finance_mangemant_fee']; ?>
-                                                            元
+
                                                         </td>
                                                         <td class="client-status"><?= $_v['r_customer_management']; ?>
-                                                            元
+
                                                         </td>
                                                         <td class="client-status"><?= $_v['r_serial_no'] . '/' . $_v['r_serial_total']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['r_pre_repay_date']) ?></td>
