@@ -238,7 +238,7 @@ class OrderController extends CoreApiController
     public function actionGetPics()
     {
         $oid = Yii::$app->getRequest()->get('oid');
-        $select = [/*'o_id', 'c_customer_cellphone', 'o_status', */'oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank'/*,'oi_back_bank'*/, 'oi_family_card_one', 'oi_family_card_two', 'oi_after_contract',
+        $select = ['o_id', 'c_customer_cellphone', 'o_status', 'oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank'/*,'oi_back_bank'*/, 'oi_family_card_one', 'oi_family_card_two', 'oi_after_contract',
             'oi_driving_license_one', 'oi_driving_license_two', 'oi_video', 'oi_pick_goods', 'oi_serial_num'];
         $data = (new yii\db\Query())->select($select)
             ->from(Orders::tableName())
@@ -247,7 +247,34 @@ class OrderController extends CoreApiController
             ->where(['o_id' => $oid, 'o_user_id' => Yii::$app->getUser()->getIdentity()->getId()])
             ->andWhere(['o_status'=>[Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_CHECK_AGAIN]])
             ->one();
-var_dump($data);die;
+        /**
+         * array(12) {
+        ["oi_front_id"]=>
+        string(48) "2017052618581541decba36bc70c40198b9ce6e5a11f0928"
+        ["oi_back_id"]=>
+        string(48) "20170526185827010aa71afd79b347da9d3bd416223bade2"
+        ["oi_customer"]=>
+        string(48) "20170526185837753374e33d7e694079b85121df90d20da7"
+        ["oi_front_bank"]=>
+        string(48) "2017052618584753c2f3f65396174e808c495ecfd4155509"
+        ["oi_family_card_one"]=>
+        string(0) ""
+        ["oi_family_card_two"]=>
+        string(0) ""
+        ["oi_after_contract"]=>
+        string(48) "201705261900419978c5964263ac45b2afa4ecb8ac39bea5"
+        ["oi_driving_license_one"]=>
+        string(0) ""
+        ["oi_driving_license_two"]=>
+        string(0) ""
+        ["oi_video"]=>
+        string(0) ""
+        ["oi_pick_goods"]=>
+        string(48) "20170526194111262c3e1d3cd8ba473db0e29544b9f35bb8"
+        ["oi_serial_num"]=>
+        string(0) ""
+        }
+         */
         if ($data) {
             $model = new UploadFile();
             foreach ($data as $k => $v) {
