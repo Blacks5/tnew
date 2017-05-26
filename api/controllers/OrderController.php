@@ -286,7 +286,7 @@ class OrderController extends CoreApiController
                 $data1[] = ['type' => $k, 'url' => $url, 'key' => $v];
             }
             $res['data'] = $data1;
-            $res['order_status'] = 6;//$data['o_status']; // 订单状态，方便客户端知道该验证哪个阶段的比传图片
+            $res['order_status'] = $data['o_status']; // 订单状态，方便客户端知道该验证哪个阶段的比传图片
             $res['c_customer_cellphone'] = $data['c_customer_cellphone']; // 客户手机号码，发验证码用
 
 //            var_dump($data,$res);die;
@@ -377,8 +377,8 @@ class OrderController extends CoreApiController
                     throw new CustomApiException(reset($msg));
                 }
 
-                // 如果是初审通过，订单状态是6， 就需要'oi_video', 'oi_after_contract' 都必须上传了
-                if ($model->o_status == Orders::STATUS_WAIT_CHECK_AGAIN) {
+                // 如果是初审通过，订单状态是7， 就需要'oi_video', 'oi_after_contract' 都必须上传了
+                if ($model->o_status == Orders::STATUS_WAIT_APP_UPLOAD_AGAIN) {
                     if (!empty($oi_model->oi_pick_goods) === false) {
                         throw new CustomApiException('请上传提货照');
                     }
