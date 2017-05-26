@@ -245,7 +245,7 @@ class OrderController extends CoreApiController
             ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
             ->where(['o_id' => $oid, 'o_user_id' => Yii::$app->getUser()->getIdentity()->getId()])
-            ->andWhere(['or', 'o_status', [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_APP_UPLOAD_AGAIN]])
+            ->andWhere(['in', 'o_status', [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_WAIT_APP_UPLOAD_AGAIN]])
             ->one();
 
         if ($data) {
