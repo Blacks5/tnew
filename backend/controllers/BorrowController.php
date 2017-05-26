@@ -216,7 +216,7 @@ class BorrowController extends CoreBackendController
 
                 // 生成还款计划
                 if(Repayment::find()->where(['r_orders_id'=>$order_id])->exists()){
-                    throw new CustomBackendException('', 5);
+                    throw new CustomBackendException('已存在还款计划', 5);
                 }
                 CalInterest::genRefundPlan($order_id);
 
