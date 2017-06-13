@@ -676,7 +676,7 @@ class OrderController extends CoreApiController
 
 
         $query = Repayment::find()
-            ->select(['*'])
+            ->select(['total_debt'=>'r_total_repay', 'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', 'o_id', 'o_serial_id'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
 //        $this->load($params);
