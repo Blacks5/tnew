@@ -58,6 +58,7 @@ class CustomerController extends CoreBackendController
             $v['c_created_at'] = date('Y-m-d H:i:s', $v['c_created_at']);
             $v['c_updated_at'] = date('Y-m-d H:i:s', $v['c_updated_at']);
         });
+//        var_dump($data);die;
         $provinces = Helper::getAllProvince();
         return $this->render('index', [
             'sear' => $model->getAttributes(),

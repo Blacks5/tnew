@@ -41,14 +41,14 @@ use common\components\Helper;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">总借款额度：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?= $model['c_total_borrow_times']; ?>元</p>
+                            <p class="form-control-static"><?= round($model['c_total_money']); ?>元</p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">总借款次数：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?= round($model['c_total_money']); ?>次</p>
+                            <p class="form-control-static"><?= $model['c_total_borrow_times']; ?>次</p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
