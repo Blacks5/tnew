@@ -681,9 +681,7 @@ class OrderController extends CoreApiController
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
 //        $this->load($params);
 
-        if(!$this->validate()){
-            return $query->andwhere('1=2');
-        }
+
 
         if(1 != $uid){
             $query->where(['o_user_id'=>$uid]);
