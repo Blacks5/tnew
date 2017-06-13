@@ -60,6 +60,8 @@ class CustomerSearch extends CoreCommonModel
         }
         if(self::BORROW_STATUS_FAIL === $this->borrow_status){
             $query->andWhere(['c_total_money'=>0]);
+        }else if(self::BORROW_STATUS_SUCCESS === $this->borrow_status){
+            $query->andWhere(['>', 'c_total_money', 0]);
         }
 
         return $query;
