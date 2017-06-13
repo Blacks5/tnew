@@ -650,7 +650,7 @@ class OrderController extends CoreApiController
             'sum(r_overdue_day) as total_overduy_day',
             '(max(r_balance)+sum(r_overdue_money)) as total_debt'
         ];*/
-        $select = [
+//        $select = [
        /*     'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt', 'o_id', 'o_serial_id'
         ];
         $query = Orders::find()->select($select)
@@ -680,9 +680,11 @@ class OrderController extends CoreApiController
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
 //        $this->load($params);
+
         if(!$this->validate()){
             return $query->andwhere('1=2');
         }
+
         if(1 != $uid){
             $query->where(['o_user_id'=>$uid]);
         }
