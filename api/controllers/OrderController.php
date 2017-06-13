@@ -678,7 +678,7 @@ class OrderController extends CoreApiController
         $query = Repayment::find()
             ->select(['*'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
-            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
+            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
 //        $this->load($params);
         if(!$this->validate()){
             return $query->andwhere('1=2');
