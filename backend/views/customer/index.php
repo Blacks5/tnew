@@ -114,7 +114,7 @@ use common\models\CustomerSearch;
                                     <th>手机号码</th>
                                     <th>地区</th>
                                     <th>总借款金额</th>
-                                    <th>最近借款时间</th>
+                                    <th>最近活动时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
