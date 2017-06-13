@@ -19,6 +19,7 @@ use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Product;
 use common\models\Repayment;
+use common\models\RepaymentSearch;
 use common\models\Sms;
 use common\models\Stores;
 use common\models\TooRegion;
@@ -650,7 +651,7 @@ class OrderController extends CoreApiController
             '(max(r_balance)+sum(r_overdue_money)) as total_debt'
         ];*/
         $select = [
-            'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt', 'o_id', 'o_serial_id'
+       /*     'r_overdue_money', 'c_customer_name', 'c_customer_cellphone', 'r_overdue_day', '(max(r_balance)+sum(r_overdue_money)) as total_debt', 'o_id', 'o_serial_id'
         ];
         $query = Orders::find()->select($select)
             ->leftJoin(Repayment::tableName(), 'o_id=r_orders_id')
@@ -669,7 +670,41 @@ class OrderController extends CoreApiController
             $v['r_overdue_money'] = round($v['r_overdue_money'], 2);
             $v['total_debt'] = round($v['total_debt'], 2);
         });
+        return ['status'=>1, 'message'=>'ok', 'data'=>$data];*/
+
+
+
+
+        $query = Repayment::find()
+            ->select(['*'])
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
+//        $this->load($params);
+        if(!$this->validate()){
+            return $query->andwhere('1=2');
+        }
+        if(1 != $uid){
+            $query->where(['o_user_id'=>$uid]);
+        }
+        $query->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
+        $query->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]); // 未还，
+        $data = $query->andFilterWhere(['<=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
+
+        array_walk($data, function(&$v){
+            $v['r_overdue_money'] = round($v['r_overdue_money'], 2);
+            $v['total_debt'] = round($v['total_debt'], 2);
+        });
         return ['status'=>1, 'message'=>'ok', 'data'=>$data];
+
+        /*{
+            "r_overdue_money": 16.76,
+            "c_customer_name": "刘浪",
+            "c_customer_cellphone": "18227191716",
+            "r_overdue_day": "6",
+            "total_debt": 2387.92,
+            "o_id": "112",
+            "o_serial_id": "170400000030772"
+        }*/
     }
 
 
