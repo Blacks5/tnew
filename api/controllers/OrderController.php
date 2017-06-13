@@ -661,6 +661,7 @@ class OrderController extends CoreApiController
         }
 
         $query->andWhere(['>', 'r_overdue_day', 0]); // 逾期天数>0，
+        $query->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]); // 未还，
 
         $data = $query->andFilterWhere(['<=', 'r_overdue_day', $days])->groupBy('r_id')->asArray()->all();
 
