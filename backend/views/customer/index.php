@@ -37,7 +37,7 @@ use common\models\CustomerSearch;
                             </div>
 
                             <div class="col-sm-2">
-                                <select class="input form-control" name="CustomerSearch[borrow_status]" id="user-province">
+                                <select class="input form-control" name="CustomerSearch[borrow_status]" id="user-provincex">
                                         <option value="">借款状态</option>
                                         <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_SUCCESS){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_SUCCESS?>">已通过</option>
                                         <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_FAIL){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_FAIL?>">未通过</option>
@@ -66,42 +66,7 @@ use common\models\CustomerSearch;
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                 </span>
                             </div>
-                            <script>
 
-                                var url = "<?=Url::toRoute(['user/get-sub-addr'])?>"; // 获取子地区
-
-                                // 省变化
-                                $("#user-province").change(function(){
-                                    var province_id = $(this).val();
-                                    $.get(url, {p_id:province_id}, function(data){
-                                        var dom = "<option value=''>选择市</option>";
-                                        var t = "<?=$sear['c_customer_city']?>";
-                                        $.each(data, function (k, v) {
-                                            dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
-                                        })
-                                        $("#user-city").html(dom);
-
-                                        $("#user-city").trigger("change");
-                                    });
-                                });
-
-                                // 市变化
-                                $("#user-city").change(function(){
-                                    var city_id = $(this).val();
-                                    $.get(url, {p_id:city_id}, function(data){
-                                        var dom = "<option value=''>选择县</option>";
-                                        var t = "<?=$sear['c_customer_county']?>";
-                                        $.each(data, function (k, v) {
-                                            dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
-                                        })
-                                        $("#user-county").html(dom);
-                                    });
-                                });
-                                // 初始化
-                                $("#user-province").trigger("change");
-                                $("#user-city").trigger("change");
-
-                            </script>
                         </form>
 
                         <div class="table-responsive">
@@ -118,6 +83,42 @@ use common\models\CustomerSearch;
                                     <th>操作</th>
                                 </tr>
                                 </thead>
+                                <script>
+
+                                    var url = "<?=Url::toRoute(['user/get-sub-addr'])?>"; // 获取子地区
+
+                                    // 省变化
+                                    $("#user-province").change(function(){
+                                        var province_id = $(this).val();
+                                        $.get(url, {p_id:province_id}, function(data){
+                                            var dom = "<option value=''>选择市</option>";
+                                            var t = "<?=$sear['c_customer_city']?>";
+                                            $.each(data, function (k, v) {
+                                                dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                            })
+                                            $("#user-city").html(dom);
+
+                                            $("#user-city").trigger("change");
+                                        });
+                                    });
+
+                                    // 市变化
+                                    $("#user-city").change(function(){
+                                        var city_id = $(this).val();
+                                        $.get(url, {p_id:city_id}, function(data){
+                                            var dom = "<option value=''>选择县</option>";
+                                            var t = "<?=$sear['c_customer_county']?>";
+                                            $.each(data, function (k, v) {
+                                                dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                            })
+                                            $("#user-county").html(dom);
+                                        });
+                                    });
+                                    // 初始化
+                                    $("#user-province").trigger("change");
+                                    $("#user-city").trigger("change");
+
+                                </script>
                                 <tbody>
                                 <?php foreach ($model as $vo) { ?>
                                     <tr>
