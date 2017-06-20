@@ -75,6 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <th>产品名</th>
                                                 <th class="client-status">期数</th>
                                                 <th>总金额</th>
+                                                <th>总还款金额</th>
                                                 <th>贷款金额</th>
                                                 <th>借款次数</th>
                                                 <th>提交时间</th>
@@ -93,6 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <td><?= $_v['p_name'] ?></td>
                                                     <td class="client-status"><?= $_v['p_period']; ?></td>
                                                     <td class="client-status"><?= $_v['o_total_price'] + 0; ?>元</td>
+                                                    <td class="client-status"><?= $_v['total_repay_money'] + 0; ?>元</td>
                                                     <td class="client-status"><?= $_v['o_total_price'] - $_v['o_total_deposit']; ?>
                                                         元
                                                     </td>

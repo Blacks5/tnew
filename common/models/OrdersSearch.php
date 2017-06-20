@@ -43,7 +43,7 @@ class OrdersSearch extends CoreCommonModel
             , 'customer.customer_name as c_customer_name', 'customer.customer_cellphone as c_customer_cellphone'
             /*, 'group_concat(goods.goods_name)'*/
         ];
-        $select = ['orders.*', 'product.*', 'customer.*'];
+        $select = ['orders.*', 'product.*', 'customer.*', 'total_repay_money'=>new yii\db\Expression("sum(r_total_repay)")];
         /*
          * 搜索条件：借款人姓名，借款人电话     产品名 商品名
          * */
@@ -53,6 +53,7 @@ class OrdersSearch extends CoreCommonModel
             ->select($select)
             ->leftJoin(Product::tableName(). ' product', 'product.p_id=orders.o_product_id') // 关联产品
             ->leftJoin(Customer::tableName(). ' customer', 'customer.c_id=orders.o_customer_id') // 关联客户
+            ->leftJoin(Repayment::tableName(). ' repayment', 'repayment.r_orders_id=orders.o_id') // 要统计总还款金额
         ;
         if(!$this->validate()){
             return $query->where('1=2');
