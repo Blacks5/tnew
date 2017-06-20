@@ -44,10 +44,12 @@ use common\core\CoreCommonActiveRecord;
 class Stores extends CoreCommonActiveRecord
 {
     // 10正常  1审核拒绝 2关闭
-    const STATUS_ACTIVE = 10;
-    const STATUS_REFUSE = 1;
-    const STATUS_STOP = 2;
-    const STATUS_DELETE = 0;
+    const STATUS_ACTIVE = 10; // 激活
+    const STATUS_REFUSE = 1; //审核拒绝
+    const STATUS_STOP = 2; // 关闭
+    const STATUS_DELETE = 0; // 删除
+    const STATUS_WAIT_ACTIVE = 3; // 待激活
+    const STATUS_FREEZED = 4; // 冻结
 
     // 是否对私账户
     const BANK_PRIVATE = 1;
@@ -115,9 +117,11 @@ class Stores extends CoreCommonActiveRecord
     public static function getAllStatus()
     {
         return [
-            Stores::STATUS_ACTIVE=>'正常',
-            Stores::STATUS_STOP=>'关闭',
-            Stores::STATUS_REFUSE=>'审核拒绝'
+            self::STATUS_ACTIVE=>'正常',
+            self::STATUS_STOP=>'关闭',
+            self::STATUS_REFUSE=>'审核拒绝',
+            self::STATUS_WAIT_ACTIVE=>'待激活',
+            self::STATUS_FREEZED=>'冻结'
         ];
     }
 

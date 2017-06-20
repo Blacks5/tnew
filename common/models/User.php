@@ -32,10 +32,10 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
 
 
     // 10正常 0删除 1禁用 2离职
-    const STATUS_ACTIVE = 10;
-    const STATUS_DELETE = 0;
-    const STATUS_STOP = 1;
-    const STATUS_LEAVE = 2;
+    const STATUS_ACTIVE = 10; // 激活
+    const STATUS_DELETE = 0; // 删除
+    const STATUS_STOP = 1; // 停止使用（冻结）
+    const STATUS_LEAVE = 2; // 离职
 
     /**
      * 返回员工所有状态
@@ -45,8 +45,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public static function getAllStatus()
     {
         return [
-            self::STATUS_ACTIVE => '正常',
-            self::STATUS_STOP => '锁定',
+            self::STATUS_ACTIVE => '激活',
+            self::STATUS_STOP => '冻结',
             self::STATUS_LEAVE => '离职',
         ];
     }
