@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <th>客户电话</th>
                                                 <th>产品名</th>
                                                 <th class="client-status">期数</th>
-                                                <th>总金额</th>
+                                                <th>商品总金额</th>
                                                 <th>总还款金额</th>
                                                 <th>贷款金额</th>
                                                 <th>借款次数</th>
