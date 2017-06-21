@@ -41,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                    class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="Stores[s_owner_email]"
-                                   value="<?php echo $sear['s_owner_email']; ?>" placeholder="负责人邮箱"
+                            <input type="text" name="Stores[s_name]"
+                                   value="<?php echo $sear['s_name']; ?>" placeholder="商户名"
                                    class="input form-control">
                         </div>
                         <div class="col-sm-1">

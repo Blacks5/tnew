@@ -96,7 +96,7 @@ class Stores extends CoreCommonActiveRecord
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['search'] = ['s_owner_email', 's_owner_phone', 's_owner_name', 's_province', 's_city', 's_county'];
+        $scen['search'] = ['s_name', 's_owner_phone', 's_owner_name', 's_province', 's_city', 's_county'];
         return $scen;
     }
 
@@ -192,6 +192,7 @@ class Stores extends CoreCommonActiveRecord
 
         $query->andFilterWhere(['like', 's_owner_name', $this->s_owner_name])
             ->andFilterWhere(['like', 's_owner_phone', $this->s_owner_phone])
+            ->andFilterWhere(['like', 's_name', $this->s_name])
             ->andFilterWhere(['like', 's_owner_email', $this->s_owner_email]);
         $query->andFilterWhere(['s_province'=>$this->s_province]);
         $query->andFilterWhere(['s_city'=>$this->s_city]);
