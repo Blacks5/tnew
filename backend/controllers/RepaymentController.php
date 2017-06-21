@@ -11,6 +11,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
+use common\components\Helper;
 use common\models\Customer;
 use common\models\Orders;
 use common\models\OrdersSearch;
@@ -122,11 +123,14 @@ class RepaymentController extends CoreBackendController
         $pages = new Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
+        $provinces = Helper::getAllProvince();
         return $this->render('payoverlist', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages,
+            "provinces"=>$provinces
         ]);
     }
 

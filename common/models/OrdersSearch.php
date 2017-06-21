@@ -27,12 +27,16 @@ class OrdersSearch extends CoreCommonModel
     public $goods_name;
     public $start_time;
     public $end_time;
+    public $c_customer_province;
+    public $c_customer_city;
+    public $c_customer_county;
     public $customer_id; // customer_id 客户ID
     public function rules()
     {
         return [
             [['customer_name', 'customer_cellphone', 'product_name', 'goods_name', 'start_time', 'end_time'], 'safe'],
-            [['customer_id'], 'number']
+            [['customer_id'], 'number'],
+            [['c_customer_province', 'c_customer_city', 'c_customer_county'], 'safe']
         ];
     }
 
@@ -70,7 +74,11 @@ class OrdersSearch extends CoreCommonModel
 
         $query->andFilterWhere(['like', 'customer.c_customer_name', $this->customer_name])
             ->andFilterWhere(['like', 'customer.c_customer_cellphone', $this->customer_cellphone])
-            ->andFilterWhere(['like', 'product.p_name', $this->product_name]);
+            ->andFilterWhere(['like', 'product.p_name', $this->product_name])
+            ->andFilterWhere(['c_customer_province'=>$this->c_customer_province])
+            ->andFilterWhere(['c_customer_city'=>$this->c_customer_city])
+            ->andFilterWhere(['c_customer_county'=>$this->c_customer_county])
+        ;
         if($this->start_time) $query->andWhere(['>=', 'o_created_at', strtotime($this->start_time)]);
         if($this->end_time) $query->andWhere(['<=', 'o_created_at', strtotime($this->end_time)]);
         return $query->groupBy(['o_id']); // 避免对应多个商品出现多行
