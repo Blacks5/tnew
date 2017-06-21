@@ -79,4 +79,9 @@ class SiteController extends CoreBackendController
 //        Yii::$app->mailer->compose()->setFrom('a')
         return $this->render('list');
     }
+
+
+    public function actionTest(){
+        echo "test";
+    }
 }
