@@ -32,8 +32,11 @@ class CalInterest
          */
         $real_rate_month = $rate_month/100;
         // 每月月供【仅包括本金+纯利息，不包含各种增值费用】
+
+        // 传说中的0利息
         if(0>= $real_rate_month){
-            throw new CustomCommonException('月利率不能为0');
+            return 0;
+//            throw new CustomCommonException('月利率不能为0');
         }
 
         $monthly_payment = ($total_money * $real_rate_month * pow(1 + $real_rate_month, $total_months)) / (pow(1 + $real_rate_month, $total_months) - 1);
