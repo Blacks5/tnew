@@ -2,10 +2,10 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\components\Helper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\User */
-
 ?>
 <div class="row ">
     <div class="col-sm-12">
@@ -27,7 +27,7 @@ use yii\widgets\DetailView;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">适用类型：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?= $model['p_type']; ?></p>
+                            <p class="form-control-static"><?= Helper::getProdNameByProdid($model['p_type']); ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

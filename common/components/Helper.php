@@ -128,4 +128,14 @@ class Helper
         return (new Query())->select(['j_name'])->from(Jobs::tableName())->where(['j_id'=>$j_id])->scalar();
     }
 
+    public static function getProdNameByProdid($prod_id)
+    {
+        $goods_info = array_column(\Yii::$app->params['goods_type'], null,'t_id');
+        $prod_name = '无此类型产品';
+        if(isset($goods_info[$prod_id])){
+            $prod_name = $goods_info[$prod_id]['t_name'];
+        }
+        return $prod_name;
+    }
+
 }
