@@ -154,6 +154,7 @@ class OrderController extends CoreApiController
         } catch (yii\base\Exception $e) {
 
             ob_start();
+            echo 222, PHP_EOL;
             var_dump($e);
             file_put_contents('/home/web/wcb_latest/debug.txt', ob_get_clean(), FILE_APPEND);
 
@@ -584,6 +585,7 @@ class OrderController extends CoreApiController
         } catch (yii\base\ErrorException $e) {
 
             ob_start();
+            echo 111, PHP_EOL;
             var_dump($e);
             file_put_contents('/home/web/wcb_latest/debug.txt', ob_get_clean(), FILE_APPEND);
 
