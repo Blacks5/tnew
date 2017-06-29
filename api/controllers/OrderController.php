@@ -10,6 +10,7 @@ namespace api\controllers;
 
 use api\components\CustomApiException;
 use api\models\OrdersHelper;
+use common\components\CustomCommonException;
 use common\components\Helper;
 use common\components\Contract;
 use common\models\CalInterest;
@@ -581,6 +582,8 @@ class OrderController extends CoreApiController
             }
             return ['status' => 1, 'message' => 'success', 'data' => $res];
         } catch (CustomApiException $e) {
+            return ['status' => 0, 'message' => $e->getMessage(), 'data' => []];
+        } catch(CustomCommonException $e){
             return ['status' => 0, 'message' => $e->getMessage(), 'data' => []];
         } catch (yii\base\ErrorException $e) {
 
