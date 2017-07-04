@@ -68,9 +68,9 @@ class Sign
         $wait_sign = http_build_query($data). $this->privateKey;
         var_dump($wait_sign);
         $sign = md5($wait_sign);
-        var_dump($sign);
+       // var_dump($sign);
         $data['sign'] = $sign;
-//        var_dump($data);die;
+        var_dump($data);
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $data)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
 //        var_dump($response);die;
