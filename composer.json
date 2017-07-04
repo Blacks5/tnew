@@ -20,8 +20,7 @@
         "yiisoft/yii2-swiftmailer": "*",
         "mdmsoft/yii2-admin": "~2.0",
         "qiniu/php-sdk": "^7.1",
-        "yiisoft/yii2-httpclient": "~2.0.0",
-        "crazyfd/yii2-qiniu":"dev-master"
+        "yiisoft/yii2-httpclient": "~2.0.0"
     },
     "require-dev": {
         "codeception/codeception": "*",

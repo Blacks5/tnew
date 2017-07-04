@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cedd293b3b6558a5566d9865ca6404c4",
+    "content-hash": "f30d8160e8498bff25728fddddfdcdfc",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -253,47 +253,6 @@
                 "markdown-extra"
             ],
             "time": "2016-09-14T20:40:20+00:00"
-        },
-        {
-            "name": "crazyfd/yii2-qiniu",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/crazyfd/yii2-qiniu.git",
-                "reference": "ef6d78c59d7099c0994ad809288b57896fbaf242"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://files.phpcomposer.com/files/crazyfd/yii2-qiniu/ef6d78c59d7099c0994ad809288b57896fbaf242.zip",
-                "reference": "ef6d78c59d7099c0994ad809288b57896fbaf242",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "crazyfd\\qiniu\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "crazyfd",
-                    "email": "crazyfd@qq.com"
-                }
-            ],
-            "description": "yii2上传到七牛云存储",
-            "keywords": [
-                "qiniu",
-                "upload",
-                "yii"
-            ],
-            "time": "2016-08-31 00:36:28"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -3406,9 +3365,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "crazyfd/yii2-qiniu": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

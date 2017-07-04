@@ -38,7 +38,6 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         ),
         'c' => 
         array (
-            'crazyfd\\qiniu\\' => 14,
             'cebe\\markdown\\' => 14,
         ),
         'W' => 
@@ -133,10 +132,6 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'mdm\\admin\\' => 
         array (
             0 => __DIR__ . '/..' . '/mdmsoft/yii2-admin',
-        ),
-        'crazyfd\\qiniu\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/crazyfd/yii2-qiniu',
         ),
         'cebe\\markdown\\' => 
         array (

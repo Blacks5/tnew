@@ -3480,48 +3480,5 @@
             "functional testing",
             "unit testing"
         ]
-    },
-    {
-        "name": "crazyfd/yii2-qiniu",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/crazyfd/yii2-qiniu.git",
-            "reference": "ef6d78c59d7099c0994ad809288b57896fbaf242"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://files.phpcomposer.com/files/crazyfd/yii2-qiniu/ef6d78c59d7099c0994ad809288b57896fbaf242.zip",
-            "reference": "ef6d78c59d7099c0994ad809288b57896fbaf242",
-            "shasum": ""
-        },
-        "require": {
-            "yiisoft/yii2": "*"
-        },
-        "time": "2016-08-31T00:36:28+00:00",
-        "type": "yii2-extension",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "crazyfd\\qiniu\\": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "crazyfd",
-                "email": "crazyfd@qq.com"
-            }
-        ],
-        "description": "yii2上传到七牛云存储",
-        "keywords": [
-            "qiniu",
-            "upload",
-            "yii"
-        ]
     }
 ]
