@@ -28,34 +28,48 @@ class Sign
 
     public $api = "http://merchantapi.yijifu.net/gateway.html";
 
+    public function __construct()
+    {
+        $this->partnerId = \Yii::$app->params['yijifu']['partnerId'];
+    }
 
     /**
      * 签约用户
      *
-     *
-     * 服务码fastSign
-     *
-     *
+    $data = [
+    'merchOrderNo'=>'1234',// 商户订单号
+    'merchContractNo'=>'1234', // 商户签约合同号
+    'merchContractImage'=> "", // 签约合同照片 支持jpg jpeg bmp png pdf'
+    'realName'=>'李四', // 借款人真实姓名
+    'bankCardNo'=>'', // 借款人银行卡号
+    'certNo'=>'510623198812250210', // 借款人身份证号
+    'mobileNo'=>'18990232122', // 借款人手机，用于发通知短信
+    'productName'=>'分期一号', //  // 产品名称，将显示在用户短信中
+    'loanAmount'=>12, // 借款金额 【可不填】显示在用户短信中
+    'totalRepayAmount'=>5888, // 应还总金额 包括所有的各种费用
+    ];
      * @author too <hayto@foxmail.com>
      */
-    public function signUser()
+    public function signUser(Array $data)
     {
-        $this->service = "fastSign";
-        $merchOrderNo = "1234"; // 商户订单号
-        $merchContractNo = ""; // 商户签约合同号
-        $merchContractImage = ""; // 签约合同照片 支持jpg jpeg bmp png pdf
-        $realName = ""; // 借款人真实姓名
-        $certNo = ""; // 借款人身份证号
-        $bankCardNo = ""; // 借款人银行卡号
-        $mobileNo = ""; // 借款人手机，用于发通知短信
-        $productName = ""; // 产品名称，将显示在用户短信中
-        $loanAmount = ""; // 借款金额 【可不填】显示在用户短信中
-        $totalRepayAmount = ""; // 应还总金额 包括所有的各种费用
-        $operateType = "SIGN"; // 操作类型，默认SIGN签约，MODIFY_SIGN修改
+        $_data = [
+            'partnerId'=>$this->partnerId,
+            'protocol'=>$this->protocol,
+            'version'=>$this->version,
+            'orderNo'=>1234,
+            'signType'=>$this->signType,
+            'sign'=>'',
+            'service'=>'fastSign', // 服务码
+            'operateType'=>'SIGN'  // 操作类型，默认SIGN签约，MODIFY_SIGN修改
+        ];
+        $data = array_merge($_data, $data);
 
-        $data ="";
         $http_client = new httpClient();
-        $http_client->post($this->api, $data)->send();
+        $response = $http_client->post($this->api, $data)->send();
+        if($response->getIsOk()){
+            return $response->getData();
+        }
+        return false;
     }
 
     /**

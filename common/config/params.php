@@ -96,5 +96,13 @@ return [
         ['company_kind_id'=>17, 'company_kind_name'=>'租赁和商业服务'],
         ['company_kind_id'=>18, 'company_kind_name'=>'批发和零售贸易'],
         ['company_kind_id'=>19, 'company_kind_name'=>'其他'],
+    ],
+
+
+
+
+
+    "yijifu"=>[
+        "partnerId"=>"20160831020000752643", // 签约的服务平台账号对应的合作方ID
     ]
 ];
