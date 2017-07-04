@@ -2,6 +2,7 @@
 namespace backend\controllers;
 
 use common\models\Department;
+use common\tools\yijifu\Sign;
 use mdm\admin\models\searchs\User;
 use Yii;
 use backend\core\CoreBackendController;
@@ -81,7 +82,9 @@ class SiteController extends CoreBackendController
     }
 
 
-    public function actionTest(){
-        echo "test";
+    public function actionTest()
+    {
+        $handle = new Sign();
+        $handle->signUser();
     }
 }
