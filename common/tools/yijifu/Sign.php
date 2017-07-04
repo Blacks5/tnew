@@ -20,6 +20,7 @@ class Sign
     public $service = ""; // 服务码
     public $version = "1.0"; // 服务版本，默认1.0
     public $partnerId = ""; // 签约的服务平台账号对应的合作方ID
+    public $privateKey = ""; // 私钥
     public $orderNo = ""; // 请求流水号
     public $signType = "MD5"; // 签名方式，目前默认MD5，也只支持MD5，注意要大写
     public $sign = ""; // 签名字符串
@@ -31,6 +32,7 @@ class Sign
     public function __construct()
     {
         $this->partnerId = \Yii::$app->params['yijifu']['partnerId'];
+        $this->privateKey = \Yii::$app->params['yijifu']['privateKey'];
     }
 
     /**
@@ -58,14 +60,20 @@ class Sign
             'version'=>$this->version,
             'orderNo'=>1234,
             'signType'=>$this->signType,
-            'sign'=>'',
             'service'=>'fastSign', // 服务码
             'operateType'=>'SIGN'  // 操作类型，默认SIGN签约，MODIFY_SIGN修改
         ];
         $data = array_merge($_data, $data);
-
+        ksort($data);
+        $wait_sign = http_build_query($data). $this->privateKey;
+        var_dump($wait_sign);
+        $sign = md5($wait_sign);
+        var_dump($sign);
+        $data['sign'] = $sign;
+//        var_dump($data);die;
         $http_client = new httpClient();
-        $response = $http_client->post($this->api, $data)->send();
+        $response = $http_client->post($this->api, $data)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+//        var_dump($response);die;
         if($response->getIsOk()){
             return $response->getData();
         }
