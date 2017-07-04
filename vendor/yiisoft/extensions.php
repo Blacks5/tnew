@@ -57,15 +57,6 @@ return array (
       '@mdm/admin' => $vendorDir . '/mdmsoft/yii2-admin',
     ),
   ),
-  'crazyfd/yii2-qiniu' => 
-  array (
-    'name' => 'crazyfd/yii2-qiniu',
-    'version' => '9999999-dev',
-    'alias' => 
-    array (
-      '@crazyfd/qiniu' => $vendorDir . '/crazyfd/yii2-qiniu',
-    ),
-  ),
   'yiisoft/yii2-httpclient' => 
   array (
     'name' => 'yiisoft/yii2-httpclient',
@@ -73,6 +64,15 @@ return array (
     'alias' => 
     array (
       '@yii/httpclient' => $vendorDir . '/yiisoft/yii2-httpclient',
+    ),
+  ),
+  'crazyfd/yii2-qiniu' => 
+  array (
+    'name' => 'crazyfd/yii2-qiniu',
+    'version' => '9999999-dev',
+    'alias' => 
+    array (
+      '@crazyfd/qiniu' => $vendorDir . '/crazyfd/yii2-qiniu',
     ),
   ),
 );
