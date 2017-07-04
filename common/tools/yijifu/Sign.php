@@ -48,6 +48,10 @@ class Sign
         $certNo = ""; // 借款人身份证号
         $bankCardNo = ""; // 借款人银行卡号
         $mobileNo = ""; // 借款人手机，用于发通知短信
+        $productName = ""; // 产品名称，将显示在用户短信中
+        $loanAmount = ""; // 借款金额 【可不填】显示在用户短信中
+        $totalRepayAmount = ""; // 应还总金额 包括所有的各种费用
+        $operateType = "SIGN"; // 操作类型，默认SIGN签约，MODIFY_SIGN修改
 
         $data ="";
         $http_client = new httpClient();
