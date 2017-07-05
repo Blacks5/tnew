@@ -8,6 +8,9 @@
  */
 
 namespace common\tools\yijifu;
+use common\models\Customer;
+use common\models\Orders;
+use yii\db\Query;
 
 /**
  * 回款接口
@@ -34,7 +37,7 @@ class ReturnMoney extends AbstractYijifu
      * @param string $operateType 操作类型，根据$merchContractNo，第一次是 SIGN，以后是MODIFY_SIGN【只能修改手机号和银行卡号】
      * @author too <hayto@foxmail.com>
      */
-    public function signContractWithCustomer(
+    private function signContractWithCustomer(
         $borrowerName,
         $borrowerIdcardNo,
         $borrowerBankCardNo,
@@ -66,6 +69,34 @@ class ReturnMoney extends AbstractYijifu
 
         $common = $this->getCommonParams();
         p($param_arr, $common);
+    }
+
+
+    public function signContractWithCustomerByOrderid($order_id)
+    {
+        /**
+         * todo
+         * 1, 找到信息，拼凑签约
+         * 2，签约
+         * 3，把信息写入数据库
+         */
+        $data = (new Query())->from(Orders::tableName())
+            ->select(['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_banknum'])
+            ->leftJoin(Customer::tableName(), 'orders.o_customer_id=customer.c_id')
+            ->where(['o_id'=>$order_id])->one();
+        p($data, true);
+
+        $this->signContractWithCustomer('张飞',
+            '510623199912250210',
+            '6222555511112222',
+            18990232111,
+            'iPhone7Plus',
+            'tn1111',
+            'ht1111',
+            'http://php.net/images/to-top@2x.png',
+            12.5,
+            '',
+            'SIGN');
     }
 
     private function record()
