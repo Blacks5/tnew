@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                    value="<?php echo $sear['s_name']; ?>" placeholder="商户名"
                                    class="input form-control">
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-1" style="width: 9.5%">
                             <select class="input form-control" name="Stores[s_province]" id="user-province">
                                 <option value="">选择省</option>
                                 <?php foreach ($provinces as $k=>$v){ ?>
@@ -53,11 +53,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-sm-1" style="width: 9.5%">
                             <select class="input form-control" name="Stores[s_city]" id="user-city">
                             </select>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-1" style="width: 9.5%">
                             <select class="input form-control" name="Stores[s_county]" id="user-county">
                             </select>
                         </div>

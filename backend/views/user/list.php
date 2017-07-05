@@ -37,7 +37,7 @@ use yii\widgets\LinkPager;
                             </div>
 
 
-                            <div class="col-sm-1">
+                            <div class="col-sm-1" style="width: 9.5%">
                                 <select class="input form-control" name="UserSearch[province]" id="user-province">
                                     <option value="">选择省</option>
                                     <?php foreach ($provinces as $k=>$v){ ?>
@@ -45,11 +45,11 @@ use yii\widgets\LinkPager;
                                     <?php } ?>
                                 </select>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-1" style="width: 9.5%">
                                 <select class="input form-control" name="UserSearch[city]" id="user-city">
                                 </select>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1" style="width: 9.5%">
                                 <select class="input form-control" name="UserSearch[county]" id="user-county">
                                 </select>
                             </div>

@@ -159,10 +159,14 @@ class UserController extends CoreBackendController
 //        var_dump($model->attributes);die;
         $all_province = Helper::getAllProvince();
         $all_departments = Department::getAllDepartments();
+
+        //员工状态
+        $user_status = User::getAllStatus();
         return $this->render('create', [
             'model' => $model,
 //            'model1' => $model1,
             'item' => $item_one,
+            'user_status' => $user_status,
             'all_province' => $all_province,
             'all_departments' => $all_departments
         ]);
@@ -212,7 +216,8 @@ class UserController extends CoreBackendController
                 return $this->error('修改失败'. $msg);
             }
         }
-
+        //员工状态
+        $user_status = User::getAllStatus();
         $all_province = Helper::getAllProvince();
         $all_departments = Department::getAllDepartments();
 
@@ -223,6 +228,7 @@ class UserController extends CoreBackendController
             'model' => $model,
             'item' => $item_one,
 
+            'user_status' => $user_status,
             'all_province' => $all_province,
             'all_citys' => $all_citys,
             'all_countys' => $all_countys,
