@@ -62,7 +62,7 @@ class Sign
             'orderNo'=>str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999), // 请求流水号，和业务无关，故使用微秒时间戳即可
             'signType'=>$this->signType,
             'service'=>'fastSign', // 服务码
-            'operateType'=>'SIGN'  // 操作类型，默认 SIGN 签约，MODIFY_SIGN 修改  根据merchContractNo值修改
+
         ];
         $data = array_merge($_data, $data);
         ksort($data);

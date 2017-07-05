@@ -87,6 +87,8 @@ class SiteController extends CoreBackendController
         $data = [
             'merchOrderNo'=>'1234ffff1239457',// 商户订单号 每次都变
             'merchContractNo'=>'123438', // 商户签约合同号 一直不变，直到签约成功，会影响operateType
+            'operateType'=>'SIGN',  // 操作类型，默认 SIGN 签约，MODIFY_SIGN 修改  根据merchContractNo值修改
+
             'merchContractImageUrl'=> "http://php.net/images/to-top@2x.png", // 签约合同照片 支持jpg jpeg bmp png pdf'
             'realName'=>'涂鸿', // 借款人真实姓名
             'bankCardNo'=>'6217003601940585537', // 借款人银行卡号
