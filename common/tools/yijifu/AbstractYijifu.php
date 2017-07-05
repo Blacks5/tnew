@@ -28,7 +28,7 @@ abstract class AbstractYijifu
 
     private $privateKey = ""; // 商户
 
-    private $api; // api地址
+    protected $api; // api地址
 
 
     public function __construct()
@@ -62,6 +62,12 @@ abstract class AbstractYijifu
      */
     public function prepQueryParams(Array $query_params)
     {
+        foreach ($query_params as $k=>$v){
+            if(false === !empty($v)){
+                unset($query_params[$k]);
+            }
+        }
+        ksort($query_params);
         $query_params['sign'] = $this->signature($query_params);
         return $query_params;
     }
@@ -74,7 +80,6 @@ abstract class AbstractYijifu
      */
     private function signature(Array $query_params)
     {
-        ksort($query_params);
         $query_str = urldecode(http_build_query($query_params));
         return md5($query_str. $this->privateKey);
     }

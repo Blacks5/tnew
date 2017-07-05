@@ -84,15 +84,25 @@ class SiteController extends CoreBackendController
 
     public function actionTest()
     {
-        $order_id = Yii::$app->getRequest()->get('order_id', 58);
         $handle = new ReturnMoney();
-        $handle->signContractWithCustomerByOrderid($order_id);
+        $ret = $handle->signContractWithCustomer(
+            '钟建蓉',
+                '510623197905114125',
+            6228480498139638171,
+            18990232122,
+        'iPhone8',
+        '5891',
+        'http://php.net/images/to-top@2x.png',
+        12,
+        ''
+            );
+        var_dump($ret);
     }
 
     public function actionTest2()
     {
         $handle = new Sign();
-        $ret = $handle->querySignedUser('1234ffff1234');
+        $ret = $handle->querySignedUser('5891-1');
         p($ret);
     }
 }

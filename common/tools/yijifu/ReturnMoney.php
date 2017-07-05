@@ -8,9 +8,12 @@
  */
 
 namespace common\tools\yijifu;
+use common\components\CustomCommonException;
 use common\models\Customer;
 use common\models\Orders;
+use common\models\YijifuSignReturnmoney;
 use yii\db\Query;
+use \yii\httpclient\Client as httpClient;
 
 /**
  * 回款接口
@@ -29,28 +32,54 @@ class ReturnMoney extends AbstractYijifu
      * @param $borrowerBankCardNo 借款人银行卡号
      * @param $borrowerPhoneNo 借款人手机号
      * @param $purchasedProductName 借款人购买的产品，会包含在短信中，例如：iPhone7
+     *
+     * @param $order_id 通过订单id生成下面两个，下面两个就不用传了
      * @param $merchOrderNo 商户订单号，每次请求都要变，构成：系统订单号+递增序号
-     * @param $merchContractNo 商户签约合同号，一直保持不变，直到签约成功，会影响$operateType的值，新签是 SIGN，修改是 MODIFY_SIGN
+     * @param $merchContractNo 商户签约合同号，一直保持不变，直到签约成功，
+     *
+     *
      * @param $merchContractImageUrl 签约合同照片 支持jpg jpeg bmp png pdf
      * @param $totalRepayAmount 应还总金额，包括各种利息管理费的总和
      * @param string $loanAmount 借款金额【可不填】，显示在用户短信中
-     * @param string $operateType 操作类型，根据$merchContractNo，第一次是 SIGN，以后是MODIFY_SIGN【只能修改手机号和银行卡号】
+     *
+     * @throws CustomCommonException
      * @author too <hayto@foxmail.com>
      */
-    private function signContractWithCustomer(
+    public function signContractWithCustomer(
         $borrowerName,
         $borrowerIdcardNo,
         $borrowerBankCardNo,
         $borrowerPhoneNo,
         $purchasedProductName,
-        $merchOrderNo,
-        $merchContractNo,
+        $order_id, // 系统核心订单号
         $merchContractImageUrl,
         $totalRepayAmount,
-        $loanAmount='',
-        $operateType = 'SIGN'
+        $loanAmount=''
     )
     {
+        // 检测参数
+        $_ = func_get_args();
+        array_pop($_);
+        foreach ($_ as $v){
+            if(false === !empty($v)){
+                throw new CustomCommonException('参数不全');
+            }
+        }
+
+        // 生成ID
+        $_data = (new Query())->from(YijifuSignReturnmoney::tableName())
+            ->where(['order_id'=>$order_id/*, 'status'=>2*/])
+            ->one();
+        if(false === $_data){
+            $merchOrderNo = $order_id.'-1';
+            $merchContractNo = $order_id.'-1';
+        }else{
+            if($_data['status'] == 1){
+                throw new CustomCommonException('该订单已经成功签约');
+            }
+            $merchOrderNo = $order_id. '-'. (substr($_data['merchOrderNo'], -1)+1);
+            $merchContractNo = $order_id. '-'. (substr($_data['merchContractNo'], -1)+1);
+        }
 
         $this->service = 'fastSign';
         $param_arr = [
@@ -64,11 +93,53 @@ class ReturnMoney extends AbstractYijifu
             'productName'=>$purchasedProductName,
             'loanAmount'=>$loanAmount,
             'totalRepayAmount'=>$totalRepayAmount,
-            'operateType'=>$operateType,
+            'operateType'=>'SIGN',
         ];
 
         $common = $this->getCommonParams();
-        p($param_arr, $common);
+        $param_arr = array_merge($common, $param_arr);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+//        var_dump($param_arr);die;
+
+
+        $status = 2;
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+        if($response->getIsOk()){
+            $ret = $response->getData();
+            if($ret['resultCode'] === 'EXECUTE_SUCCESS'){
+                $status = 1;
+            }
+        }else{
+            $ret = false;
+        }
+
+        $operator_id = 101;
+
+        if(false === $_data){
+            $wait_inster_data = [
+                'order_id'=>$order_id,
+                'merchOrderNo'=>$merchOrderNo,
+                'merchContractNo'=>$merchContractNo,
+                'deductAmount'=>0,
+                'operateType'=>1, // 签约
+                'created_at'=>$_SERVER['REQUEST_TIME'],
+                'operator_id'=>$operator_id,
+                'status'=>$status
+            ];
+            \Yii::$app->getDb()->createCommand()->insert(YijifuSignReturnmoney::tableName(), $wait_inster_data)->execute();
+        }else{
+            $_data['merchOrderNo'] = $merchOrderNo;
+            $_data['merchContractNo'] = $merchContractNo;
+            $_data['status'] = $status;
+            $_data['operator_id'] = $operator_id;
+            $_data['updated_at']=$_SERVER['REQUEST_TIME'];
+            \Yii::$app->getDb()->createCommand()->update(YijifuSignReturnmoney::tableName(), $_data, ['id'=>$_data['id']])->execute();
+        }
+
+
+        return $ret;
     }
 
 
@@ -80,11 +151,11 @@ class ReturnMoney extends AbstractYijifu
          * 2，签约
          * 3，把信息写入数据库
          */
-        $data = (new Query())->from(Orders::tableName())
+        /*$data = (new Query())->from(Orders::tableName())
             ->select(['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_banknum'])
             ->leftJoin(Customer::tableName(), 'orders.o_customer_id=customer.c_id')
             ->where(['o_id'=>$order_id])->one();
-        p($data, true);
+        p($data, true);*/
 
         $this->signContractWithCustomer('张飞',
             '510623199912250210',
@@ -106,7 +177,7 @@ class ReturnMoney extends AbstractYijifu
 
     public function querySignedCustomer($merchOrderNo)
     {
-        $this->service = 'fastSignQuery';
+
     }
 
 
