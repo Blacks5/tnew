@@ -52,6 +52,7 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_owner_phone')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_owner_email')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_bank_people_name')->textInput(['class'=>'form-control']); ?>
+            <?= $form->field($model, 's_idcard_num')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_bank_num')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_bank_sub')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_bank_addr')->textInput(['class'=>'form-control']); ?>

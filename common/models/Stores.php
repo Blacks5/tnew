@@ -76,7 +76,7 @@ class Stores extends CoreCommonActiveRecord
     public function rules()
     {
         return [
-            [['s_name', 's_owner_email', 's_owner_phone', 's_owner_name', 's_remark', 's_county', 's_bank_people_name', 's_bank_num', 's_bank_sub', 's_bank_addr',
+            [['s_name', 's_owner_email', 's_owner_phone', 's_owner_name', 's_remark', 's_county', 's_bank_people_name','s_idcard_num', 's_bank_num', 's_bank_sub', 's_bank_addr',
                 's_bank_name', 's_bank_is_private', 's_city', 's_province', 's_addr', 's_service_charge'], 'required', 'except' => 'search'],
 
             [['s_add_user_id', 's_auditor_id', 's_status', 's_bank_is_private', 's_created_at', 's_updated_at'], 'integer'],
@@ -87,7 +87,7 @@ class Stores extends CoreCommonActiveRecord
             [['s_remark', 's_refuse_reason'], 'string', 'max' => 250],
             [['s_county', 's_bank_sub', 's_bank_name', 's_city', 's_province'], 'string', 'max' => 20],
             [['s_addr', 's_photo_one', 's_photo_two', 's_photo_three', 's_photo_four', 's_photo_five', 's_photo_six', 's_photo_seven', 's_photo_eight'], 'string', 'max' => 50],
-
+            ['s_idcard_num', 'match', 'pattern'=>'/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message'=>'身份证号码错误'],
             [['s_owner_phone'], 'match', 'pattern' => '/^1[3|5|8]\d{9}/', 'except' => 'search'],
             [['s_owner_email'], 'email', 'except' => 'search']
         ];
@@ -144,6 +144,7 @@ class Stores extends CoreCommonActiveRecord
             's_status' => '商铺状态 10正常 0待审核 1审核拒绝',
             's_county' => '县/区',
             's_bank_people_name' => '结算账户的账户所有人姓名',
+            's_idcard_num'=>'结算账户的账户所有人身份证号码',
             's_bank_num' => '结算账户卡号',
             's_bank_sub' => '结算账户开户行支行',
             's_bank_addr' => '结算账户开户行省市',

@@ -8,44 +8,23 @@
  */
 
 namespace common\tools\yijifu;
-use \yii\httpclient\Client as httpClient;
+use common\models\Stores;
+use common\models\Orders;
 
-class Loan
+class Loan extends AbstractYijifu
 {
-
-    public $protocol = "httpPost"; // 协议类型，默认httpPost
-    public $service = ""; // 服务码
-    public $version = "1.0"; // 服务版本，默认1.0
-    public $partnerId = ""; // 签约的服务平台账号对应的合作方ID
-    public $privateKey = ""; // 私钥
-    public $orderNo = ""; // 请求流水号
-    public $signType = "MD5"; // 签名方式，目前默认MD5，也只支持MD5，注意要大写
-    public $sign = ""; // 签名字符串
-    public $returnUrl = ""; // 页面跳转返回URL，非跳转接口不需要此参数
-    public $notifyUrl = ""; // 异步通知URL
-
-    public $api = "http://merchantapi.yijifu.net/gateway.html";
-
-
-    public function __construct()
-    {
-        $this->partnerId = \Yii::$app->params['yijifu']['partnerId'];
-        $this->privateKey = \Yii::$app->params['yijifu']['privateKey'];
-    }
 
     /**
      * 用户放款
      * @author lilaotou <liwansen@foxmail.com>
-     $data = array(
-        'serviceCdoe'=>'',//服务码
-        'amount'=>'',//代发金额
-        'outOrderNo'=>'',//商户订单号
-        'contractUrl'=>'',//合同照片
-        'realName'=>'',//收款人姓名
-        'mobileNo'=>'',//手机号
-        'certNo'=>'',//身份证号
-        'bankCardNo'=>'',//银行账户
-     );
+     * @param $serviceCdoe 服务码
+     * @param $amount 代发金额
+     * @param $outOrderNo 商户订单号
+     * @param $contractUrl 合同照片
+     * @param $realName 收款人姓名
+     * @param $mobileNo 手机号
+     * @param $certNo 身份证号
+     * @param $bankCardNo 银行账户
      */
     public function userLoan(){
         $_data = [
