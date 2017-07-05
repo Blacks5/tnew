@@ -27,12 +27,13 @@ class Sign
     public $returnUrl = ""; // 页面跳转返回URL，非跳转接口不需要此参数
     public $notifyUrl = ""; // 异步通知URL
 
-    public $api = "http://merchantapi.yijifu.net/gateway.html";
+    public $api;
 
     public function __construct()
     {
         $this->partnerId = \Yii::$app->params['yijifu']['partnerId'];
         $this->privateKey = \Yii::$app->params['yijifu']['privateKey'];
+        $this->api = \Yii::$app->params['yijifu']['api'];
     }
 
     /**
@@ -58,18 +59,18 @@ class Sign
             'partnerId'=>$this->partnerId,
             'protocol'=>$this->protocol,
             'version'=>$this->version,
-            'orderNo'=>1234,
+            'orderNo'=>str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999), // 请求流水号，和业务无关，故使用微秒时间戳即可
             'signType'=>$this->signType,
             'service'=>'fastSign', // 服务码
-            'operateType'=>'SIGN'  // 操作类型，默认SIGN签约，MODIFY_SIGN修改
+            'operateType'=>'SIGN'  // 操作类型，默认 SIGN 签约，MODIFY_SIGN 修改
         ];
         $data = array_merge($_data, $data);
         ksort($data);
-        $wait_sign = http_build_query($data). $this->privateKey;
-        var_dump($wait_sign);
+
+        $wait_sign = urldecode(http_build_query($data)). $this->privateKey;
         $sign = md5($wait_sign);
-       // var_dump($sign);
         $data['sign'] = $sign;
+        echo "<hr>";
         var_dump($data);
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $data)/*->setFormat(httpClient::FORMAT_JSON)*/->send();

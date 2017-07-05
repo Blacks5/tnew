@@ -103,6 +103,7 @@ return [
 
 
     "yijifu"=>[
+        "api"=>"http://merchantapi.yijifu.net/gateway.html",
         "partnerId"=>"20160831020000752643", // 签约的服务平台账号对应的合作方ID
         "privateKey"=>"b04fbc6afc77b131c355dd1788215dbb" , // 私钥
     ]
