@@ -16,16 +16,7 @@ use \yii\httpclient\Client as httpClient;
 
 class Sign
 {
-    public $protocol = "httpPost"; // 协议类型，默认httpPost
-    public $service = ""; // 服务码
-    public $version = "1.0"; // 服务版本，默认1.0
-    public $partnerId = ""; // 签约的服务平台账号对应的合作方ID
-    public $privateKey = ""; // 私钥
-    public $orderNo = ""; // 请求流水号
-    public $signType = "MD5"; // 签名方式，目前默认MD5，也只支持MD5，注意要大写
-    public $sign = ""; // 签名字符串
-    public $returnUrl = ""; // 页面跳转返回URL，非跳转接口不需要此参数
-    public $notifyUrl = ""; // 异步通知URL
+
 
     public $api;
 
@@ -85,41 +76,40 @@ class Sign
      * 查询签约用户
      *
      *
-     * 服务码fastSignQuery
+     * 服务码 fastSignQuery
      *
      * @author too <hayto@foxmail.com>
      */
-    public function querySignedUser()
+    public function querySignedUser($merchOrderNo)
     {
+        $_data = [
+            'partnerId'=>$this->partnerId,
+            'protocol'=>$this->protocol,
+            'version'=>$this->version,
+            'orderNo'=>str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999), // 请求流水号，和业务无关，故使用微秒时间戳即可  '149923342892676163263',//
+            'signType'=>$this->signType,
+            'service'=>'fastSignQuery',
+            'merchOrderNo'=>$merchOrderNo
+        ];
+        ksort($_data);
+        $sign = md5(urldecode(http_build_query($_data)). $this->privateKey);
 
+        var_dump(urldecode(http_build_query($_data)). $this->privateKey, $sign);
+
+        $_data['sign'] = $sign;
+        echo "<pre>";
+        var_dump($_data);
+        $http_client = new httpClient();
+//        p($_data);die;
+        $response = $http_client->post($this->api, $_data)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+//        var_dump($response);die;
+        if($response->getIsOk()){
+            return $response->getData();
+        }
+        return false;
     }
 
-    /**
-     * 发起代扣
-     *
-     *
-     * 服务码fastDeduct
-     *
-     * @author too <hayto@foxmail.com>
-     */
-    public function deduct()
-    {
 
-    }
-
-    /**
-     * 查询代扣
-     *
-     *
-     * 服务码fastDeductQuery
-     *
-     *
-     * @author too <hayto@foxmail.com>
-     */
-    public function queryDeduct()
-    {
-
-    }
 
 
 
