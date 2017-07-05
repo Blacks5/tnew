@@ -14,6 +14,7 @@ use \yii\helpers\Url;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'status')->dropDownList($user_status,['class'=>'form-control'])->label('状态'); ?>
     <?= $form->field($model, 'realname')->textInput(['maxlength' => true])->label('真实姓名') ?>
     <?= $form->field($model, 'id_card_num')->textInput(['maxlength' => true])->label('身份证号码') ?>
     <?= $form->field($model, 'address')->textInput(['maxlength' => true])->label('联系地址') ?>

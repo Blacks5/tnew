@@ -101,6 +101,10 @@ use yii\widgets\DetailView;
                             <p class="form-control-static">
                                 <?php if ($model['status'] === '10'): ?>
                                     <button type="button" class="btn btn-primary btn-xs">开启</button>
+                                <?php elseif ($model['status'] === '1'): ?>
+                                    <button type="button" class="btn btn-primary btn-xs">冻结</button>
+                                <?php elseif ($model['status'] === '2'): ?>
+                                    <button type="button" class="btn btn-primary btn-xs">离职</button>
                                 <?php else: ?>
                                     <button type="button" class="btn btn-default btn-xs">已锁定</button>
                                 <?php endif; ?>

@@ -21,6 +21,7 @@ $this->title = '更新用户 ';
 
                 <?= $form->field($model, 'username')->textInput(['readonly' => true])->label('用户名') ?>
 
+                <?= $form->field($model, 'status')->dropDownList($user_status,['class'=>'form-control'])->label('状态'); ?>
 
                 <?= $form->field($model, 'email')->textInput(['email' => true])->label('邮箱') ?>
                 <?= $form->field($model, 'id_card_num')->textInput(['id_card_num' => true])->label('身份证号码') ?>
