@@ -43,6 +43,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'W' => 
         array (
             'Webmozart\\Assert\\' => 17,
+            'WebSocket\\' => 10,
         ),
         'S' => 
         array (
@@ -140,6 +141,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'WebSocket\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/textalk/websocket/lib',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
