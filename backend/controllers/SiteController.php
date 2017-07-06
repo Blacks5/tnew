@@ -116,11 +116,57 @@ class SiteController extends CoreBackendController
 
     public function actionAsync()
     {
-//        $data = file_get_contents("php://input");
-        $get = Yii::$app->getRequest()->get();
+        /*array(18) {
+  ["bankCode"]=>
+  string(3) "ABC"
+  ["orderNo"]=>
+  string(21) "149930990474369712682"
+  ["bankCardNo"]=>
+  string(19) "622848*********8171"
+  ["notifyTime"]=>
+  string(19) "2017-07-06 10:58:20"
+  ["bankCardType"]=>
+  string(10) "DEBIT_CARD"
+  ["resultCode"]=>
+  string(15) "EXECUTE_SUCCESS"  可能没有 EXECUTE_SUCCESS处理成功    EXECUTE_FAIL处理失败    EXECUTE_PROCESSING处理中
+  ["sign"]=>
+  string(32) "e8d95db65e0891e8d0eaa102c9ab3545"
+  ["description"]=>
+  string(0) ""
+  ["bankName"]=>
+  string(12) "农业银行"
+  ["resultMessage"]=>
+  string(6) "成功" 返回信息，可能没有
+  ["version"]=>
+  string(3) "1.0" 可能没有
+  ["protocol"]=>
+  string(8) "httpPost" 可能没有
+  ["service"]=>
+  string(8) "fastSign"
+  ["success"]=>
+  string(4) "true"
+  ["merchOrderNo"]=>
+  string(6) "5899-1"
+  ["signType"]=>
+  string(3) "MD5"
+  ["partnerId"]=>
+  string(20) "20160831020000752643"
+  ["status"]=>
+  string(12) "SIGN_SUCCESS"
+SIGN_DEALING：签约处理中
+SIGN_FAIL：签约失败
+CHECK_NEEDED：待审核
+CHECK_REJECT：审核驳回
+SIGN_SUCCESS：签约成功
+
+}*/
         $post = Yii::$app->getRequest()->post();
+
+
         ob_start();
-        var_dump($get, $post);
+        var_dump($post);
         file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+
+        echo "success";
     }
 }
