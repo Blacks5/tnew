@@ -106,6 +106,13 @@ class SiteController extends CoreBackendController
         p($ret);
     }
 
+    public function beforeAction($action)
+    {
+        if('async' === $action->id){
+            $this->enableCsrfValidation = false;
+        }
+    }
+
     public function actionAsync()
     {
         $data = file_get_contents("php://input");
