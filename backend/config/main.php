@@ -29,7 +29,8 @@ return [
             'contract/paymentdesc', // 代扣说明页面，Android app里webview用1
             'site/test',
             'site/test2',
-            'gii/*'
+            'gii/*',
+            'site/async', // 易极付回调地址
         ]
     ],
 
