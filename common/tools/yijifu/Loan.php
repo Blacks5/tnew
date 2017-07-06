@@ -23,7 +23,7 @@ class Loan extends AbstractYijifu
      * @param $realName 收款人姓名
      * @param $mobileNo 手机号
      * @param $certNo 身份证号
-     * @param $bankCardNo 银行账户12
+     * @param $bankCardNo 银行账户1
      *
      * @author lilaotou <liwansen@foxmail.com>
      */
