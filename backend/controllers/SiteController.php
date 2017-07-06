@@ -86,12 +86,12 @@ class SiteController extends CoreBackendController
     {
         $handle = new ReturnMoney();
         $ret = $handle->signContractWithCustomer(
-            '钟建蓉',
-                '510623197905114125',
+            '袁琼莲',//'钟建蓉',
+                '510623199904221120',//'510623197905114125',
             6228480498139638171,
             18990232122,
         'iPhone8',
-        '5891',
+        '5895',
         'http://php.net/images/to-top@2x.png',
         12,
         ''
@@ -101,8 +101,16 @@ class SiteController extends CoreBackendController
 
     public function actionTest2()
     {
-        $handle = new Sign();
-        $ret = $handle->querySignedUser('5891-1');
+        $handle = new ReturnMoney();
+        $ret = $handle->querySignedCustomer('5892-2');
         p($ret);
+    }
+
+    public function actionAsync()
+    {
+        $data = file_get_contents("php://input");
+        ob_start();
+        var_dump($data);
+        file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
     }
 }

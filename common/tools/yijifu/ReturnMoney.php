@@ -42,6 +42,8 @@ class ReturnMoney extends AbstractYijifu
      * @param $totalRepayAmount 应还总金额，包括各种利息管理费的总和
      * @param string $loanAmount 借款金额【可不填】，显示在用户短信中
      *
+     * @return false接口请求失败   array接口返回信息
+     *
      * @throws CustomCommonException
      * @author too <hayto@foxmail.com>
      */
@@ -66,9 +68,12 @@ class ReturnMoney extends AbstractYijifu
             }
         }
 
+        // 设置服务码
+        $this->service = 'fastSign';
+
         // 生成ID
         $_data = (new Query())->from(YijifuSignReturnmoney::tableName())
-            ->where(['order_id'=>$order_id/*, 'status'=>2*/])
+            ->where(['order_id'=>$order_id, 'status'=>2])
             ->one();
         if(false === $_data){
             $merchOrderNo = $order_id.'-1';
@@ -81,7 +86,7 @@ class ReturnMoney extends AbstractYijifu
             $merchContractNo = $order_id. '-'. (substr($_data['merchContractNo'], -1)+1);
         }
 
-        $this->service = 'fastSign';
+        // 构造api请求参数
         $param_arr = [
             'merchOrderNo'=>$merchOrderNo,
             'merchContractNo'=>$merchContractNo,
@@ -95,14 +100,11 @@ class ReturnMoney extends AbstractYijifu
             'totalRepayAmount'=>$totalRepayAmount,
             'operateType'=>'SIGN',
         ];
-
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
 
-//        var_dump($param_arr);die;
-
-
+        // 发起请求
         $status = 2;
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
@@ -117,6 +119,7 @@ class ReturnMoney extends AbstractYijifu
 
         $operator_id = 101;
 
+        // 写签约记录表
         if(false === $_data){
             $wait_inster_data = [
                 'order_id'=>$order_id,
@@ -137,12 +140,15 @@ class ReturnMoney extends AbstractYijifu
             $_data['updated_at']=$_SERVER['REQUEST_TIME'];
             \Yii::$app->getDb()->createCommand()->update(YijifuSignReturnmoney::tableName(), $_data, ['id'=>$_data['id']])->execute();
         }
-
-
         return $ret;
     }
 
 
+    /**
+     * @deprecated 暂时废弃中
+     * @param $order_id
+     * @author too <hayto@foxmail.com>
+     */
     public function signContractWithCustomerByOrderid($order_id)
     {
         /**
@@ -170,14 +176,31 @@ class ReturnMoney extends AbstractYijifu
             'SIGN');
     }
 
-    private function record()
-    {
 
-    }
-
+    /**
+     * @param $merchOrderNo
+     * @return array|bool|mixed false表示接口请求失败
+     *
+     * @throws CustomCommonException
+     * @author too <hayto@foxmail.com>
+     */
     public function querySignedCustomer($merchOrderNo)
     {
+        if(false === !empty($merchOrderNo)){
+            throw new CustomCommonException('缺少参数');
+        }
+        $this->service = 'fastSignQuery';
+        $common = $this->getCommonParams();
+        $param_arr = ['merchOrderNo'=>$merchOrderNo];
+        $param_arr = array_merge($param_arr, $common);
+        $param_arr = $this->prepQueryParams($param_arr);
 
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)->send();
+        if($response->getIsOk()){
+            return $response->getData();
+        }
+        return false;
     }
 
 
