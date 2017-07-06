@@ -91,7 +91,7 @@ class SiteController extends CoreBackendController
             6228480498139638171,
             18990232122,
         'iPhone8',
-        '5898',
+        '5899',
         'http://php.net/images/to-top@2x.png',
         12,
         ''
@@ -116,9 +116,11 @@ class SiteController extends CoreBackendController
 
     public function actionAsync()
     {
-        $data = file_get_contents("php://input");
+//        $data = file_get_contents("php://input");
+        $get = Yii::$app->getRequest()->get();
+        $post = Yii::$app->getRequest()->post();
         ob_start();
-        var_dump($data);
+        var_dump($get, $post);
         file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
     }
 }
