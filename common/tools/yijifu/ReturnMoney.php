@@ -100,7 +100,8 @@ class ReturnMoney extends AbstractYijifu
             'totalRepayAmount'=>$totalRepayAmount,
             'operateType'=>'SIGN',
         ];
-        $this->notifyUrl = \Yii::$app->urlManager->createUrl(['site/async']);
+        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/async']);
+//        p($this->notifyUrl);
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
