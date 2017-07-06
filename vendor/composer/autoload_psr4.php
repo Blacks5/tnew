@@ -18,6 +18,7 @@ return array(
     'mdm\\admin\\' => array($vendorDir . '/mdmsoft/yii2-admin'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
+    'WebSocket\\' => array($vendorDir . '/textalk/websocket/lib'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\Process\\' => array($vendorDir . '/symfony/process'),

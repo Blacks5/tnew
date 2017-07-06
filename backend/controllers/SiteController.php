@@ -5,6 +5,7 @@ use common\models\Department;
 use common\tools\yijifu\ReturnMoney;
 use common\tools\yijifu\Sign;
 use mdm\admin\models\searchs\User;
+use WebSocket\Client;
 use Yii;
 use backend\core\CoreBackendController;
 use yii\filters\VerbFilter;
@@ -168,5 +169,17 @@ SIGN_SUCCESS：签约成功
         file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
 
         echo "success";
+    }
+
+    public function actionWs()
+    {
+        return $this->renderPartial('ws');
+    }
+
+    public function actionSendws($a)
+    {
+        $client = new Client("ws://192.168.1.8:8585");
+        $client->send($a);
+        echo $client->receive();
     }
 }
