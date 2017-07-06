@@ -73,7 +73,7 @@ class ReturnMoney extends AbstractYijifu
 
         // 生成ID
         $_data = (new Query())->from(YijifuSignReturnmoney::tableName())
-            ->where(['order_id'=>$order_id, 'status'=>2])
+            ->where(['order_id'=>$order_id])
             ->one();
         if(false === $_data){
             $merchOrderNo = $order_id.'-1';
