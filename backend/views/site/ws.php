@@ -10,7 +10,7 @@
 ?>
 
 <script>
-    var ws = new WebSocket("ws://192.168.1.8:8585");
+    var ws = new WebSocket("ws://192.168.0.7:8585");
     ws.onopen = function (event) {
         console.log('连接上');
         ws.send("哈喽");
@@ -26,6 +26,10 @@
         console.log('收到消息');
         console.log(event);
     }
+
+
+
+
 
 
 </script>
