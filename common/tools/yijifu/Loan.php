@@ -10,14 +10,13 @@
 namespace common\tools\yijifu;
 use common\models\Stores;
 use common\models\Orders;
+use common\components\CustomCommonException;
 
 class Loan extends AbstractYijifu
 {
 
     /**
      * 用户放款
-     * @author lilaotou <liwansen@foxmail.com>
-     * @param $serviceCdoe 服务码
      * @param $amount 代发金额
      * @param $outOrderNo 商户订单号
      * @param $contractUrl 合同照片
@@ -25,18 +24,41 @@ class Loan extends AbstractYijifu
      * @param $mobileNo 手机号
      * @param $certNo 身份证号
      * @param $bankCardNo 银行账户
+     *
+     * @author lilaotou <liwansen@foxmail.com>
      */
-    public function userLoan(){
-        $_data = [
-            'partnerId'=>$this->partnerId,
-            'protocol'=>$this->protocol,
-            'version'=>$this->version,
-            'orderNo'=>1234,
-            'signType'=>$this->signType,
-            'sign'=>'',
-            'service'=>'fastSign', // 服务码
-            'operateType'=>'SIGN'  // 操作类型，默认SIGN签约，MODIFY_SIGN修改
-        ];
+    public function userLoan(
+        $amount,
+        $outOrderNo,
+        $contractUrl,
+        $realName,
+        $mobileNo,
+        $certNo,
+        $bankCardNo
+    ){
+
+        // 检测参数
+        $_ = func_get_args();
+        foreach ($_ as $v){
+            if(false === !empty($v)){
+                throw new CustomCommonException('参数不全');
+            }
+        }
+
+        // 设置服务码
+        $this->service = 'yxtQuicklyRemittance';
+
+        //构造api参数
+        $params_arr = array(
+            'amount'=>$amount,
+            'outOrderNo'=>$outOrderNo,
+            'contractUrl'=>$contractUrl,
+            'realName'=>$realName,
+            'mobileNo'=>$mobileNo,
+            'certNo'=>$certNo,
+            'bankCardNo'=>$bankCardNo
+        );
+
     }
 
 }
