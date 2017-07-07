@@ -66,7 +66,7 @@ class WebsocketController extends Controller
 
     public function actionT()
     {
-        $cli = new Client("ws://192.168.0.194:8585");
+        $cli = new Client("ws://192.168.0.194:8081");
 //        $cli->send($a. "-哈哈");
         /*$client = new \Swoole\Http\Client('192.168.0.194', 8585);
 
