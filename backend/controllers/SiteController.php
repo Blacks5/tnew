@@ -178,7 +178,7 @@ SIGN_SUCCESS：签约成功
 
     public function actionSendws($a)
     {
-        $client = new Client("ws://192.168.1.8:8585");
+        $client = new Client("ws://192.168.0.194:8585");
         $client->send($a);
         echo $client->receive();
     }
