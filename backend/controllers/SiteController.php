@@ -188,7 +188,7 @@ SIGN_SUCCESS：签约成功
 
         $data['controller_name'] = 'AppController';
         $data['method_name'] = 'test';
-        $data['data1'] = '123';
+        $data['data1'] = $a;
         $data['data2'] = '456';
         $data['data3'] = ['a','b'];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
