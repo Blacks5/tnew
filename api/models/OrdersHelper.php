@@ -16,6 +16,7 @@ use common\models\Tools;
 use common\models\Customer;
 use common\models\Goods;
 use common\models\Orders;
+use WebSocket\Client;
 use yii\base\Exception;
 use common\models\OrderImages;
 
@@ -83,8 +84,6 @@ class OrdersHelper
         }
             // 1写商品表
 
-//p($data_goods);
-
         // 1客户信息
         $transaction = \Yii::$app->db->beginTransaction();
         try{
@@ -148,7 +147,6 @@ class OrdersHelper
                 throw new CustomApiException('订单写入失败');
             }
 
-
             // 4写goods表
             array_walk($data_goods, function(&$v, $k, $order_id){
                 $v[] = $order_id; // 把store_id追加进数组
@@ -159,6 +157,10 @@ class OrdersHelper
                 throw new CustomApiException('商品写入失败');
             }
             $transaction->commit();
+
+            // 发送通知
+            $this->sendToWs($customerModel->c_customer_name);
+
             return ['status'=>1, 'message'=>'提交成功'];
         }catch(CustomApiException $e){
             $transaction->rollBack();
@@ -167,9 +169,6 @@ class OrdersHelper
             $transaction->rollBack();
             throw $e;
         }
-
-
-
     }
     /*
      * 1. 完整提交订单
@@ -178,4 +177,17 @@ class OrdersHelper
      * 3. 安卓上传图片[周末]
      * 5.
      * */
+
+
+    private function sendToWs($customer_name)
+    {
+        $client = new Client("ws://119.23.15.90:8081");
+
+        $data['controller_name'] = 'AppController';
+        $data['method_name'] = 'test';
+        $data['data1'] = '顾客:'. $customer_name. '产生了新订单';
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        $client->send($jsonData);
+    }
 }

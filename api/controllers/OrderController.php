@@ -154,10 +154,10 @@ class OrderController extends CoreApiController
             return ['status' => 0, 'message' => $e->getMessage()];
         } catch (yii\base\Exception $e) {
 
-            ob_start();
+            /*ob_start();
             echo 222, PHP_EOL;
             var_dump($e);
-            file_put_contents('/home/web/wcb_latest/debug.txt', ob_get_clean(), FILE_APPEND);
+            file_put_contents('/home/web/wcb_latest/debug.txt', ob_get_clean(), FILE_APPEND);*/
 
             return ['status' => 0, 'message' => '系统错误_sys'];
         }
