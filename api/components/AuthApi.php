@@ -23,7 +23,6 @@ class AuthApi extends AuthMethod
 
     public function authenticate($user, $request, $response)
     {
-//        p($user, $request, $response);
         $accessToken = $request->get($this->tokenParam);
         if (is_string($accessToken)) {
             $identity = $user->loginByAccessToken($accessToken, get_class($this));

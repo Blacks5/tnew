@@ -181,7 +181,7 @@ class OrdersHelper
 
     private function sendToWs($customer_name)
     {
-        $client = new Client("ws://119.23.15.90:8081");
+        $client = new Client(\Yii::$app->params['ws']);
 
         $data['controller_name'] = 'AppController';
         $data['method_name'] = 'test';
