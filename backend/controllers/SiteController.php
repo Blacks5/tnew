@@ -171,11 +171,22 @@ SIGN_SUCCESS：签约成功
         echo "success";
     }
 
+    /**
+     * ws客户端页面，用于检查数据接收
+     * @return string
+     * @author too <hayto@foxmail.com>
+     */
     public function actionWs()
     {
         return $this->renderPartial('ws');
     }
 
+
+    /**
+     * 像websocket发送数据
+     * @param $a
+     * @author too <hayto@foxmail.com>
+     */
     public function actionSendws($a)
     {
         $client = new Client("ws://192.168.0.194:8081");
