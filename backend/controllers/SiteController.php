@@ -189,7 +189,7 @@ SIGN_SUCCESS：签约成功
      */
     public function actionSendws($a)
     {
-        $client = new Client("ws://192.168.0.194:8081");
+        $client = new Client("ws://119.23.15.90:8081");
         /*$data = [
             ''
         ];
@@ -206,7 +206,7 @@ SIGN_SUCCESS：签约成功
 
         $total_length = 4 + strlen($jsonData);
         $senddata = /*pack('N', $total_length) . */$jsonData;
-        var_dump($senddata);
         $client->send($senddata);
+
     }
 }
