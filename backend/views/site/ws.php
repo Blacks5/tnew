@@ -86,13 +86,24 @@
             if(key == 'newOrder'){
                 textDetail = '';
                 var numOrder =  newdataStorage ? newdataStorage.length : 0;
-                textDetail = "您有"+ numOrder +"条未读订单消息";
-                $('#newOrder').text(textDetail);
+                if(numOrder){
+                    textDetail = "您有"+ numOrder +"条未读订单消息";
+                    $('#newOrder').text(textDetail);
+                    $('#newOrderli').show();
+                    $('#dividerNotice').show();
+                }else{
+                    $('#newOrderli').hide();
+                }
             }else if(key == 'newSign'){
                 textDetail = '';
                 var numSign =  newdataStorage ? newdataStorage.length : 0;
-                textDetail = "您有"+ numSign +"条未读签约消息";
-                $('#newSign').text(textDetail);
+                if(numSign){
+                    textDetail = "您有"+ numSign +"条未读签约消息";
+                    $('#newSign').text(textDetail);
+                    $('#newSignli').show();
+                }else{
+                    $('#newSignli').hide();
+                }
             }
             $('#noticeNum').text(parseInt(numOrder ? numOrder : 0) + parseInt(numSign ? numSign : 0));
         }

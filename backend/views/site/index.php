@@ -106,7 +106,7 @@ use mdm\admin\components\MenuHelper;
                             <i class="fa fa-bell"></i> <span class="label label-primary" id="noticeNum"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
-                            <li>
+                            <li id="newOrderli" style="display: none;">
                                 <a class="J_menuItem" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
@@ -114,8 +114,8 @@ use mdm\admin\components\MenuHelper;
                                     </div>
                                 </a>
                             </li>
-                            <li class="divider"></li>
-                            <li>
+                            <li class="divider" id="dividerNotice" style="display: none"></li>
+                            <li id="newSignli" style="display: none;">
                                 <a class="J_menuItem" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
