@@ -106,11 +106,11 @@ use mdm\admin\components\MenuHelper;
                             <i class="fa fa-bell"></i> <span class="label label-primary" id="noticeNum"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
-                            <li id="newOrderli" style="display: none;">
+                            <li id="newOrderli" style="">
                                 <a class="J_menuItem" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
-                                        <span id="newOrder">您有16条未读订单消息</span>
+                                        <span id="newOrder">您有0条未读订单消息</span>
                                     </div>
                                 </a>
                             </li>
@@ -275,3 +275,4 @@ use mdm\admin\components\MenuHelper;
 <?= Html::jsFile('@web/js/hplus.min.js') ?>
 <?= Html::jsFile('@web/js/contabs.min.js') ?>
 <?= Html::jsFile('@web/js/plugins/pace/pace.min.js') ?>
+
