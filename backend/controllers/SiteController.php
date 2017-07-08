@@ -189,7 +189,8 @@ SIGN_SUCCESS：签约成功
      */
     public function actionSendws($a)
     {
-        $client = new Client("ws://119.23.15.90:8081");
+//        $client = new Client("ws://119.23.15.90:8081");
+        $client = new Client("ws://192.168.1.8:8888");
         /*$data = [
             ''
         ];
