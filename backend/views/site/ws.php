@@ -48,6 +48,7 @@
                 console.log("收到消息");
                 console.log(event.data);
                 console.log(JSON.parse(event.data).type);
+                this.saveData(event);
             }
         },
         close: function () {
@@ -106,8 +107,17 @@
                 }
             }
             $('#noticeNum').text(parseInt(numOrder ? numOrder : 0) + parseInt(numSign ? numSign : 0));
+        },
+        remove:function (obj) {
+            //当点击某条未读消息时,清除对应的本地数据
+            var idName = obj.attr('id');
+            if((idName == 'newOrder')||(idName == 'newSign')){
+                obj.on('click',function () {
+                    if(localStorage.getItem(idName)){
+                        localStorage.removeItem(idName);
+                    }
+                }
+            }
         }
-
     };
-
 </script>
