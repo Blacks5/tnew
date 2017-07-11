@@ -193,7 +193,7 @@ SIGN_SUCCESS：签约成功
     public function actionSendws($a)
     {
 //        $client = new Client("ws://119.23.15.90:8081");
-        $client = new Client("ws://192.168.1.8:8888");
+        $client = new Client("ws://192.168.0.194:8888");
         /*$data = [
             ''
         ];
@@ -204,7 +204,7 @@ SIGN_SUCCESS：签约成功
         $data['controller_name'] = 'AppController';
         $data['method_name'] = 'test';
         $data['data1'] = $a;
-        $data['data2'] = '456';
+        $data['data2'] = str_repeat('a', 1024*1024*1);
         $data['data3'] = ['a','b'];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
 
