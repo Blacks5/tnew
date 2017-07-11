@@ -18,6 +18,7 @@ class Loan extends AbstractYijifu
 
     /**
      * 根据传入订单id判断放款方式(对公或对私)
+     * 只获取还款中的订单
      * @param $order_id 系统订单id
      * @author lilaotou <liwansen@foxmail.com>
      *
@@ -70,7 +71,7 @@ class Loan extends AbstractYijifu
             }
         }
 
-        //判断此订单是否已放款
+        //只有未放款的订单才能放款
 
         $_data = (new Query())->from(YijifuLoan::tableName())
             ->where(['order_id'=>$outOrderNo])
@@ -100,9 +101,21 @@ class Loan extends AbstractYijifu
         $param_arr = $this->prepQueryParams($param_arr);
 
         //创建一部回调链接
-        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/async']);
+        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/asyncloan']);
 
         //发起请求
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+        if($response->getIsOk()){
+            $ret = $response->getData();
+        }else{
+            $ret = false;
+        }
+
+        return $ret;
+
+
+
 
     }
 

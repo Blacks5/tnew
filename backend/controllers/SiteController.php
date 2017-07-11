@@ -210,4 +210,23 @@ SIGN_SUCCESS：签约成功
         var_dump($senddata);
         $client->send($senddata);
     }
+
+
+    /**
+     * 放款回调方法
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionAsyncloan()
+    {
+
+        $post = Yii::$app->getRequest()->post();
+        ob_start();
+        var_dump($post);
+        //file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+
+        //异步回调方法里写放款记录(根据回调信息,添加不同的状态,如果此订单的记录且status状态值为2,就修改,如果没有数据就添加一条)
+
+
+        echo "success";
+    }
 }
