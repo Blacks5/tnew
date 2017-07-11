@@ -12,12 +12,15 @@ use common\models\Stores;
 use common\models\Orders;
 use common\components\CustomCommonException;
 use common\models\YijifuLoan;
+use Yii;
+use yii\db\Query;
+use \yii\httpclient\Client as httpClient;
 
 class Loan extends AbstractYijifu
 {
 
     /**
-     * 根据传入订单id判断放款方式(对公或对私)
+     * 根据传入订单id判断放款方式(对公或对私),暂时弃用
      * 只获取还款中的订单
      * @param $order_id 系统订单id
      * @author lilaotou <liwansen@foxmail.com>
@@ -34,13 +37,16 @@ class Loan extends AbstractYijifu
         }else{
             if($_data['s_bank_is_private'] == 1){
                 //对私
-                $this->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
+              //  $this->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
             }else{
                 //对公
-                $this->storeLoan($amount, $outOrderNo, $contractUrl,$realName, $mobileNo, $certNo, $bankCardNo, $bankCode, $bankName, $sellerBankProvince, $sellerBankCity, $sellerBankAddress);
+               // $this->storeLoan($amount, $outOrderNo, $contractUrl,$realName, $mobileNo, $certNo, $bankCardNo, $bankCode, $bankName, $sellerBankProvince, $sellerBankCity, $sellerBankAddress);
             }
         }
     }
+
+
+
     /**
      * 用户放款-对个人账户
      * @param $amount 代发金额
@@ -50,10 +56,10 @@ class Loan extends AbstractYijifu
      * @param $mobileNo 手机号
      * @param $certNo 身份证号,身份证最后一位为字母，字母必须为大写
      * @param $bankCardNo 个人银行账户
+     *
      * @author lilaotou <liwansen@foxmail.com>
-     * todo 未放款的订单才能放款
      */
-    private function userLoan(
+    public function userLoan(
         $amount,
         $outOrderNo,
         $contractUrl,
@@ -62,7 +68,6 @@ class Loan extends AbstractYijifu
         $certNo,
         $bankCardNo
     ){
-
         // 检测参数
         $_ = func_get_args();
         foreach ($_ as $v){
@@ -72,18 +77,16 @@ class Loan extends AbstractYijifu
         }
 
         //只有未放款的订单才能放款
-
         $_data = (new Query())->from(YijifuLoan::tableName())
             ->where(['order_id'=>$outOrderNo])
             ->one();
 
-        if($_data&&($_data['status'] == 1)){
+        if($_data&&($_data['status'] == 2)){
             throw new CustomCommonException('该订单已经成功放款!');
         }
 
         // 设置服务码
         $this->service = 'yxtQuicklyRemittance';
-
 
         //构造api参数
         $param_arr = array(
@@ -96,27 +99,23 @@ class Loan extends AbstractYijifu
             'bankCardNo'=>$bankCardNo
         );
 
+        //创建一部回调链接
+        //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/asyncloan']);
+        $this->notifyUrl = 'http://leemoo.ngrok.cc/site/asyncloan';
+
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
 
-        //创建一部回调链接
-        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/asyncloan']);
-
         //发起请求
         $http_client = new httpClient();
-        $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+        $response = $http_client->post($this->api, $param_arr)->send();
         if($response->getIsOk()){
             $ret = $response->getData();
         }else{
             $ret = false;
         }
-
         return $ret;
-
-
-
-
     }
 
     /**
@@ -136,7 +135,7 @@ class Loan extends AbstractYijifu
      *
      * @author lilaotou <liwansen@foxmail.com>
      */
-    private function storeLoan(
+    public function storeLoan(
         $amount,
         $outOrderNo,
         $contractUrl,
@@ -150,7 +149,59 @@ class Loan extends AbstractYijifu
         $sellerBankCity,
         $sellerBankAddress
     ){
+        // 检测参数
+        $_ = func_get_args();
+        foreach ($_ as $v){
+            if(false === !empty($v)){
+                throw new CustomCommonException('参数不全');
+            }
+        }
 
+        //只有未放款的订单才能放款
+        $_data = (new Query())->from(YijifuLoan::tableName())
+            ->where(['order_id'=>$outOrderNo])
+            ->one();
+
+        if($_data&&($_data['status'] == 2)){
+            throw new CustomCommonException('该订单已经成功放款!');
+        }
+
+        // 设置服务码
+        $this->service = 'yxtQuicklyRemittance';
+
+        //构造api参数
+        $param_arr = array(
+            'amount'=>$amount,
+            'outOrderNo'=>$outOrderNo,
+            'contractUrl'=>$contractUrl,
+            'realName'=>$realName,
+            'mobileNo'=>$mobileNo,
+            'certNo'=>$certNo,
+            'bankCardNo'=>$bankCardNo,
+            'bankCode'=>$bankCode,
+            'bankName'=>$bankName,
+            'sellerBankProvince'=>$sellerBankProvince,
+            'sellerBankCity'=>$sellerBankCity,
+            'sellerBankAddress'=>$sellerBankAddress
+        );
+
+        //创建一部回调链接
+        //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/asyncloan']);
+        $this->notifyUrl = 'http://leemoo.ngrok.cc/site/asyncloan';
+
+        $common = $this->getCommonParams();
+        $param_arr = array_merge($common, $param_arr);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+        //发起请求
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)->send();
+        if($response->getIsOk()){
+            $ret = $response->getData();
+        }else{
+            $ret = false;
+        }
+        return $ret;
     }
 
 }

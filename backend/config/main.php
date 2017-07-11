@@ -33,6 +33,7 @@ return [
             'site/async', // 易极付回调地址
             'site/ws', // ws测试页
             'site/sendws', // ws测试页
+            'site/asyncloan'
         ]
     ],
 
