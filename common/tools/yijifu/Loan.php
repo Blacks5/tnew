@@ -204,4 +204,33 @@ class Loan extends AbstractYijifu
         return $ret;
     }
 
+    /**
+     * 根据传入银行名称,接口需要银行名称,银行编码
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function getbancode($s_bank_sub){
+        $bank_arr = array(
+            '中国银行'=>'BOC',
+            '中国农业银行'=>'ABC',
+            '中国工商银行'=>'',
+            '中国建设银行'=>'CCB',
+            '中国光大银行'=>'CEB',
+            '兴业银行'=>'CIB',
+            '民生银行'=>'CMBC',
+            '中信银行'=>'CITIC',
+            '重庆农村商业银行'=>'CQRCB',
+            '中国邮政储蓄银行'=>'PSBC',
+            '平安银行'=>'PINGANBK'
+        );
+        $return_data = array();
+        foreach($bank_arr as $k=>$v){
+            if(strpos($s_bank_sub,$k)){
+                $return_data['bankname'] = $k;
+                $return_data['bankcode'] = $v;
+                break;
+            }
+        }
+        return $return_data;
+    }
+
 }

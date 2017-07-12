@@ -15,6 +15,9 @@ use common\models\LoginForm;
 use backend\models\Menu;
 use common\models\YijifuLoan;
 use yii\db\Query;
+use common\models\Orders;
+use common\components\CustomCommonException;
+use common\components\Helper;
 
 /**
  * Site controller
@@ -243,7 +246,6 @@ SIGN_SUCCESS：签约成功
                 $certNo = $post['$certNo'];
                 $bankCardNo = $post['$bankCardNo'];*/
 
-
                 $amount = '1000';
                 $outOrderNo = '000500201g1zvaztwp06' . time();
                 $contractUrl = 'http://php.net/images/to-top@2x.png';
@@ -253,13 +255,11 @@ SIGN_SUCCESS：签约成功
                 $bankCardNo = '6228480413868991410';
 
                 $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
-                var_dump($return_data);
+                //var_dump($return_data);
             }else{
                 //对公
-
-                //todo 处理银行编码,银行名称等参数
-                //对私
-/*                $post = Yii::$app->getRequest()->post();
+            /*
+                $post = Yii::$app->getRequest()->post();
                 $amount = $post['amount'];
                 $outOrderNo = $post['outOrderNo'];
                 $contractUrl = $post['contractUrl'];
@@ -271,9 +271,14 @@ SIGN_SUCCESS：签约成功
                 $bankName = $post['bankName'];
                 $sellerBankProvince = $post['sellerBankProvince'];
                 $sellerBankCity = $post['sellerBankCity'];
-                $sellerBankAddress = $post['sellerBankAddress'];*/
+                $sellerBankAddress = $post['sellerBankAddress'];
+            */
+                $bank_data = $Loan_model->getbancode($_data['s_bank_sub']);
+                if(empty($bank_data)){
+                    throw new CustomCommonException('该收款商户的银行暂不支持!');
+                }
 
-
+                $helper_address = new Helper();
                 $amount = '1000';
                 $outOrderNo = '000500201g1zvaztwp06' . time();
                 $contractUrl = 'http://php.net/images/to-top@2x.png';
@@ -281,11 +286,11 @@ SIGN_SUCCESS：签约成功
                 $mobileNo = '15951215597';
                 $certNo = '320382198909181037';
                 $bankCardNo = '6228480413868991410';
-                $bankCode = 'ABC';
-                $bankName = '中国农业银行';
-                $sellerBankProvince = '江苏省';
-                $sellerBankCity = '常州市';
-                $sellerBankAddress = '武进区支行';
+                $bankCode = $bank_data['bankcode'];
+                $bankName = $bank_data['bankname'];
+                $sellerBankProvince = $helper_address->getAddrName($_data['s_province']) ? $helper_address->getAddrName($_data['s_province']) : $_data['s_bank_addr'];
+                $sellerBankCity = $helper_address->getAddrName($_data['s_city']) ? $helper_address->getAddrName($_data['s_city']) : $_data['s_bank_addr'];
+                $sellerBankAddress = $_data['s_bank_sub'];
 
                 $return_data = $Loan_model->userLoan(
                     $amount,
@@ -302,7 +307,6 @@ SIGN_SUCCESS：签约成功
                     $sellerBankAddress
                 );
             }
-
             //根据响应参数输出数据
             if($return_data['resultCode']=='EXECUTE_SUCCESS'){
 
@@ -415,7 +419,6 @@ SIGN_SUCCESS：签约成功
                         ["status"]=>
                   string(18) "REMITTANCE_SUCCESS"
         }*/
-
 
     }
 }
