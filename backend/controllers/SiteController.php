@@ -197,24 +197,15 @@ SIGN_SUCCESS：签约成功
     {
 //        $client = new Client("ws://119.23.15.90:8081");
         $client = new Client("ws://192.168.0.194:8888");
-        /*$data = [
-            ''
+        $data = [
+            'cmd'=>'newOrderNotify',
+            'data'=>[
+                'param'=>$a
+            ]
         ];
-        $client->send($a);
-        echo $client->receive();*/
-
-
-        $data['controller_name'] = 'AppController';
-        $data['method_name'] = 'test';
-        $data['data1'] = $a;
-        $data['data2'] = str_repeat('a', 1024*1024*1);
-        $data['data3'] = ['a','b'];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
-
-        $total_length = 4 + strlen($jsonData);
-        $senddata = /*pack('N', $total_length) . */$jsonData;
-        var_dump($senddata);
-        $client->send($senddata);
+        var_dump($jsonData);
+        $client->send($jsonData);
     }
 
     /**
