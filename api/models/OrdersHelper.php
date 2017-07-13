@@ -184,12 +184,12 @@ class OrdersHelper
     private function sendToWs($customer_name)
     {
         $client = new Client(\Yii::$app->params['ws']);
-
-        $data['controller_name'] = 'AppController';
-        $data['method_name'] = 'orderNotify';
-        $data['data1'] = '顾客:'. $customer_name. '产生了新订单';
+        $string = '顾客:'. $customer_name. '产生了新订单';
+        $data = [
+            'cmd'=>'Orders:newOrderNotify',
+            'data'=>$string
+        ];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
-
         $client->send($jsonData);
     }
 }

@@ -196,10 +196,10 @@ SIGN_SUCCESS：签约成功
     public function actionSendws($a)
     {
 //        $client = new Client("ws://119.23.15.90:8081");
-        $client = new Client("ws://192.168.1.65:8888");
+        $client = new Client(Yii::$app->params['ws']);
         $data = [
             'cmd'=>'Test:a',
-            'data'=>$a
+            'data'=>'顾客:李大爷产生了新订单'
         ];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
         var_dump($jsonData);
