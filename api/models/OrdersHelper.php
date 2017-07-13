@@ -159,7 +159,7 @@ class OrdersHelper
             $transaction->commit();
 
             // 发送通知
-            $this->sendToWs($customerModel->c_customer_name);
+            $this->sendToWs($customerModel->c_customer_name, $ordersModel->o_id);
 
             return ['status'=>1, 'message'=>'提交成功'];
         }catch(CustomApiException $e){
@@ -181,13 +181,16 @@ class OrdersHelper
 
 
 
-    private function sendToWs($customer_name)
+    private function sendToWs($customer_name, $order_id)
     {
         $client = new Client(\Yii::$app->params['ws']);
         $string = '顾客:'. $customer_name. '产生了新订单';
         $data = [
             'cmd'=>'Orders:newOrderNotify',
-            'data'=>$string
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$order_id
+            ]
         ];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
         $client->send($jsonData);
