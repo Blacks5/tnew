@@ -205,23 +205,80 @@ class Loan extends AbstractYijifu
     }
 
     /**
+     * 查询放款记录
+     * @param $externalOrderNo 外部订单号(系统的订单号)
+     * @param $contractNo 代发流水号
+     * @return array|bool|mixed false表示接口请求失败
+     *
+     * @throws CustomCommonException
+     * @author too <hayto@foxmail.com>
+     */
+    public function querySignedCustomer($externalOrderNo,$contractNo)
+    {
+        if(false === !empty($externalOrderNo)){
+            throw new CustomCommonException('缺少参数');
+        }
+        if(false === !empty($contractNo)){
+            throw new CustomCommonException('缺少参数');
+        }
+        $this->service = 'installmentRemittanceQuery';
+        $common = $this->getCommonParams();
+        $param_arr = [
+            'externalOrderNo'=>$externalOrderNo,
+            'contractNo'=>$contractNo
+        ];
+        $param_arr = array_merge($param_arr, $common);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)->send();
+        if($response->getIsOk()){
+            return $response->getData();
+        }
+        return false;
+    }
+
+    /**
      * 根据传入银行名称,接口需要银行名称,银行编码
+     * @param $s_bank_sub 系统中商家的结算账户开户行支行
+     * @param $type 1对私   2对公
      * @author lilaotou <liwansen@foxmail.com>
      */
-    public function getbancode($s_bank_sub){
-        $bank_arr = array(
-            '中国银行'=>'BOC',
-            '中国农业银行'=>'ABC',
-            '中国工商银行'=>'',
-            '中国建设银行'=>'CCB',
-            '中国光大银行'=>'CEB',
-            '兴业银行'=>'CIB',
-            '民生银行'=>'CMBC',
-            '中信银行'=>'CITIC',
-            '重庆农村商业银行'=>'CQRCB',
-            '中国邮政储蓄银行'=>'PSBC',
-            '平安银行'=>'PINGANBK'
-        );
+    public function getbancode($s_bank_sub,$type){
+        if($type == 1){
+            $bank_arr = array(
+                '中国银行'=>'BOC',
+                '中国农业银行'=>'ABC',
+                '中国工商银行'=>'ICBC',
+                '中国建设银行'=>'CCB',
+                '中国光大银行'=>'CEB',
+                '兴业银行'=>'CIB',
+                '民生银行'=>'CMBC',
+                '中信银行'=>'CITIC',
+                '重庆农村商业银行'=>'CQRCB',
+                '中国邮政储蓄银行'=>'PSBC',
+                '平安银行'=>'PINGANBK',
+                '交通银行'=>'COMM',
+                '广东发展银行'=>'CGB'
+            );
+        }else{
+            $bank_arr = array(
+                '中国银行'=>'BOC',
+                '中国农业银行'=>'ABC',
+                '中国工商银行'=>'ICBC',
+                '中国建设银行'=>'CCB',
+                '中国光大银行'=>'CEB',
+                '兴业银行'=>'CIB',
+                '民生银行'=>'CMBC',
+                '中信银行'=>'CITIC',
+                '重庆农村商业银行'=>'CQRCB',
+                '中国邮政储蓄银行'=>'PSBC',
+                '平安银行'=>'PINGANBK',
+                '交通银行'=>'COMM',
+                '广东发展银行'=>'CGB',
+                '华夏银行'=>'HXB'
+            );
+        }
         $return_data = array();
         foreach($bank_arr as $k=>$v){
             if(strpos($s_bank_sub,$k)){

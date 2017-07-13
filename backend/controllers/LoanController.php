@@ -1,29 +1,19 @@
 <?php
 namespace backend\controllers;
-// tz
-use common\models\Department;
 use common\tools\yijifu\Loan;
-use common\tools\yijifu\ReturnMoney;
-use common\tools\yijifu\Sign;
-use mdm\admin\models\searchs\User;
-use WebSocket\Client;
 use Yii;
 use backend\core\CoreBackendController;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\models\LoginForm;
-use backend\models\Menu;
 use common\models\YijifuLoan;
 use yii\db\Query;
 use common\models\Orders;
 use common\components\CustomCommonException;
 use common\components\Helper;
-
+use common\models\UploadFile;
 /**
  * Loan controller
  * 放款几口
  */
-class SiteController extends CoreBackendController
+class LoanController extends CoreBackendController
 {
     /**
      * @inheritdoc
@@ -55,61 +45,43 @@ class SiteController extends CoreBackendController
         if($_data === false){
             throw new CustomCommonException('系统错误!');
         }else{
+            if(!$_data['s_photo_seven']){
+                throw new CustomCommonException('暂无合同图片无法放款!');
+            }
+
+            if($_data['o_total_price'] <= $_data['o_total_deposit']){
+                throw new CustomCommonException('系统错误!');
+            }
+
             $Loan_model = new Loan();
+            $t = new UploadFile();
+            //构造公私共有的请求参数
+            $amount = $_data['o_total_price'] - $_data['o_total_deposit'];
+            $outOrderNo = $_data['o_id'];
+            $contractUrl = $t->getUrl($_data['s_photo_seven']);
+            $realName = ($_data['s_bank_is_private'] == 1) ? $_data['s_bank_people_name'] : $_data['s_gov_name'];//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
+            $mobileNo = $_data['s_owner_phone'];
+            $certNo = $_data['s_idcard_num'];
+            $bankCardNo = $_data['s_bank_num'];
+
             if($_data['s_bank_is_private'] == 1){
                 //对私
-/*                $post = Yii::$app->getRequest()->post();
-                $amount = $post['amount'];
-                $outOrderNo = $post['$outOrderNo'];
-                $contractUrl = $post['$contractUrl'];
-                $realName = $post['$realName'];
-                $mobileNo = $post['$mobileNo'];
-                $certNo = $post['$certNo'];
-                $bankCardNo = $post['$bankCardNo'];*/
-
-                $amount = '1000';
-                $outOrderNo = '000500201g1zvaztwp06' . time();
-                $contractUrl = 'http://php.net/images/to-top@2x.png';
-                $realName = '李正周';
-                $mobileNo = '15951215597';
-                $certNo = '320382198909181037';
-                $bankCardNo = '6228480413868991410';
-
-                $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
-                //var_dump($return_data);
-            }else{
-                //对公
-            /*
-                $post = Yii::$app->getRequest()->post();
-                $amount = $post['amount'];
-                $outOrderNo = $post['outOrderNo'];
-                $contractUrl = $post['contractUrl'];
-                $realName = $post['realName'];
-                $mobileNo = $post['mobileNo'];
-                $certNo = $post['certNo'];
-                $bankCardNo = $post['bankCardNo'];
-                $bankCode = $post['bankCode'];
-                $bankName = $post['bankName'];
-                $sellerBankProvince = $post['sellerBankProvince'];
-                $sellerBankCity = $post['sellerBankCity'];
-                $sellerBankAddress = $post['sellerBankAddress'];
-            */
-                $bank_data = $Loan_model->getbancode($_data['s_bank_sub']);
+                $bank_data = $Loan_model->getbancode($_data['s_bank_sub'],1);
                 if(empty($bank_data)){
                     throw new CustomCommonException('该收款商户的银行暂不支持!');
                 }
-                if($_data['o_total_price'] <= $_data['o_total_deposit']){
-                    throw new CustomCommonException('系统错误!');
+                $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
+            }else{
+                //对公
+
+                //验证商户银行是否支持
+                $bank_data = $Loan_model->getbancode($_data['s_bank_sub'],2);
+                if(empty($bank_data)){
+                    throw new CustomCommonException('该收款商户的银行暂不支持!');
                 }
-//todo 获取信息
+
+                //对公必传参数
                 $helper_address = new Helper();
-                $amount = $_data['o_total_price'] - $_data['o_total_deposit'];
-                $outOrderNo = $_data['o_id'];
-                $contractUrl = $_data['oi_after_contract'];
-                $realName = '李正周';
-                $mobileNo = '15951215597';
-                $certNo = '320382198909181037';
-                $bankCardNo = '6228480413868991410';
                 $bankCode = $bank_data['bankcode'];
                 $bankName = $bank_data['bankname'];
                 $sellerBankProvince = $helper_address->getAddrName($_data['s_province']) ? $helper_address->getAddrName($_data['s_province']) : $_data['s_bank_addr'];
@@ -133,9 +105,9 @@ class SiteController extends CoreBackendController
             }
             //根据响应参数输出数据
             if($return_data['resultCode']=='EXECUTE_SUCCESS'){
-
+                return $this->success('放款成功');
             }else{
-
+                return $this->error('放款失败' . $return_data['resultCode']);
             }
         }
 
@@ -173,7 +145,7 @@ class SiteController extends CoreBackendController
         }else{
             $status = 1;
         }
-        $operator_id = 510;
+        $operator_id = Yii::$app->getUser()->getIdentity()->getId();
         if($_data){
             if($_data['status'] == 1){
                 //修改
@@ -244,5 +216,10 @@ class SiteController extends CoreBackendController
                   string(18) "REMITTANCE_SUCCESS"
         }*/
 
+    }
+
+    public function actionTest(){
+        $user_id=Yii::$app->getUser()->getIdentity()->getId();
+        print_r(Yii::$app->getUser()->getIdentity());
     }
 }
