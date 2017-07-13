@@ -20,7 +20,7 @@
 
     var config = {
 //        "server": "ws://119.23.15.90:8081"
-        "server": "ws://192.168.0.194:8888"
+        "server": "ws://192.168.1.65:8888"
     };
 
     var dataSend = {
