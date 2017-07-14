@@ -21,7 +21,7 @@ use mdm\admin\components\MenuHelper;
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
                                <span class="block m-t-xs"><strong
-                                       class="font-bold"><?= Yii::$app->user->identity->username ?></strong></span>
+                                           class="font-bold"><?= Yii::$app->user->identity->username ?></strong></span>
                                 <span class="text-muted text-xs block"><?= $user_info ?><b class="caret"></b></span>
                                 </span>
                         </a>
@@ -92,10 +92,10 @@ use mdm\admin\components\MenuHelper;
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
-                            class="fa fa-bars"></i> </a>
+                                class="fa fa-bars"></i> </a>
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
-<!--                            <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">-->
+                            <!--                            <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">-->
                             <h2>管理后台</h2>
                         </div>
                     </form>
@@ -158,7 +158,7 @@ use mdm\admin\components\MenuHelper;
                 </ul>
             </div>
             <a href="<?= Url::toRoute('login/logout') ?>" class="roll-nav roll-right J_tabExit"><i
-                    class="fa fa fa-sign-out"></i> 退出</a>
+                        class="fa fa fa-sign-out"></i> 退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">
             <iframe class="J_iframe" name="iframe0" width="100%" height="100%"
@@ -395,4 +395,12 @@ use mdm\admin\components\MenuHelper;
             }
         }
     };
+    var t = {
+        "cmd":"Test:keelAlive",
+        "data":""
+    };
+    var x1 = JSON.stringify(t);
+    setInterval(function(){
+        notify.data.server.send(x1);
+    },100000);
 </script>
