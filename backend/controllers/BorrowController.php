@@ -247,6 +247,28 @@ class BorrowController extends CoreBackendController
     {
         // 判断是否符合终审
         // 签约+写签约记录表(状态为待回调)
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            $trans = Yii::$app->db->beginTransaction();
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_operator_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                // 状态必须为6（初审通过）的才可以终审
+                $model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one();
+                if (false === !empty($model)) {
+                    throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
+                }
+                return ['status' => 1, 'message' => '终审并放款成功，已生成还款计划！'];
+            } catch (CustomBackendException $e) {
+                $trans->rollBack();
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                $trans->rollBack();
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
     }
 
     /**
