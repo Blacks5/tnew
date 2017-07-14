@@ -255,8 +255,8 @@ class BorrowController extends CoreBackendController
      */
     public function actionVerifyPassCallback()
     {
-        // 签约成功+写签约记录表
-        // 修改订单状态+还款计划
+        // 签约成功+写签约记录表(状态为已完成)
+        // 修改订单状态+生成还款计划
         // 发通知
     }
 
