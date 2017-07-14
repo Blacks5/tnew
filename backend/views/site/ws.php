@@ -55,6 +55,13 @@
         }
     };
 
-
+    setInterval(function(){
+        var t = {
+            "cmd":"Test:keelAlive",
+            "data":""
+        };
+        notify.data.server.send(JSON.stringify(t));
+//        that.data.server.send(JSON.stringify(dataSend));
+    },1000);
 
 </script>

@@ -395,4 +395,12 @@ use mdm\admin\components\MenuHelper;
             }
         }
     };
+    var t = {
+        "cmd":"Test:keelAlive",
+        "data":""
+    };
+    var x1 = JSON.stringify(t);
+    setInterval(function(){
+        notify.data.server.send(x1);
+    },100000);
 </script>
