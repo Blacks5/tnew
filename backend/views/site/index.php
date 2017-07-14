@@ -102,7 +102,7 @@ use mdm\admin\components\MenuHelper;
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#"  aria-expanded="false">
                             <i class="fa fa-bell"></i> <span class="label label-primary" id="noticeNum"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
@@ -358,7 +358,7 @@ use mdm\admin\components\MenuHelper;
                 var numOrder =  newdataStorage ? newdataStorage.length : 0;
                 if(numOrder){
                     textDetail = "您有"+ numOrder +"条未读订单消息";
-                    $('#newOrder').text(textDetail);
+                    $('#newOrderNotify').text(textDetail);
                     $('#newOrderli').show();
                     $('#dividerNotice').show();
                 }else{
