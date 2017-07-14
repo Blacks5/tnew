@@ -308,7 +308,7 @@ use mdm\admin\components\MenuHelper;
         open: function () {
             this.data.server.onopen = function (event) {
 //                console.log("连接上了");
-                console.log(event);
+//                console.log(event);
             }
         },
         message: function () {
