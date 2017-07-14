@@ -102,12 +102,17 @@ use mdm\admin\components\MenuHelper;
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#"  aria-expanded="false">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" id="notifyx"  aria-expanded="false">
                             <i class="fa fa-bell"></i> <span class="label label-primary" id="noticeNum"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
                             <li id="newOrderli" style="display: none;">
-                                <a class="J_menuItem" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                <script>
+                                    function x1() {
+                                        $("#notifyx").trigger('click');
+                                    }
+                                </script>
+                                <a class="J_menuItem" onclick="x1()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
                                         <span id="newOrderNotify">您有0条未读订单消息</span>
