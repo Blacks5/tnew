@@ -107,12 +107,7 @@ use mdm\admin\components\MenuHelper;
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
                             <li id="newOrderli" style="display: none;">
-                                <script>
-                                    function x1() {
-                                        $("#notifyx").trigger('click');
-                                    }
-                                </script>
-                                <a class="J_menuItem" onclick="x1()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                <a class="J_menuItem" onclick="notify.hideNotify()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
                                         <span id="newOrderNotify">您有0条未读订单消息</span>
@@ -304,6 +299,10 @@ use mdm\admin\components\MenuHelper;
         data: {
             server: null,
             defaultData: []
+        },
+        hideNotify: function () {
+            $("#notifyx").trigger('click');
+            localStorage.removeItem('newOrderNotify');
         },
         init: function () {
             this.data.server = new WebSocket(config.server);
