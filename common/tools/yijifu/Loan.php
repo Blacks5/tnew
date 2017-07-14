@@ -100,8 +100,9 @@ class Loan extends AbstractYijifu
         );
 
         //创建一部回调链接
-        //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/asyncloan']);
-        $this->notifyUrl = 'http://leemoo.ngrok.cc/site/asyncloan';
+        //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['loan/asyncloan']);
+        $this->notifyUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
+        //$this->returnUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
@@ -186,9 +187,9 @@ class Loan extends AbstractYijifu
         );
 
         //创建一部回调链接
-        //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/asyncloan']);
-        $this->notifyUrl = 'http://leemoo.ngrok.cc/site/asyncloan';
-
+        //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['loan/asyncloan']);
+        $this->notifyUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
+        //$this->returnUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);

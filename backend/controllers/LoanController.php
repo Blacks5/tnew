@@ -11,10 +11,18 @@ use common\components\Helper;
 use common\models\UploadFile;
 /**
  * Loan controller
- * 放款几口
+ * 放款接口
  */
 class LoanController extends CoreBackendController
 {
+
+    public function beforeAction($action)
+    {
+        if('async' === $action->id){
+            $this->enableCsrfValidation = false;
+        }
+        return true;
+    }
     /**
      * @inheritdoc
      */
@@ -32,25 +40,21 @@ class LoanController extends CoreBackendController
      */
     public function actionTestloan(){
         $order_id = Yii::$app->getRequest()->post('order_id');
-        if(!$order_id){
-            throw new CustomCommonException('系统错误!');
-        }
-
         $_data = (new Query())->from(Orders::tableName())
             ->join('LEFT JOIN', 'stores', 'orders.o_store_id = stores.s_id')
-            ->join('LEFT JOIN', 'order_images', 'orders.o_id = order_images.oi_id')
+            //->join('LEFT JOIN', 'order_images', 'orders.o_id = order_images.oi_id')
             ->where(['orders.o_id'=>$order_id,'orders.o_status'=>10])
             ->one();
 
         if($_data === false){
-            throw new CustomCommonException('系统错误!');
+            return $this->error('数据不存在!' );
         }else{
             if(!$_data['s_photo_seven']){
-                throw new CustomCommonException('暂无合同图片无法放款!');
+                return $this->error('暂无合同图片无法放款!' );
             }
 
             if($_data['o_total_price'] <= $_data['o_total_deposit']){
-                throw new CustomCommonException('系统错误!');
+                return $this->error('系统错误!' );
             }
 
             $Loan_model = new Loan();
@@ -64,8 +68,17 @@ class LoanController extends CoreBackendController
             $certNo = $_data['s_idcard_num'];
             $bankCardNo = $_data['s_bank_num'];
 
+
+//        $amount = 10000;
+//        $outOrderNo = '12345ddd' . time();
+//        $contractUrl = 'https://static.zhihu.com/static/revved/img/index/logo.6837e927.png';
+//        $realName = '李正周';//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
+//        $mobileNo = '15951215597';
+//        $certNo = '320382198909181037';
+//        $bankCardNo = '6228480413868991410';
+
             if($_data['s_bank_is_private'] == 1){
-                //对私
+               // 对私
                 $bank_data = $Loan_model->getbancode($_data['s_bank_sub'],1);
                 if(empty($bank_data)){
                     throw new CustomCommonException('该收款商户的银行暂不支持!');
@@ -77,10 +90,10 @@ class LoanController extends CoreBackendController
                 //验证商户银行是否支持
                 $bank_data = $Loan_model->getbancode($_data['s_bank_sub'],2);
                 if(empty($bank_data)){
-                    throw new CustomCommonException('该收款商户的银行暂不支持!');
+                    return $this->error('该收款商户的银行暂不支持!');
                 }
 
-                //对公必传参数
+//                //对公必传参数
                 $helper_address = new Helper();
                 $bankCode = $bank_data['bankcode'];
                 $bankName = $bank_data['bankname'];
@@ -105,9 +118,20 @@ class LoanController extends CoreBackendController
             }
             //根据响应参数输出数据
             if($return_data['resultCode']=='EXECUTE_SUCCESS'){
-                return $this->success('放款成功');
+                //新增
+                $wait_inster_data = [
+                    'order_id'=>$outOrderNo,
+                    'amount'=>$amount,
+                    'realRemittanceAmount'=>'',
+                    'contractNo'=>'',
+                    'status'=>2, // 1接口调用失败  2接口调用成功处理中
+                    'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
+                    'created_at'=>$_SERVER['REQUEST_TIME']
+                ];
+                \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
+                return $this->success('接口调用成功,等待处理');
             }else{
-                return $this->error('放款失败' . $return_data['resultCode']);
+                return $this->error('接口调用失败 ' . $return_data['resultCode']);
             }
         }
 
@@ -124,7 +148,6 @@ class LoanController extends CoreBackendController
 //            ["success"]=> bool(true)
 //            ["version"]=> string(3) "1.0"
 //        }
-
     }
 
     /**
@@ -162,7 +185,7 @@ class LoanController extends CoreBackendController
                 'amount'=>$post['amount'],
                 'realRemittanceAmount'=>$post['realRemittanceAmount'],
                 'contractNo'=>$post['contractNo'],
-                'status'=>$status, // 1未成功  2已成功
+                'status'=>$status, // 3放款处理失败  4放款处理成功
                 'operator_id'=>$operator_id,
                 'created_at'=>$_SERVER['REQUEST_TIME']
             ];
