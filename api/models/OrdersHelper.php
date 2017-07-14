@@ -159,6 +159,9 @@ class OrdersHelper
                 throw new CustomApiException('商品写入失败');
             }
             $transaction->commit();
+
+            // 发送通知
+            $this->sendToWs($customerModel->c_customer_name, $ordersModel->o_id);
             return ['status'=>1, 'message'=>'提交成功'];
         }catch(CustomApiException $e){
             $transaction->rollBack();
@@ -171,6 +174,21 @@ class OrdersHelper
 
 
     }
+
+    private function sendToWs($customer_name, $order_id)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+        $string = '顾客:'. $customer_name. '产生了新订单';
+        $data = [
+            'cmd'=>'Orders:newOrderNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$order_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
+    }
     /*
      * 1. 完整提交订单
      * 2. 根据订单生成还款计划[等额本息算法]
@@ -178,4 +196,6 @@ class OrdersHelper
      * 3. 安卓上传图片[周末]
      * 5.
      * */
+
+
 }
