@@ -21,7 +21,7 @@ use mdm\admin\components\MenuHelper;
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
                                <span class="block m-t-xs"><strong
-                                       class="font-bold"><?= Yii::$app->user->identity->username ?></strong></span>
+                                           class="font-bold"><?= Yii::$app->user->identity->username ?></strong></span>
                                 <span class="text-muted text-xs block"><?= $user_info ?><b class="caret"></b></span>
                                 </span>
                         </a>
@@ -92,15 +92,39 @@ use mdm\admin\components\MenuHelper;
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
-                            class="fa fa-bars"></i> </a>
+                                class="fa fa-bars"></i> </a>
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
-<!--                            <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">-->
+                            <!--                            <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">-->
                             <h2>管理后台</h2>
                         </div>
                     </form>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" id="notifyx"  aria-expanded="false">
+                            <i class="fa fa-bell"></i> <span class="label label-primary" id="noticeNum"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li id="newOrderli" style="display: none;">
+                                <a class="J_menuItem" onclick="notify.hideNotify()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i>
+                                        <span id="newOrderNotify">您有0条未读订单消息</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider" id="dividerNotice" style="display: none"></li>
+                            <li id="newSignli" style="display: none;">
+                                <a class="J_menuItem" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i>
+                                        <span id="newSign">您有16条未读签约消息</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="dropdown hidden-xs">
                         <a class="right-sidebar-toggle" aria-expanded="false">
                             <i class="fa fa-tasks"></i> 主题
@@ -134,7 +158,7 @@ use mdm\admin\components\MenuHelper;
                 </ul>
             </div>
             <a href="<?= Url::toRoute('login/logout') ?>" class="roll-nav roll-right J_tabExit"><i
-                    class="fa fa fa-sign-out"></i> 退出</a>
+                        class="fa fa fa-sign-out"></i> 退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">
             <iframe class="J_iframe" name="iframe0" width="100%" height="100%"
@@ -251,3 +275,124 @@ use mdm\admin\components\MenuHelper;
 <?= Html::jsFile('@web/js/hplus.min.js') ?>
 <?= Html::jsFile('@web/js/contabs.min.js') ?>
 <?= Html::jsFile('@web/js/plugins/pace/pace.min.js') ?>
+
+<script>
+
+
+    $(function () {
+        notify.init();
+        // notify.heartbeat();
+    });
+
+
+    var config = {
+        "server": "ws://119.23.15.90:8081"
+//        "server": "ws://119.23.15.90:8888"
+    };
+
+    var dataSend = {
+        "controller_name":"AppController",
+        "method_name":"keepAlive"
+    };
+
+    var notify = {
+        data: {
+            server: null,
+            defaultData: []
+        },
+        hideNotify: function () {
+            $("#notifyx").trigger('click');
+            localStorage.removeItem('newOrderNotify');
+            $("#noticeNum").text('');
+        },
+        init: function () {
+            this.data.server = new WebSocket(config.server);
+            this.open();
+            this.message();
+        },
+        open: function () {
+            this.data.server.onopen = function (event) {
+//                console.log("连接上了");
+//                console.log(event);
+            }
+        },
+        message: function () {
+            var self = this;
+            this.data.server.onmessage = function (event) {
+//                console.log("收到消息");
+//                console.log(event.data);
+//                console.log(JSON.parse(event.data).type);
+                self.saveData(event);
+            }
+        },
+        close: function () {
+            this.data.server.onclose = function (event) {
+//                console.log("服雾器消失了");
+                console.log(event);
+            }
+        },
+        error: function () {
+            this.data.server.onerror = function (event) {
+//                console.log("莫名其妙的出错了");
+                console.log(event);
+            }
+        },
+        heartbeat: function () {
+            var that = this;
+            setInterval(function(){
+                that.data.server.send(JSON.stringify(dataSend));
+            },100000);
+        },
+        saveData:function (event) {
+            var dataRes = JSON.parse(event.data);
+            //var dataRes = {"message":"李大爷创建了新订单","order_id":5,"type":"newOrderNotify"};
+            var key = dataRes.type;
+            var dataStorage = JSON.parse(localStorage.getItem(key));
+            if(dataStorage){
+                dataStorage.push(dataRes);
+                localStorage.setItem(key,JSON.stringify(dataStorage));
+            }else{
+                var dataRes_arr = [dataRes];
+                localStorage.setItem(key,JSON.stringify(dataRes_arr));
+            }
+
+            //判断消息类型,根据消息类型创建dom
+            var newdataStorage = JSON.parse(localStorage.getItem(key));
+            if(key == 'newOrderNotify'){
+                textDetail = '';
+                var numOrder =  newdataStorage ? newdataStorage.length : 0;
+                if(numOrder){
+                    textDetail = "您有"+ numOrder +"条未读订单消息";
+                    $('#newOrderNotify').text(textDetail);
+                    $('#newOrderli').show();
+                    $('#dividerNotice').show();
+                }else{
+                    $('#newOrderli').hide();
+                }
+            }else if(key == 'newSign'){
+                textDetail = '';
+                var numSign =  newdataStorage ? newdataStorage.length : 0;
+                if(numSign){
+                    textDetail = "您有"+ numSign +"条未读签约消息";
+                    $('#newSign').text(textDetail);
+                    $('#newSignli').show();
+                }else{
+                    $('#newSignli').hide();
+                }
+            }
+            $('#noticeNum').text(parseInt(numOrder ? numOrder : 0) + parseInt(numSign ? numSign : 0));
+        },
+        remove:function () {
+            //当点击某条未读消息时,清除对应的本地数据
+            obj = $('li div span');
+            var idName = obj.attr('id');
+            if((idName == 'newOrderNotify')||(idName == 'newSign')){
+                obj.on('click',function () {
+                    if(localStorage.getItem(idName)){
+                        localStorage.removeItem(idName);
+                    }
+                });
+            }
+        }
+    };
+</script>
