@@ -307,27 +307,28 @@ use mdm\admin\components\MenuHelper;
         },
         open: function () {
             this.data.server.onopen = function (event) {
-                console.log("连接上了");
+//                console.log("连接上了");
                 console.log(event);
             }
         },
         message: function () {
+            var self = this;
             this.data.server.onmessage = function (event) {
-                console.log("收到消息");
-                console.log(event.data);
-                console.log(JSON.parse(event.data).type);
-                this.saveData(event);
+//                console.log("收到消息");
+//                console.log(event.data);
+//                console.log(JSON.parse(event.data).type);
+                self.saveData(event);
             }
         },
         close: function () {
             this.data.server.onclose = function (event) {
-                console.log("服雾器消失了");
+//                console.log("服雾器消失了");
                 console.log(event);
             }
         },
         error: function () {
             this.data.server.onerror = function (event) {
-                console.log("莫名其妙的出错了");
+//                console.log("莫名其妙的出错了");
                 console.log(event);
             }
         },
