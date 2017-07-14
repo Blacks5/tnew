@@ -19,8 +19,8 @@
 
 
     var config = {
-        "server": "ws://119.23.15.90:8081"
-//        "server": "ws://119.23.15.90:8888"
+//        "server": "ws://119.23.15.90:8081"
+        "server": "ws://192.168.0.194:8081"
     };
 
     var dataSend = {
@@ -72,7 +72,7 @@
         },
         saveData:function (event) {
             var dataRes = JSON.parse(event.data);
-            var dataRes = {"type":"newOrder","data":"顾客:李大爷产生了新订单"};
+            var dataRes = {"message":"李大爷创建了新订单","order_id":5,"type":"newOrderNotify"};
             var key = dataRes.type;
             var dataStorage = JSON.parse(localStorage.getItem(key));
             if(dataStorage){
