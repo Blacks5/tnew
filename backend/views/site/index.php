@@ -303,6 +303,7 @@ use mdm\admin\components\MenuHelper;
         hideNotify: function () {
             $("#notifyx").trigger('click');
             localStorage.removeItem('newOrderNotify');
+            $("#noticeNum").text('');
         },
         init: function () {
             this.data.server = new WebSocket(config.server);
