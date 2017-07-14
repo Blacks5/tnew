@@ -188,7 +188,7 @@ class BorrowController extends CoreBackendController
      * @return mixed
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionVerifyPass($order_id)
+    public function actionVerifyPassbak($order_id)
     {
 // 审核通过 10. 增加逾期还款列表: 自动计算滞纳金.
         $request = Yii::$app->getRequest();
@@ -237,6 +237,27 @@ class BorrowController extends CoreBackendController
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
+    }
+
+    /**
+     * 新终审
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionVerifyPass()
+    {
+        // 判断是否符合终审
+        // 签约
+    }
+
+    /**
+     * 签约回调
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionVerifyPassCallback()
+    {
+        // 签约成功
+        // 还款计划
+        // 发通知
     }
 
     /**
