@@ -42,7 +42,7 @@ class ReturnMoney extends AbstractYijifu
      * @param $totalRepayAmount 应还总金额，包括各种利息管理费的总和
      * @param string $loanAmount 借款金额【可不填】，显示在用户短信中
      *
-     * @return false接口请求失败   array接口返回信息
+     * @return false接口请求失败   true请求成功
      *
      * @throws CustomCommonException
      * @author too <hayto@foxmail.com>
@@ -67,24 +67,18 @@ class ReturnMoney extends AbstractYijifu
                 throw new CustomCommonException('参数不全');
             }
         }
-
         // 设置服务码
         $this->service = 'fastSign';
-
         // 生成ID
         $_data = (new Query())->from(YijifuSignReturnmoney::tableName())
-            ->where(['order_id'=>$order_id])
-            ->one();
-        if(false === $_data){
-            $merchOrderNo = $order_id.'-1';
-            $merchContractNo = $order_id.'-1';
-        }else{
-            if($_data['status'] == 1){
-                throw new CustomCommonException('该订单已经成功签约');
-            }
-            $merchOrderNo = $order_id. '-'. (substr($_data['merchOrderNo'], -1)+1);
-            $merchContractNo = $order_id. '-'. (substr($_data['merchContractNo'], -1)+1);
+            ->where(['order_id'=>$order_id, 'status'=>1])
+            ->exists();
+        if(true === $_data){
+            throw new CustomCommonException('该订单已经成功签约');
         }
+        $randString = \Yii::$app->getSecurity()->generateRandomString(4);
+        $merchOrderNo = $merchContractNo = $order_id. '-'. $randString;
+
 
         // 构造api请求参数
         $param_arr = [
@@ -100,49 +94,44 @@ class ReturnMoney extends AbstractYijifu
             'totalRepayAmount'=>$totalRepayAmount,
             'operateType'=>'SIGN',
         ];
-        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['site/async']);
+//        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['borrow/verify-pass-callback']);
+        $this->notifyUrl = "http://local80t.ngrok.cc/borrow/verify-pass-callback";
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
 
         // 发起请求
-        $status = 2;
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+
+        $status = 3; // 接口调用失败
+        $reuturn = false;
         if($response->getIsOk()){
             $ret = $response->getData();
-            if($ret['resultCode'] === 'EXECUTE_SUCCESS'){
-                $status = 1;
+            // 代表接口调用成功
+            if(true === $ret['success']) {
+                $status = 2; // 等待回掉
+                $reuturn = true;
             }
-        }else{
-            $ret = false;
         }
-
+        $operator_id = \Yii::$app->getUser()->getId();
         $operator_id = 101;
-
         // 写签约记录表
-        if(false === $_data){
-            $wait_inster_data = [
-                'order_id'=>$order_id,
-                'merchOrderNo'=>$merchOrderNo,
-                'merchContractNo'=>$merchContractNo,
-                'deductAmount'=>0,
-                'operateType'=>1, // 签约
-                'created_at'=>$_SERVER['REQUEST_TIME'],
-                'operator_id'=>$operator_id,
-                'status'=>$status
-            ];
-            \Yii::$app->getDb()->createCommand()->insert(YijifuSignReturnmoney::tableName(), $wait_inster_data)->execute();
-        }else{
-            $_data['merchOrderNo'] = $merchOrderNo;
-            $_data['merchContractNo'] = $merchContractNo;
-            $_data['status'] = $status;
-            $_data['operator_id'] = $operator_id;
-            $_data['updated_at']=$_SERVER['REQUEST_TIME'];
-            \Yii::$app->getDb()->createCommand()->update(YijifuSignReturnmoney::tableName(), $_data, ['id'=>$_data['id']])->execute();
-        }
-        return $ret;
+        $wait_inster_data = [
+            'order_id'=>$order_id,
+            'merchOrderNo'=>$merchOrderNo,
+            'merchContractNo'=>$merchContractNo,
+            'deductAmount'=>0,
+            'operateType'=>1, // 签约
+            'created_at'=>$_SERVER['REQUEST_TIME'],
+            'operator_id'=>$operator_id,
+            'status'=>$status,
+            'sign'=>isset($ret['sign'])?$ret['sign']: '', // 兼容请求失败，没有$ret的情况
+            'orderNo'=>isset($ret['orderNo'])?$ret['orderNo']: '',
+        ];
+        \Yii::$app->getDb()->createCommand()->insert(YijifuSignReturnmoney::tableName(), $wait_inster_data)->execute();
+        return $reuturn;
     }
 
 

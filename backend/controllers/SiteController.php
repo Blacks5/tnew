@@ -113,13 +113,7 @@ class SiteController extends CoreBackendController
         p($ret);
     }
 
-    public function beforeAction($action)
-    {
-        if('async' === $action->id){
-            $this->enableCsrfValidation = false;
-        }
-        return true;
-    }
+
 
     public function actionAsync()
     {

@@ -30,10 +30,11 @@ return [
             'site/test',
             'site/test2',
             'gii/*',
-            'site/async', // 易极付回调地址
             'site/ws', // ws测试页
             'site/sendws', // ws测试页
-            'loan/asyncloan'
+            'site/asyncloan',
+            'borrow/verify-pass-callback', // 易极付回调地址
+//            'borrow/verify-pass' // 易极付回调地址
         ]
     ],
 

@@ -16,6 +16,9 @@ use common\models\Goods;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\YijifuSignReturnmoney;
+use common\tools\yijifu\ReturnMoney;
+use WebSocket\Client;
 use yii;
 use backend\core\CoreBackendController;
 use common\models\OrdersSearch;
@@ -26,6 +29,13 @@ class BorrowController extends CoreBackendController
     {
 
         echo '父菜单';
+    }
+    public function beforeAction($action)
+    {
+        if('verify-pass-callback' === $action->id){
+            $this->enableCsrfValidation = false;
+        }
+        return true;
     }
 
     // 列表 待审核
@@ -243,13 +253,12 @@ class BorrowController extends CoreBackendController
      * 新终审
      * @author too <hayto@foxmail.com>
      */
-    public function actionVerifyPass()
+    public function actionVerifyPass($order_id=54)
     {
         // 判断是否符合终审
         // 签约+写签约记录表(状态为待回调)
         $request = Yii::$app->getRequest();
-        if ($request->getIsAjax()) {
-            $trans = Yii::$app->db->beginTransaction();
+        if (!$request->getIsAjax()) {
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
@@ -260,12 +269,35 @@ class BorrowController extends CoreBackendController
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
-                return ['status' => 1, 'message' => '终审并放款成功，已生成还款计划！'];
+                // 1,2,7,8都表示已经签约或签约处理中
+                if(YijifuSignReturnmoney::find()->where(['status'=>[1,2,7,8], 'orderNo'=>$order_id])->exists()){
+                    throw new CustomBackendException('该订单状态已经签约!', 4);
+                }
+                $model->o_operator_id = $userinfo->id;
+                $model->o_operator_realname = $userinfo->realname;
+                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
+                $model->o_operator_remark = $o_operator_remark;
+                if(false === $model->save(false)){
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+
+                $handle = new ReturnMoney();
+//                echo 1;die;
+                // 请求签约接口，并写签约记录表
+                $handle->signContractWithCustomer('袁琼莲',//'钟建蓉',
+                    '510623199904221120',//'510623197905114125',
+                    6228480498139638171,
+                    18990232122,
+                    'iPhone8',
+                    "13131313131318",
+                    'http://php.net/images/to-top@2x.png',
+                    12,
+                    '');
+
+                return ['status' => 1, 'message' => '签约请求发起成功，请等待注意查看通知！'];
             } catch (CustomBackendException $e) {
-                $trans->rollBack();
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
-                $trans->rollBack();
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
@@ -277,9 +309,78 @@ class BorrowController extends CoreBackendController
      */
     public function actionVerifyPassCallback()
     {
-        // 签约成功+写签约记录表(状态为已完成)
+        // 签约成功+更新签约记录表(状态为已完成)
         // 修改订单状态+生成还款计划
         // 发通知
+        $post = Yii::$app->getRequest()->post();
+        if(true === $post['success']){
+            // 已经签约成功了
+            if(YijifuSignReturnmoney::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){
+                echo "success";
+                return;
+            }
+            // 事务内
+            // 修改签约表，修改订单表，修改客户表，生成还款计划，发ws通知
+            $trans = Yii::$app->getDb()->beginTransaction();
+            try {
+                // 只有待回调的才能处理
+                $sql = "select *  from " . YijifuSignReturnmoney::tableName() . " where orderNo=:orderNo and status=2  limit 1 for update";
+                $yijifu_data = YijifuSignReturnmoney::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
+                $sql = "select * from " . Orders::tableName() . ' where o_id=' . $yijifu_data['order_id'] . " limit 1 for update";
+                $order_data = Orders::findBySql($sql)->one();
+                $sql = "select * from " . Customer::tableName() . " where c_id=" . $order_data['o_customer_id'] . " limit 1 for update";
+                $customer_data = Customer::findBySql($sql)->one();
+
+                // 生成还款计划
+                if (Repayment::find()->where(['r_orders_id' => $yijifu_data['order_id']])->exists()) {
+                    throw new CustomBackendException('已存在还款计划', 5);
+                }
+                CalInterest::genRefundPlan($yijifu_data['order_id']);
+                $status_arr = [
+                    'SIGN_DEALING' => 7, // 审核中
+                    'SIGN_FAIL' => 6, // 审核失败
+                    'CHECK_NEEDED' => 8, // 待审核
+                    'CHECK_REJECT' => 5, // 审核拒绝
+                    'SIGN_SUCCESS' => 1 // 签约成功
+                ];
+                $yijifu_data->bankName = $post['bankName'];
+                $yijifu_data->bankCode = $post['bankCode'];
+                $yijifu_data->bankCardType = $post['bankCardType'];
+                $yijifu_data->status = $status_arr[$post['status']];
+
+                $order_data->o_status = Orders::STATUS_PAYING;
+                $order_data->o_operator_date = $_SERVER['REQUEST_TIME'];
+
+
+                $customer_data->c_total_money += $order_data->o_total_price - $order_data->o_total_deposit; // 累加总借款金额
+                $customer_data->c_total_borrow_times += 1; // 借款次数加一
+
+                if (false === $customer_data->save(false)) {
+                    throw new CustomBackendException('客户信息修改失败', 5);
+                }
+                if (false === $yijifu_data->save(false)) {
+                    throw new CustomBackendException('签约信息修改失败', 5);
+                }
+                if (false === $order_data->save(false)) {
+                    throw new CustomBackendException('订单信息修改失败', 5);
+                }
+                $client = new Client();
+                // todo 写websocket服务，然后就可以测试了
+                $client->send();
+                $trans->commit();
+                echo "success";
+            }catch (CustomBackendException $e){
+                $trans->rollBack();
+                $e->getMessage(); // 发送给后台通知
+            }catch (\Exception $e)
+            {
+                $trans->rollBack();
+            }
+        }
+        /*ob_start();
+        var_dump($post);
+        file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);*/
+
     }
 
     /**
