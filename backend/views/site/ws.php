@@ -72,7 +72,7 @@
         },
         saveData:function (event) {
             var dataRes = JSON.parse(event.data);
-            var dataRes = {"type":"newOrder","data":"顾客:李大爷产生了新订单"};
+            //var dataRes = {"message":"李大爷创建了新订单","order_id":5,"type":"newOrderNotify"};
             var key = dataRes.type;
             var dataStorage = JSON.parse(localStorage.getItem(key));
             if(dataStorage){
@@ -85,7 +85,7 @@
 
             //判断消息类型,根据消息类型创建dom
             var newdataStorage = JSON.parse(localStorage.getItem(key));
-            if(key == 'newOrder'){
+            if(key == 'newOrderNotify'){
                 textDetail = '';
                 var numOrder =  newdataStorage ? newdataStorage.length : 0;
                 if(numOrder){
@@ -109,10 +109,11 @@
             }
             $('#noticeNum').text(parseInt(numOrder ? numOrder : 0) + parseInt(numSign ? numSign : 0));
         },
-        remove:function (obj) {
+        remove:function () {
             //当点击某条未读消息时,清除对应的本地数据
+            obj = $('li div span');
             var idName = obj.attr('id');
-            if((idName == 'newOrder')||(idName == 'newSign')){
+            if((idName == 'newOrderNotify')||(idName == 'newSign')){
                 obj.on('click',function () {
                     if(localStorage.getItem(idName)){
                         localStorage.removeItem(idName);
