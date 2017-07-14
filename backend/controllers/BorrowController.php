@@ -246,7 +246,7 @@ class BorrowController extends CoreBackendController
     public function actionVerifyPass()
     {
         // 判断是否符合终审
-        // 签约
+        // 签约+写签约记录表(状态为待回调)
     }
 
     /**
@@ -255,8 +255,8 @@ class BorrowController extends CoreBackendController
      */
     public function actionVerifyPassCallback()
     {
-        // 签约成功
-        // 还款计划
+        // 签约成功+写签约记录表
+        // 修改订单状态+还款计划
         // 发通知
     }
 
