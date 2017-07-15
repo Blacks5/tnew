@@ -81,7 +81,7 @@ class Loan extends AbstractYijifu
             ->where(['order_id'=>$outOrderNo])
             ->one();
 
-        if($_data&&($_data['status'] == 2)){
+        if($_data&&($_data['status'] == 4)){
             throw new CustomCommonException('该订单已经成功放款!');
         }
 
@@ -101,22 +101,24 @@ class Loan extends AbstractYijifu
 
         //创建一部回调链接
         //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['loan/asyncloan']);
-        $this->notifyUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
-        //$this->returnUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
+        //$this->notifyUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
+        $this->returnUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
 
         //发起请求
-        $http_client = new httpClient();
-        $response = $http_client->post($this->api, $param_arr)->send();
-        if($response->getIsOk()){
-            $ret = $response->getData();
-        }else{
-            $ret = false;
-        }
-        return $ret;
+//        $http_client = new httpClient();
+//        $response = $http_client->post($this->api, $param_arr)->send();
+//        if($response->getIsOk()){
+//            $ret = $response->getData();
+//        }else{
+//            $ret = false;
+//        }
+//        return $ret;
+       $return_data =  $this->api . '?' .$param_arr;
+       return $return_data;
     }
 
     /**
@@ -163,7 +165,7 @@ class Loan extends AbstractYijifu
             ->where(['order_id'=>$outOrderNo])
             ->one();
 
-        if($_data&&($_data['status'] == 2)){
+        if($_data&&($_data['status'] == 4)){
             throw new CustomCommonException('该订单已经成功放款!');
         }
 
