@@ -9,6 +9,8 @@ use common\models\Orders;
 use common\components\CustomCommonException;
 use common\components\Helper;
 use common\models\UploadFile;
+use \yii\httpclient\Client as httpClient;
+use WebSocket\Client;
 /**
  * Loan controller
  * 放款接口
@@ -36,38 +38,29 @@ class LoanController extends CoreBackendController
     }
 
     /**
-     * 放款测试
+     * 放款
      */
-    public function actionTestloan(){
-        /*测试数据start*/
-        $amount = 10000;
-        $outOrderNo = '12345ddd' . time();
-        $contractUrl = 'https://static.zhihu.com/static/revved/img/index/logo.6837e927.png';
-        $realName = '李正周';//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
-        $mobileNo = '15951215597';
-        $certNo = '320382198909181037';
-        $bankCardNo = '6228480413868991410';
+    public function actionLoan(){
 
-        $Loan_model = new Loan();
-        $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
-        header("Location:$return_data");
-        /*测试数据end*/
-//        $order_id = Yii::$app->getRequest()->post('order_id');
-//        $_data = (new Query())->from(Orders::tableName())
-//            ->join('LEFT JOIN', 'stores', 'orders.o_store_id = stores.s_id')
-//            //->join('LEFT JOIN', 'order_images', 'orders.o_id = order_images.oi_id')
-//            ->where(['orders.o_id'=>$order_id,'orders.o_status'=>10])
-//            ->one();
+        $order_id = Yii::$app->getRequest()->post('order_id');
+        $_data = (new Query())->from(Orders::tableName())
+            ->join('LEFT JOIN', 'stores', 'orders.o_store_id = stores.s_id')
+            //->join('LEFT JOIN', 'order_images', 'orders.o_id = order_images.oi_id')
+            ->where(['orders.o_id'=>$order_id,'orders.o_status'=>10])
+            ->one();
 
-/*        if($_data === false){
-            return $this->error('数据不存在!' );
+        if($_data === false){
+           // return $this->error('数据不存在!' );
+            return ['status' => 2, 'message' => '数据不存在!'];
         }else{
             if(!$_data['s_photo_seven']){
-                return $this->error('暂无合同图片无法放款!' );
+                //return $this->error('暂无合同图片无法放款!' );
+                return ['status' => 2, 'message' => '暂无合同图片无法放款!'];
             }
 
             if($_data['o_total_price'] <= $_data['o_total_deposit']){
-                return $this->error('系统错误!' );
+                //return $this->error('系统错误!' );
+                return ['status' => 2, 'message' => '系统错误!'];
             }
 
             $Loan_model = new Loan();
@@ -85,7 +78,8 @@ class LoanController extends CoreBackendController
                // 对私
                 $bank_data = $Loan_model->getbancode($_data['s_bank_sub'],1);
                 if(empty($bank_data)){
-                    return $this->error('该收款商户的银行暂不支持!' );
+                    //return $this->error('该收款商户的银行暂不支持!' );
+                    return ['status' => 2, 'message' => '该收款商户的银行暂不支持!'];
                 }
                 $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
             }else{
@@ -94,7 +88,8 @@ class LoanController extends CoreBackendController
                 //验证商户银行是否支持
                 $bank_data = $Loan_model->getbancode($_data['s_bank_sub'],2);
                 if(empty($bank_data)){
-                    return $this->error('该收款商户的银行暂不支持!');
+                   // return $this->error('该收款商户的银行暂不支持!');
+                    return ['status' => 2, 'message' => '该收款商户的银行暂不支持!'];
                 }
 
 //                //对公必传参数
@@ -120,35 +115,46 @@ class LoanController extends CoreBackendController
                     $sellerBankAddress
                 );
             }
+
+            //获取放款记录
+            $loan_data = (new Query())->from(YijifuLoan::tableName())
+                ->where(['order_id'=>$order_id])
+                ->one();
             //根据响应参数输出数据
             if($return_data['resultCode']=='EXECUTE_SUCCESS'){
-                //新增
-                $wait_inster_data = [
-                    'order_id'=>$outOrderNo,
-                    'amount'=>$amount,
-                    'realRemittanceAmount'=>'',
-                    'contractNo'=>'',
-                    'status'=>2, // 1接口调用失败  2接口调用成功处理中
-                    'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
-                    'created_at'=>$_SERVER['REQUEST_TIME']
-                ];
-                \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
-                return $this->success('接口调用成功,等待处理');
+                //如果此订单的放款记录不存在就新增
+                if(!$loan_data){
+                    $wait_inster_data = [
+                        'order_id'=>$outOrderNo,
+                        'amount'=>$amount,
+                        'realRemittanceAmount'=>'',
+                        'contractNo'=>'',
+                        'status'=>2, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                        'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
+                        'created_at'=>$_SERVER['REQUEST_TIME']
+                    ];
+                    \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
+                }
+                //return $this->success('接口调用成功,等待处理通知!');
+                return ['status' => 1, 'message' => '接口调用成功，请等待注意查看通知！'];
             }else{
-                //新增
-                $wait_inster_data = [
-                    'order_id'=>$outOrderNo,
-                    'amount'=>$amount,
-                    'realRemittanceAmount'=>'',
-                    'contractNo'=>'',
-                    'status'=>1, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
-                    'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
-                    'created_at'=>$_SERVER['REQUEST_TIME']
-                ];
-                \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
-                return $this->error('接口调用失败 ' . $return_data['resultCode']);
+                //如果此订单的放款记录不存在就新增
+                if(!$loan_data){
+                    $wait_inster_data = [
+                        'order_id'=>$outOrderNo,
+                        'amount'=>$amount,
+                        'realRemittanceAmount'=>'',
+                        'contractNo'=>'',
+                        'status'=>1, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                        'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
+                        'created_at'=>$_SERVER['REQUEST_TIME']
+                    ];
+                    \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
+                }
+                //return $this->error('接口调用失败 ' . $return_data['resultCode']);
+                return ['status' => 2, 'message' => '接口调用失败'];
             }
-        }*/
+        }
 
 //同步响应参数
 //        array(10) {
@@ -163,6 +169,20 @@ class LoanController extends CoreBackendController
 //            ["success"]=> bool(true)
 //            ["version"]=> string(3) "1.0"
 //        }
+
+        /*测试数据start*/
+//        $amount = 10000;
+//        $outOrderNo = '12345ddd' . time();
+//        $contractUrl = 'https://static.zhihu.com/static/revved/img/index/logo.6837e927.png';
+//        $realName = '李正周';//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
+//        $mobileNo = '15951215597';
+//        $certNo = '320382198909181037';
+//        $bankCardNo = '6228480413868991410';
+//
+//        $Loan_model = new Loan();
+//        $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
+//        header("Location:" . $return_data);
+        /*测试数据end*/
     }
 
     /**
@@ -171,33 +191,39 @@ class LoanController extends CoreBackendController
      */
     public function actionAsync()
     {
-       $get = Yii::$app->getRequest()->get();
-       var_dump($get);
+        /*异步回调开始*/
+                $post = Yii::$app->getRequest()->post();
+                //获取放款记录
+                $_data = (new Query())->from(YijifuLoan::tableName())
+                    ->where(['order_id'=>$post['outOrderNo']])
+                    ->one();
 
-/*异步回调开始*/
-//        $post = Yii::$app->getRequest()->post();
-//        //获取放款记录
-//        $_data = (new Query())->from(YijifuLoan::tableName())
-//            ->where(['order_id'=>$post['outOrderNo']])
-//            ->one();
-//
-//        //异步回调方法里写放款记录
-//        if($post['status'] == 'REMITTANCE_SUCCESS'){
-//            $status = 4;
-//        }else{
-//            $status = 3;
-//        }
-//        $operator_id = Yii::$app->getUser()->getIdentity()->getId();
-//        if($_data){
-//            //修改
-//            $_data['contractNo'] = $post['contractNo'];
-//            $_data['status'] = $status;
-//            $_data['operator_id'] = $operator_id;
-//            $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
-//            \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
-//        }
-//        echo "success";
-/*异步回调结束*/
+                //已放款
+                if($_data['status'] == 4){
+                    echo 'success';
+                }else{
+                    //异步回调方法里写放款记录
+                    if($post['status'] == 'REMITTANCE_SUCCESS'){
+                        $status = 4;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                    }else{
+                        $status = 3;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                    }
+                    $operator_id = Yii::$app->getUser()->getIdentity()->getId();
+                    if($_data){
+                        //修改
+                        $_data['contractNo'] = $post['contractNo'];
+                        $_data['status'] = $status;
+                        $_data['operator_id'] = $operator_id;
+                        $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
+                        \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
+                    }
+
+                    $client = new Client();
+                    // todo 写websocket服务，然后就可以测试了
+                    $client->send();
+                    echo "success";
+                }
+        /*异步回调结束*/
         /*异步响应参数
               array(21) {
                 ["bankCode"]=>
@@ -246,8 +272,4 @@ class LoanController extends CoreBackendController
 
     }
 
-    public function actionTest(){
-        $user_id=Yii::$app->getUser()->getIdentity()->getId();
-        print_r(Yii::$app->getUser()->getIdentity());
-    }
 }

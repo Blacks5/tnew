@@ -34,6 +34,7 @@ return [
             'site/sendws', // ws测试页
             'site/asyncloan',
             'borrow/verify-pass-callback', // 易极付回调地址
+            'loan/async', // 易极付回调地址
 //            'borrow/verify-pass' // 易极付回调地址
         ]
     ],

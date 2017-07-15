@@ -103,6 +103,10 @@
                                                                 <a class="btn btn-danger btn-xs"
                                                                    href="<?= \yii\helpers\Url::toRoute(['repayment/all-repayment-list', 'order_id' => $_v['o_id']]) ?>">还款计划</a>
                                                             <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/loan']))) { ?>
+                                                                <a class="btn btn-danger btn-xs loan"
+                                                                   data-value="<?= $_v['o_id']; ?>">快捷代发</a>
+                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
@@ -162,6 +166,38 @@
             });
         });
     });
+    
+    // 放款给商户
+
+    $(".loan").click(function(ev){
+        var ev = ev;
+        layer.confirm("确定要快捷代发给商户？", {title:"快捷代发", icon:3}, function(index){
+            var loading = layer.load();
+
+            var order_id = $(ev.target).attr("data-value");
+            var url = "' . \yii\helpers\Url::toRoute(['loan/loan']) . '";
+            $.ajax({
+                url: url,
+                type: "post",
+                dataType: "json",
+                data: {order_id:order_id ,"' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                success: function(data){
+                    if(data.status==1){
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function(){
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function(){
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+    
 ');
         ?>
         <script>

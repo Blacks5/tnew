@@ -26,24 +26,24 @@ class Loan extends AbstractYijifu
      * @author lilaotou <liwansen@foxmail.com>
      *
      */
-    public function lanLocation($order_id){
-        $_data = (new Query())->from(Orders::tableName())
-            ->join('LEFT JOIN', 'stores', 'orders.o_store_id = stores.s_id')
-            ->where(['orders.order_id'=>$order_id,'orders.o_status'=>10])
-            ->one();
-
-        if($_data === false){
-            throw new CustomCommonException('系统错误!');
-        }else{
-            if($_data['s_bank_is_private'] == 1){
-                //对私
-              //  $this->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
-            }else{
-                //对公
-               // $this->storeLoan($amount, $outOrderNo, $contractUrl,$realName, $mobileNo, $certNo, $bankCardNo, $bankCode, $bankName, $sellerBankProvince, $sellerBankCity, $sellerBankAddress);
-            }
-        }
-    }
+//    public function lanLocation($order_id){
+//        $_data = (new Query())->from(Orders::tableName())
+//            ->join('LEFT JOIN', 'stores', 'orders.o_store_id = stores.s_id')
+//            ->where(['orders.order_id'=>$order_id,'orders.o_status'=>10])
+//            ->one();
+//
+//        if($_data === false){
+//            throw new CustomCommonException('系统错误!');
+//        }else{
+//            if($_data['s_bank_is_private'] == 1){
+//                //对私
+//              //  $this->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
+//            }else{
+//                //对公
+//               // $this->storeLoan($amount, $outOrderNo, $contractUrl,$realName, $mobileNo, $certNo, $bankCardNo, $bankCode, $bankName, $sellerBankProvince, $sellerBankCity, $sellerBankAddress);
+//            }
+//        }
+//    }
 
 
 
@@ -101,24 +101,22 @@ class Loan extends AbstractYijifu
 
         //创建一部回调链接
         //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['loan/asyncloan']);
-        //$this->notifyUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
-        $this->returnUrl = 'http://leemoo.ngrok.cc/loan/asyncloan';
+        $this->notifyUrl = 'http://leemoo.ngrok.cc/loan/async';
+        $this->returnUrl = 'http://leemoo.ngrok.cc/loan/async';
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
 
         //发起请求
-//        $http_client = new httpClient();
-//        $response = $http_client->post($this->api, $param_arr)->send();
-//        if($response->getIsOk()){
-//            $ret = $response->getData();
-//        }else{
-//            $ret = false;
-//        }
-//        return $ret;
-       $return_data =  $this->api . '?' .$param_arr;
-       return $return_data;
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)->send();
+        if($response->getIsOk()){
+            $ret = $response->getData();
+        }else{
+            $ret = false;
+        }
+        return $ret;
     }
 
     /**

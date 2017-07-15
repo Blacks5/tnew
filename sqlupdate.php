@@ -7,7 +7,7 @@ CREATE TABLE `yijifu_loan` (
 `realRemittanceAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '实际代发金额',
 `contractNo` varchar(40) NOT NULL COMMENT '代发流水号',
 `chargeAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代发手续费',
-`status` tinyint(3) DEFAULT '0' COMMENT '1未放款2已放款',
+`status` tinyint(3) DEFAULT '0' COMMENT '1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功',
 `created_at` int(10) unsigned NOT NULL COMMENT '记录创建时间',
 `operator_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作人id',
 PRIMARY KEY (`id`)
