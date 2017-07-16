@@ -33,7 +33,7 @@ class ReturnMoney extends AbstractYijifu
      * @param $borrowerPhoneNo 借款人手机号
      * @param $purchasedProductName 借款人购买的产品，会包含在短信中，例如：iPhone7
      *
-     * @param $order_id 通过订单id生成下面两个，下面两个就不用传了
+     * @param $o_serial_id 通过订单id生成下面两个，下面两个就不用传了
      * @param $merchOrderNo 商户订单号，每次请求都要变，构成：系统订单号+递增序号
      * @param $merchContractNo 商户签约合同号，一直保持不变，直到签约成功，
      *
@@ -53,7 +53,7 @@ class ReturnMoney extends AbstractYijifu
         $borrowerBankCardNo,
         $borrowerPhoneNo,
         $purchasedProductName,
-        $order_id, // 系统核心订单号
+        $o_serial_id, // 系统核心订单号
         $merchContractImageUrl,
         $totalRepayAmount,
         $loanAmount=''
@@ -72,13 +72,13 @@ class ReturnMoney extends AbstractYijifu
         $this->service = 'fastSign';
         // 生成ID
         $_data = (new Query())->from(YijifuSignReturnmoney::tableName())
-            ->where(['order_id'=>$order_id, 'status'=>1])
+            ->where(['o_serial_id'=>$o_serial_id, 'status'=>1])
             ->exists();
         if(true === $_data){
             throw new CustomCommonException('该订单已经成功签约');
         }
         $randString = \Yii::$app->getSecurity()->generateRandomString(4);
-        $merchOrderNo = $merchContractNo = $order_id. '-'. $randString;
+        $merchOrderNo = $merchContractNo = $o_serial_id. '-'. $randString;
 
 
         // 构造api请求参数
@@ -108,19 +108,22 @@ class ReturnMoney extends AbstractYijifu
 
         $status = 3; // 接口调用失败
         $reuturn = false;
+//        var_dump($response->data);die;
         if($response->getIsOk()){
             $ret = $response->getData();
             // 代表接口调用成功
             if(true === $ret['success']) {
                 $status = 2; // 等待回掉
                 $reuturn = true;
+            }else{
+                throw new CustomCommonException($ret['resultMessage']);
             }
         }
         $operator_id = \Yii::$app->getUser()->getId();
         $operator_id = 101;
         // 写签约记录表
         $wait_inster_data = [
-            'order_id'=>$order_id,
+            'o_serial_id'=>$o_serial_id,
             'merchOrderNo'=>$merchOrderNo,
             'merchContractNo'=>$merchContractNo,
             'deductAmount'=>0,

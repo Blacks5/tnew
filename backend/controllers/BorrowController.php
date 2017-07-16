@@ -315,7 +315,7 @@ left join customer on customer.c_id=orders.o_customer_id
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '签约请求发起成功，请等待注意查看通知！'];
-            } catch (CustomBackendException $e) {
+            } catch (CustomCommonException $e) {
                 $trans->rollBack();
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
@@ -346,12 +346,13 @@ left join customer on customer.c_id=orders.o_customer_id
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
                 // 只有待回调的才能处理
-                $sql = "select *  from " . YijifuSignReturnmoney::tableName() . " where orderNo=:orderNo and status=2  limit 1 for update";
+                $sql = "select *  from " . YijifuSignReturnmoney::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
                 $yijifu_data = YijifuSignReturnmoney::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
-                $sql = "select * from " . Orders::tableName() . ' where o_id=' . $yijifu_data['order_id'] . " limit 1 for update";
-                $order_data = Orders::findBySql($sql)->one();
-                $sql = "select * from " . Customer::tableName() . " where c_id=" . $order_data['o_customer_id'] . " limit 1 for update";
-                $customer_data = Customer::findBySql($sql)->one();
+                $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
+                $order_data = Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->one();
+                $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
+                $customer_data = Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->one();
+
 
 
                 $status_arr = [
@@ -361,6 +362,12 @@ left join customer on customer.c_id=orders.o_customer_id
                     'CHECK_REJECT' => 5, // 审核拒绝
                     'SIGN_SUCCESS' => 1 // 签约成功
                 ];
+               /* ob_start();
+                var_dump(111, $yijifu_data->toArray(), $order_data->toArray(), $customer_data->toArray());
+                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+                die;*/
+
+
                 $yijifu_data->bankName = $post['bankName'];
                 $yijifu_data->bankCode = $post['bankCode'];
                 $yijifu_data->bankCardType = $post['bankCardType'];
@@ -392,29 +399,27 @@ left join customer on customer.c_id=orders.o_customer_id
                     'SIGN_SUCCESS' => '签约成功' // 签约成功
                 ];
                 $this->sendToWs($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
-
                 $trans->commit();
                 echo "success";
             }catch (CustomBackendException $e){
                 $trans->rollBack();
-                $e->getMessage(); // 发送给后台通知
+//                $e->getMessage(); // 发送给后台通知
             }catch (\Exception $e)
             {
                 $trans->rollBack();
             }
-        }else{
+        }/*else{
             ob_start();
             var_dump($post);
             file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
-        }
-
+        }*/
     }
 
     private function sendToWs($o_serial_id, $order_id, $status)
     {
         $client = new Client(\Yii::$app->params['ws']);
-        $client = new Client('ws://192.168.1.65:8081');
-        $string = '订单:'. $o_serial_id. '签约'. $status; // 订单号 *** 签约成功
+//        $client = new Client('ws://192.168.1.65:8081');
+        $string = '订单:'. $o_serial_id. ' '. $status; // 订单号 *** 签约成功
         $data = [
             'cmd'=>'Orders:signNotify',
             'data'=>[

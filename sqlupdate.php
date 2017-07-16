@@ -18,7 +18,7 @@ UNIQUE KEY `order_id` (`order_id`)
 
 CREATE TABLE `yijifu_sign_returnmoney` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-`order_id` char(20) NOT NULL COMMENT '核心系统客户订单号',
+`o_serial_id` char(30) NOT NULL COMMENT '核心系统客户订单号',
 `merchOrderNo` varchar(40) NOT NULL COMMENT '商户签约订单号，接口查询要用',
 `merchContractNo` varchar(64) CHARACTER SET latin1 NOT NULL COMMENT '商户签约合同号，暂时没用',
 `deductAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代扣金额，类型是代扣时才有效',
@@ -34,4 +34,9 @@ CREATE TABLE `yijifu_sign_returnmoney` (
 `bankCode` varchar(40) NOT NULL DEFAULT '' COMMENT '签约银行卡银行编码；异步返回',
 PRIMARY KEY (`id`),
 KEY `orderNo` (`orderNo`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='易极付签约和回款记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COMMENT='易极付签约和回款记录表';
+
+
+
+
+
