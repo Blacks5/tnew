@@ -18,7 +18,6 @@ UNIQUE KEY `y_serial_id` (`y_serial_id`)
 
 
 
-
 CREATE TABLE `yijifu_sign_returnmoney` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `o_serial_id` char(30) NOT NULL COMMENT '核心系统客户订单号',
