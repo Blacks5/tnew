@@ -402,8 +402,8 @@ left join customer on customer.c_id=orders.o_customer_id
                 $trans->commit();
                 echo "success";
             }catch (CustomBackendException $e){
-                $trans->rollBack();
-//                $e->getMessage(); // 发送给后台通知
+                $trans->rollBack();// 发送给后台通知
+                $this->sendToWs($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
             }catch (\Exception $e)
             {
                 $trans->rollBack();
@@ -419,7 +419,7 @@ left join customer on customer.c_id=orders.o_customer_id
     {
         $client = new Client(\Yii::$app->params['ws']);
 //        $client = new Client('ws://192.168.1.65:8081');
-        $string = '订单:'. $o_serial_id. ' '. $status; // 订单号 *** 签约成功
+        $string = '订单:'. $o_serial_id. ': '. $status; // 订单号 *** 签约成功
         $data = [
             'cmd'=>'Orders:signNotify',
             'data'=>[
