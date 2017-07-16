@@ -145,7 +145,7 @@ class BorrowController extends CoreBackendController
                 $model['o_is_free_pack_fee']
                 );
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
-            $loan_data = YijifuLoan::find()->where(['order_id'=>$order_id])->asArray()->one();
+            $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 //          var_dump($loan_data);die;
 //            var_dump($goods_data, $model);die;
             return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data]);

@@ -44,14 +44,13 @@ class LoanController extends CoreBackendController
     public function actionLoan(){
         $request = Yii::$app->getRequest();
         if($request->getIsAjax()){
-           // var_dump($request->post('order_id'));
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-                $order_id = $request->post('order_id');
+                $o_serial_id = $request->post('o_serial_id');
                 $_data = (new Query())->from(Orders::tableName())
                     ->join('LEFT JOIN', 'stores', 'orders.o_store_id = stores.s_id')
                     //->join('LEFT JOIN', 'order_images', 'orders.o_id = order_images.oi_id')
-                    ->where(['orders.o_id'=>$order_id,'orders.o_status'=>10])
+                    ->where(['orders.o_serial_id'=>$o_serial_id,'orders.o_status'=>10])
                     ->one();
                 if($_data === false){
                     // return $this->error('数据不存在!' );
@@ -71,7 +70,7 @@ class LoanController extends CoreBackendController
                     $t = new UploadFile();
                     //构造公私共有的请求参数
                     $amount = $_data['o_total_price'] - $_data['o_total_deposit'];
-                    $outOrderNo = $_data['o_id'];
+                    $outOrderNo = $_data['o_serial_id'];
                     $contractUrl = $t->getUrl($_data['s_photo_seven']);
                     $realName = ($_data['s_bank_is_private'] == 1) ? $_data['s_bank_people_name'] : $_data['s_gov_name'];//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
                     $mobileNo = $_data['s_owner_phone'];
@@ -122,15 +121,14 @@ class LoanController extends CoreBackendController
 
                     //获取放款记录
                     $loan_data = (new Query())->from(YijifuLoan::tableName())
-                        ->where(['order_id'=>$order_id])
+                        ->where(['y_serial_id'=>$o_serial_id])
                         ->one();
                     //根据响应参数输出数据
-                    var_dump($return_data);
                     if($return_data['resultCode']=='EXECUTE_SUCCESS'){
                         //如果此订单的放款记录不存在就新增
                         if(!$loan_data){
                             $wait_inster_data = [
-                                'order_id'=>$outOrderNo,
+                                'y_serial_id'=>$outOrderNo,
                                 'amount'=>$amount,
                                 'realRemittanceAmount'=>0,
                                 'contractNo'=>0,
@@ -148,7 +146,7 @@ class LoanController extends CoreBackendController
                         //如果此订单的放款记录不存在就新增
                         if(!$loan_data){
                             $wait_inster_data = [
-                                'order_id'=>$outOrderNo,
+                                'y_serial_id'=>$outOrderNo,
                                 'amount'=>$amount,
                                 'realRemittanceAmount'=>0,
                                 'contractNo'=>0,
@@ -161,7 +159,7 @@ class LoanController extends CoreBackendController
                             \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
                         }
                         //return $this->error('接口调用失败 ' . $return_data['resultCode']);
-                        return ['status' => 2, 'message' => '接口调用失败'];
+                        return ['status' => 2, 'message' => '接口调用失败-'.$return_data['resultMessage']];
                     }
                 }
             } catch (CustomBackendException $e) {
@@ -211,7 +209,7 @@ class LoanController extends CoreBackendController
                 $post = Yii::$app->getRequest()->post();
                 //获取放款记录
                 $_data = (new Query())->from(YijifuLoan::tableName())
-                    ->where(['order_id'=>$post['outOrderNo']])
+                    ->where(['y_serial_id'=>$post['outOrderNo']])
                     ->one();
 
                 //已放款

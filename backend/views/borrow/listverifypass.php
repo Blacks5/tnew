@@ -105,15 +105,15 @@
                                                             <?php } ?>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/loan']))) { ?>
                                                                 <?php if($_v['status'] == 1){ ?>
-                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_id'];?>">快捷代发</a>
+                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_serial_id'];?>">快捷代发</a>
                                                                 <?php }elseif($_v['status'] == 2){ ?>
                                                                     <a class="btn btn-danger btn-xs">处理中</a>
                                                                 <?php }elseif($_v['status'] == 3){ ?>
-                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_id'];?>">快捷代发</a>
+                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_serial_id'];?>">快捷代发</a>
                                                                 <?php }elseif($_v['status'] == 4){ ?>
                                                                     <a class="btn btn-danger btn-xs">已代发</a>
                                                                 <?php }else{ ?>
-                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_id']; ?>">快捷代发</a>
+                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_serial_id']; ?>">快捷代发</a>
                                                                 <?php } ?>
                                                             <?php } ?>
                                                         </td>
@@ -183,13 +183,13 @@
         layer.confirm("确定要快捷代发给商户？", {title:"快捷代发", icon:3}, function(index){
             var loading = layer.load();
 
-            var order_id = $(ev.target).attr("data-value");
+            var o_serial_id = $(ev.target).attr("data-value");
             var url = "' . \yii\helpers\Url::toRoute(['loan/loan']) . '";
             $.ajax({
                 url: url,
                 type: "post",
                 dataType: "json",
-                data: {order_id:order_id ,"' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
+                data: {o_serial_id:o_serial_id ,"' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
                 success: function(data){
                     if(data.status==1){
                         return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});

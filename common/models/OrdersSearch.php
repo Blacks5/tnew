@@ -47,7 +47,7 @@ class OrdersSearch extends CoreCommonModel
             , 'customer.customer_name as c_customer_name', 'customer.customer_cellphone as c_customer_cellphone'
             /*, 'group_concat(goods.goods_name)'*/
         ];
-        $select = ['orders.*', 'product.*', 'customer.*','yijifu_loan.*', 'total_repay_money'=>new yii\db\Expression("sum(r_total_repay)")];
+        $select = ['orders.*', 'product.*', 'customer.*','status'=>new yii\db\Expression("MAX(yijifu_loan.status)"), 'total_repay_money'=>new yii\db\Expression("sum(r_total_repay)")];
         /*
          * 搜索条件：借款人姓名，借款人电话     产品名 商品名
          * */
@@ -58,7 +58,7 @@ class OrdersSearch extends CoreCommonModel
             ->leftJoin(Product::tableName(). ' product', 'product.p_id=orders.o_product_id') // 关联产品
             ->leftJoin(Customer::tableName(). ' customer', 'customer.c_id=orders.o_customer_id') // 关联客户
             ->leftJoin(Repayment::tableName(). ' repayment', 'repayment.r_orders_id=orders.o_id') // 要统计总还款金额
-            ->leftJoin(YijifuLoan::tableName(). ' yijifu_loan', 'yijifu_loan.order_id=orders.o_id') // 查询是否已成功放款给商户
+            ->leftJoin(YijifuLoan::tableName(). ' yijifu_loan', 'yijifu_loan.y_serial_id=orders.o_serial_id') // 查询是否已成功放款给商户
         ;
         if(!$this->validate()){
             return $query->where('1=2');

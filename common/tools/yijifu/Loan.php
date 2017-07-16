@@ -78,7 +78,7 @@ class Loan extends AbstractYijifu
 
         //只有未放款的订单才能放款
         $_data = (new Query())->from(YijifuLoan::tableName())
-            ->where(['order_id'=>$outOrderNo])
+            ->where(['y_serial_id'=>$outOrderNo])
             ->one();
 
         if($_data&&($_data['status'] == 4)){
@@ -160,7 +160,7 @@ class Loan extends AbstractYijifu
 
         //只有未放款的订单才能放款
         $_data = (new Query())->from(YijifuLoan::tableName())
-            ->where(['order_id'=>$outOrderNo])
+            ->where(['y_serial_id'=>$outOrderNo])
             ->one();
 
         if($_data&&($_data['status'] == 4)){
@@ -288,7 +288,7 @@ class Loan extends AbstractYijifu
                 break;
             }
         }
-        
+
         return $return_data;
     }
 

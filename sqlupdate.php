@@ -2,19 +2,19 @@ ALTER TABLE stores ADD `s_idcard_num` char(20) DEFAULT '' COMMENT '结算账户�
 
 CREATE TABLE `yijifu_loan` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-`order_id` int(10) unsigned NOT NULL COMMENT '核心系统客户订单号',
+`y_serial_id` char(20) DEFAULT '' COMMENT '订单号',
 `amount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代发金额',
 `realRemittanceAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '实际代发金额',
 `contractNo` varchar(40) NOT NULL COMMENT '代发流水号',
 `chargeAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代发手续费',
 `status` tinyint(3) DEFAULT '0' COMMENT '1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功',
 `created_at` int(10) unsigned NOT NULL COMMENT '记录创建时间',
-`updated_at` int(10) unsigned NOT NULL COMMENT '记录更新时间',
+`updated_at` int(10) NOT NULL DEFAULT '0' COMMENT '记录更新时间',
 `operator_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作人id',
 `y_operator_realname` char(10) DEFAULT '' COMMENT '操作人真实姓名',
 PRIMARY KEY (`id`),
-UNIQUE KEY `order_id` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
+UNIQUE KEY `y_serial_id` (`y_serial_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
 
 
 
