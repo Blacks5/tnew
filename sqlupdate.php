@@ -16,6 +16,9 @@ PRIMARY KEY (`id`),
 UNIQUE KEY `order_id` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
 
+
+
+
 CREATE TABLE `yijifu_sign_returnmoney` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `o_serial_id` char(30) NOT NULL COMMENT '核心系统客户订单号',
