@@ -1,7 +1,7 @@
 <?php
 namespace backend\controllers;
 use common\tools\yijifu\Loan;
-use Yii;
+use yii;
 use backend\core\CoreBackendController;
 use common\models\YijifuLoan;
 use yii\db\Query;
@@ -135,6 +135,7 @@ class LoanController extends CoreBackendController
                                 'contractNo'=>'',
                                 'status'=>2, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
+                                'y_operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
                                 'created_at'=>$_SERVER['REQUEST_TIME']
                             ];
                             \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
@@ -151,6 +152,7 @@ class LoanController extends CoreBackendController
                                 'contractNo'=>'',
                                 'status'=>1, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
+                                'y_operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
                                 'created_at'=>$_SERVER['REQUEST_TIME']
                             ];
                             \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
@@ -219,12 +221,13 @@ class LoanController extends CoreBackendController
                     }else{
                         $status = 3;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                     }
-                    $operator_id = Yii::$app->getUser()->getIdentity()->getId();
+                    $userinfo = Yii::$app->getUser()->getIdentity();
                     if($_data){
                         //修改
                         $_data['contractNo'] = $post['contractNo'];
                         $_data['status'] = $status;
-                        $_data['operator_id'] = $operator_id;
+                        $_data['operator_id'] = $userinfo->getId();
+                        $_data['y_operator_realname'] = $userinfo->realname;
                         $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
                         \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
                     }
@@ -283,4 +286,27 @@ class LoanController extends CoreBackendController
 
     }
 
+    /**
+     * 放款记录列表
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionLoanlogs(){
+        $get = Yii::$app->getRequest()->get();
+        $query = (new Query())->from(YijifuLoan::tableName());
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->orderBy(['yijifu_loan.created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+        print_r($data);
+//        return $this->render('loanlogs', [
+//            'model' => $data,
+//            'totalpage' => $pages->pageCount,
+//            'pages' => $pages
+//        ]);
+    }
+
+    public function actionTestgetuser(){
+        var_dump(Yii::$app->getUser()->getIdentity()->realname);
+        //var_dump(Yii::$app->getUser()->getIdentity());
+    }
 }

@@ -16,6 +16,7 @@ use common\models\Goods;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\YijifuLoan;
 use common\models\YijifuSignReturnmoney;
 use common\tools\yijifu\ReturnMoney;
 use WebSocket\Client;
@@ -144,8 +145,10 @@ class BorrowController extends CoreBackendController
                 $model['o_is_free_pack_fee']
                 );
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
+            $loan_data = YijifuLoan::find()->where(['order_id'=>$order_id])->asArray()->one();
+//          var_dump($loan_data);die;
 //            var_dump($goods_data, $model);die;
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }

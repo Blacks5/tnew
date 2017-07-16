@@ -413,7 +413,47 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 
                     </div>
                 <?php } ?>
-
+                <h3 class="center color-orange">代发记录详情</h3>
+                <div class="hr-line-dashed"></div>
+                <!--代发记录详情-->
+                <div class="form-group">
+                    <div>
+                        <label class="col-sm-2 control-label">代发流水号：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $loan_data['contractNo']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">代发金额：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $loan_data['amount']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">实际代发金额：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $loan_data['realRemittanceAmount']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">代发手续费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $loan_data['chargeAmount']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">代发操作时间：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= date('Y-d-m H:i:s',$loan_data['created_at']); ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">操作人员：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $loan_data['y_operator_realname'] ; ?></p>
+                        </div>
+                    </div>
+                </div>
 
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK) { ?>
                     <div class="form-group">

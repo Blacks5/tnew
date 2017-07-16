@@ -9,10 +9,12 @@ CREATE TABLE `yijifu_loan` (
 `chargeAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代发手续费',
 `status` tinyint(3) DEFAULT '0' COMMENT '1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功',
 `created_at` int(10) unsigned NOT NULL COMMENT '记录创建时间',
+`updated_at` int(10) unsigned NOT NULL COMMENT '记录更新时间',
 `operator_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作人id',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
-
+`y_operator_realname` char(10) DEFAULT '' COMMENT '操作人真实姓名',
+PRIMARY KEY (`id`),
+UNIQUE KEY `order_id` (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
 
 CREATE TABLE `yijifu_sign_returnmoney` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
