@@ -290,6 +290,7 @@ class LoanController extends CoreBackendController
     /**
      * 放款记录列表
      * @author lilaotou <liwansen@foxmail.com>
+     * todo 搜索条件
      */
     public function actionLoanlogs(){
         $get = Yii::$app->getRequest()->get();
@@ -298,14 +299,18 @@ class LoanController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['yijifu_loan.created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
-        print_r($data);
-//        return $this->render('loanlogs', [
-//            'model' => $data,
-//            'totalpage' => $pages->pageCount,
-//            'pages' => $pages
-//        ]);
+        return $this->render('loanlogs', [
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
     }
 
+    /**
+     * 放款记录详情
+     * TODO 通过接受参数,调接口查询
+     * @author lilaotou <liwansen@foxmail.com>
+     */
     public function actionTestgetuser(){
         var_dump(Yii::$app->getUser()->getIdentity()->realname);
         //var_dump(Yii::$app->getUser()->getIdentity());
