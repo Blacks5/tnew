@@ -64,6 +64,7 @@ class ReturnMoney extends AbstractYijifu
         array_pop($_);
         foreach ($_ as $v){
             if(false === !empty($v)){
+                var_dump($v);die;
                 throw new CustomCommonException('参数不全');
             }
         }
@@ -90,7 +91,7 @@ class ReturnMoney extends AbstractYijifu
             'bankCardNo'=>$borrowerBankCardNo,
             'mobileNo'=>$borrowerPhoneNo,
             'productName'=>$purchasedProductName,
-            'loanAmount'=>$loanAmount,
+//            'loanAmount'=>$loanAmount, // 可以不填的，优先不填
             'totalRepayAmount'=>$totalRepayAmount,
             'operateType'=>'SIGN',
         ];

@@ -441,7 +441,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div class="col-sm-8 col-sm-offset-3">
                             <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-pass']))) { ?>
-                                <button class="btn btn-success verify-end">终审放款</button>
+                                <button class="btn btn-success verify-end">终审+签约</button>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-cancel']))) { ?>
                                 <button class="btn btn-info cancel">取消订单</button>

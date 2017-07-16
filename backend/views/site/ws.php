@@ -16,7 +16,7 @@
     })
 
     var config = {
-        "server": "ws://192.168.0.194:8081"
+        "server": "ws://192.168.1.65:8081"
     };
 
 
@@ -62,6 +62,6 @@
         };
         notify.data.server.send(JSON.stringify(t));
 //        that.data.server.send(JSON.stringify(dataSend));
-    },1000);
+    },10000);
 
 </script>

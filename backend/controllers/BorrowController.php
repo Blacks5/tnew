@@ -253,19 +253,25 @@ class BorrowController extends CoreBackendController
      * 新终审
      * @author too <hayto@foxmail.com>
      */
-    public function actionVerifyPass($order_id=54)
+    public function actionVerifyPass($order_id)
     {
         // 判断是否符合终审
         // 签约+写签约记录表(状态为待回调)
         $request = Yii::$app->getRequest();
-        if (!$request->getIsAjax()) {
+        if ($request->getIsAjax()) {
+            $trans  = Yii::$app->getDb()->beginTransaction();
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
                 $o_operator_remark = trim($request->post('remark'));
                 $userinfo = Yii::$app->getUser()->getIdentity();
                 // 状态必须为6（初审通过）的才可以终审
-                $model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one();
+                $sql = "select orders.*,customer.*,order_images.oi_after_contract from orders 
+left join customer on customer.c_id=orders.o_customer_id 
+ LEFT join order_images on o_images_id=oi_id where o_id=:order_id and o_status=6 limit 1 for update";
+//                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
+                $model = Yii::$app->getDb()->createCommand($sql, [':order_id' => $order_id])->queryOne();
+//                var_dump($model);die;
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
@@ -273,31 +279,44 @@ class BorrowController extends CoreBackendController
                 if(YijifuSignReturnmoney::find()->where(['status'=>[1,2,7,8], 'orderNo'=>$order_id])->exists()){
                     throw new CustomBackendException('该订单状态已经签约!', 4);
                 }
-                $model->o_operator_id = $userinfo->id;
-                $model->o_operator_realname = $userinfo->realname;
-                $model->o_operator_date = $_SERVER['REQUEST_TIME'];
-                $model->o_operator_remark = $o_operator_remark;
-                if(false === $model->save(false)){
+                $data = ['o_operator_id'=>$userinfo->id, 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'], 'o_operator_remark'=>$o_operator_remark];
+                $where = ['o_id'=>$order_id];
+                if(0 === Orders::updateAll($data, $where)){
                     throw new CustomBackendException('操作订单失败', 5);
                 }
 
-                $handle = new ReturnMoney();
-//                echo 1;die;
-                // 请求签约接口，并写签约记录表
-                $handle->signContractWithCustomer('袁琼莲',//'钟建蓉',
-                    '510623199904221120',//'510623197905114125',
-                    6228480498139638171,
-                    18990232122,
-                    'iPhone8',
-                    "13131313131318",
-                    'http://php.net/images/to-top@2x.png',
-                    12,
-                    '');
+                // 生成还款计划，请求接口要用数据，所以必须在这一步生成
+                if (Repayment::find()->where(['r_orders_id' => $order_id])->exists()) {
+                    throw new CustomBackendException('已存在还款计划', 5);
+                }
+                CalInterest::genRefundPlan($order_id);
 
+
+                $handle = new ReturnMoney();
+                // 请求签约接口，并写签约记录表
+                // 客户表  商品表 还款计划表
+                $r_total_repay = Repayment::findBySql("select r_total_repay from repayment where r_orders_id=:r_orders_id", [':r_orders_id'=>$order_id])->scalar();
+
+                $_goods = Goods::findBySql('select g_goods_name, g_goods_models from goods where g_order_id=:g_order_id', [':g_order_id'=>$order_id])->one();
+                $purchasedProductName = $_goods['g_goods_name']. $_goods['g_goods_models'];
+
+                $model['oi_after_contract'] = 'http://local80t.ngrok.cc/img/tianniu.jpg';
+                $handle->signContractWithCustomer($model['c_customer_name'],//'钟建蓉',
+                    $model['c_customer_id_card'],//'510623197905114125',
+                    $model['c_banknum'],
+                    $model['c_customer_cellphone'],
+                    $purchasedProductName,
+                    $model['o_serial_id'],
+                    $model['oi_after_contract'],
+                    $r_total_repay);
+
+                $trans->commit();
                 return ['status' => 1, 'message' => '签约请求发起成功，请等待注意查看通知！'];
             } catch (CustomBackendException $e) {
+                $trans->rollBack();
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
+                $trans->rollBack();
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
@@ -313,8 +332,8 @@ class BorrowController extends CoreBackendController
         // 修改订单状态+生成还款计划
         // 发通知
         $post = Yii::$app->getRequest()->post();
-        if(true === $post['success']){
-            // 已经签约成功了
+        if('true' === $post['success']){
+            // 已经签约成功了[因为接口奇葩的要访问两次，所以加这个过滤]
             if(YijifuSignReturnmoney::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){
                 echo "success";
                 return;
@@ -331,11 +350,7 @@ class BorrowController extends CoreBackendController
                 $sql = "select * from " . Customer::tableName() . " where c_id=" . $order_data['o_customer_id'] . " limit 1 for update";
                 $customer_data = Customer::findBySql($sql)->one();
 
-                // 生成还款计划
-                if (Repayment::find()->where(['r_orders_id' => $yijifu_data['order_id']])->exists()) {
-                    throw new CustomBackendException('已存在还款计划', 5);
-                }
-                CalInterest::genRefundPlan($yijifu_data['order_id']);
+
                 $status_arr = [
                     'SIGN_DEALING' => 7, // 审核中
                     'SIGN_FAIL' => 6, // 审核失败
@@ -364,9 +379,17 @@ class BorrowController extends CoreBackendController
                 if (false === $order_data->save(false)) {
                     throw new CustomBackendException('订单信息修改失败', 5);
                 }
-                $client = new Client();
-                // todo 写websocket服务，然后就可以测试了
-                $client->send();
+
+                // 发送后台广播
+                $status_arr_string = [
+                    'SIGN_DEALING' => '审核中', // 审核中
+                    'SIGN_FAIL' => '审核失败', // 审核失败
+                    'CHECK_NEEDED' => '待审核', // 待审核
+                    'CHECK_REJECT' => '审核拒绝', // 审核拒绝
+                    'SIGN_SUCCESS' => '签约成功' // 签约成功
+                ];
+                $this->sendToWs($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
+
                 $trans->commit();
                 echo "success";
             }catch (CustomBackendException $e){
@@ -376,11 +399,28 @@ class BorrowController extends CoreBackendController
             {
                 $trans->rollBack();
             }
+        }else{
+            ob_start();
+            var_dump($post);
+            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
         }
-        /*ob_start();
-        var_dump($post);
-        file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);*/
 
+    }
+
+    private function sendToWs($o_serial_id, $order_id, $status)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+        $client = new Client('ws://192.168.1.65:8081');
+        $string = '订单:'. $o_serial_id. '签约'. $status; // 订单号 *** 签约成功
+        $data = [
+            'cmd'=>'Orders:signNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$order_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
     }
 
     /**
