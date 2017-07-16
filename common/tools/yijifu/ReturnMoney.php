@@ -108,7 +108,6 @@ class ReturnMoney extends AbstractYijifu
 
         $status = 3; // 接口调用失败
         $reuturn = false;
-//        var_dump($response->data);die;
         if($response->getIsOk()){
             $ret = $response->getData();
             // 代表接口调用成功
@@ -120,7 +119,6 @@ class ReturnMoney extends AbstractYijifu
             }
         }
         $operator_id = \Yii::$app->getUser()->getId();
-        $operator_id = 101;
         // 写签约记录表
         $wait_inster_data = [
             'o_serial_id'=>$o_serial_id,
@@ -138,38 +136,6 @@ class ReturnMoney extends AbstractYijifu
         return $reuturn;
     }
 
-
-    /**
-     * @deprecated 暂时废弃中
-     * @param $order_id
-     * @author too <hayto@foxmail.com>
-     */
-    public function signContractWithCustomerByOrderid($order_id)
-    {
-        /**
-         * todo
-         * 1, 找到信息，拼凑签约
-         * 2，签约
-         * 3，把信息写入数据库
-         */
-        /*$data = (new Query())->from(Orders::tableName())
-            ->select(['c_customer_name', 'c_customer_id_card', 'c_customer_cellphone', 'c_banknum'])
-            ->leftJoin(Customer::tableName(), 'orders.o_customer_id=customer.c_id')
-            ->where(['o_id'=>$order_id])->one();
-        p($data, true);*/
-
-        $this->signContractWithCustomer('张飞',
-            '510623199912250210',
-            '6222555511112222',
-            18990232111,
-            'iPhone7Plus',
-            'tn1111',
-            'ht1111',
-            'http://php.net/images/to-top@2x.png',
-            12.5,
-            '',
-            'SIGN');
-    }
 
 
     /**
@@ -199,18 +165,54 @@ class ReturnMoney extends AbstractYijifu
     }
 
 
-
     /**
-     * 发起代扣
-     *
-     *
-     * 服务码 fastDeduct
-     *
-     * @author too <hayto@foxmail.com>
+     * 发起代扣申请
+     * @param $merchOrderNo  商户订单号
+     * @param $merchSignOrderNo  商户签约订单号
+     * @param $deductAmount 代扣金额
      */
-    public function deduct()
+    public function deduct($merchOrderNo, $merchSignOrderNo, $deductAmount)
     {
         $this->service = 'fastDeduct';
+        $param_arr = [
+            'merchOrderNo'=>$merchOrderNo,
+            'merchSignOrderNo'=>$merchSignOrderNo,
+            'deductAmount'=>$deductAmount
+        ];
+        $common_param = $this->getCommonParams();
+        $param = array_merge($common_param, $param_arr);
+        $param = $this->prepQueryParams($param);
+
+        $client = new httpClient();
+        $response = $client->post($this->api, $param)->send();
+
+        $status = 3; //接口调用失败
+        if($response->getIsOk()){
+            $ret = $response->getData();
+            if(true === $ret['success']) {
+                $status = 2; // 等待回掉
+                $reuturn = true;
+            }else{
+                throw new CustomCommonException($ret['resultMessage']);
+            }
+        }
+
+        $operator_id = \Yii::$app->getUser()->getId();
+        // 写签约记录表
+        $wait_inster_data = [
+            'o_serial_id'=>$o_serial_id,
+            'merchOrderNo'=>$merchOrderNo,
+            'merchContractNo'=>$merchContractNo,
+            'deductAmount'=>0,
+            'operateType'=>1, // 签约
+            'created_at'=>$_SERVER['REQUEST_TIME'],
+            'operator_id'=>$operator_id,
+            'status'=>$status,
+            'sign'=>isset($ret['sign'])?$ret['sign']: '', // 兼容请求失败，没有$ret的情况
+            'orderNo'=>isset($ret['orderNo'])?$ret['orderNo']: '',
+        ];
+        \Yii::$app->getDb()->createCommand()->insert(YijifuSignReturnmoney::tableName(), $wait_inster_data)->execute();
+        return $reuturn;
     }
 
     /**
