@@ -282,12 +282,13 @@ class Loan extends AbstractYijifu
         }
         $return_data = array();
         foreach($bank_arr as $k=>$v){
-            if(strpos($s_bank_sub,$k)){
+            if(strpos($s_bank_sub,$k) !== false){
                 $return_data['bankname'] = $k;
                 $return_data['bankcode'] = $v;
                 break;
             }
         }
+        
         return $return_data;
     }
 

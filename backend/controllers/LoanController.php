@@ -44,6 +44,7 @@ class LoanController extends CoreBackendController
     public function actionLoan(){
         $request = Yii::$app->getRequest();
         if($request->getIsAjax()){
+           // var_dump($request->post('order_id'));
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
                 $order_id = $request->post('order_id');
@@ -52,7 +53,6 @@ class LoanController extends CoreBackendController
                     //->join('LEFT JOIN', 'order_images', 'orders.o_id = order_images.oi_id')
                     ->where(['orders.o_id'=>$order_id,'orders.o_status'=>10])
                     ->one();
-
                 if($_data === false){
                     // return $this->error('数据不存在!' );
                     return ['status' => 2, 'message' => '数据不存在!'];
@@ -64,7 +64,7 @@ class LoanController extends CoreBackendController
 
                     if($_data['o_total_price'] <= $_data['o_total_deposit']){
                         //return $this->error('系统错误!' );
-                        return ['status' => 2, 'message' => '系统错误!'];
+                        return ['status' => 2, 'message' => '系统错误!1'];
                     }
 
                     $Loan_model = new Loan();
@@ -125,14 +125,16 @@ class LoanController extends CoreBackendController
                         ->where(['order_id'=>$order_id])
                         ->one();
                     //根据响应参数输出数据
+                    var_dump($return_data);
                     if($return_data['resultCode']=='EXECUTE_SUCCESS'){
                         //如果此订单的放款记录不存在就新增
                         if(!$loan_data){
                             $wait_inster_data = [
                                 'order_id'=>$outOrderNo,
                                 'amount'=>$amount,
-                                'realRemittanceAmount'=>'',
-                                'contractNo'=>'',
+                                'realRemittanceAmount'=>0,
+                                'contractNo'=>0,
+                                'chargeAmount'=>0,
                                 'status'=>2, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
                                 'y_operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
@@ -148,8 +150,9 @@ class LoanController extends CoreBackendController
                             $wait_inster_data = [
                                 'order_id'=>$outOrderNo,
                                 'amount'=>$amount,
-                                'realRemittanceAmount'=>'',
-                                'contractNo'=>'',
+                                'realRemittanceAmount'=>0,
+                                'contractNo'=>0,
+                                'chargeAmount'=>0,
                                 'status'=>1, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
                                 'y_operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
@@ -164,7 +167,7 @@ class LoanController extends CoreBackendController
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
-                return ['status' => 2, 'message' => '系统错误'];
+                return ['status' => 2, 'message' => '系统错误2'];
             }
         }
 
@@ -232,9 +235,9 @@ class LoanController extends CoreBackendController
                         \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
                     }
 
-                    $client = new Client();
+                    //$client = new Client();
                     // todo 写websocket服务，然后就可以测试了
-                    $client->send();
+                    //$client->send();
                     echo "success";
                 }
         /*异步回调结束*/
