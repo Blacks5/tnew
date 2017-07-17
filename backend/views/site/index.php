@@ -107,7 +107,7 @@ use mdm\admin\components\MenuHelper;
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
                             <li id="newOrderli" style="display: none;">
-                                <a class="J_menuItem" onclick="notify.hideNotify()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                <a class="J_menuItem" onclick="notify.hideNotify('newOrderNotify')" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
                                         <span id="newOrderNotify">您有0条未读订单消息</span>
@@ -116,7 +116,7 @@ use mdm\admin\components\MenuHelper;
                             </li>
                             <li class="divider" id="dividerNotice" style="display: none"></li>
                             <li id="newSignli" style="display: none;">
-                                <a class="J_menuItem" onclick="notify.hideNotify()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                <a class="J_menuItem" onclick="notify.hideNotify('signNotify')" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
                                         <span id="signNotify">您有0条未读签约消息</span>
@@ -300,9 +300,10 @@ use mdm\admin\components\MenuHelper;
             server: null,
             defaultData: []
         },
-        hideNotify: function () {
+        hideNotify: function (typename) {
             $("#notifyx").trigger('click');
-            localStorage.removeItem('newOrderNotify');
+            //localStorage.removeItem('newOrderNotify');
+            localStorage.removeItem(typename);
             $("#noticeNum").text('');
         },
         init: function () {
