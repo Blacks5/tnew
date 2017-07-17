@@ -181,7 +181,7 @@ class LoanController extends CoreBackendController
                         return ['status' => 2, 'message' => $return_data['resultMessage']];
                     }
                 }
-            } catch (CustomBackendException $e) {
+            } catch (CustomCommonException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
                 return ['status' => 2, 'message' => '系统错误'];
