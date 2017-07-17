@@ -3,6 +3,7 @@ ALTER TABLE stores ADD `s_idcard_num` char(20) DEFAULT '' COMMENT '结算账户�
 CREATE TABLE `yijifu_loan` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `y_serial_id` char(20) DEFAULT '' COMMENT '订单号',
+`outOrderNo` char(40) DEFAULT '' COMMENT '外部订单号',
 `amount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代发金额',
 `realRemittanceAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '实际代发金额',
 `contractNo` varchar(40) NOT NULL COMMENT '代发流水号',
@@ -12,9 +13,10 @@ CREATE TABLE `yijifu_loan` (
 `updated_at` int(10) NOT NULL DEFAULT '0' COMMENT '记录更新时间',
 `operator_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作人id',
 `y_operator_realname` char(10) DEFAULT '' COMMENT '操作人真实姓名',
+`resultmsg` varchar(30) DEFAULT '' COMMENT '描述信息',
 PRIMARY KEY (`id`),
 UNIQUE KEY `y_serial_id` (`y_serial_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='易极付放款记录表';
 
 
 
