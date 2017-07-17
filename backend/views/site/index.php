@@ -116,10 +116,10 @@ use mdm\admin\components\MenuHelper;
                             </li>
                             <li class="divider" id="dividerNotice" style="display: none"></li>
                             <li id="newSignli" style="display: none;">
-                                <a class="J_menuItem" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
+                                <a class="J_menuItem" onclick="notify.hideNotify()" href="<?= Url::toRoute(['/borrow/list-wait-verify']) ?>" data-index="0" data-tagtitle="待审核">
                                     <div>
                                         <i class="fa fa-envelope fa-fw"></i>
-                                        <span id="newSign">您有16条未读签约消息</span>
+                                        <span id="signNotify">您有0条未读签约消息</span>
                                     </div>
                                 </a>
                             </li>
@@ -346,6 +346,7 @@ use mdm\admin\components\MenuHelper;
         saveData:function (event) {
             var dataRes = JSON.parse(event.data);
             //var dataRes = {"message":"李大爷创建了新订单","order_id":5,"type":"newOrderNotify"};
+            //{"message":"订单:170300000012475签约签约成功","order_id":53,"type":"signNotify"}
             var key = dataRes.type;
             var dataStorage = JSON.parse(localStorage.getItem(key));
             if(dataStorage){
@@ -369,12 +370,12 @@ use mdm\admin\components\MenuHelper;
                 }else{
                     $('#newOrderli').hide();
                 }
-            }else if(key == 'newSign'){
+            }else if(key == 'signNotify'){
                 textDetail = '';
                 var numSign =  newdataStorage ? newdataStorage.length : 0;
                 if(numSign){
                     textDetail = "您有"+ numSign +"条未读签约消息";
-                    $('#newSign').text(textDetail);
+                    $('#signNotify').text(textDetail);
                     $('#newSignli').show();
                 }else{
                     $('#newSignli').hide();
@@ -386,7 +387,7 @@ use mdm\admin\components\MenuHelper;
             //当点击某条未读消息时,清除对应的本地数据
             obj = $('li div span');
             var idName = obj.attr('id');
-            if((idName == 'newOrderNotify')||(idName == 'newSign')){
+            if((idName == 'newOrderNotify')||(idName == 'signNotify')){
                 obj.on('click',function () {
                     if(localStorage.getItem(idName)){
                         localStorage.removeItem(idName);
