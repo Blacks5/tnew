@@ -11,7 +11,8 @@ namespace common\tools\yijifu;
 use common\components\CustomCommonException;
 use common\models\Customer;
 use common\models\Orders;
-use common\models\YijifuSignReturnmoney;
+use common\models\YijifuDeduct;
+use common\models\YijifuSign;
 use yii\db\Query;
 use \yii\httpclient\Client as httpClient;
 
@@ -64,14 +65,14 @@ class ReturnMoney extends AbstractYijifu
         array_pop($_);
         foreach ($_ as $v){
             if(false === !empty($v)){
-                var_dump($v);die;
+//                var_dump($v);die;
                 throw new CustomCommonException('参数不全');
             }
         }
         // 设置服务码
         $this->service = 'fastSign';
         // 生成ID
-        $_data = (new Query())->from(YijifuSignReturnmoney::tableName())
+        $_data = (new Query())->from(YijifuSign::tableName())
             ->where(['o_serial_id'=>$o_serial_id, 'status'=>1])
             ->exists();
         if(true === $_data){
@@ -132,7 +133,7 @@ class ReturnMoney extends AbstractYijifu
             'sign'=>isset($ret['sign'])?$ret['sign']: '', // 兼容请求失败，没有$ret的情况
             'orderNo'=>isset($ret['orderNo'])?$ret['orderNo']: '',
         ];
-        \Yii::$app->getDb()->createCommand()->insert(YijifuSignReturnmoney::tableName(), $wait_inster_data)->execute();
+        \Yii::$app->getDb()->createCommand()->insert(YijifuSign::tableName(), $wait_inster_data)->execute();
         return $reuturn;
     }
 
@@ -167,15 +168,17 @@ class ReturnMoney extends AbstractYijifu
 
     /**
      * 发起代扣申请
-     * @param $merchOrderNo  商户订单号
+     * @param $o_serial_id 系统核心订单号
      * @param $merchSignOrderNo  商户签约订单号
      * @param $deductAmount 代扣金额
      */
-    public function deduct($merchOrderNo, $merchSignOrderNo, $deductAmount)
+    public function deduct($o_serial_id, $merchSignOrderNo, $deductAmount)
     {
         $this->service = 'fastDeduct';
+        $randString = \Yii::$app->getSecurity()->generateRandomString(4);
+        $merchOrderNo = $o_serial_id. '-'. $randString;
         $param_arr = [
-            'merchOrderNo'=>$merchOrderNo,
+            'merchOrderNo'=>$merchOrderNo, // 自己生成的，貌似和业务无关，相当于自增主键的作用
             'merchSignOrderNo'=>$merchSignOrderNo,
             'deductAmount'=>$deductAmount
         ];
@@ -186,11 +189,11 @@ class ReturnMoney extends AbstractYijifu
         $client = new httpClient();
         $response = $client->post($this->api, $param)->send();
 
-        $status = 3; //接口调用失败
+        $status = 8; //接口调用失败
         if($response->getIsOk()){
             $ret = $response->getData();
             if(true === $ret['success']) {
-                $status = 2; // 等待回掉
+                $status = 0; // 等待回掉
                 $reuturn = true;
             }else{
                 throw new CustomCommonException($ret['resultMessage']);
@@ -198,20 +201,17 @@ class ReturnMoney extends AbstractYijifu
         }
 
         $operator_id = \Yii::$app->getUser()->getId();
-        // 写签约记录表
+        // 写放款记录表
         $wait_inster_data = [
             'o_serial_id'=>$o_serial_id,
             'merchOrderNo'=>$merchOrderNo,
-            'merchContractNo'=>$merchContractNo,
-            'deductAmount'=>0,
-            'operateType'=>1, // 签约
+            'merchSignOrderNo'=>$merchSignOrderNo,
+            'deductAmount'=>$deductAmount,
             'created_at'=>$_SERVER['REQUEST_TIME'],
             'operator_id'=>$operator_id,
-            'status'=>$status,
-            'sign'=>isset($ret['sign'])?$ret['sign']: '', // 兼容请求失败，没有$ret的情况
-            'orderNo'=>isset($ret['orderNo'])?$ret['orderNo']: '',
+            'status'=>$status
         ];
-        \Yii::$app->getDb()->createCommand()->insert(YijifuSignReturnmoney::tableName(), $wait_inster_data)->execute();
+        \Yii::$app->getDb()->createCommand()->insert(YijifuDeduct::tableName(), $wait_inster_data)->execute();
         return $reuturn;
     }
 

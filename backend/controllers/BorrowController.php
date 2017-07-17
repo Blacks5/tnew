@@ -17,6 +17,7 @@ use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
 use common\models\YijifuLoan;
+use common\models\YijifuSign;
 use common\models\YijifuSignReturnmoney;
 use common\tools\yijifu\ReturnMoney;
 use WebSocket\Client;
@@ -33,7 +34,9 @@ class BorrowController extends CoreBackendController
     }
     public function beforeAction($action)
     {
-        if('verify-pass-callback' === $action->id){
+        // 两个易极付异步回调地址，不验证csrf
+        $free_actions = ["verify-pass-callback", "deduct-callback"];
+        if(in_array($action->id, $free_actions)){
             $this->enableCsrfValidation = false;
         }
         return true;
@@ -253,7 +256,7 @@ class BorrowController extends CoreBackendController
     }
 
     /**
-     * 新终审
+     * 新终审+签约
      * @author too <hayto@foxmail.com>
      */
     public function actionVerifyPass($order_id)
@@ -366,8 +369,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 var_dump(111, $yijifu_data->toArray(), $order_data->toArray(), $customer_data->toArray());
                 file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
                 die;*/
-
-
                 $yijifu_data->bankName = $post['bankName'];
                 $yijifu_data->bankCode = $post['bankCode'];
                 $yijifu_data->bankCardType = $post['bankCardType'];
@@ -398,7 +399,21 @@ left join customer on customer.c_id=orders.o_customer_id
                     'CHECK_REJECT' => '审核拒绝', // 审核拒绝
                     'SIGN_SUCCESS' => '签约成功' // 签约成功
                 ];
-                $this->sendToWs($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
+
+                // 发个通知
+                $client = new Client(\Yii::$app->params['ws']);
+//        $client = new Client('ws://192.168.1.65:8081');
+                $string = '订单:'. $order_data['o_serial_id']. ': '. $status_arr_string[$post['status']]; // 订单号 *** 签约成功
+                $data = [
+                    'cmd'=>'Orders:signNotify',
+                    'data'=>[
+                        'message'=>$string,
+                        'order_id'=>$order_data['o_id']
+                    ]
+                ];
+                $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+                $client->send($jsonData);
+
                 $trans->commit();
                 echo "success";
             }catch (CustomBackendException $e){
@@ -415,21 +430,49 @@ left join customer on customer.c_id=orders.o_customer_id
         }*/
     }
 
-    private function sendToWs($o_serial_id, $order_id, $status)
+    /**
+     * 发起扣款
+     * @return array
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionDeduct($repayment_id)
     {
-        $client = new Client(\Yii::$app->params['ws']);
-//        $client = new Client('ws://192.168.1.65:8081');
-        $string = '订单:'. $o_serial_id. ': '. $status; // 订单号 *** 签约成功
-        $data = [
-            'cmd'=>'Orders:signNotify',
-            'data'=>[
-                'message'=>$string,
-                'order_id'=>$order_id
-            ]
-        ];
-        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
-        $client->send($jsonData);
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            $trans = Yii::$app->getDb()->beginTransaction();
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+// select o_serial_id
+                $sql = "select o.o_serial_id sum(r_total_repay, r_overdue_money) as deductAmount  from  repayment as r LEFT JOIN orders as o on r.r_orders_id=o.o_id where r_id=:r_id limit 1 for update";
+                $r_data = Repayment::findBySql($sql, [':r_id'=>$repayment_id])->one();
+                $sql = "select merchOrderNo from yijifu_sign where o_serial_id=:o_serial_id and status=1 limit 1 for update";
+                $yi_data = YijifuSign::findBySql($sql, [':o_serial_id'=>$r_data['o_serial_id']])->one();
+
+                $handle = new ReturnMoney();
+                $handle->deduct($r_data['o_serial_id'], $yi_data['merchOrderNo'], $r_data['deductAmount']);
+
+                $trans->commit();
+                return ['status' => 1, 'message' => '扣款请求发起成功，请等待注意查看通知！'];
+            }catch (CustomCommonException $e){
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            }catch (\Exception $e){
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
     }
+
+    /**
+     * 易极付扣款异步回调
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionDeductCallback()
+    {
+        $post = Yii::$app->getRequest()->post();
+        if('true' === $post['success']){
+
+        }
+    }
+
 
     /**
      * 拒绝
