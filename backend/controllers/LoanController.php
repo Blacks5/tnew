@@ -351,11 +351,11 @@ class LoanController extends CoreBackendController
         //请求查询接口查询并将结果返回前台
         $loan = new Loan($_data['outOrderNo'],$_data['contractNo']);
         $loanlog = $loan->queryRemittance($y_serial_id,$_data['contractNo']);
-        print_r($loanlog);
-//        return $this->render('view', [
-//            'model' => $loanlog
-//            'y_serial_id' => $y_serial_id
-//        ]);
+//        print_r($loanlog);
+        return $this->render('view', [
+            'model' => $loanlog,
+            'y_serial_id' => $y_serial_id
+        ]);
     }
 
 
