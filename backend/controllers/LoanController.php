@@ -243,13 +243,10 @@ class LoanController extends CoreBackendController
                         }else{
                             $status = 3;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                         }
-                        $userinfo = Yii::$app->getUser()->getIdentity();
                         if($_data){
                             //修改
                             $_data['contractNo'] = $post['contractNo'];
                             $_data['status'] = $status;
-                            $_data['operator_id'] = $userinfo->getId();
-                            $_data['y_operator_realname'] = $userinfo->realname;
                             $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
                             \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
                         }
