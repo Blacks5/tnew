@@ -172,7 +172,7 @@ class ReturnMoney extends AbstractYijifu
      * @param $merchSignOrderNo  商户签约订单号
      * @param $deductAmount 代扣金额
      */
-    public function deduct($o_serial_id, $merchSignOrderNo, $deductAmount)
+    public function deduct($o_serial_id,$repayment_id, $merchSignOrderNo, $deductAmount)
     {
         $this->service = 'fastDeduct';
         $randString = \Yii::$app->getSecurity()->generateRandomString(4);
@@ -209,7 +209,8 @@ class ReturnMoney extends AbstractYijifu
             'deductAmount'=>$deductAmount,
             'created_at'=>$_SERVER['REQUEST_TIME'],
             'operator_id'=>$operator_id,
-            'status'=>$status
+            'status'=>$status,
+            'repayment_id'=>$repayment_id
         ];
         \Yii::$app->getDb()->createCommand()->insert(YijifuDeduct::tableName(), $wait_inster_data)->execute();
         return $reuturn;

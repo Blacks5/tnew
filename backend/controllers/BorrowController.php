@@ -16,6 +16,7 @@ use common\models\Goods;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
 use common\models\YijifuSignReturnmoney;
@@ -356,8 +357,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
                 $customer_data = Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->one();
 
-
-
                 $status_arr = [
                     'SIGN_DEALING' => 7, // 审核中
                     'SIGN_FAIL' => 6, // 审核失败
@@ -401,33 +400,36 @@ left join customer on customer.c_id=orders.o_customer_id
                 ];
 
                 // 发个通知
-                $client = new Client(\Yii::$app->params['ws']);
-//        $client = new Client('ws://192.168.1.65:8081');
-                $string = '订单:'. $order_data['o_serial_id']. ': '. $status_arr_string[$post['status']]; // 订单号 *** 签约成功
-                $data = [
-                    'cmd'=>'Orders:signNotify',
-                    'data'=>[
-                        'message'=>$string,
-                        'order_id'=>$order_data['o_id']
-                    ]
-                ];
-                $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
-                $client->send($jsonData);
-
+                $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
                 $trans->commit();
                 echo "success";
             }catch (CustomBackendException $e){
                 $trans->rollBack();// 发送给后台通知
-                $this->sendToWs($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
+                $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
             }catch (\Exception $e)
             {
                 $trans->rollBack();
+                $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], '系统错误');
             }
-        }/*else{
-            ob_start();
-            var_dump($post);
-            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
-        }*/
+        }else{
+            // 接口调用失败
+        }
+    }
+
+    private function sendToWsBySign($o_serial_id, $o_id, $status_str)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+//        $client = new Client('ws://192.168.1.65:8081');
+        $string = '签约订单:'. $o_serial_id. ': '. $status_str; // 订单号 *** 签约成功
+        $data = [
+            'cmd'=>'Orders:signNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$o_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
     }
 
     /**
@@ -449,13 +451,15 @@ left join customer on customer.c_id=orders.o_customer_id
                 $yi_data = YijifuSign::findBySql($sql, [':o_serial_id'=>$r_data['o_serial_id']])->one();
 
                 $handle = new ReturnMoney();
-                $handle->deduct($r_data['o_serial_id'], $yi_data['merchOrderNo'], $r_data['deductAmount']);
+                $handle->deduct($r_data['o_serial_id'], $repayment_id, $yi_data['merchOrderNo'], $r_data['deductAmount']);
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '扣款请求发起成功，请等待注意查看通知！'];
             }catch (CustomCommonException $e){
+                $trans->rollBack();
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             }catch (\Exception $e){
+                $trans->rollBack();
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
@@ -469,10 +473,73 @@ left join customer on customer.c_id=orders.o_customer_id
     {
         $post = Yii::$app->getRequest()->post();
         if('true' === $post['success']){
+            $status_arr = [
+                'INIT' => 1, // 待处理
+                'WITHHOLD_DEALING' => 2, // 代扣处理中
+                'CHECK_NEEDED' => 3, // 待审核
+                'CHECK_REJECT' => 4, // 审核驳回
+                'WITHHOLD_FAIL' => 5, // 代扣失败
+                'WITHHOLD_SUCCESS' => 6, // 代扣成功
+                'SETTLE_SUCCESS' => 7, // 结算成功
+            ];
+            $data = [
+                'realName'=>$post['realName'],
+                'bankCardNo'=>$post['bankCardNo'],
+                'bankCode'=>$post['bankCode'],
+                'realRepayTime'=>$post['realRepayTime'],
+                'errorCode'=>$post['errorCode'],
+                'description'=>$post['description'],
+                'status'=>$status_arr[$post['status']]
+            ];
+            $where = ['merchOrderNo'=>$post['merchOrderNo']];
+            $trans = Yii::$app->getDb()->beginTransaction();
+            try{
 
+                YijifuDeduct::updateAll($data, $where);
+                $status_str = [
+                    'INIT' => '待处理', // 待处理
+                    'WITHHOLD_DEALING' => '代扣处理中', // 代扣处理中
+                    'CHECK_NEEDED' => '待审核', // 待审核
+                    'CHECK_REJECT' => '审核驳回', // 审核驳回
+                    'WITHHOLD_FAIL' => '代扣失败', // 代扣失败
+                    'WITHHOLD_SUCCESS' => '代扣成功', // 代扣成功
+                    'SETTLE_SUCCESS' => '结算成功', // 结算成功
+                ];
+
+                $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
+                $o_id = Orders::find()->where(['o_serial_id'=>$yijifu_data['o_serial_id']])->one();
+                $where = ['r_id'=>$yijifu_data['repayment_id']];
+                Repayment::updateAll(['r_status'=>Repayment::STATUS_ALREADY_PAY], $where);
+
+                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $o_id['o_id'], $status_str[$post['status']]);
+                $trans->commit();
+                echo "success";
+            }catch (CustomCommonException $e){
+                $trans->rollBack();
+                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $o_id['o_id'], $status_str[$post['status']]);
+            }catch (\Exception $e){
+                $trans->rollBack();
+                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $o_id['o_id'], '系统错误');
+            }
+        }else{
+            // 接口调用失败
         }
     }
-
+    private function sendToWsByDeduct($o_serial_id, $o_id, $status_str)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+//        $client = new Client('ws://192.168.1.65:8081');
+        $string = '代扣订单:'. $o_serial_id. ': '. $status_str; // 订单号 *** 签约成功
+        $data = [
+            'cmd'=>'Orders:deductNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$o_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
+    }
 
     /**
      * 拒绝
