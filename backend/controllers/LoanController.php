@@ -290,17 +290,30 @@ class LoanController extends CoreBackendController
     /**
      * 放款记录列表
      * @author lilaotou <liwansen@foxmail.com>
-     * todo 搜索条件
+     * todo 待测试
      */
     public function actionLoanlogs(){
-        $get = Yii::$app->getRequest()->get();
+        $request = Yii::$app->getRequest();
+        $y_serial_id = $request->get('y_serial_id') ? trim($request->get('y_serial_id')) : '';
+        $contractNo = $request->get('contractNo') ? trim($request->get('contractNo')) : '';
+
         $query = (new Query())->from(YijifuLoan::tableName());
+        $query->where('1=2');
+        $query->andWhere(['>','id','0']);
+        if (!empty($y_serial_id)) {
+            $query->andWhere(['y_serial_id'=>$y_serial_id]);
+        }
+        if (!empty($contractNo)) {
+            $query->andWhere(['contractNo'=>$contractNo]);
+        }
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['yijifu_loan.created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('loanlogs', [
             'model' => $data,
+            'y_serial_id'=>$y_serial_id,
+            'contractNo'=>$contractNo,
             'totalpage' => $pages->pageCount,
             'pages' => $pages
         ]);
@@ -308,9 +321,24 @@ class LoanController extends CoreBackendController
 
     /**
      * 放款记录详情
-     * TODO 通过接受参数,调接口查询
+     * TODO 待测试
      * @author lilaotou <liwansen@foxmail.com>
      */
+
+    public function actionView($y_serial_id){
+        $_data = (new Query())->from(YijifuLoan::tableName())->where(['y_serial_id'=>$y_serial_id])->one();
+        if(!$_data){
+            $this->error('信息不存在!');
+        }
+        //请求查询接口查询并将结果返回前台
+        $loan = new Loan();
+        $loanlog = $loan->querySignedCustomer($y_serial_id,$_data['contractNo']);
+        return $this->render('view', [
+            'model' => $loanlog
+        ]);
+    }
+
+
     public function actionTestgetuser(){
         var_dump(Yii::$app->getUser()->getIdentity()->realname);
         //var_dump(Yii::$app->getUser()->getIdentity());

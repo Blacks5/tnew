@@ -12,12 +12,12 @@
                 <div class="ibox-content">
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_name]" placeholder="客户姓名"
-                                   value="" class="input form-control">
+                            <input type="text" name="OrdersSearch[customer_name]" placeholder="订单编号"
+                                   value="<?= $y_serial_id; ?>" class="input form-control">
                         </div>
                         <div class="col-sm-2">
                             <input type="text" name="OrdersSearch[customer_cellphone]"
-                                   value="" placeholder="客户电话"
+                                   value="<?= $contractNo; ?>" placeholder="代发流水号"
                                    class="input form-control">
                         </div>
                         <div class="col-sm-2">
