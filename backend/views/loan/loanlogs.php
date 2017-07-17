@@ -1,4 +1,11 @@
 <?php
+
+$loan_stauts = [
+  1=>'处理失败',
+  2=>'处理中',
+  3=>'代发失败',
+  4=>'代发成功'
+];
 ?>
 
 <link rel="stylesheet" href="/statics/css/style.min.css">
@@ -12,27 +19,13 @@
                 <div class="ibox-content">
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_name]" placeholder="订单编号"
+                            <input type="text" name="y_serial_id" placeholder="订单编号"
                                    value="<?= $y_serial_id; ?>" class="input form-control">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[customer_cellphone]"
+                            <input type="text" name="contractNo"
                                    value="<?= $contractNo; ?>" placeholder="代发流水号"
                                    class="input form-control">
-                        </div>
-                        <div class="col-sm-2">
-                            <input type="text" name="OrdersSearch[product_name]"
-                                   value="" placeholder="产品名"
-                                   class="input form-control">
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-daterange input-group" id="datepicker">
-                                <input type="text" class="form-control" name="OrdersSearch[start_time]"
-                                       value="" placeholder="开始时间">
-                                <span class="input-group-addon ">到</span>
-                                <input type="text" class="form-control" name="OrdersSearch[end_time]"
-                                       value="" placeholder="结束时间">
-                            </div>
                         </div>
                         <div class="col-sm-1">
                             <span class="input-group-btn">
@@ -75,13 +68,17 @@
                                                         <td class="client-status"><?= $_v['chargeAmount']; ?></td>
                                                         <td class="client-status"><?= $_v['y_operator_realname']; ?></td>
                                                         <td class="client-status">
-                                                            <?= $_v['status']; ?>
+                                                            <?= $loan_stauts[$_v['status']]; ?>
                                                         </td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['created_at']) ?></td>
                                                         <td>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/view']))) { ?>
-                                                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['loan/view', 'y_serial_id' => $_v['y_serial_id'],'contractNo',$_v['contractNo']]); ?>"
-                                                                   class="btn btn-primary btn-xs">详情</a>
+                                                                <?php if($_v['status'] == 4){ ?>
+                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['loan/view', 'y_serial_id' => $_v['y_serial_id']]); ?>"
+                                                                       class="btn btn-primary btn-xs">详情</a>
+                                                                <?php }else{ ?>
+                                                                    <a class="btn btn-primary btn-xs">处理中</a>
+                                                                <?php } ?>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>

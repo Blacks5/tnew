@@ -60,6 +60,7 @@ class Loan extends AbstractYijifu
      * @author lilaotou <liwansen@foxmail.com>
      */
     public function userLoan(
+        $y_serial_id,
         $amount,
         $outOrderNo,
         $contractUrl,
@@ -78,7 +79,7 @@ class Loan extends AbstractYijifu
 
         //只有未放款的订单才能放款
         $_data = (new Query())->from(YijifuLoan::tableName())
-            ->where(['y_serial_id'=>$outOrderNo])
+            ->where(['y_serial_id'=>$y_serial_id])
             ->one();
 
         if($_data&&($_data['status'] == 4)){
@@ -137,6 +138,7 @@ class Loan extends AbstractYijifu
      * @author lilaotou <liwansen@foxmail.com>
      */
     public function storeLoan(
+        $y_serial_id,
         $amount,
         $outOrderNo,
         $contractUrl,
@@ -160,7 +162,7 @@ class Loan extends AbstractYijifu
 
         //只有未放款的订单才能放款
         $_data = (new Query())->from(YijifuLoan::tableName())
-            ->where(['y_serial_id'=>$outOrderNo])
+            ->where(['y_serial_id'=>$y_serial_id])
             ->one();
 
         if($_data&&($_data['status'] == 4)){
@@ -214,7 +216,7 @@ class Loan extends AbstractYijifu
      * @throws CustomCommonException
      * @author too <hayto@foxmail.com>
      */
-    public function querySignedCustomer($externalOrderNo,$contractNo)
+    public function queryRemittance($externalOrderNo,$contractNo)
     {
         if(false === !empty($externalOrderNo)){
             throw new CustomCommonException('缺少参数');

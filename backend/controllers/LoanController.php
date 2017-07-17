@@ -66,11 +66,20 @@ class LoanController extends CoreBackendController
                         return ['status' => 2, 'message' => '系统错误!1'];
                     }
 
+                    //获取放款记录
+                    $loan_data = (new Query())->from(YijifuLoan::tableName())
+                        ->where(['y_serial_id'=>$o_serial_id])
+                        ->one();
+
+                    if($loan_data['status'] == 2){
+                        //return $this->error('暂无合同图片无法放款!' );
+                        return ['status' => 2, 'message' => '代发请求处理中..'];
+                    }
                     $Loan_model = new Loan();
                     $t = new UploadFile();
                     //构造公私共有的请求参数
                     $amount = $_data['o_total_price'] - $_data['o_total_deposit'];
-                    $outOrderNo = $_data['o_serial_id'];
+                    $outOrderNo = $_data['o_serial_id'] . time();
                     $contractUrl = $t->getUrl($_data['s_photo_seven']);
                     $realName = ($_data['s_bank_is_private'] == 1) ? $_data['s_bank_people_name'] : $_data['s_gov_name'];//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
                     $mobileNo = $_data['s_owner_phone'];
@@ -84,7 +93,7 @@ class LoanController extends CoreBackendController
                             //return $this->error('该收款商户的银行暂不支持!' );
                             return ['status' => 2, 'message' => '该收款商户的银行暂不支持!'];
                         }
-                        $return_data = $Loan_model->userLoan($amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
+                        $return_data = $Loan_model->userLoan($o_serial_id,$amount,$outOrderNo,$contractUrl,$realName,$mobileNo,$certNo,$bankCardNo);
                     }else{
                         //对公
 
@@ -104,6 +113,7 @@ class LoanController extends CoreBackendController
                         $sellerBankAddress = $_data['s_bank_sub'];
 
                         $return_data = $Loan_model->userLoan(
+                            $o_serial_id,
                             $amount,
                             $outOrderNo,
                             $contractUrl,
@@ -119,16 +129,13 @@ class LoanController extends CoreBackendController
                         );
                     }
 
-                    //获取放款记录
-                    $loan_data = (new Query())->from(YijifuLoan::tableName())
-                        ->where(['y_serial_id'=>$o_serial_id])
-                        ->one();
                     //根据响应参数输出数据
                     if($return_data['resultCode']=='EXECUTE_SUCCESS'){
                         //如果此订单的放款记录不存在就新增
                         if(!$loan_data){
                             $wait_inster_data = [
-                                'y_serial_id'=>$outOrderNo,
+                                'y_serial_id'=>$_data['o_serial_id'],
+                                'outOrderNo'=>$outOrderNo,
                                 'amount'=>$amount,
                                 'realRemittanceAmount'=>0,
                                 'contractNo'=>0,
@@ -136,36 +143,48 @@ class LoanController extends CoreBackendController
                                 'status'=>2, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
                                 'y_operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
-                                'created_at'=>$_SERVER['REQUEST_TIME']
+                                'created_at'=>$_SERVER['REQUEST_TIME'],
+                                'resultmsg'=>$return_data['resultMessage']
                             ];
                             \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
+                        }else{
+                            //修改
+                            $_data_save['outOrderNo'] = $outOrderNo;
+                            $_data_save['updated_at'] = $_SERVER['REQUEST_TIME'];
+                            $_data_save['status'] = 2;
+                            \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data_save, ['id'=>$loan_data['id']])->execute();
                         }
-                        //return $this->success('接口调用成功,等待处理通知!');
                         return ['status' => 1, 'message' => '接口调用成功，请等待注意查看通知！'];
                     }else{
                         //如果此订单的放款记录不存在就新增
                         if(!$loan_data){
                             $wait_inster_data = [
-                                'y_serial_id'=>$outOrderNo,
+                                'y_serial_id'=>$_data['o_serial_id'],
+                                'outOrderNo'=>$outOrderNo,
                                 'amount'=>$amount,
                                 'realRemittanceAmount'=>0,
-                                'contractNo'=>0,
+                                'contractNo'=>orderNo,
                                 'chargeAmount'=>0,
                                 'status'=>1, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
                                 'y_operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
-                                'created_at'=>$_SERVER['REQUEST_TIME']
+                                'created_at'=>$_SERVER['REQUEST_TIME'],
+                                'resultmsg'=>$return_data['resultMessage']
                             ];
                             \Yii::$app->getDb()->createCommand()->insert(YijifuLoan::tableName(), $wait_inster_data)->execute();
+                        }else{
+                            //修改
+                            $_data_save['outOrderNo'] = $outOrderNo;
+                            $_data_save['updated_at'] = $_SERVER['REQUEST_TIME'];
+                            \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data_save, ['id'=>$loan_data['id']])->execute();
                         }
-                        //return $this->error('接口调用失败 ' . $return_data['resultCode']);
-                        return ['status' => 2, 'message' => '接口调用失败-'.$return_data['resultMessage']];
+                        return ['status' => 2, 'message' => $return_data['resultMessage']];
                     }
                 }
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
-                return ['status' => 2, 'message' => '系统错误2'];
+                return ['status' => 2, 'message' => '系统错误'];
             }
         }
 
@@ -209,7 +228,7 @@ class LoanController extends CoreBackendController
                 $post = Yii::$app->getRequest()->post();
                 //获取放款记录
                 $_data = (new Query())->from(YijifuLoan::tableName())
-                    ->where(['y_serial_id'=>$post['outOrderNo']])
+                    ->where(['outOrderNo'=>$post['outOrderNo']])
                     ->one();
 
                 //已放款
@@ -290,7 +309,6 @@ class LoanController extends CoreBackendController
     /**
      * 放款记录列表
      * @author lilaotou <liwansen@foxmail.com>
-     * todo 待测试
      */
     public function actionLoanlogs(){
         $request = Yii::$app->getRequest();
@@ -298,8 +316,7 @@ class LoanController extends CoreBackendController
         $contractNo = $request->get('contractNo') ? trim($request->get('contractNo')) : '';
 
         $query = (new Query())->from(YijifuLoan::tableName());
-        $query->where('1=2');
-        $query->andWhere(['>','id','0']);
+        $query->Where(['>','id','0']);
         if (!empty($y_serial_id)) {
             $query->andWhere(['y_serial_id'=>$y_serial_id]);
         }
@@ -331,11 +348,13 @@ class LoanController extends CoreBackendController
             $this->error('信息不存在!');
         }
         //请求查询接口查询并将结果返回前台
-        $loan = new Loan();
-        $loanlog = $loan->querySignedCustomer($y_serial_id,$_data['contractNo']);
-        return $this->render('view', [
-            'model' => $loanlog
-        ]);
+        $loan = new Loan($_data['outOrderNo'],$_data['contractNo']);
+        $loanlog = $loan->queryRemittance($y_serial_id,$_data['contractNo']);
+        print_r($loanlog);
+//        return $this->render('view', [
+//            'model' => $loanlog
+//            'y_serial_id' => $y_serial_id
+//        ]);
     }
 
 
