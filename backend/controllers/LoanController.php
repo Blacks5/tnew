@@ -163,7 +163,7 @@ class LoanController extends CoreBackendController
                                 'outOrderNo'=>$outOrderNo,
                                 'amount'=>$amount,
                                 'realRemittanceAmount'=>0,
-                                'contractNo'=>orderNo,
+                                'contractNo'=>0,
                                 'chargeAmount'=>0,
                                 'status'=>1, // 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
                                 'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
