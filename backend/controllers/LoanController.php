@@ -226,37 +226,41 @@ class LoanController extends CoreBackendController
     {
         /*异步回调开始*/
                 $post = Yii::$app->getRequest()->post();
-                //获取放款记录
-                $_data = (new Query())->from(YijifuLoan::tableName())
-                    ->where(['outOrderNo'=>$post['outOrderNo']])
-                    ->one();
-
-                //已放款
-                if($_data['status'] == 4){
+                if(!$post['outOrderNo']){
                     echo 'success';
                 }else{
-                    //异步回调方法里写放款记录
-                    if($post['status'] == 'REMITTANCE_SUCCESS'){
-                        $status = 4;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                    //获取放款记录
+                    $_data = (new Query())->from(YijifuLoan::tableName())
+                        ->where(['outOrderNo'=>$post['outOrderNo']])
+                        ->one();
+                    //已放款
+                    if($_data['status'] == 4){
+                        echo 'success';
                     }else{
-                        $status = 3;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
-                    }
-                    $userinfo = Yii::$app->getUser()->getIdentity();
-                    if($_data){
-                        //修改
-                        $_data['contractNo'] = $post['contractNo'];
-                        $_data['status'] = $status;
-                        $_data['operator_id'] = $userinfo->getId();
-                        $_data['y_operator_realname'] = $userinfo->realname;
-                        $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
-                        \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
-                    }
+                        //异步回调方法里写放款记录
+                        if($post['status'] == 'REMITTANCE_SUCCESS'){
+                            $status = 4;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                        }else{
+                            $status = 3;// 1接口调用失败  2接口调用成功处理中 3放款处理失败  4放款处理成功
+                        }
+                        $userinfo = Yii::$app->getUser()->getIdentity();
+                        if($_data){
+                            //修改
+                            $_data['contractNo'] = $post['contractNo'];
+                            $_data['status'] = $status;
+                            $_data['operator_id'] = $userinfo->getId();
+                            $_data['y_operator_realname'] = $userinfo->realname;
+                            $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
+                            \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
+                        }
 
-                    //$client = new Client();
-                    // todo 写websocket服务，然后就可以测试了
-                    //$client->send();
-                    echo "success";
+                        //$client = new Client();
+                        // todo 写websocket服务，然后就可以测试了
+                        //$client->send();
+                        echo "success";
+                    }
                 }
+
         /*异步回调结束*/
         /*异步响应参数
               array(21) {

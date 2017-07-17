@@ -83,11 +83,18 @@ class StoresController extends CoreBackendController
         ];
         // 所有省
         $provinces = Helper::getAllProvince();
+        //代发银行
+        $stores_banklist = \Yii::$app->params['stores_banklist'];
+        $stores_banklist_r = [];
+        foreach ($stores_banklist as $k=>$v){
+            $stores_banklist_r[$v] = $v;
+        }
         return $this->render('create', [
             'model' => $model,
             'store_status' => $stroe_status,
             'is_private_bank' => $is_private_bank,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'stores_banklist' => $stores_banklist_r
         ]);
     }
 
@@ -154,13 +161,22 @@ class StoresController extends CoreBackendController
 
         $all_citys = Helper::getSubAddr($model->s_province);
         $all_countys = Helper::getSubAddr($model->s_city);
+
+
+        //代发银行
+        $stores_banklist = \Yii::$app->params['stores_banklist'];
+        $stores_banklist_r = [];
+        foreach ($stores_banklist as $k=>$v){
+            $stores_banklist_r[$v] = $v;
+        }
         return $this->render('update', [
             'model' => $model,
             'store_status' => $stroe_status,
             'is_private_bank' => $is_private_bank,
             'all_provinces' => $all_province,
             'all_citys'=>$all_citys,
-            'all_countys'=>$all_countys
+            'all_countys'=>$all_countys,
+            'stores_banklist' => $stores_banklist_r
         ]);
     }
 

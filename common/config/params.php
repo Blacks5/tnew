@@ -97,6 +97,22 @@ return [
         ['company_kind_id'=>18, 'company_kind_name'=>'批发和零售贸易'],
         ['company_kind_id'=>19, 'company_kind_name'=>'其他'],
     ],
+    //商户银行(对私)
+    'stores_banklist'=>[
+        'BOC'=>'中国银行',
+        'ABC'=>'中国农业银行',
+        'ICBC'=>'中国工商银行',
+        'CCB'=>'中国建设银行',
+        'CEB'=>'中国光大银行',
+        'CIB'=>'兴业银行',
+        'CMBC'=>'民生银行',
+        'CITIC'=>'中信银行',
+        'CQRCB'=>'重庆农村商业银行',
+        'PSBC'=>'中国邮政储蓄银行',
+        'PINGANBK'=>'平安银行',
+        'COMM'=>'交通银行',
+        'CGB'=>'广东发展银行'
+    ],
 
 
 

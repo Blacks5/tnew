@@ -56,7 +56,7 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_bank_num')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_bank_sub')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_bank_addr')->textInput(['class'=>'form-control']); ?>
-            <?= $form->field($model, 's_bank_name')->textInput(['class'=>'form-control']); ?>
+            <?= $form->field($model, 's_bank_name')->dropDownList($stores_banklist,['class'=>'form-control', 'default-value'=>$model->s_bank_name]); ?>
             <?= $form->field($model, 's_bank_is_private')->dropDownList([1=>$is_private_bank[1],0=>$is_private_bank[0]])->label('是否对私账户'); ?>
             <?= $form->field($model, 's_gov_name')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_service_charge')->textInput(['class'=>'form-control']); ?>
