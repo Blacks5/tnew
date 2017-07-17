@@ -34,6 +34,16 @@ class RepaymentController extends CoreBackendController
         echo '父菜单';
     }
 
+    public function beforeAction($action)
+    {
+        // 两个易极付异步回调地址，不验证csrf
+        $free_actions = ["deduct-callback"];
+        if(in_array($action->id, $free_actions)){
+            $this->enableCsrfValidation = false;
+        }
+        return true;
+    }
+
 
     /**
      * 待还款列表

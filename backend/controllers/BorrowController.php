@@ -36,7 +36,7 @@ class BorrowController extends CoreBackendController
     public function beforeAction($action)
     {
         // 两个易极付异步回调地址，不验证csrf
-        $free_actions = ["verify-pass-callback", "deduct-callback"];
+        $free_actions = ["verify-pass-callback"];
         if(in_array($action->id, $free_actions)){
             $this->enableCsrfValidation = false;
         }

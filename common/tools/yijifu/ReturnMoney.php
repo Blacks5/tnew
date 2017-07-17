@@ -97,7 +97,7 @@ class ReturnMoney extends AbstractYijifu
             'operateType'=>'SIGN',
         ];
 //        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['borrow/verify-pass-callback']);
-        $this->notifyUrl = "http://local80t.ngrok.cc/borrow/verify-pass-callback";
+        $this->notifyUrl = "http://119.23.15.90:8383/borrow/verify-pass-callback";
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
@@ -152,6 +152,7 @@ class ReturnMoney extends AbstractYijifu
             throw new CustomCommonException('缺少参数');
         }
         $this->service = 'fastSignQuery';
+        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
         $common = $this->getCommonParams();
         $param_arr = ['merchOrderNo'=>$merchOrderNo];
         $param_arr = array_merge($param_arr, $common);
