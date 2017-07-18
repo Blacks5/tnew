@@ -151,7 +151,7 @@ class ReturnMoney extends AbstractYijifu
             throw new CustomCommonException('缺少参数');
         }
         $this->service = 'fastSignQuery';
-        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
+//        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
         $common = $this->getCommonParams();
         $param_arr = ['merchOrderNo'=>$merchOrderNo];
         $param_arr = array_merge($param_arr, $common);
@@ -228,8 +228,23 @@ class ReturnMoney extends AbstractYijifu
      *
      * @author too <hayto@foxmail.com>
      */
-    public function queryDeduct()
+    public function queryDeduct($merchOrderNo)
     {
         $this->service = 'fastDeductQuery';
+        if(false === !empty($merchOrderNo)){
+            throw new CustomCommonException('缺少参数');
+        }
+//        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
+        $common = $this->getCommonParams();
+        $param_arr = ['merchOrderNo'=>$merchOrderNo];
+        $param_arr = array_merge($param_arr, $common);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)->send();
+        if($response->getIsOk()){
+            return $response->getData();
+        }
+        return false;
     }
 }
