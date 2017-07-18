@@ -275,7 +275,7 @@ class RepaymentController extends CoreBackendController
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 // select o_serial_id
-                $sql = "select o.o_serial_id sum(r_total_repay, r_overdue_money) as deductAmount  from  repayment as r LEFT JOIN orders as o on r.r_orders_id=o.o_id where r_id=:r_id limit 1 for update";
+                $sql = "select o.o_serial_id, sum(r_total_repay, r_overdue_money) as deductAmount  from  repayment as r LEFT JOIN orders as o on r.r_orders_id=o.o_id where r_id=:r_id limit 1 for update";
                 $r_data = Repayment::findBySql($sql, [':r_id'=>$refund_id])->one();
                 $sql = "select merchOrderNo from yijifu_sign where o_serial_id=:o_serial_id and status=1 limit 1 for update";
                 $yi_data = YijifuSign::findBySql($sql, [':o_serial_id'=>$r_data['o_serial_id']])->one();
