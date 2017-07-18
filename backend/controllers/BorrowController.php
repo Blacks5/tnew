@@ -283,7 +283,7 @@ left join customer on customer.c_id=orders.o_customer_id
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
                 // 1,2,7,8都表示已经签约或签约处理中
-                if(YijifuSignReturnmoney::find()->where(['status'=>[1,2,7,8], 'orderNo'=>$order_id])->exists()){
+                if(YijifuSign::find()->where(['status'=>[1,2,7,8], 'orderNo'=>$order_id])->exists()){
                     throw new CustomBackendException('该订单状态已经签约!', 4);
                 }
                 $data = ['o_operator_id'=>$userinfo->id, 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'], 'o_operator_remark'=>$o_operator_remark];
