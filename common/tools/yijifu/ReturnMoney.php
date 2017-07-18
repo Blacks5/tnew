@@ -182,6 +182,7 @@ class ReturnMoney extends AbstractYijifu
             'merchSignOrderNo'=>$merchSignOrderNo,
             'deductAmount'=>$deductAmount
         ];
+        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
         $common_param = $this->getCommonParams();
         $param = array_merge($common_param, $param_arr);
         $param = $this->prepQueryParams($param);
