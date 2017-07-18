@@ -25,7 +25,6 @@ CREATE TABLE `yijifu_sign` (
 `o_serial_id` char(30) NOT NULL COMMENT '核心系统客户订单号',
 `merchOrderNo` varchar(40) NOT NULL COMMENT '商户签约订单号，接口查询要用',
 `merchContractNo` varchar(64) CHARACTER SET latin1 NOT NULL COMMENT '商户签约合同号，暂时没用',
-`deductAmount` double(10,3) NOT NULL DEFAULT '0.000' COMMENT '代扣金额，类型是代扣时才有效',
 `created_at` int(10) unsigned NOT NULL COMMENT '记录创建时间',
 `updated_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '记录更新时间',
 `operator_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作人id',
@@ -37,7 +36,8 @@ CREATE TABLE `yijifu_sign` (
 `bankCode` varchar(40) NOT NULL DEFAULT '' COMMENT '签约银行卡银行编码；异步返回',
 PRIMARY KEY (`id`),
 KEY `orderNo` (`orderNo`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COMMENT='易极付签约记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COMMENT='易极付签约记录表';
+
 
 
 

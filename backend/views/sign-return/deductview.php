@@ -78,7 +78,7 @@ $deductlog_status = ['INIT'=>'待处理','WITHHOLD_DEALING'=>'代扣处理中','
                         <div>
                             <label class="col-sm-2 control-label">实际还款时间：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['realRepayTime'] ? $model['realRepayTime'] : '暂无'; ?></p>
+                                <p class="form-control-static"><?= isset($model['realRepayTime']) ? $model['realRepayTime'] : '暂无'; ?></p>
                             </div>
                         </div>
                     </div>
