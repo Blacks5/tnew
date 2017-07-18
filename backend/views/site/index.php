@@ -280,6 +280,11 @@ use mdm\admin\components\MenuHelper;
 
 
     $(function () {
+        //获取通知权限
+        Notification.requestPermission(function(status) {
+            // var permission = Notification.permission;
+            //console.log('permission: ' + permission);
+        });
         notify.init();
         // notify.heartbeat();
     });
@@ -324,6 +329,17 @@ use mdm\admin\components\MenuHelper;
 //                console.log(event.data);
 //                console.log(JSON.parse(event.data).type);
                 self.saveData(event);
+                var n = new Notification("您有一条新消息", {
+                    icon : '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
+                    body : event.data.message
+                });
+                n.onshow = function() {
+                    //console.log('显示通知信息');
+                };
+                n.onclick = function() {
+                    //alert('打开相关视图');
+                    n.close();
+                };
             }
         },
         close: function () {

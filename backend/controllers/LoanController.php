@@ -250,10 +250,8 @@ class LoanController extends CoreBackendController
                             $_data['updated_at'] = $_SERVER['REQUEST_TIME'];
                             \Yii::$app->getDb()->createCommand()->update(YijifuLoan::tableName(), $_data, ['id'=>$_data['id']])->execute();
                         }
-
-                        //$client = new Client();
-                        // todo 写websocket服务，然后就可以测试了
-                        //$client->send();
+                        // 写websocket服务
+                        $this->sendToWsByLoan($_data['y_serial_id'],$post['contractNo'],$status);
                         echo "success";
                     }
                 }
@@ -339,7 +337,6 @@ class LoanController extends CoreBackendController
 
     /**
      * 放款记录详情
-     * TODO 待测试
      * @author lilaotou <liwansen@foxmail.com>
      */
 
@@ -359,8 +356,29 @@ class LoanController extends CoreBackendController
     }
 
 
-    public function actionTestgetuser(){
-        var_dump(Yii::$app->getUser()->getIdentity()->realname);
-        //var_dump(Yii::$app->getUser()->getIdentity());
+    /**
+     * websocket通知
+     * liwansen@foxmail.com
+     * TODO websocket服务端代码待修改cmd
+     */
+    private function sendToWsByLoan($y_serial_id, $contractNo, $status)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+//        $client = new Client('ws://192.168.1.65:8081');
+        if($status==4){
+            $status_str = '代发成功';
+        }else{
+            $status_str = '代发失败';
+        }
+        $string = '放款通知:订单号'. $y_serial_id . $status_str . ',流水号' . $contractNo;
+        $data = [
+            'cmd'=>'Orders:signNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$y_serial_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
     }
 }
