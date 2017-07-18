@@ -93,7 +93,7 @@ class SignReturnController extends CoreBackendController
             ->leftJoin(User::tableName(),"yijifu_deduct.operator_id = user.id")
             ->select("yijifu_deduct.*,user.realname");
         $query->Where(['>','yijifu_deduct.id','0']);
-        if (!empty($y_serial_id)) {
+        if (!empty($o_serial_id)) {
             $query->andWhere(['yijifu_deduct.o_serial_id'=>$o_serial_id]);
         }
         if (!empty($merchOrderNo)) {
