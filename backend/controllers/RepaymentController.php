@@ -290,6 +290,7 @@ class RepaymentController extends CoreBackendController
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             }catch (\Exception $e){
                 $trans->rollBack();
+                throw $e;
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
