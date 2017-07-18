@@ -342,7 +342,7 @@ left join customer on customer.c_id=orders.o_customer_id
         $post = Yii::$app->getRequest()->post();
         if('true' === $post['success']){
             // 已经签约成功了[因为接口奇葩的要访问两次，所以加这个过滤]
-            if(YijifuSignReturnmoney::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){
+            if(YijifuSign::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){
                 echo "success";
                 return;
             }
@@ -351,8 +351,8 @@ left join customer on customer.c_id=orders.o_customer_id
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
                 // 只有待回调的才能处理
-                $sql = "select *  from " . YijifuSignReturnmoney::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
-                $yijifu_data = YijifuSignReturnmoney::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
+                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
+                $yijifu_data = YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
                 $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
                 $order_data = Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->one();
                 $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
