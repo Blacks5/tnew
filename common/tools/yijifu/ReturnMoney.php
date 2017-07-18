@@ -125,7 +125,6 @@ class ReturnMoney extends AbstractYijifu
             'o_serial_id'=>$o_serial_id,
             'merchOrderNo'=>$merchOrderNo,
             'merchContractNo'=>$merchContractNo,
-            'deductAmount'=>0,
             'created_at'=>$_SERVER['REQUEST_TIME'],
             'operator_id'=>$operator_id,
             'status'=>$status,
