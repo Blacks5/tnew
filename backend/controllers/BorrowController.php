@@ -324,6 +324,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
                 $trans->rollBack();
+                throw $e;
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
