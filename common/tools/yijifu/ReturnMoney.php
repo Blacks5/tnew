@@ -126,7 +126,6 @@ class ReturnMoney extends AbstractYijifu
             'merchOrderNo'=>$merchOrderNo,
             'merchContractNo'=>$merchContractNo,
             'deductAmount'=>0,
-            'operateType'=>1, // 签约
             'created_at'=>$_SERVER['REQUEST_TIME'],
             'operator_id'=>$operator_id,
             'status'=>$status,
