@@ -1,7 +1,5 @@
 <?php
-$loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','REMITTANCE_FAIL'=>'代发失败','REMITTANCE_SUCCESS'=>'代发成功','PROFIT_SUCCESS'=>'分润成功'];
-
-
+$deductlog_status = ['INIT'=>'待处理','WITHHOLD_DEALING'=>'代扣处理中','CHECK_NEEDED'=>'待审核','CHECK_REJECT'=>'审核驳回','WITHHOLD_FAIL'=>'代扣失败','SETTLE_SUCCESS'=>'结算成功'];
 ?>
 <?= \yii\helpers\Html::cssFile('@web/css/style.css') ?>
 <style>
@@ -19,32 +17,44 @@ $loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','
             <section class="content-header">
                 <h2 class="center"><?= $this->title; ?></h2>
                 <?php if($model){ ?>
-                    <h3 class="center color-orange">回款记录详情</h3>
+                    <h3 class="center color-orange">代扣记录详情</h3>
                     <div class="hr-line-dashed"></div>
-                    <!--回款记录详情-->
+                    <!--代扣记录详情-->
                     <div class="form-group">
                         <div>
-                            <label class="col-sm-2 control-label">订单编号：</label>
+                            <label class="col-sm-2 control-label">商户代扣订单号：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $y_serial_id; ?></p>
+                                <p class="form-control-static"><?= $model['merchOrderNo']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">代发流水号：</label>
+                            <label class="col-sm-2 control-label">商户签约订单号：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['contractNo']; ?></p>
+                                <p class="form-control-static"><?= $model['merchSignOrderNo']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">用户姓名：</label>
+                            <label class="col-sm-2 control-label">借款人姓名：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['customerRealName']; ?></p>
+                                <p class="form-control-static"><?= $model['realName']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">银行编码：</label>
+                            <label class="col-sm-2 control-label">借款人身份证号：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['bankCode']; ?></p>
+                                <p class="form-control-static"><?= $model['certNo']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">借款人手机号：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['mobileNo']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">扣款卡银行：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['bankName'] . $model['bankCode']; ?></p>
                             </div>
                         </div>
                         <div>
@@ -54,33 +64,21 @@ $loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">状态：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loanlog_status[$model['status']]; ?></p>
-                            </div>
-                        </div>
-                        <div>
                             <label class="col-sm-2 control-label">代发金额：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['amount']; ?></p>
+                                <p class="form-control-static"><?= $model['deductAmount']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">实际代发金额：</label>
+                            <label class="col-sm-2 control-label">状态：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['realRemittanceAmount']; ?></p>
+                                <p class="form-control-static"><?= $deductlog_status[$model['status']]; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">代发手续费：</label>
+                            <label class="col-sm-2 control-label">实际还款时间：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['chargeAmount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发时间：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"></p>
+                                <p class="form-control-static"><?= $model['realRepayTime'] ? $model['realRepayTime'] : '暂无'; ?></p>
                             </div>
                         </div>
                     </div>

@@ -127,7 +127,7 @@ class SignReturnController extends CoreBackendController
         $loan = new ReturnMoney();
         $data = $loan->queryDeduct($_data['merchOrderNo']);
 
-        return $this->render('view', [
+        return $this->render('deductview', [
             'model' => $data,
         ]);
     }
