@@ -26,6 +26,10 @@ class SignReturnController extends CoreBackendController
         ];
     }
 
+    public function actionIndexp()
+    {
+        echo '菜单';
+    }
     /**
      * 签约记录列表
      * @author lilaotou <liwansen@foxmail.com>
