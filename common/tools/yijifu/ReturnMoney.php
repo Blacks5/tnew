@@ -212,8 +212,8 @@ class ReturnMoney extends AbstractYijifu
             'operator_id'=>$operator_id,
             'status'=>$status,
             'repayment_id'=>$repayment_id,
-            'description'=>$ret['description'],
-            'errorCode'=>$ret['errorCode']
+//            'description'=>$ret['resultMessage'],
+//            'errorCode'=>$ret['errorCode']
         ];
         \Yii::$app->getDb()->createCommand()->insert(YijifuDeduct::tableName(), $wait_inster_data)->execute();
         return $reuturn;
