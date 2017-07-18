@@ -253,20 +253,22 @@ class ReturnMoney extends AbstractYijifu
      * @return array|bool|mixed
      * @author too <hayto@foxmail.com>
      */
-    public function downloadBill()
+    public function downloadBill($accountDay, $fileFormat = "EXCEL", $transactionAccount = "selfinstallment@yiji.com")
     {
-        $this->service = "billDownload";
-        $transactionAccount = "20160831020000752643"; // 交易账户
-        $accountDay = "20170718"; // 交易日期
-        $fileFormat = "EXCEL"; // 格式
+
+//        $transactionAccount = "20160831020000752643"; // 交易账户
+//        $accountDay = "20170718"; // 交易日期
+//        $fileFormat = "EXCEL"; // 格式
 
         $param_arr = [
             "transactionAccount"=>$transactionAccount,
             "accountDay"=>$accountDay,
             "fileFormat"=>$fileFormat,
         ];
+        $this->service = "billDownload";
         $common = $this->getCommonParams();
         $param_arr = array_merge($param_arr, $common);
+        $param_arr = $this->prepQueryParams($param_arr);
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $param_arr)->send();
         if($response->getIsOk()){

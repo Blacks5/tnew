@@ -131,4 +131,24 @@ class SignReturnController extends CoreBackendController
             'model' => $data,
         ]);
     }
+
+    /**
+     * 下载易极付对账文件
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionDownloadBill()
+    {
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
+            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+            $day = $request->get('day', '20170719');
+
+            $handle = new ReturnMoney();
+            $data = $handle->downloadBill($day);
+            return $data;
+        }
+        return $this->render('downloadbill');
+
+
+    }
 }
