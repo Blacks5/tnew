@@ -50,11 +50,11 @@ class SignReturnController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
-        return $this->render('loanlogs', [
-            'model' => $data,
+        return $this->render('signlogs', [
+            /*'model' => $data,
             'o_serial_id'=>$o_serial_id,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages*/
         ]);
     }
 
