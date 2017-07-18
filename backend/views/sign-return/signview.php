@@ -1,7 +1,5 @@
 <?php
-$loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','REMITTANCE_FAIL'=>'代发失败','REMITTANCE_SUCCESS'=>'代发成功','PROFIT_SUCCESS'=>'分润成功'];
-
-
+$signlog_status = ['SIGN_SUCCESS'=>'签约成功','SIGN_DEALING'=>'签约处理中','SIGN_FAIL'=>'签约失败','CHECK_REJECT'=>'审核驳回','CHECK_NEEDED'=>'待审核'];
 ?>
 <?= \yii\helpers\Html::cssFile('@web/css/style.css') ?>
 <style>
@@ -27,61 +25,79 @@ $loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','
                         <div>
                             <label class="col-sm-2 control-label">订单编号：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $y_serial_id; ?></p>
+                                <p class="form-control-static"><?= $o_serial_id; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">代发流水号：</label>
+                            <label class="col-sm-2 control-label">商户签约合同号：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['contractNo']; ?></p>
+                                <p class="form-control-static"><?= $model['merchContractNo']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">用户姓名：</label>
+                            <label class="col-sm-2 control-label">借款人姓名：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['customerRealName']; ?></p>
+                                <p class="form-control-static"><?= $model['realName']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">银行编码：</label>
+                            <label class="col-sm-2 control-label">借款人身份证号：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['bankCode']; ?></p>
+                                <p class="form-control-static"><?= $model['certNo']; ?></p>
                             </div>
                         </div>
                         <div>
-                            <label class="col-sm-2 control-label">银行卡号：</label>
+                            <label class="col-sm-2 control-label">借款人银行卡号：</label>
                             <div class="col-sm-2">
                                 <p class="form-control-static"><?= $model['bankCardNo']; ?></p>
                             </div>
                         </div>
                         <div>
+                            <label class="col-sm-2 control-label">签约银行卡银行编码：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['bankCode']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">签约银行卡银行名称：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['bankName']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">签约银行卡银行卡类型：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['bankCardType']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">借款人手机号：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['mobileNo']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">产品名称：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['productName']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">借款金额：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['loanAmount']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">应还总金额：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['totalRepayAmount']; ?></p>
+                            </div>
+                        </div>
+                        <div>
                             <label class="col-sm-2 control-label">状态：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loanlog_status[$model['status']]; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发金额：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['amount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">实际代发金额：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['realRemittanceAmount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发手续费：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['chargeAmount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发时间：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"></p>
+                                <p class="form-control-static"><?= $signlog_status[$model['status']]; ?></p>
                             </div>
                         </div>
                     </div>

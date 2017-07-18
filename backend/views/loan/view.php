@@ -79,12 +79,6 @@ $loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','
                                 <p class="form-control-static"><?= $model['chargeAmount']; ?></p>
                             </div>
                         </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发时间：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"></p>
-                            </div>
-                        </div>
                     </div>
                 <?php }else{ ?>
                     暂无数据

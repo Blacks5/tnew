@@ -72,9 +72,9 @@ $loan_stauts = [
                                                         </td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['created_at']) ?></td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/view']))) { ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['sign-return/deductview']))) { ?>
                                                                 <?php if($_v['status'] == 4){ ?>
-                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['loan/view', 'y_serial_id' => $_v['y_serial_id']]); ?>"
+                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['sign-return/deductview', 'y_serial_id' => $_v['y_serial_id']]); ?>"
                                                                        class="btn btn-primary btn-xs">详情</a>
                                                                 <?php }else{ ?>
                                                                     <a class="btn btn-primary btn-xs">处理中</a>

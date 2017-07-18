@@ -370,9 +370,9 @@ class LoanController extends CoreBackendController
         }else{
             $status_str = '代发失败';
         }
-        $string = '放款通知:订单号'. $y_serial_id . $status_str . ',流水号' . $contractNo;
+        $string = '订单号'. $y_serial_id . $status_str . ',流水号' . $contractNo;
         $data = [
-            'cmd'=>'Orders:signNotify',
+            'cmd'=>'Orders:loanNotify',
             'data'=>[
                 'message'=>$string,
                 'order_id'=>$y_serial_id

@@ -189,10 +189,10 @@ SIGN_SUCCESS：签约成功
      */
     public function actionSendws($a)
     {
-        $client = new Client("ws://192.168.0.194:8081");
-//        $client = new Client(Yii::$app->params['ws']);
+  //      $client = new Client("ws://192.168.0.194:8081");
+        $client = new Client(Yii::$app->params['ws']);
         $data = [
-            'cmd'=>'Orders:newOrderNotify',
+            'cmd'=>'Orders:loanNotify',
             'data'=>[
                 'message'=>"李大爷创建了新订单",
                 'order_id'=>5

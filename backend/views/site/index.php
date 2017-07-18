@@ -281,10 +281,10 @@ use mdm\admin\components\MenuHelper;
 
     $(function () {
         //获取通知权限
-        Notification.requestPermission(function(status) {
-            // var permission = Notification.permission;
-            //console.log('permission: ' + permission);
-        });
+        //Notification.requestPermission(function(status) {
+        // var permission = Notification.permission;
+        //console.log('permission: ' + permission);
+        //});
         notify.init();
         // notify.heartbeat();
     });
@@ -318,7 +318,7 @@ use mdm\admin\components\MenuHelper;
         },
         open: function () {
             this.data.server.onopen = function (event) {
-//                console.log("连接上了");
+                console.log("连接上了");
 //                console.log(event);
             }
         },
@@ -326,20 +326,23 @@ use mdm\admin\components\MenuHelper;
             var self = this;
             this.data.server.onmessage = function (event) {
 //                console.log("收到消息");
-//                console.log(event.data);
+                //console.log(event.data);
 //                console.log(JSON.parse(event.data).type);
-                self.saveData(event);
-                var n = new Notification("您有一条新消息", {
-                    icon : '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
-                    body : event.data.message
-                });
-                n.onshow = function() {
-                    //console.log('显示通知信息');
-                };
-                n.onclick = function() {
-                    //alert('打开相关视图');
-                    n.close();
-                };
+                if(JSON.parse(event.data).type == 'loanNotify'){
+                    var n = new Notification("放款通知:", {
+                        icon : '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
+                        body : JSON.parse(event.data).message
+                    });
+                    n.onshow = function() {
+                        //console.log('显示通知信息');
+                    };
+                    n.onclick = function() {
+                        //alert('打开相关视图');
+                        n.close();
+                    };
+                }else{
+                    self.saveData(event);
+                }
             }
         },
         close: function () {

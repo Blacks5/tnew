@@ -5,17 +5,9 @@ use common\models\YijifuSign;
 use common\tools\yijifu\ReturnMoney;
 use yii;
 use backend\core\CoreBackendController;
-use common\models\YijifuLoan;
 use yii\db\Query;
-use common\models\Orders;
-use common\components\CustomCommonException;
-use backend\components\CustomBackendException;
-use common\components\Helper;
-use common\models\UploadFile;
-use \yii\httpclient\Client as httpClient;
-use WebSocket\Client;
 /**
- * Loan controller
+ * SignReturn controller
  * 签约回款
  */
 class SignReturnController extends CoreBackendController
@@ -40,21 +32,26 @@ class SignReturnController extends CoreBackendController
     public function actionSignlogs(){
         $request = Yii::$app->getRequest();
         $o_serial_id = $request->get('o_serial_id') ? trim($request->get('o_serial_id')) : '';
+        $merchOrderNo = $request->get('merchOrderNo') ? trim($request->get('merchOrderNo')) : '';
 
         $query = (new Query())->from(YijifuSign::tableName());
         $query->Where(['>','id','0']);
         if (!empty($o_serial_id)) {
             $query->andWhere(['o_serial_id'=>$o_serial_id]);
         }
+        if (!empty($merchOrderNo)) {
+            $query->andWhere(['merchOrderNo'=>$merchOrderNo]);
+        }
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('signlogs', [
-            /*'model' => $data,
+            'model' => $data,
             'o_serial_id'=>$o_serial_id,
+            'merchOrderNo'=>$merchOrderNo,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages*/
+            'pages' => $pages
         ]);
     }
 
@@ -71,8 +68,9 @@ class SignReturnController extends CoreBackendController
         //请求查询接口查询并将结果返回前台
         $loan = new ReturnMoney();
         $data = $loan->querySignedCustomer($_data['merchOrderNo']);
-
-        return $this->render('view', [
+//var_dump($data);
+        return $this->render('signview', [
+            'o_serial_id'=>$o_serial_id,
             'model' => $data,
         ]);
     }
