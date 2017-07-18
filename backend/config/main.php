@@ -27,15 +27,14 @@ return [
             'login/login',
             'contract/index', // 订单合同页面，Android app里webview用
             'contract/paymentdesc', // 代扣说明页面，Android app里webview用1
-            'site/test',
-            'site/test2',
-            'gii/*',
-            'site/ws', // ws测试页
-            'site/sendws', // ws测试页
-            'site/asyncloan',
-            'borrow/verify-pass-callback', // 易极付回调地址
+//            'site/test',
+//            'site/test2',
+//            'gii/*',
+//            'site/ws', // ws测试页
+//            'site/sendws', // ws测试页
+            'borrow/verify-pass-callback', // 易极付签约回调地址
+            'repayment/deduct-callback', // 易极付代扣回调地址
             'loan/async', // 易极付回调地址
-//            'borrow/verify-pass' // 易极付回调地址
         ]
     ],
 
