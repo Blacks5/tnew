@@ -73,7 +73,7 @@ $sign_stauts = [
                                                         </td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['created_at']) ?></td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['sign-return/view']))) { ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['sign-return/signview']))) { ?>
                                                                 <a href="<?= Yii::$app->getUrlManager()->createUrl(['sign-return/signview', 'o_serial_id' => $_v['o_serial_id']]); ?>"
                                                                    class="btn btn-primary btn-xs">详情</a>
                                                             <?php } ?>
