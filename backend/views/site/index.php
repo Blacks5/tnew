@@ -281,10 +281,10 @@ use mdm\admin\components\MenuHelper;
 
     $(function () {
         //获取通知权限
-        //Notification.requestPermission(function(status) {
+        Notification.requestPermission(function(status) {
         // var permission = Notification.permission;
         //console.log('permission: ' + permission);
-        //});
+        });
         notify.init();
         // notify.heartbeat();
     });
