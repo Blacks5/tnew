@@ -54,11 +54,11 @@ CREATE TABLE `yijifu_deduct` (
 `status` tinyint(4) NOT NULL COMMENT '代扣状态：0等待异步回调 1待处理 2代扣处理中 3待审核 4审核驳回 5 代扣失败 6代扣成功 7结算成功 8接口调用失败',
 `errorCode` varchar(10) NOT NULL DEFAULT '' COMMENT '出错时的错误编码',
 `description` varchar(128) NOT NULL DEFAULT '' COMMENT '错误描述',
+`repayment_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '待还款id',
 `operator_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作者id',
 `created_at` int(10) unsigned NOT NULL DEFAULT '0',
 PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='易极付代扣记录表';
-
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='易极付代扣记录表';
 
 
 
