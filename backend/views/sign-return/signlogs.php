@@ -29,7 +29,7 @@ $sign_stauts = [
                         </div>
                         <div class="col-sm-2">
                             <input type="text" name="merchOrderNo"
-                                   value="<?= $merchOrderNo; ?>" placeholder="商户订单号"
+                                   value="<?= $merchOrderNo; ?>" placeholder="商户签约订单号"
                                    class="input form-control">
                         </div>
                         <div class="col-sm-1">
@@ -67,7 +67,7 @@ $sign_stauts = [
                                                         <td class="client-avatar"><?= $_v['o_serial_id'] ?></td>
                                                         <td><?= $_v['merchOrderNo'] ?></td>
                                                         <td><?= $_v['orderNo'] ?></td>
-                                                        <td class="client-status"><?= $_v['operator_id']; ?></td>
+                                                        <td class="client-status"><?= $_v['realname']; ?></td>
                                                         <td class="client-status">
                                                             <?= $sign_stauts[$_v['status']]; ?>
                                                         </td>

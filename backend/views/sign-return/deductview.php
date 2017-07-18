@@ -18,7 +18,6 @@ $loanlog_status = ['INIT'=>'待处理','REMITTANCE_DEALING'=>'代发处理中','
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
             <section class="content-header">
                 <h2 class="center"><?= $this->title; ?></h2>
-
                 <?php if($model){ ?>
                     <h3 class="center color-orange">回款记录详情</h3>
                     <div class="hr-line-dashed"></div>

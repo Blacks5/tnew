@@ -6,6 +6,7 @@ use common\tools\yijifu\ReturnMoney;
 use yii;
 use backend\core\CoreBackendController;
 use yii\db\Query;
+use common\models\User;
 /**
  * SignReturn controller
  * 签约回款
@@ -34,18 +35,20 @@ class SignReturnController extends CoreBackendController
         $o_serial_id = $request->get('o_serial_id') ? trim($request->get('o_serial_id')) : '';
         $merchOrderNo = $request->get('merchOrderNo') ? trim($request->get('merchOrderNo')) : '';
 
-        $query = (new Query())->from(YijifuSign::tableName());
-        $query->Where(['>','id','0']);
+        $query = (new Query())->from(YijifuSign::tableName())
+            ->leftJoin(User::tableName(),"yijifu_sign.operator_id = user.id")
+            ->select("yijifu_sign.*,user.realname");
+        $query->Where(['>','yijifu_sign.id','0']);
         if (!empty($o_serial_id)) {
-            $query->andWhere(['o_serial_id'=>$o_serial_id]);
+            $query->andWhere(['yijifu_sign.o_serial_id'=>$o_serial_id]);
         }
         if (!empty($merchOrderNo)) {
-            $query->andWhere(['merchOrderNo'=>$merchOrderNo]);
+            $query->andWhere(['yijifu_sign.merchOrderNo'=>$merchOrderNo]);
         }
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+        $data = $query->orderBy(['yijifu_sign.created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('signlogs', [
             'model' => $data,
             'o_serial_id'=>$o_serial_id,
@@ -68,7 +71,7 @@ class SignReturnController extends CoreBackendController
         //请求查询接口查询并将结果返回前台
         $loan = new ReturnMoney();
         $data = $loan->querySignedCustomer($_data['merchOrderNo']);
-//var_dump($data);
+
         return $this->render('signview', [
             'o_serial_id'=>$o_serial_id,
             'model' => $data,
@@ -84,19 +87,27 @@ class SignReturnController extends CoreBackendController
     public function actionDeductlogs(){
         $request = Yii::$app->getRequest();
         $o_serial_id = $request->get('o_serial_id') ? trim($request->get('o_serial_id')) : '';
+        $merchOrderNo = $request->get('merchOrderNo') ? trim($request->get('merchOrderNo')) : '';
 
-        $query = (new Query())->from(YijifuDeduct::tableName());
-        $query->Where(['>','id','0']);
+        $query = (new Query())->from(YijifuDeduct::tableName())
+            ->leftJoin(User::tableName(),"yijifu_deduct.operator_id = user.id")
+            ->select("yijifu_deduct.*,user.realname");
+        $query->Where(['>','yijifu_deduct.id','0']);
         if (!empty($y_serial_id)) {
-            $query->andWhere(['o_serial_id'=>$o_serial_id]);
+            $query->andWhere(['yijifu_deduct.o_serial_id'=>$o_serial_id]);
+        }
+        if (!empty($merchOrderNo)) {
+            $query->andWhere(['yijifu_deduct.merchOrderNo'=>$merchOrderNo]);
         }
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['yijifu_loan.created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
-        return $this->render('loanlogs', [
+        $data = $query->orderBy(['yijifu_deduct.created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+
+        return $this->render('deductlogs', [
             'model' => $data,
             'o_serial_id'=>$o_serial_id,
+            'merchOrderNo'=>$merchOrderNo,
             'totalpage' => $pages->pageCount,
             'pages' => $pages
         ]);

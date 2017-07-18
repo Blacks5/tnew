@@ -1,10 +1,15 @@
 <?php
-
-$loan_stauts = [
-  1=>'处理失败',
-  2=>'处理中',
-  3=>'代发失败',
-  4=>'代发成功'
+$deduct_stauts = [
+        0=>'等待异步回调',
+        1=>'待处理',
+        2=>'代扣处理中',
+        3=>'待审核',
+        4=>'审核驳回',
+        5=>'代扣失败',
+        6=>'代扣成功',
+        7=>'结算成功',
+        8=>
+    0 1 2 3 4 5  6 7 8接口调用失败
 ];
 ?>
 
@@ -19,12 +24,12 @@ $loan_stauts = [
                 <div class="ibox-content">
                     <form class="row" method="get" action="">
                         <div class="col-sm-2">
-                            <input type="text" name="y_serial_id" placeholder="订单编号"
-                                   value="<?= $y_serial_id; ?>" class="input form-control">
+                            <input type="text" name="o_serial_id" placeholder="订单编号"
+                                   value="<?= $o_serial_id; ?>" class="input form-control">
                         </div>
                         <div class="col-sm-2">
                             <input type="text" name="contractNo"
-                                   value="<?= $contractNo; ?>" placeholder="代发流水号"
+                                   value="<?= $merchOrderNo; ?>" placeholder="代发流水号"
                                    class="input form-control">
                         </div>
                         <div class="col-sm-1">
@@ -45,13 +50,12 @@ $loan_stauts = [
                                                 <tr>
                                                     <th class="client-avatar">ID</th>
                                                     <th class="client-avatar">订单编号</th>
-                                                    <th>代发流水号</th>
-                                                    <th>代发金额</th>
-                                                    <th>实际代发金额</th>
-                                                    <th>代发手续费</th>
+                                                    <th>商户签约订单号</th>
+                                                    <th>代扣金额</th>
+                                                    <th>操作类型</th>
                                                     <th>操作人</th>
                                                     <th>状态</th>
-                                                    <th>代发时间</th>
+                                                    <th>创建时间</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -61,20 +65,25 @@ $loan_stauts = [
                                                     ?>
                                                     <tr>
                                                         <td class="client-avatar"><?= $_v['id'] ?></td>
-                                                        <td class="client-avatar"><?= $_v['y_serial_id'] ?></td>
-                                                        <td><?= $_v['contractNo'] ?></td>
-                                                        <td><?= $_v['amount'] ?></td>
-                                                        <td><?= $_v['realRemittanceAmount'] ?></td>
-                                                        <td class="client-status"><?= $_v['chargeAmount']; ?></td>
-                                                        <td class="client-status"><?= $_v['y_operator_realname']; ?></td>
+                                                        <td class="client-avatar"><?= $_v['o_serial_id'] ?></td>
+                                                        <td><?= $_v['merchSignOrderNo'] ?></td>
+                                                        <td><?= $_v['deductAmount'] ?></td>
+                                                        <td><?= $_v['realName'] ?></td>
+                                                        <td><?= $_v['bankCardNo'] ?></td>
+                                                        <td><?= $_v['bankCode'] ?></td>
+                                                        <td><?= $_v['realRepayTime'] ?></td>
+                                                        <td><?= $_v['bankCode'] ?></td>
+
+                                                        <td><?= ($_v['operateType']==1) ? '签约' : '代扣'; ?></td>
+                                                        <td class="client-status"><?= $_v['realname']; ?></td>
                                                         <td class="client-status">
-                                                            <?= $loan_stauts[$_v['status']]; ?>
+                                                            <?= $deduct_stauts[$_v['status']]; ?>
                                                         </td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['created_at']) ?></td>
                                                         <td>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['sign-return/deductview']))) { ?>
                                                                 <?php if($_v['status'] == 4){ ?>
-                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['sign-return/deductview', 'y_serial_id' => $_v['y_serial_id']]); ?>"
+                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['sign-return/deductview', 'o_serial_id' => $_v['order_id']]); ?>"
                                                                        class="btn btn-primary btn-xs">详情</a>
                                                                 <?php }else{ ?>
                                                                     <a class="btn btn-primary btn-xs">处理中</a>
