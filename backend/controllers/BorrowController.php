@@ -306,7 +306,7 @@ class BorrowController extends CoreBackendController
 
     /**
      * 取消
-     * 取消和拒绝的区别: 取消可以重提, 拒绝后该身份证三个月内都不能再提.
+     * 取消和拒绝的区别: 取消可以重提, 拒绝后该身份证三个月内都不能再提.1
      * @param $order_id
      * @return mixed
      * @author 涂鸿 <hayto@foxmail.com>
