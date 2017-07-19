@@ -139,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <td>
                                                             <?= \common\components\Helper::getAddrName($_v['s_province']).'-', \common\components\Helper::getAddrName($_v['s_city']). '-'. \common\components\Helper::getAddrName($_v['s_county']) ?>
                                                         </td>
-                                                        <td class="client-status"><?= $_v['s_status']; ?></td>
+                                                        <td class="client-status"><?= $store_status[$_v['s_status']]; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['s_created_at']) ?></td>
                                                         <td>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/allorders']))) { ?>

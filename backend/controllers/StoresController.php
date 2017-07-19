@@ -48,11 +48,14 @@ class StoresController extends CoreBackendController
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['s_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         $provinces = Helper::getAllProvince();
+        // 商户状态
+        $stroe_status = Stores::getAllStatus();
         return $this->render('index', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
             'pages' => $pages,
+            'store_status' => $stroe_status,
             'provinces'=>$provinces
         ]);
     }
@@ -73,7 +76,7 @@ class StoresController extends CoreBackendController
             }
 
         }
-        $model->s_status = Stores::STATUS_ACTIVE;
+        $model->s_status = Stores::STATUS_WAIT_ACTIVE;
         // 商户状态
         $stroe_status = Stores::getAllStatus();
         // 是否对私账户
@@ -372,6 +375,114 @@ class StoresController extends CoreBackendController
                 User::updateAll(['belong_stores_id' => $store_id], ['id' => $id_arr]);
                 Yii::$app->getSession()->setFlash('msg', '绑定成功');
                 return $this->redirect(['view', 'id' => $store_id]);
+            }
+        }
+    }
+
+    /**
+     * @param $s_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     * 激活商户
+     */
+    public function actionActivatestore($s_id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                $model = Stores::find()->where(['s_id' => $s_id])->one();
+                if (!$model) {
+                    throw new CustomBackendException('信息不存在！', 4);
+                }else{
+                    if($model['s_status'] == 2){
+                        throw new CustomBackendException('此商户已关闭无法激活！', 4);
+                    }
+                }
+                $model->s_status = Stores::STATUS_ACTIVE;
+                $model->s_auditor_id = $userinfo->id;
+                $model->s_updated_at = $_SERVER['REQUEST_TIME'];
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作失败', 5);
+                }
+                return ['status' => 1, 'message' => '商户激活成功!'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    /**
+     * @param $s_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     * 冻结商户
+     */
+    public function actionBlockedstore($s_id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                $model = Stores::find()->where(['s_id' => $s_id])->one();
+                if (!$model) {
+                    throw new CustomBackendException('信息不存在！', 4);
+                }else{
+                    if($model['s_status'] == 2){
+                        throw new CustomBackendException('此商户已关闭无法冻结！', 4);
+                    }
+                }
+                $model->s_status = Stores::STATUS_FREEZED;
+                $model->s_auditor_id = $userinfo->id;
+                $model->s_updated_at = $_SERVER['REQUEST_TIME'];
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作失败', 5);
+                }
+                return ['status' => 1, 'message' => '商户冻结成功!'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+    /**
+     * @param $s_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     * 关闭商户
+     */
+    public function actionClosestore($s_id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+                $userinfo = Yii::$app->getUser()->getIdentity();
+
+                $model = Stores::find()->where(['s_id' => $s_id])->one();
+                if (!$model) {
+                    throw new CustomBackendException('信息不存在！', 4);
+                }else{
+                    if($model['s_status'] == 2){
+                        throw new CustomBackendException('此商户已关闭！', 4);
+                    }
+                }
+                $model->s_status = Stores::STATUS_STOP;
+                $model->s_auditor_id = $userinfo->id;
+                $model->s_updated_at = $_SERVER['REQUEST_TIME'];
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作失败', 5);
+                }
+                return ['status' => 1, 'message' => '商户冻结成功!'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
             }
         }
     }
