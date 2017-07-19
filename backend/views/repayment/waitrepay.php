@@ -5,7 +5,6 @@ use yii\helpers\Url;
 ?>
 
 <!--<link rel="stylesheet" href="/statics/css/animate.min.css">-->
-<link rel="stylesheet" href="/statics/css/style.min.css">
 
 <div class="">
     <div class="row">
