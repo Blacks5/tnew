@@ -92,7 +92,7 @@ class ReturnMoney extends AbstractYijifu
             'bankCardNo'=>$borrowerBankCardNo,
             'mobileNo'=>$borrowerPhoneNo,
             'productName'=>$purchasedProductName,
-//            'loanAmount'=>$loanAmount, // 可以不填的，优先不填
+            'loanAmount'=>$loanAmount, // 可以不填的，优先不填
             'totalRepayAmount'=>$totalRepayAmount,
             'operateType'=>'SIGN',
         ];
