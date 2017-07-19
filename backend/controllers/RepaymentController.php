@@ -337,20 +337,40 @@ class RepaymentController extends CoreBackendController
                     'SETTLE_SUCCESS' => '结算成功', // 结算成功
                 ];
 
-                $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
-                $o_id = Orders::find()->where(['o_serial_id'=>$yijifu_data['o_serial_id']])->one();
-                $where = ['r_id'=>$yijifu_data['repayment_id']];
-                Repayment::updateAll(['r_status'=>Repayment::STATUS_ALREADY_PAY], $where);
 
-                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $o_id['o_id'], $status_str[$post['status']]);
+                $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
+                $sql = "select * from ". Repayment::tableName()." where r_id=:r_id and r_status=:r_status limit 1 for update";
+                if (!$repay_model = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_id'], ':r_status' => Repayment::STATUS_NOT_PAY])->one()) {
+                    throw new CustomBackendException('数据异常', 2);
+                }
+                $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
+                $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 已还
+                $repay_model->r_operator_id = $yijifu_data['operator_id']; // 已还
+                $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 已还
+                if (!$repay_model->save(false)) {
+                    throw new CustomBackendException('还款操作失败', 5);
+                }
+                // 如果是最后一期，再把order表的状态改了
+                if($repay_model->r_is_last == 1){
+                    if(Orders::updateAll(['o_status'=>Orders::STATUS_PAY_OVER], ['o_id'=>$repay_model->r_orders_id]) != 1){
+                        throw new CustomBackendException('还款操作失败', 5);
+                    }
+                }
+                /*累积客户的 总支付利息*/
+                $sql = "select * from customer where c_id=".$repay_model->r_customer_id. " limit 1 for update";
+                $c = Customer::findBySql($sql)->one();
+                $c->c_total_interest += $repay_model->r_total_repay+ $repay_model->r_overdue_money;
+                $c->save(false);
+
+                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
                 $trans->commit();
                 echo "success";
             }catch (CustomCommonException $e){
                 $trans->rollBack();
-                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $o_id['o_id'], $status_str[$post['status']]);
+                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
             }catch (\Exception $e){
                 $trans->rollBack();
-                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $o_id['o_id'], '系统错误');
+                $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], '系统错误');
             }
         }else{
             // 接口调用失败
