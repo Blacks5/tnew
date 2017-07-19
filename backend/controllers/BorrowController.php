@@ -307,7 +307,8 @@ left join customer on customer.c_id=orders.o_customer_id
                 $_goods = Goods::findBySql('select g_goods_name, g_goods_models from goods where g_order_id=:g_order_id', [':g_order_id'=>$order_id])->one();
                 $purchasedProductName = $_goods['g_goods_name']. $_goods['g_goods_models'];
 
-                $model['oi_after_contract'] = 'http://local80t.ngrok.cc/img/tianniu.jpg';
+//                $model['oi_after_contract'] = 'http://local80t.ngrok.cc/img/tianniu.jpg';
+                $loanAmount = round($model['o_total_price'] - $model['o_total_deposit'], 3);
                 $handle->signContractWithCustomer($model['c_customer_name'],//'钟建蓉',
                     $model['c_customer_id_card'],//'510623197905114125',
                     $model['c_banknum'],
@@ -315,7 +316,9 @@ left join customer on customer.c_id=orders.o_customer_id
                     $purchasedProductName,
                     $model['o_serial_id'],
                     $model['oi_after_contract'],
-                    $r_total_repay);
+                    $r_total_repay,
+                    $loanAmount
+                    );
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '签约请求发起成功，请等待注意查看通知！'];
