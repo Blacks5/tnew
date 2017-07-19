@@ -318,9 +318,9 @@ class RepaymentController extends CoreBackendController
                 'bankCardNo'=>$post['bankCardNo'],
                 'bankCode'=>$post['bankCode'],
                 'realRepayTime'=>isset($post['realRepayTime'])?$post['realRepayTime']:0,
-                'errorCode'=>$post['errorCode'],
-                'description'=>$post['description'],
-                'status'=>$status_arr[$post['status']]
+                'errorCode'=>isset($post['errorCode'])? $post['errorCode']: '',
+                'description'=>isset($post['description']) ? $post['description']: '',
+                'status'=>isset($status_arr[$post['status']])? $status_arr[$post['status']]: '未知状态'
             ];
             $where = ['merchOrderNo'=>$post['merchOrderNo']];
             $trans = Yii::$app->getDb()->beginTransaction();
