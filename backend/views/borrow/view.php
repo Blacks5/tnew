@@ -463,12 +463,13 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 <style>
     #xx {
         width: 500px;
-        height: 200px;
+        height: 175px;
         max-width: 500px;
-        max-height: 200px;
+        max-height: 175px;
+        padding:10px;
     }
 </style>
-<div class="form-group" id="remark-box" style="display: none">
+<div class="form-group" id="remark-box" style="display: none;padding:5px;">
     <textarea id="xx" name="remark" placeholder="选填"><?= $model['o_operator_remark'] ?></textarea>
 </div>
 <!--弹窗内容-->
@@ -480,7 +481,7 @@ $(".verify-first").click(function(){
        var index = layer.open({
         type: 1,
         title:"填写备注",
-        area: ["auto", "auto"], //宽高
+        area: ["auto", "300px"], //宽高
         content:$("#remark-box"),
         btn: ["确认", "取消"],
         btn1:function(){
@@ -517,7 +518,7 @@ $(".verify-end").click(function(){
        var index = layer.open({
         type: 1,
         title:"填写备注",
-        area: ["auto", "auto"], //宽高
+        area: ["auto", "300px"], //宽高
         content:$("#remark-box"),
         btn: ["确认", "取消"],
         btn1:function(){
@@ -556,7 +557,7 @@ $(".cancel").click(function(){
        var index = layer.open({
         type: 1,
         title:"填写备注",
-        area: ["auto", "auto"], //宽高
+        area: ["auto", "300px"], //宽高
         content:$("#remark-box"),
         btn: ["确认", "取消"],
         btn1:function(){

@@ -109,6 +109,7 @@ use yii\widgets\LinkPager;
                                     <th>手机号码</th>
                                     <th>邮箱</th>
                                     <th>地区</th>
+                                    <th>状态</th>
                                     <th>创建时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -126,6 +127,8 @@ use yii\widgets\LinkPager;
                                         <td><i class="fa fa-envelope"
                                                style="color: #00a2d4;"></i>&nbsp;<?= $vo['email'] ?></td>
                                         <td><?= \common\components\Helper::getAddrName($vo['province']).'-', \common\components\Helper::getAddrName($vo['city']). '-'. \common\components\Helper::getAddrName($vo['county']) ?></td>
+
+                                        <td><?= $user_status[$vo['status']] ?></td>
                                         <td><?= date('Y-m-d H:i:s', $vo['created_at']) ?></td>
                                         <td>
 
@@ -151,6 +154,21 @@ use yii\widgets\LinkPager;
                                                 </a>
                                             <?php } ?>
 
+                                            <?php if(($vo['status'] == 1)||($vo['status'] == 2)){ ?>
+                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/activateuser']))) { ?>
+                                                    <a class="btn btn-primary btn-xs activate_user" href="javascript:void(0);" data-id="<?= $vo['id']; ?>">激活</a>
+                                                <?php } ?>
+                                            <?php }elseif($vo['status'] == 10){ ?>
+                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/blockeduser']))) { ?>
+                                                    <a class="btn btn-primary btn-xs blocked_user" href="javascript:void(0);" data-id="<?= $vo['id']; ?>">冻结</a>
+                                                <?php } ?>
+                                            <?php } ?>
+
+                                            <?php if($vo['status'] != 2){ ?>
+                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/leaveuser']))) { ?>
+                                                    <a class="btn btn-primary btn-xs leave_user" href="javascript:void(0);" data-id="<?= $vo['id']; ?>">离职</a>
+                                                <?php } ?>
+                                            <?php } ?>
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['user/delete']))) { ?>
                                                 <button class="btn btn-danger btn-xs del-user"
                                                         data-value="<?= $vo['id'] ?>"><i
@@ -181,6 +199,20 @@ use yii\widgets\LinkPager;
 
         </div>
     </div>
+<!--弹窗内容-->
+<style>
+    #xx {
+        width: 500px;
+        height: 175px;
+        max-width: 500px;
+        max-height: 175px;
+        padding:10px;
+    }
+</style>
+<div class="form-group" id="remark-box" style="display: none;padding: 5px;">
+    <textarea id="xx" name="remark" placeholder="请填写冻结原因"></textarea>
+</div>
+<!--弹窗内容-->
 <?= Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
 <?php
 $this->registerJs("
@@ -193,3 +225,104 @@ $this->registerJs("
         });
     ");
 ?>
+
+<script>
+
+    // 激活
+    $(".activate_user").click(function(){
+        var that = $(this);
+        layer.confirm("确定要激活此员工？", {title:"系统提示", icon:3}, function(index){
+            var loading = layer.load(4);
+            var userid = that.data('id');
+            var remark = $("#xx").val();
+
+            $.ajax({
+                url: "<?= \yii\helpers\Url::toRoute(['user/activateuser']); ?>",
+                type: "post",
+                dataType: "json",
+                data: {id:userid,remark: remark, "<?= Yii::$app->getRequest()->csrfParam; ?>": "<?= Yii::$app->getRequest()->getCsrfToken(); ?>"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+
+    // 冻结
+    $(".blocked_user").click(function(){
+        var that = $(this);
+        var index = layer.open({
+            type: 1,
+            title:"填写原因",
+            area: ["auto", "300px"], //宽高
+            content:$("#remark-box"),
+            btn: ["确认", "取消"],
+            btn1:function(){
+                //var loading = layer.load(4);
+                var userid = that.data('id');
+                var remark = $("#xx").val();
+
+                $.ajax({
+                    url: "<?= \yii\helpers\Url::toRoute(['user/blockeduser']); ?>",
+                    type: "post",
+                    dataType: "json",
+                    data: {id:userid,remark: remark, "<?= Yii::$app->getRequest()->csrfParam; ?>": "<?= Yii::$app->getRequest()->getCsrfToken(); ?>"},
+                    success: function (data) {
+                        if (data.status === 1) {
+                            return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                        }else{
+                            return layer.alert(data.message, {icon: data.status});
+                        }
+                    },
+                    error: function () {
+                        layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                    },
+                    complete: function () {
+                        layer.close(loading);
+                    },
+                });
+            },
+            btn2:function(){
+                layer.close(index);
+            },
+        })
+    });
+
+    // 离职
+    $(".leave_user").click(function(){
+        var that = $(this);
+        layer.confirm("确定要操作此员工？", {title:"系统提示", icon:3}, function(index){
+            var loading = layer.load(4);
+            var userid = that.data('id');
+            $.ajax({
+                url: "<?= \yii\helpers\Url::toRoute(['user/leaveuser']); ?>",
+                type: "post",
+                dataType: "json",
+                data: {id:userid, "<?= Yii::$app->getRequest()->csrfParam; ?>": "<?= Yii::$app->getRequest()->getCsrfToken(); ?>"},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+</script>

@@ -61,12 +61,27 @@ use yii\helpers\Url;
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover">
                                                 <thead>
+                                                <tr style="font-size: 18px;">
+                                                    <th class="text-danger" colspan="3" style="text-align: center">统计</th>
+                                                    <th class="text-danger"><?= $stat_data['r_total_repay']; ?>元</th>
+                                                    <th class="text-danger"><?= $stat_data['r_principal']  ?>元</th>
+                                                    <th class="text-danger"><?= $stat_data['r_interest']  ?>元</th>
+                                                    <th class="text-danger"><?= $stat_data['r_add_service_fee']  ?>元</th>
+                                                    <th class="text-danger"><?= $stat_data['r_free_pack_fee']  ?>元</th>
+                                                    <th class="text-danger"><?= $stat_data['r_finance_mangemant_fee']  ?>元</th>
+                                                    <th class="text-danger"><?= $stat_data['r_customer_management']  ?>元</th>
+                                                    <th class="text-danger"></th>
+                                                    <th class="text-danger"></th>
+                                                    <th class="text-danger"></th>
+                                                    <th class="text-danger"><?= $stat_data['r_overdue_money']  ?>元</th>
+                                                    <th>操作</th>
+                                                </tr>
                                                 <tr>
                                                     <th class="client-avatar">订单编号</th>
                                                     <th><a data-toggle="tab" href="#contact-3"
                                                            class="client-link">客户姓名</a></th>
                                                     <th>客户电话</th>
-                                                    <th>本月应还总金额</th>
+                                                    <th>本月已还总金额</th>
                                                     <th>本金(元)</th>
                                                     <th>利息(元)</th>
                                                     <th>贵宾服务包(元)</th>
