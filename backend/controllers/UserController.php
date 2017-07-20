@@ -23,6 +23,7 @@ use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
+use backend\components\CustomBackendException;
 /**
  * 员工控制器
  * Class UserController
@@ -287,6 +288,103 @@ class UserController extends CoreBackendController
 
         return $this->render('modselfpwd', ['model' => $model]);
     }
+
+
+
+    /**
+     * @param $id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     * 激活用户
+     */
+    public function actionActivateuser($id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $userinfo = Yii::$app->getUser()->getIdentity();
+                $model = User::find()->where(['id' => $id])->one();
+                if (!$model) {
+                    throw new CustomBackendException('信息不存在！', 4);
+                }else{
+                    if($model['s_status'] == 2){
+                        throw new CustomBackendException('此用户已关闭无法激活！', 4);
+                    }
+                }
+                //判断用户冻结次数,最多冻结3次
+                $freezenum = (new Query())->from(Freezeuserlog::tableName())
+                    ->where(['user_id'=>$id])
+                    ->count();
+                if($freezenum == 3){
+                    throw new CustomBackendException('此用户已达冻结最大次数,无法激活', 5);
+                }else{
+                    $model->status = User::STATUS_ACTIVE;
+                    $model->updated_at = $_SERVER['REQUEST_TIME'];
+                    if (!$model->save(false)) {
+                        throw new CustomBackendException('操作失败', 5);
+                    }
+                    return ['status' => 1, 'message' => '用户激活成功!'];
+                }
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    /**
+     * @param $id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     * 冻结用户
+     */
+    public function actionBlockeduser($id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $freeze_remark = trim($request->post('remark'));
+                $userinfo = Yii::$app->getUser()->getIdentity();
+
+                $model = User::find()->where(['id' => $id])->one();
+                if (!$model) {
+                    throw new CustomBackendException('信息不存在！', 4);
+                }else{
+                    //只有激活的用户可以冻结
+                    if($model['status'] == 10){
+                        $model->status = User::STATUS_STOP;
+                        $model->updated_at = $_SERVER['REQUEST_TIME'];
+                        if (!$model->save(false)) {
+                            throw new CustomBackendException('操作失败', 5);
+                        }else{
+                            //新增操作记录
+                            $wait_inster_data = [
+                                'user_id'=>$id,
+                                'operator_id'=>$userinfo->id,
+                                'freeze_remark'=>$freeze_remark,
+                                'created_at'=>$_SERVER['REQUEST_TIME']
+                            ];
+                            \Yii::$app->getDb()->createCommand()->insert(Freezeuserlog::tableName(), $wait_inster_data)->execute();
+                        }
+                        return ['status' => 1, 'message' => '用户冻结成功!'];
+                    }else{
+                        throw new CustomBackendException('此用户已关闭无法冻结！', 4);
+                    }
+                }
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+
 
     protected function findModel($id)
     {
