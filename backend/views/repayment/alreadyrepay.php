@@ -73,8 +73,7 @@ use yii\helpers\Url;
                                                     <th class="text-danger"></th>
                                                     <th class="text-danger"></th>
                                                     <th class="text-danger"></th>
-                                                    <th class="text-danger"><?= $stat_data['r_overdue_money']  ?>元</th>
-                                                    <th>操作</th>
+                                                    <th colspan="2" class="text-danger"><?= $stat_data['r_overdue_money']  ?>元</th>
                                                 </tr>
                                                 <tr>
                                                     <th class="client-avatar">订单编号</th>
