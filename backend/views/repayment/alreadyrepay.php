@@ -62,14 +62,14 @@ use yii\helpers\Url;
                                             <table class="table table-striped table-hover">
                                                 <thead>
                                                 <tr style="font-size: 18px;">
-                                                    <th class="text-danger" colspan="3" style="text-align: center">统计</th>
-                                                    <th class="text-danger"><?= $stat_data['r_total_repay']; ?>元</th>
-                                                    <th class="text-danger"><?= $stat_data['r_principal']  ?>元</th>
-                                                    <th class="text-danger"><?= $stat_data['r_interest']  ?>元</th>
-                                                    <th class="text-danger"><?= $stat_data['r_add_service_fee']  ?>元</th>
-                                                    <th class="text-danger"><?= $stat_data['r_free_pack_fee']  ?>元</th>
-                                                    <th class="text-danger"><?= $stat_data['r_finance_mangemant_fee']  ?>元</th>
-                                                    <th class="text-danger"><?= $stat_data['r_customer_management']  ?>元</th>
+                                                    <th class="text-danger" colspan="3" style="text-align: center">统计(单位:元)</th>
+                                                    <th class="text-danger"><?= $stat_data['r_total_repay']; ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_principal']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_interest']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_add_service_fee']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_free_pack_fee']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_finance_mangemant_fee']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_customer_management']  ?></th>
                                                     <th class="text-danger"></th>
                                                     <th class="text-danger"></th>
                                                     <th class="text-danger"></th>

@@ -24,6 +24,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 use backend\components\CustomBackendException;
+use common\models\FreezeuserLog;
 /**
  * 员工控制器
  * Class UserController
@@ -95,15 +96,17 @@ class UserController extends CoreBackendController
         $model = $query->search(Yii::$app->getRequest()->getQueryParams());
         $clone_model = clone $model;
         $pages = new Pagination(['totalCount' => $clone_model->count(), 'pageSize' => '20']);
-        $user = $model->orderBy(['id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $user = $model->orderBy(['status'=>SORT_DESC,'id' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
         $provinces = Helper::getAllProvince();
 //        array_unshift($provinces, '省');
-
+        //员工状态
+        $user_status = User::getAllStatus();
         return $this->render('list', [
             'sear' => $query->getAttributes(),
             'user' => $user,
             'pages' => $pages,
+            'user_status' => $user_status,
             'provinces'=>$provinces
         ]);
     }
@@ -297,35 +300,37 @@ class UserController extends CoreBackendController
      * @author lilaotou <liwansen@foxmail.com>
      * 激活用户
      */
-    public function actionActivateuser($id)
+    public function actionActivateuser()
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
-                $userinfo = Yii::$app->getUser()->getIdentity();
+                $id = $request->post('id');
                 $model = User::find()->where(['id' => $id])->one();
                 if (!$model) {
                     throw new CustomBackendException('信息不存在！', 4);
                 }else{
-                    if($model['s_status'] == 2){
-                        throw new CustomBackendException('此用户已关闭无法激活！', 4);
+                    if($model['status'] == 0){
+                        throw new CustomBackendException('此员工已被删除无法激活！', 4);
                     }
                 }
+
                 //判断用户冻结次数,最多冻结3次
-                $freezenum = (new Query())->from(Freezeuserlog::tableName())
+                $freezenum = (new Query())->from(FreezeuserLog::tableName())
                     ->where(['user_id'=>$id])
                     ->count();
+
                 if($freezenum == 3){
-                    throw new CustomBackendException('此用户已达冻结最大次数,无法激活', 5);
+                    throw new CustomBackendException('此员工已达冻结最大次数,无法激活', 5);
                 }else{
                     $model->status = User::STATUS_ACTIVE;
                     $model->updated_at = $_SERVER['REQUEST_TIME'];
                     if (!$model->save(false)) {
                         throw new CustomBackendException('操作失败', 5);
                     }
-                    return ['status' => 1, 'message' => '用户激活成功!'];
+                    return ['status' => 1, 'message' => '激活成功!'];
                 }
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
@@ -341,20 +346,24 @@ class UserController extends CoreBackendController
      * @author lilaotou <liwansen@foxmail.com>
      * 冻结用户
      */
-    public function actionBlockeduser($id)
+    public function actionBlockeduser()
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
+                $id = $request->post('id');
                 $freeze_remark = trim($request->post('remark'));
-                $userinfo = Yii::$app->getUser()->getIdentity();
-
+                if(!$freeze_remark){
+                    throw new CustomBackendException('请填写冻结原因！', 4);
+                }
                 $model = User::find()->where(['id' => $id])->one();
                 if (!$model) {
                     throw new CustomBackendException('信息不存在！', 4);
                 }else{
+
+                    $userinfo = Yii::$app->getUser()->getIdentity();
                     //只有激活的用户可以冻结
                     if($model['status'] == 10){
                         $model->status = User::STATUS_STOP;
@@ -369,11 +378,11 @@ class UserController extends CoreBackendController
                                 'freeze_remark'=>$freeze_remark,
                                 'created_at'=>$_SERVER['REQUEST_TIME']
                             ];
-                            \Yii::$app->getDb()->createCommand()->insert(Freezeuserlog::tableName(), $wait_inster_data)->execute();
+                            \Yii::$app->getDb()->createCommand()->insert(FreezeuserLog::tableName(), $wait_inster_data)->execute();
                         }
-                        return ['status' => 1, 'message' => '用户冻结成功!'];
+                        return ['status' => 1, 'message' => '冻结成功!'];
                     }else{
-                        throw new CustomBackendException('此用户已关闭无法冻结！', 4);
+                        throw new CustomBackendException('此员工已离职(或已冻结)！', 4);
                     }
                 }
             } catch (CustomBackendException $e) {
@@ -384,7 +393,38 @@ class UserController extends CoreBackendController
         }
     }
 
+    /**
+     * @param $id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     * 关闭用户(离职)
+     */
+    public function actionLeaveuser()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
+                $id = $request->post('id');
+                $model = User::find()->where(['id' => $id])->one();
+                if (!$model) {
+                    throw new CustomBackendException('信息不存在！', 4);
+                }else{
+                    $model->status = User::STATUS_LEAVE;
+                    $model->updated_at = $_SERVER['REQUEST_TIME'];
+                    if (!$model->save(false)) {
+                        throw new CustomBackendException('操作失败', 5);
+                    }
+                    return ['status' => 1, 'message' => '操作成功!'];
+                }
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
 
     protected function findModel($id)
     {

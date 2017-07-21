@@ -95,6 +95,29 @@ class BorrowController extends CoreBackendController
     }
 
     /**
+     * 已取消列表
+     * @return string
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionListVerifyCancel()
+    {
+        $this->getView()->title = '已撤销列表';
+        $model = new OrdersSearch();
+        $query = $model->search(Yii::$app->getRequest()->getQueryParams());
+        $query = $query->andWhere(['o_status' => Orders::STATUS_CANCEL]);
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        return $this->render('listverifyrevoke', [
+            'sear' => $model->getAttributes(),
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
+    }
+
+    /**
      * 已通过列表
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
@@ -109,11 +132,21 @@ class BorrowController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        //统计数据
+        $stat_data = [];
+        //总金额
+        $stat_data['o_total_price'] = $query->sum('o_total_price');
+
+        //首付金额
+        $stat_data['o_total_deposit'] = $query->sum('o_total_deposit');
+
+
         return $this->render('listverifypass', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages,
+            'stat_data'=>$stat_data
         ]);
     }
 
