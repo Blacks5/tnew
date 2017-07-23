@@ -466,7 +466,7 @@ class StoresController extends CoreBackendController
 
                 $model = Stores::find()->where(['s_id' => $s_id])->one();
                 if (!$model) {
-                    throw new CustomBackendException('信息不存在！', 4);
+                    throw new CustomBackendException('商户不存在！', 4);
                 }else{
                     if($model['s_status'] == 2){
                         throw new CustomBackendException('此商户已关闭！', 4);
@@ -478,7 +478,7 @@ class StoresController extends CoreBackendController
                 if (!$model->save(false)) {
                     throw new CustomBackendException('操作失败', 5);
                 }
-                return ['status' => 1, 'message' => '商户冻结成功!'];
+                return ['status' => 1, 'message' => '商户关闭成功!'];
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
