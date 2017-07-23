@@ -458,7 +458,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
                                 <button class="btn btn-danger failpic">照片不合格</button>
                             <?php } ?>
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/edit-product-code']))) { ?>
                                 <button class="btn btn-danger" id="add_product_code">
                                     <?php if($model['o_product_code']){ ?>
                                         编辑商品代码
