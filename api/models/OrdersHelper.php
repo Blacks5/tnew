@@ -33,13 +33,11 @@ class OrdersHelper
     public function placeOrders($params)
     {
         \Yii::$app->getLog()->getLogger()->log($params, 'error');
-//        p($params);
         // 首先验证码
         $verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
 //            throw new CustomApiException('验证码错误11');
         }
-//        p($params['c_customer_cellphone']);
         $data['data'] = $params;
         // 1客户表 2订单表 3产品表
 
@@ -89,9 +87,10 @@ class OrdersHelper
         // 1客户信息
         $transaction = \Yii::$app->db->beginTransaction();
         try{
-            if(!$serial_id = Tools::generateId()){
+            if(!$serial_id = Tools::generateId($params['c_customer_id_card'])){
                 throw new CustomApiException('生成订单号异常');
             }
+
             $userid = \Yii::$app->getUser()->getIdentity()->getId();
             // 1写order_images表
             $images_model = new OrderImages();
@@ -113,8 +112,10 @@ class OrdersHelper
                         $customerModel->c_forbidden_time = 0;
                     }
                 }
+                $customerModel->c_total_borrow_times += 1;
             }else{
                 $customerModel = new Customer();
+                $customerModel->c_total_borrow_times = 1;
             }
             $customerModel->load($data, 'data');
             if(!$customerModel->validate()){

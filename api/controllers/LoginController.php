@@ -40,10 +40,13 @@ class LoginController extends Controller
             $user = Yii::$app->getUser()->getIdentity();
 
             // 新增判断：只有销售部能登录
-            if(26 != $user['attributes']['department_id']){
-                Yii::$app->getUser()->logout();
-                return ['status'=>0, 'message'=>'没有登录权限', 'data'=>[]];
+            if (1 != $user['attributes']['id']){
+                if(26 != $user['attributes']['department_id']){
+                    Yii::$app->getUser()->logout();
+                    return ['status'=>0, 'message'=>'没有登录权限', 'data'=>[]];
+                }
             }
+
 
             // 登录成功，更新access_token
             if(null == User::updateAccessToken($user)){
