@@ -501,15 +501,15 @@ class BorrowController extends CoreBackendController
                 if (empty($o_product_code)) {
                     throw new CustomBackendException('请填写商品代码', 0);
                 }
-                // 初审0 二审6 都可以取消
+
                 if (!$model = Orders::find()->where(['o_id' => $order_id])->one()) {
                     throw new CustomBackendException('订单信息不存在!', 4);
                 }
                 $model->o_product_code = $o_product_code;
                 if (!$model->save(false)) {
-                    throw new CustomBackendException('操作订单失败', 5);
+                    throw new CustomBackendException('信息提交失败', 5);
                 }
-                return ['status' => 1, 'message' => '操作订单成功'];
+                return ['status' => 1, 'message' => '信息提交成功'];
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {
