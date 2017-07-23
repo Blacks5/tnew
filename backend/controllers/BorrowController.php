@@ -238,6 +238,9 @@ class BorrowController extends CoreBackendController
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
+                if(!$model->o_product_code){
+                    throw new CustomBackendException('请先填写商品代码!', 4);
+                }
                 $model->o_status = Orders::STATUS_PAYING;
                 $model->o_operator_id = $userinfo->id;
                 $model->o_operator_realname = $userinfo->realname;
