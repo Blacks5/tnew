@@ -482,6 +482,43 @@ class BorrowController extends CoreBackendController
         }
     }
 
+
+    /**
+     * 添加(修改)商品代码
+     * @param $order_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionEditProductCode($order_id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_product_code = trim($request->post('o_product_code'));
+
+                if (empty($o_product_code)) {
+                    throw new CustomBackendException('请填写商品代码', 0);
+                }
+                // 初审0 二审6 都可以取消
+                if (!$model = Orders::find()->where(['o_id' => $order_id])->one()) {
+                    throw new CustomBackendException('订单信息不存在!', 4);
+                }
+                $model->o_product_code = $o_product_code;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('操作订单失败', 5);
+                }
+                return ['status' => 1, 'message' => '操作订单成功'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+
     public function actionShowpics($oid)
     {
         /*
