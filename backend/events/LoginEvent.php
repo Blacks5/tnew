@@ -31,7 +31,7 @@ class LoginEvent
         $identity->save(false);
 
         // session也记录一个
-        // 在 mdm\admin\components\AccessControl::$beforeAction 使用
+        // 在 mdm\admin\components\AccessControl::$beforeAction
         $session = Yii::$app->getSession();
         $session->set('logintime', $_SERVER['REQUEST_TIME']);
 

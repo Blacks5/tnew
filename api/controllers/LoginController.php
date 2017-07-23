@@ -37,8 +37,14 @@ class LoginController extends Controller
             return ['status'=>0, 'message'=>'用户名或密码错误', 'data'=>[]];
         }
         if($model->login()){
-
             $user = Yii::$app->getUser()->getIdentity();
+
+            // 新增判断：只有销售部能登录
+            if(26 != $user['attributes']['department_id']){
+                Yii::$app->getUser()->logout();
+                return ['status'=>0, 'message'=>'没有登录权限', 'data'=>[]];
+            }
+
             // 登录成功，更新access_token
             if(null == User::updateAccessToken($user)){
                 return ['status'=>0, 'message'=>'登录失败', 'data'=>[]];
@@ -52,6 +58,11 @@ class LoginController extends Controller
             return ['status'=>1, 'message'=>'登录成功', 'data'=>$data];
         }
         return ['status'=>0, 'message'=>'登录失败', 'data'=>[]];
+    }
+
+    private function onlySalesCanLogin($userId)
+    {
+
     }
 
     /**
