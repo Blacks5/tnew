@@ -257,7 +257,7 @@ class BorrowController extends CoreBackendController
                 $sql = "select * from customer where c_id=" . $model->o_customer_id . " limit 1 for update";
                 $c = Customer::findBySql($sql)->one();
                 $c->c_total_money += $model->o_total_price - $model->o_total_deposit;
-                $c->c_total_borrow_times += 1; // 借款次数加一
+//                $c->c_total_borrow_times += 1; // 借款次数加一[提交时就累加了，此处不再累加]
                 $c->save(false);
 
                 $trans->commit();
