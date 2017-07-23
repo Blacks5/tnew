@@ -46,7 +46,7 @@ class StoresController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['s_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['s_created_at' => SORT_DESC, 's_status'=>SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         $provinces = Helper::getAllProvince();
         // 商户状态
         $stroe_status = Stores::getAllStatus();
