@@ -546,7 +546,7 @@ class BorrowController extends CoreBackendController
                 }
 
                 if(!$model = Orders::find()->where(['o_product_code' => $o_product_code])->all()) {
-                    return ['status' => 3, 'message' => '无重复商品代码订单'];
+                    return ['status' => 1, 'message' => '无重复商品代码订单'];
                 }else{
                     $model_str = '';
                     foreach ($model as $k=>$v){
