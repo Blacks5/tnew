@@ -450,7 +450,7 @@ class BorrowController extends CoreBackendController
                     throw new CustomBackendException('订单不存在', 2);
                 }
 
-                $limit_time = 60 * 60 * 24 * 3; // 3天。
+                $limit_time = 60 * 60 * 24 * 3; // 3天。1
                 if (($order_model->o_operator_date + $limit_time) <= $_SERVER['REQUEST_TIME']) {
                     throw new CustomBackendException('订单已过可撤销时限', 2);
                 }
