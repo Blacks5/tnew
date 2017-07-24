@@ -168,6 +168,11 @@ class BorrowController extends CoreBackendController
                 );
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
 //            var_dump($goods_data, $model);die;
+//            $related_arr = (new \yii\db\Query())
+//                ->from(Customer::tableName())
+//                ->where(['or','c_kinship_name' => $model->c_kinship_name,'c_kinship_cellphone'=>$model->c_kinship_cellphone,'c_customer_jobs_company'=>$model->c_customer_jobs_company])
+//                ->limit(10)
+//                ->all();
             return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
@@ -513,6 +518,42 @@ class BorrowController extends CoreBackendController
                     throw new CustomBackendException('信息提交失败', 5);
                 }
                 return ['status' => 1, 'message' => '信息提交成功'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    /**
+     * 检测商品代码
+     * @param $order_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionCheckProductCode()
+    {
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_product_code = trim($request->post('o_product_code'));
+
+                if(empty($o_product_code)){
+                    throw new CustomBackendException('请填写商品代码', 0);
+                }
+
+                if(!$model = Orders::find()->where(['o_product_code' => $o_product_code])->all()) {
+                    return ['status' => 3, 'message' => '无重复商品代码订单'];
+                }else{
+                    $model_str = '';
+                    foreach ($model as $k=>$v){
+                        $model_str .=  ($k+1) . ',客户ID:' . $v['o_customer_id'] . ',订单号' . $v['o_serial_id']  .'<br/>';
+                    }
+                    return ['status' => 1, 'message' => $model_str];
+                }
             } catch (CustomBackendException $e) {
                 return ['status' => $e->getCode(), 'message' => $e->getMessage()];
             } catch (yii\base\Exception $e) {

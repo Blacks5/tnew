@@ -231,7 +231,7 @@ class TeamController extends CoreBackendController
 
         $user_model = new User();
         $realname = Yii::$app->getRequest()->get('realname') ? Yii::$app->getRequest()->get('realname') : '';
-        $where = "username != 'admin' and status != " . User::STATUS_DELETE;
+        $where = "username != 'admin' and status != " . User::STATUS_DELETE . " and department_id = '26'";
         if ($realname) {
             $where .= " and realname like '%$realname%'";
         }
