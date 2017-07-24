@@ -24,6 +24,7 @@ return [
             //允许访问的action
             //controller/action
 //            '*',
+            'borrow/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
             'login/login',
             'contract/index', // 订单合同页面，Android app里webview用
             'contract/paymentdesc', // 代扣说明页面，Android app里webview用1
