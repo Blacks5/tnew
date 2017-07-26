@@ -1,5 +1,6 @@
 <?php
-namespace com_junziqian_api_model;
+//namespace com_junziqian_api_model;
+namespace common\tools\junziqian\model;
 use Exception as Exception;
 /**
  * 签字人
