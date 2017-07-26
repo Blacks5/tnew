@@ -21,7 +21,7 @@ class LoginEvent
      * @param $event
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function writeLoginLog($event)
+    public static function writeLoginLog($event)
     {
         // 获取User对象
         $identity = $event->identity;

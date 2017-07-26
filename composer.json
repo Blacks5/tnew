@@ -21,8 +21,7 @@
         "mdmsoft/yii2-admin": "~2.0",
         "qiniu/php-sdk": "^7.1",
         "yiisoft/yii2-httpclient": "~2.0.0",
-        "textalk/websocket": "^1.2",
-        "ebq/jzq_api": "^2.3"
+        "textalk/websocket": "^1.2"
     },
     "require-dev": {
         "codeception/codeception": "*",

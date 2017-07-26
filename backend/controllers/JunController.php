@@ -44,6 +44,7 @@ class JunController extends CoreBackendController
 
     public function actionA()
     {
+
         $requestObj = new ApplySignFileRequest();
         $requestObj->file = new UploadFile('test1.pdf'); // 合同文件
         $requestObj->contractName = '合同001'; // 合同名
