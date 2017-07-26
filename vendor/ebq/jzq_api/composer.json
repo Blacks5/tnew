@@ -1,0 +1,27 @@
+{
+    "name": "ebq/jzq_api",
+    "version": "2.3.2",
+    "description": "php jzq_php_api_client",
+    "type": "library",
+	"homepage": "https://git.oschina.net/huhu/php_jzq_api_client.git",
+	"license": "MIT",
+    "authors": [
+        {
+            "name": "huhu",
+            "email": "3811970@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ebq/rop_client":">=1.0.6"
+    },
+	"autoload": {
+        "psr-4": {"com\\jzq\\api\\": "src/com/jzq/api"}
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
