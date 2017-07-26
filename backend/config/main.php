@@ -36,7 +36,15 @@ return [
             'repayment/deduct-callback', // 易极付代扣回调地址
             'loan/async', // 易极付回调地址
 
-            'jun/a'
+            'jun/a',
+            'jun/a6',
+            'jun/a7',
+            'jun/a10',
+            'jun/a11',
+            'jun/a12',
+            'jun/a13',
+            'jun/a15',
+            'jun/a16'
         ]
     ],
 

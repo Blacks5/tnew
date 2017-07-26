@@ -1,9 +1,9 @@
 <?php
-	require_once dirname(__FILE__).'/../tool/shaUtils.php';
-	require_once dirname(__FILE__).'/../tool/ropUtils.php';
+	require_once dirname(__FILE__) . '/../tool/ShaUtils.php';
+	require_once dirname(__FILE__) . '/../tool/RopUtils.php';
 	require_once dirname(__FILE__).'/../model/enum.php';
-	require_once dirname(__FILE__).'/../model/uploadFile.php';
-	require_once dirname(__FILE__).'/../model/organizationCreateRequest.php';
+	require_once dirname(__FILE__) . '/../model/UploadFile.php';
+	require_once dirname(__FILE__) . '/../model/OrganizationCreateRequest.php';
 	use com_junziqian_api_tool\RopUtils as RopUtils;
 	use com_junziqian_api_model\OrganizationCreateRequest as OrganizationCreateRequest;
 	use com_junziqian_api_model\OrganizationType as OrganizationType;

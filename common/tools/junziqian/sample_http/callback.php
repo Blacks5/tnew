@@ -1,6 +1,6 @@
 <?php
-	require_once dirname(__FILE__).'/../tool/httpSignUtils.php';
-	require_once(dirname(__FILE__).'/../cfg/clientInfo.php');
+	require_once dirname(__FILE__) . '/../tool/HttpSignUtils.php';
+	require_once(dirname(__FILE__) . '/../cfg/ClientInfo.php');
 	use com_junziqian_api_tool\HttpSignUtils as HttpSignUtils;
 	use com_junziqian_api_cfg\ClientInfo as ClientInfo;
 	$result=array(

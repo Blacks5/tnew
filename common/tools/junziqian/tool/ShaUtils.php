@@ -1,5 +1,5 @@
 <?php
-namespace com_junziqian_api_tool;
+namespace common\tools\junziqian\tool;
 /**
  * 以下只针对utf-8字符串进行sha加密
  * @edit yfx 2016-07-02

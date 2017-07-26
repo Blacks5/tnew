@@ -2,10 +2,10 @@
 //namespace com_junziqian_api_model;
 namespace common\tools\junziqian\model;
 
-require_once dirname(__FILE__).'/../model/applySignAbstractRequest.php';
-require_once dirname(__FILE__).'/../model/uploadFile.php';
-use com_junziqian_api_model\ApplySignAbstractRequest as ApplySignAbstractRequest;
-use com_junziqian_api_model\UploadFile as UploadFile;
+//require_once dirname(__FILE__).'/../model/applySignAbstractRequest.php';
+//require_once dirname(__FILE__) . '/../model/UploadFile.php';
+use common\tools\junziqian\model\ApplySignAbstractRequest as ApplySignAbstractRequest;
+use common\tools\junziqian\model\UploadFile as UploadFile;
 use Exception as Exception;
 /**
  * @author yfx 2016-07-02
@@ -19,7 +19,7 @@ class ApplySignFileRequest extends ApplySignAbstractRequest{
 	public $file;
 	
 	function validate(){
-		if($this->file==null||!is_a($this->file, "com_junziqian_api_model\UploadFile")){
+		if($this->file==null||!is_a($this->file, "common\\tools\\junziqian\\model\\UploadFile")){
 			throw new Exception("file is null or not a UploadFile value");return false;
 		}
 		return parent::validate();

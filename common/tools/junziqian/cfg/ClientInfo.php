@@ -1,5 +1,5 @@
 <?php
-namespace com_junziqian_api_cfg;
+namespace common\tools\junziqian\cfg;
 
 /**
  * 客户端配置信息

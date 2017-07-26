@@ -1,7 +1,7 @@
 <?php 
 namespace com_junziqian_api_tool;
-require_once(dirname(__FILE__).'/../cfg/clientInfo.php');
-require_once(dirname(__FILE__).'/../tool/shaUtils.php');
+require_once(dirname(__FILE__) . '/../cfg/ClientInfo.php');
+require_once(dirname(__FILE__) . '/../tool/ShaUtils.php');
 use Exception as Exception;
 use com_junziqian_api_cfg\ClientInfo as ClientInfo;
 use com_junziqian_api_tool\ShaUtils as ShaUtils;

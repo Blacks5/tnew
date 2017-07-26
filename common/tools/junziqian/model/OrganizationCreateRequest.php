@@ -1,10 +1,10 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
-require_once dirname(__FILE__).'/../model/enum.php';
-use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
-use com_junziqian_api_model\OrganizationType as OrganizationType;
-use Exception as Exception;
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/richServiceRequest.php';
+//require_once dirname(__FILE__).'/../model/enum.php';
+use common\tools\junziqian\model\RichServiceRequest as RichServiceRequest;
+use common\tools\junziqian\model\OrganizationType as OrganizationType;
+use \Exception;
 /**
  * 账户创建相关
  * @edit yfx 2016-07-02
@@ -141,10 +141,10 @@ class OrganizationCreateRequest extends RichServiceRequest{
 		
 		$this->legalIdentityCard=self::trim($this->legalIdentityCard);
 		$this->legalName=self::trim($this->legalName);
-		if($this->legalIdentityFrontImg!=null&&!is_a($this->legalIdentityFrontImg, "com_junziqian_api_model\UploadFile")){
+		if($this->legalIdentityFrontImg!=null&&!is_a($this->legalIdentityFrontImg, "common\\tools\\junziqian\\model\\UploadFile")){
 			throw new Exception("legalIdentityFrontImg is not a UploadFile value");return false;
 		}
-		if($this->legalIdentityBackImg!=null&&!is_a($this->legalIdentityBackImg, "com_junziqian_api_model\UploadFile")){
+		if($this->legalIdentityBackImg!=null&&!is_a($this->legalIdentityBackImg, "common\\tools\\junziqian\\model\\UploadFile")){
 			throw new Exception("legalIdentityBackImg is not a UploadFile value");return false;
 		}
 		return parent::validate();

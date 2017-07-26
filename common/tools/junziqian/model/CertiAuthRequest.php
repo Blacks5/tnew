@@ -1,14 +1,14 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
-require_once dirname(__FILE__).'/../model/uploadFile.php';
-require_once dirname(__FILE__).'/../model/signatory.php';
-require_once dirname(__FILE__).'/../model/enum.php';
-use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
-use com_junziqian_api_model\UploadFile as UploadFile;
-use com_junziqian_api_model\Signatory as Signatory;
-use com_junziqian_api_model\IdentityType as IdentityType;
-use Exception as Exception;
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/richServiceRequest.php';
+//require_once dirname(__FILE__) . '/../model/UploadFile.php';
+//require_once dirname(__FILE__) . '/../model/Signatory.php';
+//require_once dirname(__FILE__).'/../model/enum.php';
+use common\tools\junziqian\model\RichServiceRequest as RichServiceRequest;
+use common\tools\junziqian\model\UploadFile as UploadFile;
+use common\tools\junziqian\model\Signatory as Signatory;
+use common\tools\junziqian\model\IdentityType as IdentityType;
+use \Exception;
 /**
  * @author yfx 2016-07-02
  * 签约请求上传文件方式
@@ -21,10 +21,10 @@ class CertiAuthRequest extends RichServiceRequest{
 	public $signatory;
 	
 	function validate(){
-		if($this->applyTable==null||!is_a($this->applyTable, "com_junziqian_api_model\UploadFile")){
+		if($this->applyTable==null||!is_a($this->applyTable, "common\\tools\\junziqian\\model\\UploadFile")){
 			throw new Exception("file is null or not a UploadFile value");return false;
 		}
-		if($this->signatory==null||!is_a($this->signatory,'com_junziqian_api_model\Signatory')){
+		if($this->signatory==null||!is_a($this->signatory,'common\\tools\\junziqian\\model\\Signatory')){
 			throw new Exception("signatory is null or not a Signatory value");return false;
 		}
 		if(!$this->signatory->validate()){

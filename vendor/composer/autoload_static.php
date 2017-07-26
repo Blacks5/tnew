@@ -32,12 +32,17 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             'phpDocumentor\\Reflection\\' => 25,
         ),
+        'o' => 
+        array (
+            'org\\ebq\\api\\' => 12,
+        ),
         'm' => 
         array (
             'mdm\\admin\\' => 10,
         ),
         'c' => 
         array (
+            'com\\jzq\\api\\' => 12,
             'cebe\\markdown\\' => 14,
         ),
         'W' => 
@@ -130,9 +135,17 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
             1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
+        'org\\ebq\\api\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ebq/rop_client/src/org/ebq/api',
+        ),
         'mdm\\admin\\' => 
         array (
             0 => __DIR__ . '/..' . '/mdmsoft/yii2-admin',
+        ),
+        'com\\jzq\\api\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ebq/jzq_api/src/com/jzq/api',
         ),
         'cebe\\markdown\\' => 
         array (

@@ -1,13 +1,13 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
-require_once dirname(__FILE__).'/../model/sequenceInfo.php';
-require_once dirname(__FILE__).'/../model/enum.php';
-use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
-use com_junziqian_api_model\AuthenticationLevel as AuthenticationLevel;
-use com_junziqian_api_model\AuthLevel as AuthLevel;
-use com_junziqian_api_model\SignLevel as SignLevel;
-use com_junziqian_api_model\SequenceInfo as SequenceInfo;
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/richServiceRequest.php';
+//require_once dirname(__FILE__) . '/../model/SequenceInfo.php';
+//require_once dirname(__FILE__).'/../model/enum.php';
+use common\tools\junziqian\model\RichServiceRequest as RichServiceRequest;
+use common\tools\junziqian\model\AuthenticationLevel as AuthenticationLevel;
+use common\tools\junziqian\model\AuthLevel as AuthLevel;
+use common\tools\junziqian\model\SignLevel as SignLevel;
+use common\tools\junziqian\model\SequenceInfo as SequenceInfo;
 use Exception as Exception;
 /**
  * 签约请求abstractbean

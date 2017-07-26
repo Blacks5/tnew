@@ -5,9 +5,9 @@
  * Time: 15:18
  */
 
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
-use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/RichServiceRequest.php';
+use common\tools\junziqian\model\RichServiceRequest as RichServiceRequest;
 
 class ApplySignAttachFileRequest extends RichServiceRequest{
     static $v="1.0";
@@ -21,7 +21,7 @@ class ApplySignAttachFileRequest extends RichServiceRequest{
         if(!is_string($this->applyNo)){
             throw new Exception("file applyNo or not a string value");return false;
         }
-        if($this->file==null||!is_a($this->file, "com_junziqian_api_model\UploadFile")){
+        if($this->file==null||!is_a($this->file, "common\\tools\\junziqian\\model\\UploadFile")){
             throw new Exception("file is null or not a UploadFile value");return false;
         }
         return parent::validate();

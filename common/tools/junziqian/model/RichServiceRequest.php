@@ -1,5 +1,6 @@
 <?php
-namespace com_junziqian_api_model;
+//namespace com_junziqian_api_model;
+namespace common\tools\junziqian\model;
 /**
 * 客户端请求体.抽像类
 * @edit yfx 2016-07-02

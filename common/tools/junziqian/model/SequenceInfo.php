@@ -5,7 +5,7 @@
  * Date: 2017-03-07 0007
  * Time: 16:41
  */
-namespace com_junziqian_api_model;
+namespace common\tools\junziqian\model;
 
 class SequenceInfo{
     /**客户方合同的唯一编号*/

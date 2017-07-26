@@ -1,8 +1,8 @@
 <?php
-	require_once dirname(__FILE__).'/../tool/shaUtils.php';
-	require_once dirname(__FILE__).'/../tool/ropUtils.php';
-	require_once dirname(__FILE__).'/../model/signNotifyRequest.php';
-	require_once dirname(__FILE__).'/../model/signatory.php';
+	require_once dirname(__FILE__) . '/../tool/ShaUtils.php';
+	require_once dirname(__FILE__) . '/../tool/RopUtils.php';
+	require_once dirname(__FILE__) . '/../model/SignNotifyRequest.php';
+	require_once dirname(__FILE__) . '/../model/Signatory.php';
 	require_once dirname(__FILE__).'/../model/enum.php';
 	use com_junziqian_api_tool\RopUtils as RopUtils;
 	use com_junziqian_api_tool\ShaUtils as ShaUtils;

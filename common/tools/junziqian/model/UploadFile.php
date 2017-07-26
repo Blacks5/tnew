@@ -1,6 +1,7 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../tool/shaUtils.php';
+//namespace com_junziqian_api_model;
+namespace common\tools\junziqian\model;
+require_once dirname(__FILE__) . '/../tool/ShaUtils.php';
 //use com_junziqian_api_tool\RopUtils as RopUtils;
 use common\tools\junziqian\tool\RopUtils as RopUtils;
 /**

@@ -1,8 +1,8 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/richServiceRequest.php';
 use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
-use Exception as Exception;
+use \Exception;
 /**
  * 请求得到签约文件查看地址（最新）
  * @edit yfx 2016-08-18

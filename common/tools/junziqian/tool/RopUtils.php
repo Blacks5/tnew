@@ -2,12 +2,12 @@
 //namespace com_junziqian_api_tool;
 namespace common\tools\junziqian\tool;
 
-require_once(dirname(__FILE__).'/../tool/shaUtils.php');
-require_once(dirname(__FILE__).'/../cfg/clientInfo.php');
-require_once dirname(__FILE__).'/../model/uploadFile.php';
-use com_junziqian_api_tool\ShaUtils as ShaUtils;
-use com_junziqian_api_cfg\ClientInfo as ClientInfo;
-use com_junziqian_api_model\UploadFile as UploadFile;
+//require_once(dirname(__FILE__) . '/../tool/ShaUtils.php');
+//require_once(dirname(__FILE__) . '/../cfg/ClientInfo.php');
+//require_once dirname(__FILE__) . '/../model/UploadFile.php';
+use common\tools\junziqian\tool\ShaUtils as ShaUtils;
+use common\tools\junziqian\cfg\ClientInfo as ClientInfo;
+use common\tools\junziqian\model\UploadFile as UploadFile;
 use Exception as Exception;
 /**
  * ropUtil工具类
@@ -65,7 +65,7 @@ class RopUtils{
 			//拼接
 			foreach($reqArray as $key=>$val) {
 				if(!is_null($val)){
-					if(is_a($val,'com_junziqian_api_model\UploadFile')){
+					if(is_a($val,'common\\tools\\junziqian\\model\\UploadFile')){
 						$contactStr=$contactStr.$key.$val->uploadStr;
 					}else{
 						$contactStr=$contactStr.$key.$val;
@@ -203,7 +203,7 @@ class RopUtils{
 	 * @return string 返回请求结果
 	 */
 	static function doPostByObj($requestObj){
-		if(is_object($requestObj)&&is_subclass_of($requestObj,'com_junziqian_api_model\RichServiceRequest')){
+		if(is_object($requestObj)&&is_subclass_of($requestObj,'common\\tools\\junziqian\\model\\RichServiceRequest')){
 			if($requestObj->validate()){
 				$headerMap=self::getHeads($requestObj->getVersion(), $requestObj->getMethod());
 				$requestArr=$requestObj->getObject2Array();
@@ -246,7 +246,7 @@ class RopUtils{
 		if($paramArr!=null){
 			foreach($paramArr as $key=>$val) {
 				if($val!=null){
-					$fileFlag=is_a($val,'com_junziqian_api_model\UploadFile');
+					$fileFlag=is_a($val,'common\\tools\\junziqian\\model\\UploadFile');
 					//是文件体
 					$contactStr=$contactStr."--".$boundary."\r\n";
 					//if($fileFlag){

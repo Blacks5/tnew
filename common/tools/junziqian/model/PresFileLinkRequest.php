@@ -1,8 +1,8 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
-use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
-use Exception as Exception;
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/richServiceRequest.php';
+use common\tools\junziqian\model\RichServiceRequest;
+use \Exception;
 /**
  * 请求得到签约保全的文件下载地址
  * @edit yfx 2016-09-02
@@ -28,7 +28,7 @@ class PresFileLinkRequest extends RichServiceRequest{
 		if($this->applyNo==''){
 			throw new Exception("applyNo is null");return false;
 		}
-		if($this->signatory==null||!is_a($this->signatory,'com_junziqian_api_model\Signatory')){
+		if($this->signatory==null||!is_a($this->signatory,'common\\tools\\junziqian\\model\\Signatory')){
 			throw new Exception("signatory is null or not a Signatory value");return false;
 		}
 		if(!$this->signatory->validate()){

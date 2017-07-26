@@ -1,7 +1,7 @@
 <?php
-	require_once dirname(__FILE__).'/../tool/shaUtils.php';
-	require_once dirname(__FILE__).'/../tool/ropUtils.php';
-	require_once dirname(__FILE__).'/../model/organizationAuditStatusRequest.php';
+	require_once dirname(__FILE__) . '/../tool/ShaUtils.php';
+	require_once dirname(__FILE__) . '/../tool/RopUtils.php';
+	require_once dirname(__FILE__) . '/../model/OrganizationAuditStatusRequest.php';
 	use com_junziqian_api_tool\RopUtils as RopUtils;
 	use com_junziqian_api_model\OrganizationAuditStatusRequest as OrganizationAuditStatusRequest;
 	//组建请求参数

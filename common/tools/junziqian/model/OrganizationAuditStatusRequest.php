@@ -1,10 +1,10 @@
 <?php
-namespace com_junziqian_api_model;
-require_once dirname(__FILE__).'/../model/richServiceRequest.php';
-require_once dirname(__FILE__).'/../model/enum.php';
-use com_junziqian_api_model\RichServiceRequest as RichServiceRequest;
-use com_junziqian_api_model\OrganizationType as OrganizationType;
-use Exception as Exception;
+namespace common\tools\junziqian\model;
+//require_once dirname(__FILE__).'/../model/richServiceRequest.php';
+//require_once dirname(__FILE__).'/../model/enum.php';
+use common\tools\junziqian\model\RichServiceRequest as RichServiceRequest;
+use common\tools\junziqian\model\OrganizationType as OrganizationType;
+use \Exception;
 /**
  * 账户审核状态
  * @edit yfx 2016-07-12

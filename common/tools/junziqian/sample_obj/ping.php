@@ -1,8 +1,8 @@
 <?php
-	require_once dirname(__FILE__).'/../tool/shaUtils.php';
-	require_once dirname(__FILE__).'/../tool/ropUtils.php';
-	require_once dirname(__FILE__).'/../model/pingRequest.php';
-	require_once dirname(__FILE__).'/../model/uploadFile.php';
+	require_once dirname(__FILE__) . '/../tool/ShaUtils.php';
+	require_once dirname(__FILE__) . '/../tool/RopUtils.php';
+	require_once dirname(__FILE__) . '/../model/PingRequest.php';
+	require_once dirname(__FILE__) . '/../model/UploadFile.php';
 	use com_junziqian_api_tool\RopUtils as RopUtils;
 	use com_junziqian_api_tool\ShaUtils as ShaUtils;
 	use com_junziqian_api_model\PingRequest as PingRequest;
