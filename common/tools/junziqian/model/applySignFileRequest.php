@@ -1,5 +1,7 @@
 <?php
-namespace com_junziqian_api_model;
+//namespace com_junziqian_api_model;
+namespace common\tools\junziqian\model;
+
 require_once dirname(__FILE__).'/../model/applySignAbstractRequest.php';
 require_once dirname(__FILE__).'/../model/uploadFile.php';
 use com_junziqian_api_model\ApplySignAbstractRequest as ApplySignAbstractRequest;

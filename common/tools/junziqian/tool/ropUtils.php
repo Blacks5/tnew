@@ -1,5 +1,7 @@
 <?php
-namespace com_junziqian_api_tool;
+//namespace com_junziqian_api_tool;
+namespace common\tools\junziqian\tool;
+
 require_once(dirname(__FILE__).'/../tool/shaUtils.php');
 require_once(dirname(__FILE__).'/../cfg/clientInfo.php');
 require_once dirname(__FILE__).'/../model/uploadFile.php';
@@ -31,7 +33,7 @@ class RopUtils{
 		$contactStr =$contactStr.(self::contactValues($extInfoMap,null));
 		//必须将sha1生成数据转为大写,rop服务端支持大写
 		//echo(self::contactValues($paramValues,$ignoreParamNames));
-		//echo($contactStr.'</br>'); //
+		echo($contactStr.'</br>'); //
 		return strtoupper(sha1($contactStr));
 	}
 	
@@ -54,15 +56,15 @@ class RopUtils{
 				if($ignoreParamNames!=null&&in_array($key, $ignoreParamNames)){
 					continue;
 				}
-                if((!is_null($val))){
-                    $reqArray[$key]=$val;
-                }
+				if(!is_null($val)){
+				    $reqArray[$key]=$val;
+				}
 			}
 			//字符串关联数组排序
 			ksort($reqArray);
 			//拼接
 			foreach($reqArray as $key=>$val) {
-				if($val!=null){
+				if(!is_null($val)){
 					if(is_a($val,'com_junziqian_api_model\UploadFile')){
 						$contactStr=$contactStr.$key.$val->uploadStr;
 					}else{

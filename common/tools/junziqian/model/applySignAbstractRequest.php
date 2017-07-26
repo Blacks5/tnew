@@ -105,7 +105,7 @@ class ApplySignAbstractRequest extends RichServiceRequest{
 		$this->orderFlag=$this->trim($this->orderFlag);
 		$orderNumArray=array();
 		foreach ($this->signatories as $signatory) {
-			if($signatory==null||!is_a($signatory,'com_junziqian_api_model\Signatory')){
+			if($signatory==null||!is_a($signatory,'common\tools\junziqian\model\Signatory')){
 				throw new Exception("signatories.value isn't a Signatory value");return false;
 			}
 			if(!$signatory->validate()){
