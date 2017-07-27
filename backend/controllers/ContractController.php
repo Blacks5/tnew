@@ -9,6 +9,7 @@
 namespace backend\controllers;
 use common\models\CalInterest;
 use common\models\User;
+use kartik\mpdf\Pdf;
 use yii;
 use yii\web\Controller;
 use common\models\Orders;
@@ -83,10 +84,24 @@ class ContractController extends Controller
             $v['g_goods_type'] = Yii::$app->params['goods_type'][$v['g_goods_type']-1]['t_name'];
         }
 
-        return $this->renderPartial('index',
+
+        $html = $this->renderPartial('index',
             ['data'=>$data, 'now_address'=>$now_address,
             'total_borrow_money'=>$total_borrow_money,
             'id_address'=>$id_address, 'job_address'=>$job_address, 'every_month_repay'=>$every_month_repay]);
+
+        if(isset($_GET['pdf'])){
+//            Yii::$app->getResponse()->setDownloadHeaders('a.pdf', 'application/pdf')->send();
+//            echo $html;
+//            return $html;
+//            $pdf = new Pdf();
+//            $pdf->render();
+            $pdf = new \mPDF('zh-CN');
+            $pdf->WriteHTML($html);
+            $pdf->SetDisplayMode('fullpage');
+            $pdf->Output('贷款合同.pdf', 'D');
+        }
+        return $html;
     }
 
     public function actionPaymentdesc()
