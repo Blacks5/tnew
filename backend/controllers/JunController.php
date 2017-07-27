@@ -26,9 +26,14 @@ use com\jzq\api\model\sign\FileLinkRequest;
 use com\jzq\api\model\sign\SignLinkRequest;
 use com\jzq\api\model\sign\SignNotifyRequest;
 use com\jzq\api\model\sign\SignStatusRequest;
+use common\models\JzqSign;
+use common\models\Orders;
 use org\ebq\api\model\bean\UploadFile;
 use org\ebq\api\tool\RopUtils;
 
+use yii;
+use yii\db\Query;
+use common\components\CustomCommonException;
 //use common\tools\junziqian\model\AuthLevel;
 //use common\tools\junziqian\model\DealType;
 //use common\tools\junziqian\model\IdentityType;
@@ -42,62 +47,101 @@ use org\ebq\api\tool\RopUtils;
 class JunController extends CoreBackendController
 {
 
-    public function actionA()
+    /**
+     * @author lilaotou <liwansen@foxmail.com>
+     * 上传合同
+     */
+    public function actionA($orderid)
     {
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
+            try{
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+                $order_data = Orders::getOne($orderid);
 
-        $requestObj = new ApplySignFileRequest();
-        $requestObj->file = new UploadFile('test1.pdf'); // 合同文件
-        $requestObj->contractName = '合同001'; // 合同名
-        $requestObj->contractAmount = 1000; // 合同金额
-        $requestObj->authLevelRange = '1'; // 验证范围
+                if($order_data === false){
+                    return ['status' => 2, 'message' => '数据不存在!'];
+                }else{
 
-        // 签合同方
-        $signatories = [];
+                    $contract_url = "http://119.23.15.90:8383/contract/index?o_id=". $order_data['o_id'] ."&pdf";
+                    $requestObj = new ApplySignFileRequest();
+                    $requestObj->file = new UploadFile("$contract_url"); // 合同文件
+                    $requestObj->contractName = $order_data['c_customer_name'] . '合同'; // 合同名
+                    $requestObj->contractAmount = $order_data['o_total_price'] - $order_data['o_total_deposit']; // 合同金额
+                    $requestObj->authLevelRange = '1'; // 验证范围
 
-        // 构造一个合同方
-        //$signatory = new \common\tools\junziqian\model\Signatory();
-        $signatory = new Signatory();
-        $signatory->setSignatoryIdentityType(IdentityType::$IDCARD); // 签约类型
-        $signatory->fullName = '钟超';
-        $signatory->identityCard = '510623199308253919';
-        $signatory->mobile = 18990232122;
-        $signatory->authLevel = [AuthLevel::$BANKCARD]; // 银行卡认证
-        $signatory->forceAuthentication = 0; // 0只需第一次认证过，后面不用认证；1每次都要认证
-        $signatory->signLevel = SignLevel::$GENERAL; // 标准图形章
-        $signatory->noNeedEvidence = 0; // 隐藏添加现场 0不隐藏 1隐藏
-        $signatory->forceEvidence = 0; // 强制添加签约现场图片， 0不强制 1强制
-        $signatory->orderNum = 1; //顺序签字
-        //$signatory->insureYear = 3; // 购买保险年限
-        $signatory->readTime = 20; // 强制阅读时间，单位：秒
-        $signatory->serverCaAuto = 0; // 0手动签 1自动签
-        $signatory->setChapteJson([
-            [
-                'page'=>0,
-                'chaptes'=>[
-                    ['offsetX'=>0.5,'offsetY'=>0.5]
-                ]
-            ]
-        ]);
+                    // 签合同方
+                    $signatories = [];
 
-        array_push($signatories, $signatory);
+                    // 构造一个合同方
+                    $signatory = new Signatory();
+                    $signatory->setSignatoryIdentityType(IdentityType::$IDCARD); // 签约类型,当前为身份证
+                    $signatory->fullName = $order_data['c_customer_name'];
+                    $signatory->identityCard = $order_data['c_customer_id_card'];
+                    $signatory->mobile = $order_data['c_customer_cellphone'];
+                    $signatory->authLevel = [AuthLevel::$BANKCARD]; // 银行卡认证
+                    $signatory->forceAuthentication = 0; // 0只需第一次认证过，后面不用认证；1每次都要认证
+                    $signatory->signLevel = SignLevel::$GENERAL; // 标准图形章
+                    $signatory->noNeedEvidence = 0; // 隐藏添加现场 0不隐藏 1隐藏
+                    $signatory->forceEvidence = 0; // 强制添加签约现场图片， 0不强制 1强制
+                    $signatory->orderNum = 1; //顺序签字
+                    //$signatory->insureYear = 3; // 购买保险年限
+                    $signatory->readTime = 20; // 强制阅读时间，单位：秒
+                    $signatory->serverCaAuto = 0; // 0手动签 1自动签
+                    $signatory->setChapteJson([
+                        [
+                            'page'=>0,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ]
+                    ]);
 
-        $requestObj->signatories = $signatories;
+                    array_push($signatories, $signatory);
 
-        $requestObj->signLevel = SignLevel::$GENERAL;
-        $requestObj->forceAuthentication = 1;
-        $requestObj->preRecored = '前执记录，不知道是个啥';
-        $requestObj->orderFlag = 1; // 1按orderNum顺序签，默认不按顺序
-        //$requestObj->needCa = 1;// 1需要CA；空和0不需要
+                    $requestObj->signatories = $signatories;
 
-        //
-        //$requestObj->sequenceInfo = new SequenceInfo("XX02", 1, 1);
-        $requestObj->serverCa = 1; //使用云证书 1使用 0不使用
-        $requestObj->dealType = DealType::$AUTH_SIGN; //
+                    $requestObj->signLevel = SignLevel::$GENERAL;
+                    $requestObj->forceAuthentication = 1;
+                    $requestObj->preRecored = $order_data['c_customer_name'] . '签约';
+                    $requestObj->orderFlag = 1; // 1按orderNum顺序签，默认不按顺序
+                    //$requestObj->needCa = 1;// 1需要CA；空和0不需要
 
-        $junziqian = \Yii::$app->params['junziqian'];
-        $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
-        $responseJson = json_decode($response);
-        var_dump($responseJson, $requestObj->getMethod());
+                    //
+                    //$requestObj->sequenceInfo = new SequenceInfo("XX02", 1, 1);
+                    $requestObj->serverCa = 1; //使用云证书 1使用 0不使用
+                    $requestObj->dealType = DealType::$DEFAULT; //
+
+                    $junziqian = \Yii::$app->params['junziqian'];
+                    $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
+                    $responseJson = json_decode($response);
+                    //echo $responseJson->applyNo;
+                    if($responseJson->success){
+                        //上传成功,写记录表
+                        $wait_inster_data = [
+                            'o_serial_id'=>$order_data['o_serial_id'],
+                            'applyNo'=>$responseJson->applyNo,
+                            'signStatus'=>0, // 0 未签、 1 已签、 2 拒签
+                            'operator_id'=>Yii::$app->getUser()->getIdentity()->getId(),
+                            'operator_realname'=>Yii::$app->getUser()->getIdentity()->realname,
+                            'created_at'=>$_SERVER['REQUEST_TIME']
+                        ];
+                        \Yii::$app->getDb()->createCommand()->insert(JzqSign::tableName(), $wait_inster_data)->execute();
+
+                    }else{
+                        return ['status' => 2, 'message' => '上传失败'];
+                    }
+                    //var_dump($responseJson, $requestObj->getMethod());
+                }
+
+            } catch (CustomCommonException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+
+
         //APL890202798073974784
     }
 
@@ -110,11 +154,11 @@ class JunController extends CoreBackendController
 //组建请求参数
         $signatory=new Signatory();
         $signatory->setSignatoryIdentityType(IdentityType::$IDCARD);
-        $signatory->fullName="钟超";
-        $signatory->identityCard="510623199308253919";
+        $signatory->fullName="艾红";
+        $signatory->identityCard="510623199511164524";
 
         $requestObj=new SignLinkRequest();
-        $requestObj->applyNo="APL890211792079425536";
+        $requestObj->applyNo="APL890540460152590336";
         $requestObj->signatory=$signatory;
 
         //请求
@@ -133,25 +177,53 @@ class JunController extends CoreBackendController
     /**
      * 短信签约提醒
      */
-    public function actionA7(){
+    public function actionA7($orderid){
 
-        $signatory=new Signatory();
-        $signatory->setSignatoryIdentityType(IdentityType::$IDCARD);
-        $signatory->fullName="钟超";
-        $signatory->identityCard="510623199308253919";
-        $requestObj=new SignNotifyRequest();
-        $requestObj->applyNo="APL890216212989087744";
-        $requestObj->signatory=$signatory;
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
+
+            try{
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $order_data = Orders::getOne($orderid);
+                if($order_data === false){
+                    return ['status' => 2, 'message' => '数据不存在!'];
+                }else{
+                    //获取签约记录
+                    $_data = (new Query())->from(JzqSign::tableName())
+                        ->where(['o_serial_id'=>$order_data['o_serial_id']])
+                        ->one();
+                    if($_data){
+                        $signatory=new Signatory();
+                        $signatory->setSignatoryIdentityType(IdentityType::$IDCARD);
+                        $signatory->fullName = $order_data['c_customer_name'];
+                        $signatory->identityCard = $order_data['c_customer_id_card'];
+                        $requestObj=new SignNotifyRequest();
+                        $requestObj->applyNo = $_data['applyNo'];
+                        $requestObj->signatory=$signatory;
 //
-        $requestObj->signNotifyType=SignNotifyRequest::$NOTIFYTYPE_SIGN;
-        //TODO
-        //$requestObj->backUrl='http://xx.xx.xx/**';
-        //请求
-        $junziqian = \Yii::$app->params['junziqian'];
-        $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
-        //以下为返回的一些处理
-        $responseJson=json_decode($response);
-        var_dump($responseJson); //null
+                        $requestObj->signNotifyType=SignNotifyRequest::$NOTIFYTYPE_SIGN;
+
+                        $junziqian = \Yii::$app->params['junziqian'];
+                        $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
+                        //以下为返回的一些处理
+                        $responseJson=json_decode($response);
+
+                        if($responseJson->success){
+                            return ['status' => 1, 'message' => '短信发送成功!'];
+                        }else{
+                            return ['status' =>2, 'message' => '短信发送失败!'];
+                        }
+                    }else{
+                        return ['status' => 2, 'message' => '请先上传签约合同!'];
+                    }
+                }
+            } catch (CustomCommonException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
     }
 
     /**
@@ -159,7 +231,7 @@ class JunController extends CoreBackendController
      */
     public function actionA10(){
         $requestObj=new DetailAnonyLinkRequest();
-        $requestObj->applyNo="APL890216212989087744";
+        $requestObj->applyNo="APL890540460152590336";
         //请求
         $junziqian = \Yii::$app->params['junziqian'];
         $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
@@ -191,7 +263,7 @@ class JunController extends CoreBackendController
         $signatory=new Signatory();
         $signatory->setSignatoryIdentityType(IdentityType::$IDCARD);
         $signatory->fullName="易凡翔";
-        $signatory->identityCard="500240198704146355";
+        $signatory->identityCard="510623199511164524";
         $requestObj=new PresFileLinkRequest();
         $requestObj->applyNo="APL749783477280444416";
         $requestObj->signatory=$signatory;
@@ -210,7 +282,7 @@ class JunController extends CoreBackendController
         $signatory=new Signatory();
         $signatory->setSignatoryIdentityType(IdentityType::$IDCARD);
         $signatory->fullName="易凡翔";
-        $signatory->identityCard="500240198704146355";
+        $signatory->identityCard="510623199511164524";
         $requestObj=new SignStatusRequest();
         $requestObj->applyNo="APL790090492615462912";
         $requestObj->signatory=$signatory;
