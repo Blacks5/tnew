@@ -17,6 +17,7 @@ return array(
     'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'org\\ebq\\api\\' => array($vendorDir . '/ebq/rop_client/src/org/ebq/api'),
     'mdm\\admin\\' => array($vendorDir . '/mdmsoft/yii2-admin'),
+    'kartik\\mpdf\\' => array($vendorDir . '/kartik-v/yii2-mpdf'),
     'com\\jzq\\api\\' => array($vendorDir . '/ebq/jzq_api/src/com/jzq/api'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
