@@ -861,8 +861,9 @@ $(".failpic").click(function(){
                 data: {},
                 success: function (data) {
                     if (data.status === 1) {
-                        return layer.alert(data.message, {icon: data.status}, function(){
-                            return window.location.href = "<?= \yii\helpers\Url::toRoute(['borrow/list-wait-verify']) ?>";
+                        return layer.alert(data.message, {icon: data.status}, function(index){
+                            return layer.close(index);
+//                            return window.location.href = "<?//= \yii\helpers\Url::toRoute(['borrow/list-wait-verify']) ?>//";
                         });
                     }else{
                         return layer.alert(data.message, {icon: data.status});

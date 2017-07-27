@@ -51,19 +51,19 @@ class JunController extends CoreBackendController
      * @author lilaotou <liwansen@foxmail.com>
      * 上传合同
      */
-    public function actionA($orderid)
+    public function actionA($order_id)
     {
         $request = Yii::$app->getRequest();
         if($request->getIsAjax()){
             try{
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-                $order_data = Orders::getOne($orderid);
+                $order_data = Orders::getOne($order_id);
 
                 if($order_data === false){
                     return ['status' => 2, 'message' => '数据不存在!'];
                 }else{
 
-                    $contract_url = "http://119.23.15.90:8383/contract/index?o_id=". $order_data['o_id'] ."&pdf";
+                    $contract_url = "http://119.23.15.90:8383/contract/index?o_id=". $order_data['o_id'] ."&pdf=.pdf";
                     $requestObj = new ApplySignFileRequest();
                     $requestObj->file = new UploadFile("$contract_url"); // 合同文件
                     $requestObj->contractName = $order_data['c_customer_name'] . '合同'; // 合同名
@@ -127,8 +127,9 @@ class JunController extends CoreBackendController
                             'created_at'=>$_SERVER['REQUEST_TIME']
                         ];
                         \Yii::$app->getDb()->createCommand()->insert(JzqSign::tableName(), $wait_inster_data)->execute();
-
+                        return ['status' => 1, 'message' => '上传成功'];
                     }else{
+                        var_dump($responseJson);
                         return ['status' => 2, 'message' => '上传失败'];
                     }
                     //var_dump($responseJson, $requestObj->getMethod());
