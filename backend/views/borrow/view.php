@@ -414,49 +414,6 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                     </div>
                 <?php } ?>
 
-                <?php if($loan_data){ ?>
-                    <h3 class="center color-orange">代发记录详情</h3>
-                    <div class="hr-line-dashed"></div>
-                    <!--代发记录详情-->
-                    <div class="form-group">
-                        <div>
-                            <label class="col-sm-2 control-label">代发流水号：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loan_data['contractNo']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发金额：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loan_data['amount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">实际代发金额：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loan_data['realRemittanceAmount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发手续费：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loan_data['chargeAmount']; ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">代发操作时间：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= date('Y-d-m H:i:s',$loan_data['created_at']); ?></p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="col-sm-2 control-label">操作人员：</label>
-                            <div class="col-sm-2">
-                                <p class="form-control-static"><?= $loan_data['y_operator_realname'] ; ?></p>
-                            </div>
-                        </div>
-                    </div>
-                <?php } ?>
 
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK) { ?>
                     <div class="form-group">
@@ -483,14 +440,8 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
                             <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a']))) { ?>
-                                <button class="btn btn-success" id="jun-a">上传合同</button>
-                            <?php } ?>
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a7']))) { ?>
-                                <button class="btn btn-success" id="jun-a7">发送签约短信</button>
-                            <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-pass']))) { ?>
-                                <button class="btn btn-success verify-end">终审+签约</button>
+                                <button class="btn btn-success verify-end">终审放款</button>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-cancel']))) { ?>
                                 <button class="btn btn-info cancel">取消订单</button>
@@ -848,62 +799,4 @@ $(".failpic").click(function(){
     }
 
     loadinit('oi_front_bank');
-</script>
-<script>
-    // 上传合同
-    $("#jun-a").click(function(){
-        layer.confirm("确定要上传借款合同？", {title:"上传合同", icon:3}, function(index){
-            var loading = layer.load();
-            $.ajax({
-                url: "<?= \yii\helpers\Url::toRoute(['jun/a', 'order_id' => $model['o_id']]) ?>",
-                type: "get",
-                dataType: "json",
-                data: {},
-                success: function (data) {
-                    if (data.status === 1) {
-                        return layer.alert(data.message, {icon: data.status}, function(index){
-                            return layer.close(index);
-//                            return window.location.href = "<?//= \yii\helpers\Url::toRoute(['borrow/list-wait-verify']) ?>//";
-                        });
-                    }else{
-                        return layer.alert(data.message, {icon: data.status});
-                    }
-                },
-                error: function () {
-                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
-                },
-                complete: function () {
-                    layer.close(loading);
-                }
-            });
-        });
-    });
-
-    //发送签约短信
-    $("#jun-a7").click(function(){
-        layer.confirm("确定要上传借款合同？", {title:"上传合同", icon:3}, function(index){
-            var loading = layer.load();
-            $.ajax({
-                url: "<?= \yii\helpers\Url::toRoute(['jun/a7', 'order_id' => $model['o_id']]) ?>",
-                type: "get",
-                dataType: "json",
-                data: {},
-                success: function (data) {
-                    if (data.status === 1) {
-                        return layer.alert(data.message, {icon: data.status}, function(){
-                            return window.location.href = "<?= \yii\helpers\Url::toRoute(['borrow/list-wait-verify']) ?>";
-                        });
-                    }else{
-                        return layer.alert(data.message, {icon: data.status});
-                    }
-                },
-                error: function () {
-                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
-                },
-                complete: function () {
-                    layer.close(loading);
-                },
-            });
-        });
-    });
 </script>

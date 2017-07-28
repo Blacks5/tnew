@@ -91,7 +91,7 @@ class RepaymentController extends CoreBackendController
      */
     public function actionAlreadyRepay()
     {
-        $this->getView()->title = '待还款列表';
+        $this->getView()->title = '已还款列表';
         $model = new RepaymentSearch();
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
@@ -100,6 +100,25 @@ class RepaymentController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
+        $stat_data = array();
+        //已还总金额
+        $stat_data['r_total_repay'] = round($query->sum('r_total_repay'),2);
+        //本金
+        $stat_data['r_principal'] = round($query->sum('r_principal'),2);
+        //利息
+        $stat_data['r_interest'] = round($query->sum('r_interest'),2);
+        //贵宾服务包
+        $stat_data['r_add_service_fee'] = round($query->sum('r_add_service_fee'),2);
+        //随心包服务费
+        $stat_data['r_free_pack_fee'] = round($query->sum('r_free_pack_fee'),2);
+        //财务管理费
+        $stat_data['r_finance_mangemant_fee'] = round($query->sum('r_finance_mangemant_fee'),2);
+        //客户管理费
+        $stat_data['r_customer_management'] = round($query->sum('r_customer_management'),2);
+        //逾期滞纳金
+        $stat_data['r_overdue_money'] = round($query->sum('r_overdue_money'),2);
+
         array_walk($data, function(&$v){
             $n = 2;
             $v['o_total_price'] = round($v['o_total_price'], $n);
@@ -118,7 +137,8 @@ class RepaymentController extends CoreBackendController
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages,
+            'stat_data'=>$stat_data
         ]);
     }
 
@@ -166,6 +186,25 @@ class RepaymentController extends CoreBackendController
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
+        $stat_data = array();
+        //已还总金额
+        $stat_data['r_total_repay'] = round($query->sum('r_total_repay'),2);
+        //本金
+        $stat_data['r_principal'] = round($query->sum('r_principal'),2);
+        //利息
+        $stat_data['r_interest'] = round($query->sum('r_interest'),2);
+        //贵宾服务包
+        $stat_data['r_add_service_fee'] = round($query->sum('r_add_service_fee'),2);
+        //随心包服务费
+        $stat_data['r_free_pack_fee'] = round($query->sum('r_free_pack_fee'),2);
+        //财务管理费
+        $stat_data['r_finance_mangemant_fee'] = round($query->sum('r_finance_mangemant_fee'),2);
+        //客户管理费
+        $stat_data['r_customer_management'] = round($query->sum('r_customer_management'),2);
+        //逾期滞纳金
+        $stat_data['r_overdue_money'] = round($query->sum('r_overdue_money'),2);
+
         array_walk($data, function(&$v){
             $n = 2;
             $v['o_total_price'] = round($v['o_total_price'], $n);
@@ -184,7 +223,8 @@ class RepaymentController extends CoreBackendController
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages,
+            'stat_data'=>$stat_data
         ]);
     }
 

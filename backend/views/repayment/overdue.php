@@ -61,6 +61,20 @@ use yii\helpers\Url;
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover">
                                                 <thead>
+                                                <tr style="font-size: 18px;">
+                                                    <th class="text-danger" colspan="3" style="text-align: center">统计(单位:元)</th>
+                                                    <th class="text-danger"><?= $stat_data['r_total_repay']; ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_principal']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_interest']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_add_service_fee']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_free_pack_fee']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_finance_mangemant_fee']  ?></th>
+                                                    <th class="text-danger"><?= $stat_data['r_customer_management']  ?></th>
+                                                    <th class="text-danger"></th>
+                                                    <th class="text-danger"></th>
+                                                    <th class="text-danger"></th>
+                                                    <th colspan="2" class="text-danger"><?= $stat_data['r_overdue_money']  ?>元</th>
+                                                </tr>
                                                 <tr>
                                                     <th class="client-avatar">订单编号</th>
                                                     <th><a data-toggle="tab" href="#contact-3"

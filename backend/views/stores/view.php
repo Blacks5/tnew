@@ -196,6 +196,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary"
                        href="<?= Yii::$app->getUrlManager()->createUrl(['stores/update', 'id' => $model->s_id]) ?>">编辑</a>
+                    <?php if(($model->s_status == 3)||($model->s_status == 4)||($model->s_status == 1)){ ?>
+                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/activatestore']))) { ?>
+                            <a class="btn btn-primary" id="activate_store" href="javascript:void(0);" data-value="<?= $model->s_id?>">激活</a>
+                        <?php } ?>
+                    <?php }elseif($model->s_status == 10){ ?>
+                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/blockedstore']))) { ?>
+                            <a class="btn btn-primary" id="blocked_store" href="javascript:void(0);" data-value="<?= $model->s_id?>">冻结</a>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php if($model->s_status != 2){ ?>
+                        <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['stores/closestore']))) { ?>
+                            <a class="btn btn-primary" id="close_store" href="javascript:void(0);" data-value="<?= $model->s_id?>">关闭</a>
+                        <?php } ?>
+                    <?php } ?>
                     <a class="btn btn-default"
                        href="<?= Yii::$app->getUrlManager()->createUrl(['stores/index']) ?>">返回</a>
                 </div>
@@ -207,3 +221,94 @@ $this->params['breadcrumbs'][] = $this->title;
 <?= \yii\bootstrap\Html::jsFile('@web/js-too/bootstrap.min.js') ?>
 <?= \yii\bootstrap\Html::jsFile('@web/js-too/jquery.min.js') ?>
 <?= \yii\bootstrap\Html::jsFile('@web/js-too/content.min.js') ?>
+<?= \yii\helpers\Html::jsFile('@web/js/plugins/layer/layer.min.js') ?>
+
+<script>
+    //激活
+    $("#activate_store").click(function(ev){
+        var ev = ev;
+        layer.confirm("确定要激活此商户？", {title:"激活提示", icon:3}, function(index){
+            var loading = layer.load();
+            var s_id = $(ev.target).attr("data-value");
+            var url = "<?= \yii\helpers\Url::toRoute(['stores/activatestore']); ?>";
+            $.ajax({
+                url: url,
+                type: "get",
+                dataType: "json",
+                data: {s_id:s_id},
+                success: function(data){
+                    if(data.status==1){
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function(){
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function(){
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+
+    //冻结
+    $("#blocked_store").click(function(ev){
+        var ev = ev;
+        layer.confirm("冻结门店需要解除所有销售代表,确定要冻结？", {title:"冻结提示", icon:3}, function(index){
+            var loading = layer.load();
+            var s_id = $(ev.target).attr("data-value");
+            var url = "<?= \yii\helpers\Url::toRoute(['stores/blockedstore']); ?>";
+            $.ajax({
+                url: url,
+                type: "get",
+                dataType: "json",
+                data: {s_id:s_id},
+                success: function(data){
+                    if(data.status==1){
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function(){
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function(){
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+
+    //关闭门店
+    $("#close_store").click(function(ev){
+        var ev = ev;
+        layer.confirm("关闭门店需要解除所有销售代表,确定要关闭？", {title:"关闭提示", icon:3}, function(index){
+            var loading = layer.load();
+            var s_id = $(ev.target).attr("data-value");
+            var url = "<?= \yii\helpers\Url::toRoute(['stores/closestore']); ?>";
+            $.ajax({
+                url: url,
+                type: "get",
+                dataType: "json",
+                data: {s_id:s_id},
+                success: function(data){
+                    if(data.status==1){
+                        return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function(){
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function(){
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+
+</script>

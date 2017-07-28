@@ -61,7 +61,17 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_gov_name')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_service_charge')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_addr')->textInput(['class'=>'form-control']); ?>
-            <?= $form->field($model, 's_status')->dropDownList($store_status,['class'=>'form-control'])->label('状态'); ?>
+            <?php if(in_array($model->s_status,array(0,2,4))){ ?>
+                <div class="form-group field-stores-s_addr required">
+                    <label class="control-label col-sm-3" for="stores-s_addr">状态</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="stores-s_status" class="form-control"  disabled="disabled" name="Stores[s_status]" value="<?php echo($store_status[$model->s_status]); ?>">
+                        <div class="help-block help-block-error "></div>
+                    </div>
+                </div>
+            <?php }else{ ?>
+                <?= $form->field($model, 's_status')->dropDownList([3 => '待激活',1=>'审核拒绝',10=>'激活'])->label('状态'); ?>
+            <?php } ?>
             <?= $form->field($model, 's_province')->dropDownList($all_provinces, ['class'=>'form-control getpcc', 'data-id'=>2]); ?>
             <?= $form->field($model, 's_city')->dropDownList($all_citys, ['class'=>'form-control getpcc', 'default-value'=>$model->s_city]); ?>
             <?= $form->field($model, 's_county')->dropDownList($all_countys, ['class'=>'form-control getpcc', 'default-value'=>$model->s_county]); ?>

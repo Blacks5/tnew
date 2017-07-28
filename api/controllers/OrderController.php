@@ -150,7 +150,7 @@ class OrderController extends CoreApiController
         $model = new OrdersHelper();
         try {
             return $model->placeOrders(\Yii::$app->getRequest()->post());
-        } catch (CustomApiException $e) {
+        } catch (CustomCommonException $e) {
             return ['status' => 0, 'message' => $e->getMessage()];
         } catch (yii\base\Exception $e) {
 

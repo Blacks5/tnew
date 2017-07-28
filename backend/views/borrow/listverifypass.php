@@ -58,6 +58,11 @@
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover">
                                                 <thead>
+                                                <tr style="font-size: 18px;">
+                                                    <th colspan="2" class="text-danger" style="text-align: center;">统计(单位:元)</th>
+                                                    <th class="text-danger" >消费总金额:<?= $stat_data['o_total_price'] + 0; ?></th>
+                                                    <th class="text-danger" >贷款总金额:<?= $stat_data['o_total_price'] - $stat_data['o_total_deposit']; ?></th>
+                                                </tr>
                                                 <tr>
                                                     <th class="client-avatar">订单编号</th>
                                                     <th><a data-toggle="tab" href="#contact-3"

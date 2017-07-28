@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\components\CustomBackendException;
 use backend\models\AuthAssignment;
 use yii;
 use common\core\CoreCommonActiveRecord;
@@ -241,9 +242,12 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     {
         $this->scenario = 'create';
         if(!$this->load($param) || !$this->validate()){
-//            p($this->errors);
             return false;
         }
+        if(self::find()->where(['id_card_num'=>$this->id_card_num])->exists()){
+            throw new CustomBackendException('该身份证号码已存在');
+        }
+
         $this->setPassword($this->password_hash);
         $this->access_token = \yii::$app->security->generatePasswordHash($this->password_hash);
         $this->generateAuthkey();
