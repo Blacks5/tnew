@@ -38,8 +38,8 @@ class OverdueController extends Controller
      */
     private function getOverdueList()
     {
-//        $_time = strtotime(date('Y-m-d')); // 当天零点整的时间戳
-        $_time = strtotime(date('Y-m-d', strtotime('-3 days'))); // 过期3天内都不计算逾期
+        $_time = strtotime(date('Y-m-d')); // 当天零点整的时间戳
+//        $_time = strtotime(date('Y-m-d', strtotime('-3 days'))); // 过期3天内都不计算逾期
         $sql = "select * from repayment where r_pre_repay_date<=". $_time. " and r_status=". Repayment::STATUS_NOT_PAY. " and r_overdue_day < 90 order by r_pre_repay_date desc for update";
         $data = Yii::$app->getDb()->createCommand($sql)->queryAll();
         if(false === !empty($data)){
@@ -60,7 +60,13 @@ class OverdueController extends Controller
         foreach ($data as $v){
             $_t1 = (new \DateTime())->setTimestamp(strtotime(date('Y-m-d', $v['r_pre_repay_date']))); // 还款日的0点0时
             $r_overdue_day = $_t1->diff((new \DateTime()))->days; // 逾期天数
-            $r_overdue_money = round($v['r_total_repay'] * $r_overdue_day / 100, 2); // 滞纳金 = 月供* 逾期天数%
+            // 小于等于3天的，都不计算逾期滞纳金
+            if($r_overdue_day <= 3){
+                $r_overdue_money = 0;
+            }else{
+                $r_overdue_money = round($v['r_total_repay'] * $r_overdue_day / 100, 2); // 滞纳金 = 月供* 逾期天数%
+            }
+
             $result[$v['r_id']] = [
                 'r_overdue_day'=>$r_overdue_day,
                 'r_overdue_money'=>$r_overdue_money
