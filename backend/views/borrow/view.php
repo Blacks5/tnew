@@ -440,6 +440,16 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
                             <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a']))) { ?>
+                                <?php if(!isset($jzq_sign_log['applyNo'])){ ?>
+                                    <button class="btn btn-success" id="jun-a">上传合同</button>
+                                <?php } ?>
+                            <?php } ?>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a7']))) { ?>
+                                <?php if($jzq_sign_log['signStatus'] == 0){ ?>
+                                    <button class="btn btn-success" id="jun-a7">发送签约短信</button>
+                                <?php } ?>
+                            <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-pass']))) { ?>
                                 <button class="btn btn-success verify-end">终审放款</button>
                             <?php } ?>
@@ -799,4 +809,64 @@ $(".failpic").click(function(){
     }
 
     loadinit('oi_front_bank');
+</script>
+
+<script>
+
+       // 上传合同
+    $("#jun-a").click(function(){
+        layer.confirm("确定要上传借款合同？", {title:"上传合同", icon:3}, function(index){
+            var loading = layer.load();
+            $.ajax({
+                url: "<?= \yii\helpers\Url::toRoute(['jun/a', 'order_id' => $model['o_id']]) ?>",
+                type: "get",
+                dataType: "json",
+                data: {},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){
+                            return window.location.reload();
+                        });
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                }
+            });
+        });
+    });
+
+    //发送签约短信
+    $("#jun-a7").click(function(){
+        layer.confirm("确定要发送签约短信？", {title:"发送签约短信", icon:3}, function(index){
+            var loading = layer.load();
+            $.ajax({
+                url: "<?= \yii\helpers\Url::toRoute(['jun/a7', 'order_id' => $model['o_id']]) ?>",
+                type: "get",
+                dataType: "json",
+                data: {},
+                success: function (data) {
+                    if (data.status === 1) {
+                        return layer.alert(data.message, {icon: data.status}, function(){
+                            return window.location.reload();
+                        });
+                    }else{
+                        return layer.alert(data.message, {icon: data.status});
+                    }
+                },
+                error: function () {
+                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                },
+                complete: function () {
+                    layer.close(loading);
+                },
+            });
+        });
+    });
+
 </script>

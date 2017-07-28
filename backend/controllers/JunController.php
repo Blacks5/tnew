@@ -232,7 +232,7 @@ class JunController extends CoreBackendController
      */
     public function actionA10(){
         $requestObj=new DetailAnonyLinkRequest();
-        $requestObj->applyNo="APL890540460152590336";
+        $requestObj->applyNo="APL890933932307124224";
         //请求
         $junziqian = \Yii::$app->params['junziqian'];
         $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);

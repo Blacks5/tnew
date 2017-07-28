@@ -13,6 +13,7 @@ use common\components\CustomCommonException;
 use common\models\CalInterest;
 use common\models\Customer;
 use common\models\Goods;
+use common\models\JzqSign;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
@@ -134,8 +135,11 @@ class BorrowController extends CoreBackendController
                 $model['o_is_free_pack_fee']
                 );
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
+
+            //获取君子签记录
+            $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
 //            var_dump($goods_data, $model);die;
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -202,6 +206,13 @@ class BorrowController extends CoreBackendController
                 $userinfo = Yii::$app->getUser()->getIdentity();
                 // 状态必须为6（初审通过）的才可以终审
                 $model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one();
+                //获取君子签记录
+                $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
+                //只有君子签签约过得用户才能终审
+                if($jzq_sign_log['signStatus'] !== 1){
+                    throw new CustomBackendException('客户尚未签约，不可审核。', 4);
+                }
+
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
