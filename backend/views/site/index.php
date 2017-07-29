@@ -328,15 +328,27 @@ use mdm\admin\components\MenuHelper;
 //                console.log("收到消息");
                 //console.log(event.data);
 //                console.log(JSON.parse(event.data).type);
-                if(JSON.parse(event.data).type == 'loanNotify'){
+                if(JSON.parse(event.data).type == 'loanNotify') {
                     var n = new Notification("放款通知:", {
-                        icon : '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
-                        body : JSON.parse(event.data).message
+                        icon: '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
+                        body: JSON.parse(event.data).message
                     });
-                    n.onshow = function() {
+                    n.onshow = function () {
                         //console.log('显示通知信息');
                     };
-                    n.onclick = function() {
+                    n.onclick = function () {
+                        //alert('打开相关视图');
+                        n.close();
+                    };
+                }else if(JSON.parse(event.data).type == 'jzqNotify'){
+                    var n = new Notification("签约成功通知:", {
+                        icon: '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
+                        body: JSON.parse(event.data).message
+                    });
+                    n.onshow = function () {
+                        //console.log('显示通知信息');
+                    };
+                    n.onclick = function () {
                         //alert('打开相关视图');
                         n.close();
                     };
