@@ -349,6 +349,14 @@ class JunController extends CoreBackendController
         var_dump($responseJson); //null
     }
 
+    public function beforeAction($action)
+    {
+        if('callback' === $action->id){
+            $this->enableCsrfValidation = false;
+        }
+        return true;
+    }
+
     /**
      * 客户签约后，平台回调地址
      * @author too <hayto@foxmail.com>

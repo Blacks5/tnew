@@ -45,7 +45,8 @@ return [
             'jun/a12',
             'jun/a13',
             'jun/a15',
-            'jun/a16'
+            'jun/a16',
+            'jun/callback',
         ]
     ],
 
