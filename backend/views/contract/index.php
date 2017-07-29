@@ -59,14 +59,15 @@
             <dd>每月还款：<span class="info_box_span"><?=round($every_month_repay, 2)?> 元</span></dd>
             <dd>首次还款日：<span class="info_box_span"><?=date('Y-m-d', $data['first_repay_time'])?></span></dd>
             <dd>每月还款日期：<span class="info_box_span"> <?=date('d', $data['first_repay_time'])?>日</span></dd>
-            <dd>还款说明：<span class="info_box_span"> 天牛金融将在还款日从借款人银行卡自动扣除应还金额</span></dd>
-            <dd style="text-align: right;"><a href="/contract/paymentdesc">查看详细说明</a></dd>
+            <dd>还款说明：<span class="info_box_span"> 天牛金融将在还款日从借款人银行卡自动扣除应还金额</span> <a href="#flu">【见附录】</a> </dd>
+
         </dl>
     </div>
     <div class="w_div">
         <?php foreach ($data['data_goods'] as $k=>$v){ ?>
             <dl class="info_box">
-                <dt class="info_box_dt">商品信息(<?=$k+1?>)：</dt>
+                <dt class="info_box_dt">商品信息：</dt>
+<!--                <dt class="info_box_dt">商品信息(--><?//=$k+1?><!--)：</dt>-->
                 <dd>商品类型：<span class="info_box_span"><?= $v['g_goods_type']?> </span></dd>
                 <dd>商品品牌：<span class="info_box_span"> <?= $v['g_goods_name']?></span></dd>
                 <dd>商品型号：<span class="info_box_span"> <?= $v['g_goods_models']?></span></dd>
@@ -347,7 +348,7 @@
             6.天牛金融可不时的向借款人提供关于合同履行的优惠条款。与本合同的约定相比，该优惠条款将对借款人更有利。借款人可以通过合理的发生或方法对签署的优惠条款进行确认，经借款人确认后即生效，作为对本合同的变更。
             7.借款人主要勾选位于页面下方的“我同意”选项后，即视为借款人已经充分理解和同意本合同全部条款、内容及各类规则，本合同即对借款人及天牛金融产生法律效力，借款人放弃以为签署书面协议为由否认本合同的效力之抗辩或主张。
 
-            <h5>附录:还款说明</h5>
+            <h2 id="flu">附录：还款说明</h2>
             本人确认一旦提交本借款申请表，即应当在签署本借款申请表后3日内将相关商品的首付金额以银行转账方式支付至上述指定还款账户，否则客户服务供应商有权拒绝接受本人提交的申请并将自付金额按照转账汇款原路径退款,
             本人确认该等转账汇款账户系本人合法所有并确保其可以接收退款，只要按照转账汇款原路径退还自付金额，即视为自付金额已经向本人退还。
             本人选择银行代扣还款，表明本人同意并授权出借人深圳天牛互联网金融服务有限公司（“客户服务供应商”）可通过银行从般若指定的银行账户（即以上客户个人账户）中将每月还款额及其他应付款项转入指定还款账户。
