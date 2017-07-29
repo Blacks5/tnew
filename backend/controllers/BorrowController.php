@@ -209,7 +209,7 @@ class BorrowController extends CoreBackendController
                 //获取君子签记录
                 $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
                 //只有君子签签约过得用户才能终审
-                if($jzq_sign_log['signStatus'] !== 1){
+                if($jzq_sign_log['signStatus'] !== JzqSign::STATUS_SIGN_AND_BAOQUAN){
                     throw new CustomBackendException('客户尚未签约，不可审核。', 4);
                 }
 

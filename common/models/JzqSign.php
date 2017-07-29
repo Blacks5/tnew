@@ -22,6 +22,11 @@ use Yii;
  */
 class JzqSign extends \yii\db\ActiveRecord
 {
+
+    const STATUS_WAIT_SIGN = 0; //待签约
+    const STATUS_ALREADY_SIGNED = 1; // 已签约
+    const STATUS_REFUSE_SIGN = 2; // 拒签
+    const STATUS_SIGN_AND_BAOQUAN = 3;// 签约加保全
     /**
      * @inheritdoc
      */
@@ -38,8 +43,8 @@ class JzqSign extends \yii\db\ActiveRecord
         return [
             [['signStatus', 'operator_id', 'created_at', 'updated_at'], 'integer'],
             [['o_serial_id', 'applyNo'], 'string', 'max' => 30],
-            [['IdentityType', 'fullName'], 'string', 'max' => 100],
-            [['optTime', 'Timestamp', 'operator_realname'], 'string', 'max' => 20],
+            [['identityType', 'fullName'], 'string', 'max' => 100],
+            [['optTime', 'timestamp', 'operator_realname', 'identityCard'], 'string', 'max' => 20],
         ];
     }
 
@@ -52,15 +57,16 @@ class JzqSign extends \yii\db\ActiveRecord
             'id' => 'ID',
             'o_serial_id' => '核心系统客户订单号',
             'applyNo' => '签约编号',
-            'IdentityType' => '证件类型',
+            'identityType' => '证件类型',
             'fullName' => '企业名称/个人姓名',
             'optTime' => '操作时间',
             'signStatus' => '0 未签、 1 已签、 2 拒签',
-            'Timestamp' => '回传信息发送时间',
+            'timestamp' => '回传信息发送时间',
             'operator_id' => '操作人ID',
             'operator_realname' => '操作人姓名',
             'created_at' => '记录创建时间',
             'updated_at' => '记录更新时间',
+            'identityCard' => '身份证号码',
         ];
     }
 }

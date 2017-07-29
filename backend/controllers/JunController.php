@@ -366,36 +366,37 @@ class JunController extends CoreBackendController
         try{
             $request = Yii::$app->getRequest();
             $post = $request->post();
+            /*$post = [
+                "sign"=>"94c19db05ad83c5b3f18a60c57e93a2e1470fd10",
+            "timestamp"=>"1501338027078",
+            "identityType"=>"1",
+            "optTime"=>"1501336848000",
+            "signStatus"=>"3",
+            "applyNo"=>"APL891288745368752128",
+            "identityCard"=>"510623198812250210",
+            "fullName"=>"涂鸿"
+            ];*/
 
-            ob_start();
-            var_dump($post);
-            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
 
             $applyNo = $post['applyNo'] ?? '';
             $model = JzqSign::find()->where(['applyNo'=>$applyNo])->one();
             if(false === !empty($model)){
                 throw new CustomBackendException('数据不存在');
             }
-            $model->IdentityType = $post['IdentityType'];
+            $model->identityType = $post['identityType'];
             $model->fullName = $post['fullName'];
             $model->identityCard = $post['identityCard'];
-            $model->optTIme = $post['optTIme'];
+            $model->optTime = $post['optTime'];
             $model->signStatus = $post['signStatus'];
-            $model->Timestamp = $post['Timestamp'];
+            $model->timestamp = $post['timestamp'];
             $model->updated_at = $_SERVER['REQUEST_TIME'];
             if(false === $model->save()){
-                ob_start();
-                var_dump($model->getErrors());
-                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
                 throw new CustomBackendException('修改状态失败');
             }
-
-
-
         }catch (CustomBackendException $e){
-
+            var_dump($e->getMessage());
         }catch (\Exception $e){
-
+            var_dump($e->getMessage());
         }
     }
 
