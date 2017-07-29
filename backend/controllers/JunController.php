@@ -179,7 +179,7 @@ class JunController extends CoreBackendController
     /**
      * 短信签约提醒
      */
-    public function actionA7($orderid){
+    public function actionA7($order_id){
 
         $request = Yii::$app->getRequest();
         if($request->getIsAjax()){
@@ -187,7 +187,7 @@ class JunController extends CoreBackendController
             try{
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
-                $order_data = Orders::getOne($orderid);
+                $order_data = Orders::getOne($order_id);
                 if($order_data === false){
                     return ['status' => 2, 'message' => '数据不存在!'];
                 }else{
