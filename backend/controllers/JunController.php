@@ -372,7 +372,7 @@ class JunController extends CoreBackendController
             file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
 
             $applyNo = $post['applyNo'] ?? '';
-            $model = JzqSign::find()->where(['applyNO'=>$applyNo])->one();
+            $model = JzqSign::find()->where(['applyNo'=>$applyNo])->one();
             if(false === !empty($model)){
                 throw new CustomBackendException('数据不存在');
             }
