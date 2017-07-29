@@ -10,6 +10,7 @@
 namespace backend\controllers;
 
 
+use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
 use com\jzq\api\model\account\OrganizationAuditStatusRequest;
 use com\jzq\api\model\account\OrganizationCreateRequest;
@@ -348,6 +349,41 @@ class JunController extends CoreBackendController
         var_dump($responseJson); //null
     }
 
+    /**
+     * 客户签约后，平台回调地址
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionCallback()
+    {
+        try{
+            $request = Yii::$app->getRequest();
+            $post = $request->post();
 
+            ob_start();
+            var_dump($post);
+            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+
+            $applyNo = $post['applyNo'] ?? '';
+            $model = JzqSign::find()->where(['applyNO'=>$applyNo])->one();
+            if(false === !empty($model)){
+                throw new CustomBackendException('数据不存在');
+            }
+            $model->IdentityType = $post['IdentityType'];
+            $model->fullName = $post['fullName'];
+            $model->identityCard = $post['identityCard'];
+            $model->optTIme = $post['optTIme'];
+            $model->signStatus = $post['signStatus'];
+            $model->Timestamp = $post['Timestamp'];
+            $model->updated_at = $_SERVER['REQUEST_TIME'];
+            if(false === $model->save()){
+                throw new CustomBackendException('修改状态失败');
+            }
+
+        }catch (CustomBackendException $e){
+
+        }catch (\Exception $e){
+
+        }
+    }
 
 }
