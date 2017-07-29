@@ -387,6 +387,10 @@ class JunController extends CoreBackendController
                 throw new CustomBackendException('修改状态失败');
             }
 
+            ob_start();
+            var_dump($model->getErrors());
+            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+
         }catch (CustomBackendException $e){
 
         }catch (\Exception $e){
