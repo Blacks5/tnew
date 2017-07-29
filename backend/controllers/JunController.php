@@ -393,6 +393,7 @@ class JunController extends CoreBackendController
             if(false === $model->save()){
                 throw new CustomBackendException('修改状态失败');
             }
+            echo json_encode(['success'=>true]);
         }catch (CustomBackendException $e){
             var_dump($e->getMessage());
         }catch (\Exception $e){
