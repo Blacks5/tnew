@@ -395,9 +395,11 @@ class JunController extends CoreBackendController
             }
             echo json_encode(['success'=>true]);
         }catch (CustomBackendException $e){
-            var_dump($e->getMessage());
+//            var_dump($e->getMessage());
+            echo json_encode(['success'=>false, 'msg'=>$e->getMessage()]);
         }catch (\Exception $e){
-            var_dump($e->getMessage());
+//            var_dump($e->getMessage());
+            echo json_encode(['success'=>false, 'msg'=>'系统错误']);
         }
     }
 
