@@ -7,7 +7,7 @@ CREATE TABLE `jzq_sign` (
   `IdentityType` varchar(100) DEFAULT NULL COMMENT '证件类型',
   `fullName` varchar(100) DEFAULT NULL COMMENT '企业名称/个人姓名',
   `optTime` char(20) DEFAULT NULL COMMENT '操作时间',
-  `signStatus` tinyint(3) DEFAULT '0' COMMENT '0 未签、 1 已签、 2 拒签',
+  `signStatus` tinyint(3) DEFAULT '0' COMMENT '0 未签、 1 已签、 2 拒签 3签约+保全都完成',
   `Timestamp` char(20) DEFAULT NULL COMMENT '回传信息发送时间',
   `operator_id` int(10) DEFAULT NULL COMMENT '操作人ID',
   `operator_realname` varchar(20) DEFAULT NULL COMMENT '操作人姓名',
