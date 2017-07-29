@@ -67,7 +67,6 @@
         <?php foreach ($data['data_goods'] as $k=>$v){ ?>
             <dl class="info_box">
                 <dt class="info_box_dt">商品信息：</dt>
-<!--                <dt class="info_box_dt">商品信息(--><?//=$k+1?><!--)：</dt>-->
                 <dd>商品类型：<span class="info_box_span"><?= $v['g_goods_type']?> </span></dd>
                 <dd>商品品牌：<span class="info_box_span"> <?= $v['g_goods_name']?></span></dd>
                 <dd>商品型号：<span class="info_box_span"> <?= $v['g_goods_models']?></span></dd>
@@ -120,7 +119,7 @@
     <h3>第一部分 借款明细</h3>
     <dl class="info_box">
         <dt>
-        <h4 style="width: 50%;float: left;">借款类型：商品贷</h4><h4 style="width: 50%;float: left;">合同编号：</h4></dt>
+        <h4 style="width: 50%;float: left;">借款类型：商品贷</h4><h4 style="width: 50%;float: left;">合同编号：<?=$data['o_serial_id']?></h4></dt>
         <dd>
             <table class="table table-bordered">
                 <tbody>
