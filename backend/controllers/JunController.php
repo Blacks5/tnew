@@ -384,12 +384,13 @@ class JunController extends CoreBackendController
             $model->Timestamp = $post['Timestamp'];
             $model->updated_at = $_SERVER['REQUEST_TIME'];
             if(false === $model->save()){
+                ob_start();
+                var_dump($model->getErrors());
+                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
                 throw new CustomBackendException('修改状态失败');
             }
 
-            ob_start();
-            var_dump($model->getErrors());
-            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+
 
         }catch (CustomBackendException $e){
 
