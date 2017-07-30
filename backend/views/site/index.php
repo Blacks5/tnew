@@ -340,18 +340,6 @@ use mdm\admin\components\MenuHelper;
                         //alert('打开相关视图');
                         n.close();
                     };
-                }else if(JSON.parse(event.data).type == 'jzqNotify'){
-                    var n = new Notification("签约成功通知:", {
-                        icon: '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
-                        body: JSON.parse(event.data).message
-                    });
-                    n.onshow = function () {
-                        //console.log('显示通知信息');
-                    };
-                    n.onclick = function () {
-                        //alert('打开相关视图');
-                        n.close();
-                    };
                 }else{
                     self.saveData(event);
                 }
