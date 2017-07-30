@@ -313,7 +313,7 @@ left join customer on customer.c_id=orders.o_customer_id
 //                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
 //                $model = Yii::$app->getDb()->createCommand($sql, [':order_id' => $order_id])->queryOne();
                 $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
-//                var_dump($model);die;
+                var_dump($model);die;
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
