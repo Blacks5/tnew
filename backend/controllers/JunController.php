@@ -210,7 +210,7 @@ class JunController extends CoreBackendController
                         $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
                         //以下为返回的一些处理
                         $responseJson=json_decode($response);
-
+//var_dump($responseJson);
                         if($responseJson->success){
                             return ['status' => 1, 'message' => '短信发送成功!'];
                         }else{
