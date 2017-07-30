@@ -310,14 +310,12 @@ class BorrowController extends CoreBackendController
                 $sql = "select orders.*,customer.*,order_images.oi_after_contract from orders 
 left join customer on customer.c_id=orders.o_customer_id 
  LEFT join order_images on o_images_id=oi_id where o_id=:order_id and o_status=6 limit 1 for update";
-//                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
                 $model = Yii::$app->getDb()->createCommand($sql, [':order_id' => $order_id])->queryOne();
-//                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
-                var_dump($model);die;
+//                var_dump($model);die;
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
-                if(!$model->o_product_code){
+                if(!$model['o_product_code']){
                     throw new CustomBackendException('请先填写商品代码!', 4);
                 }
                 // 1,2,7,8都表示已经签约或签约处理中
