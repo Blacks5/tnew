@@ -720,4 +720,76 @@ left join customer on customer.c_id=orders.o_customer_id
 //        p($data);
         return $this->render('pics', ['data' => $data]);
     }
+
+
+    /**
+     * 添加(修改)商品代码
+     * @param $order_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionEditProductCode($order_id)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_product_code = trim($request->post('o_product_code'));
+
+                if (empty($o_product_code)) {
+                    throw new CustomBackendException('请填写商品代码', 0);
+                }
+
+                if (!$model = Orders::find()->where(['o_id' => $order_id])->one()) {
+                    throw new CustomBackendException('订单信息不存在!', 4);
+                }
+                $model->o_product_code = $o_product_code;
+                if (!$model->save(false)) {
+                    throw new CustomBackendException('信息提交失败', 5);
+                }
+                return ['status' => 1, 'message' => '信息提交成功'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    /**
+     * 检测商品代码
+     * @param $order_id
+     * @return array
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionCheckProductCode()
+    {
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
+            try {
+                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
+                $o_product_code = trim($request->post('o_product_code'));
+
+                if(empty($o_product_code)){
+                    throw new CustomBackendException('请填写商品代码', 0);
+                }
+
+                if(!$model = Orders::find()->where(['o_product_code' => $o_product_code])->all()) {
+                    return ['status' => 1, 'message' => '无重复商品代码订单'];
+                }else{
+                    $model_str = '';
+                    foreach ($model as $k=>$v){
+                        $model_str .=  ($k+1) . ',客户ID:' . $v['o_customer_id'] . ',订单号' . $v['o_serial_id']  .'<br/>';
+                    }
+                    return ['status' => 1, 'message' => $model_str];
+                }
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
 }
