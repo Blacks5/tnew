@@ -148,7 +148,7 @@ class CalInterest
             $Total_interest = $Total_interest + $_temp['r_interest']; // 总产生利息
         }
         try {
-            echo Yii::$app->db->createCommand()->batchInsert(Repayment::tableName(), $columns, $data)->getRawSql();die;
+//            echo Yii::$app->db->createCommand()->batchInsert(Repayment::tableName(), $columns, $data)->getRawSql();die;
             // 插入的条数与期数不同就回滚
             if (Yii::$app->db->createCommand()->batchInsert(Repayment::tableName(), $columns, $data)->execute() != $order_info['p_period']) {
                 throw new CustomCommonException('还款计划生成错误，请重试', 5);
