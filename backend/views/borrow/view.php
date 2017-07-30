@@ -86,6 +86,21 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             </a>
                         </div>
                     </div>
+
+                    <?php if(($model['o_status'] == 3)||($model['o_status'] == 4)){ ?>
+                        <div>
+                            <label class="col-sm-2 control-label">
+                                <?php if($model['o_status'] == 3){ ?>
+                                    撤销原因：
+                                <?php }elseif($model['o_status'] == 4){ ?>
+                                    取消原因：
+                                <?php } ?>
+                            </label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['o_operator_remark']?:"无"; ?></p>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
 
 
@@ -419,7 +434,49 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 
                     </div>
                 <?php } ?>
-
+                <?php if($loan_data){ ?>
+                    <h3 class="center color-orange">代发记录详情</h3>
+                    <div class="hr-line-dashed"></div>
+                    <!--代发记录详情-->
+                    <div class="form-group">
+                        <div>
+                            <label class="col-sm-2 control-label">代发流水号：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $loan_data['contractNo']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">代发金额：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $loan_data['amount']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">实际代发金额：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $loan_data['realRemittanceAmount']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">代发手续费：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $loan_data['chargeAmount']; ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">代发操作时间：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= date('Y-d-m H:i:s',$loan_data['created_at']); ?></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="col-sm-2 control-label">操作人员：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $loan_data['y_operator_realname'] ; ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
 
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_WAIT_CHECK) { ?>
                     <div class="form-group">
@@ -893,13 +950,46 @@ $(".failpic").click(function(){
            var o_product_code_default = "<?= $model['o_product_code']; ?>";
            layer.prompt({title: '请输入商品代码，并确认',value: o_product_code_default, formType: 2}, function(o_product_code, index){
                $.ajax({
-                   url: "<?= yii\helpers\Url::toRoute(['borrow/edit-product-code', 'order_id' => $model['o_id']]); ?>",
+                   url: "<?= yii\helpers\Url::toRoute(['borrow/check-product-code']); ?>",
                    type: "post",
                    dataType: "json",
                    data: {o_product_code: o_product_code, "<?= Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken(); ?>"},
                    success: function (data) {
-                       if (data.status === 1) {
-                           return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                       if(data.status === 1){
+                           if (data.status === 1) {
+                               layer.alert(data.message, {title:'商品代码重复提示',icon: data.status}, function(){
+                                   layer.confirm('您确定要添加此商品代码？', {
+                                       btn: ['确认','取消'] //按钮
+                                   }, function(){
+                                       $.ajax({
+                                           url: "<?= yii\helpers\Url::toRoute(['borrow/edit-product-code', 'order_id' => $model['o_id']]); ?>",
+                                           type: "post",
+                                           dataType: "json",
+                                           data: {o_product_code: o_product_code, "<?= Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken(); ?>"},
+                                           success: function (data) {
+                                               if (data.status === 1) {
+                                                   return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                                               }else{
+                                                   return layer.alert(data.message, {icon: data.status});
+                                               }
+                                           },
+                                           error: function () {
+                                               layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                                           },
+                                           complete: function () {
+                                               layer.close(loading);
+                                               layer.close(index);
+                                           },
+                                       });
+                                   }, function(){
+                                       layer.close(loading);
+                                       layer.close(index);
+                                   });
+                               });
+                           }else{
+                               return layer.alert(data.message, {icon: data.status});
+                           }
+
                        }else{
                            return layer.alert(data.message, {icon: data.status});
                        }
