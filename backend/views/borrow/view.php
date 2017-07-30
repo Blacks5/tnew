@@ -410,6 +410,12 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 <p class="form-control-static"><?= $v['g_goods_name'] . '(' . "{$v['g_goods_models']}" . ')'; ?></p>
                             </div>
                         </div>
+                        <div>
+                            <label class="col-sm-2 control-label">商品代码：</label>
+                            <div class="col-sm-2">
+                                <p class="form-control-static"><?= $model['o_product_code'] ? $model['o_product_code'] : '暂未填写'; ?></p>
+                            </div>
+                        </div>
 
                     </div>
                 <?php } ?>
@@ -461,6 +467,15 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-failpic']))) { ?>
                                 <button class="btn btn-danger failpic">照片不合格</button>
+                            <?php } ?>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/edit-product-code']))) { ?>
+                                <button class="btn btn-danger" id="add_product_code">
+                                    <?php if($model['o_product_code']){ ?>
+                                        编辑商品代码
+                                    <?php }else{ ?>
+                                        添加商品代码
+                                    <?php } ?>
+                                </button>
                             <?php } ?>
                         </div>
                     </div>
@@ -869,4 +884,35 @@ $(".failpic").click(function(){
         });
     });
 
+
+       layer.config({
+           extend: 'extend/layer.ext.js'
+       });
+       // 添加(修改)商品代码
+       $("#add_product_code").click(function(){
+           var o_product_code_default = "<?= $model['o_product_code']; ?>";
+           layer.prompt({title: '请输入商品代码，并确认',value: o_product_code_default, formType: 2}, function(o_product_code, index){
+               $.ajax({
+                   url: "<?= yii\helpers\Url::toRoute(['borrow/edit-product-code', 'order_id' => $model['o_id']]); ?>",
+                   type: "post",
+                   dataType: "json",
+                   data: {o_product_code: o_product_code, "<?= Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken(); ?>"},
+                   success: function (data) {
+                       if (data.status === 1) {
+                           return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                       }else{
+                           return layer.alert(data.message, {icon: data.status});
+                       }
+                   },
+                   error: function () {
+                       layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                   },
+                   complete: function () {
+                       layer.close(loading);
+                       layer.close(index);
+                   },
+               });
+           });
+
+       });
 </script>

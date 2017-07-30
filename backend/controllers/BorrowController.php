@@ -109,7 +109,28 @@ class BorrowController extends CoreBackendController
             'pages' => $pages
         ]);
     }
-
+    /**
+     * 已取消列表
+     * @return string
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionListVerifyCancel()
+    {
+        $this->getView()->title = '已撤销列表';
+        $model = new OrdersSearch();
+        $query = $model->search(Yii::$app->getRequest()->getQueryParams());
+        $query = $query->andWhere(['o_status' => Orders::STATUS_CANCEL]);
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        return $this->render('listverifyrevoke', [
+            'sear' => $model->getAttributes(),
+            'model' => $data,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
+    }
     /**
      * 已通过列表
      * @return string
@@ -125,11 +146,21 @@ class BorrowController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        //统计数据
+        $stat_data = [];
+        //总金额
+        $stat_data['o_total_price'] = $query->sum('o_total_price');
+
+        //首付金额
+        $stat_data['o_total_deposit'] = $query->sum('o_total_deposit');
+
+
         return $this->render('listverifypass', [
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
-            'pages' => $pages
+            'pages' => $pages,
+            'stat_data'=>$stat_data
         ]);
     }
 
@@ -284,6 +315,9 @@ left join customer on customer.c_id=orders.o_customer_id
 //                var_dump($model);die;
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
+                }
+                if(!$model->o_product_code){
+                    throw new CustomBackendException('请先填写商品代码!', 4);
                 }
                 // 1,2,7,8都表示已经签约或签约处理中
                 if(YijifuSign::find()->where(['status'=>[1,2,7,8], 'orderNo'=>$order_id])->exists()){
