@@ -358,7 +358,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 $loanAmount = round($model['o_total_price'] - $model['o_total_deposit'], 3);
 
 
-                var_dump($model['c_customer_name'],//'钟建蓉',
+                /*var_dump($model['c_customer_name'],//'钟建蓉',
                     $model['c_customer_id_card'],//'510623197905114125',
                     $model['c_banknum'],
                     $model['c_customer_cellphone'],
@@ -367,7 +367,7 @@ left join customer on customer.c_id=orders.o_customer_id
                     $model['oi_after_contract'],
                     $r_total_repay,
                     $loanAmount
-                );die;
+                );die;*/
 
 
                 $handle->signContractWithCustomer($model['c_customer_name'],//'钟建蓉',
