@@ -208,8 +208,9 @@ class BorrowController extends CoreBackendController
                 $model = Orders::findBySql('select * from orders where o_id=:order_id and o_status=6 limit 1 for update', [':order_id' => $order_id])->one();
                 //获取君子签记录
                 $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
+//                var_dump($jzq_sign_log->toArray());die;
                 //只有君子签签约过得用户才能终审
-                if($jzq_sign_log['signStatus'] !== JzqSign::STATUS_SIGN_AND_BAOQUAN){
+                if($jzq_sign_log['signStatus'] != JzqSign::STATUS_SIGN_AND_BAOQUAN){
                     throw new CustomBackendException('客户尚未签约，不可审核。', 4);
                 }
 
