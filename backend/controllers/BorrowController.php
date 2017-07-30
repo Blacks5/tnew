@@ -151,9 +151,11 @@ class BorrowController extends CoreBackendController
                 );
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
-//          var_dump($loan_data);die;
-//            var_dump($goods_data, $model);die;
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data]);
+
+            //获取君子签记录
+            $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
+//            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'jzq_sign_log'=>$jzq_sign_log]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
