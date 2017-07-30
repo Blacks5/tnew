@@ -311,8 +311,8 @@ class BorrowController extends CoreBackendController
 left join customer on customer.c_id=orders.o_customer_id 
  LEFT join order_images on o_images_id=oi_id where o_id=:order_id and o_status=6 limit 1 for update";
 //                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
-//                $model = Yii::$app->getDb()->createCommand($sql, [':order_id' => $order_id])->queryOne();
-                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
+                $model = Yii::$app->getDb()->createCommand($sql, [':order_id' => $order_id])->queryOne();
+//                $model = Orders::findBySql($sql, [':order_id' => $order_id])->one();
                 var_dump($model);die;
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
