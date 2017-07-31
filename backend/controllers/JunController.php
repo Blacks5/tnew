@@ -48,6 +48,10 @@ use common\components\CustomCommonException;
 class JunController extends CoreBackendController
 {
 
+    public function actionIndexp()
+    {
+        echo "我是菜单";
+    }
     /**
      * @author lilaotou <liwansen@foxmail.com>
      * 上传合同
