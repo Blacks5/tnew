@@ -414,8 +414,9 @@ left join customer on customer.c_id=orders.o_customer_id
             // 修改签约表，修改订单表，修改客户表，生成还款计划，发ws通知
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
-                // 只有待回调的才能处理
-                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
+                // 只有待回调的才能处理【因为会回调两次，第二次来时状态已经不为2了】
+//                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
+                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo  order by created_at desc  limit 1 for update";
                 $yijifu_data = YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
                 $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
                 $order_data = Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->one();
