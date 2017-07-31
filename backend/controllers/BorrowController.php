@@ -427,7 +427,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 var_dump($order_data);
                 var_dump($customer_data);
                 file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
-                die;
+//                die;
 
 
                 $status_arr = [
