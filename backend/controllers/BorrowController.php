@@ -469,15 +469,20 @@ left join customer on customer.c_id=orders.o_customer_id
                 $trans->commit();
                 echo "success";
             }catch (CustomBackendException $e){
+                file_put_contents('/dev.txt', $e->getMessage(), FILE_APPEND);
                 $trans->rollBack();// 发送给后台通知
                 $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
             }catch (\Exception $e)
             {
+                file_put_contents('/dev.txt', $e->getMessage(), FILE_APPEND);
                 $trans->rollBack();
                 $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], '系统错误');
             }
         }else{
             // 接口调用失败
+            ob_start();
+            var_dump($post);
+            file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
         }
     }
 
