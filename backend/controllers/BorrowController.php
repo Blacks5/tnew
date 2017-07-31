@@ -482,9 +482,9 @@ left join customer on customer.c_id=orders.o_customer_id
                 $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
             }catch (\Exception $e)
             {
-                ob_start();
+                /*ob_start();
                 var_dump($e);
-                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);*/
 //                file_put_contents('/dev.txt', $e->getMessage(), FILE_APPEND);
                 $trans->rollBack();
                 $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], '系统错误');
