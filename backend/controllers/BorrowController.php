@@ -422,6 +422,14 @@ left join customer on customer.c_id=orders.o_customer_id
                 $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
                 $customer_data = Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->one();
 
+                ob_start();
+                var_dump($yijifu_data);
+                var_dump($order_data);
+                var_dump($customer_data);
+                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+                die;
+
+
                 $status_arr = [
                     'SIGN_DEALING' => 7, // 审核中
                     'SIGN_FAIL' => 6, // 审核失败
