@@ -99,7 +99,61 @@ class JunController extends CoreBackendController
                             'chaptes'=>[
                                 ['offsetX'=>0.8,'offsetY'=>0.8]
                             ]
-                        ]
+                        ],
+                        [
+                            'page'=>1,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>2,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>3,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>4,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>5,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>6,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>7,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>8,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
+                        [
+                            'page'=>9,
+                            'chaptes'=>[
+                                ['offsetX'=>0.8,'offsetY'=>0.8]
+                            ]
+                        ],
                     ]);
 
                     array_push($signatories, $signatory);
