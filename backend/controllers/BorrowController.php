@@ -423,8 +423,11 @@ left join customer on customer.c_id=orders.o_customer_id
                 $customer_data = Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->one();
 
                 ob_start();
-                echo "<hr>";
+                echo "eof\r\n";
                 var_dump($post);
+                echo YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->createCommand()->getRawSql();
+                echo Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->createCommand()->getRawSql();
+                echo Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->createCommand()->getRawSql();
                 var_dump($yijifu_data);
                 var_dump($order_data);
                 var_dump($customer_data);
