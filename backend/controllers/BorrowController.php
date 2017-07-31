@@ -425,8 +425,11 @@ left join customer on customer.c_id=orders.o_customer_id
                 ob_start();
                 echo "eof\r\n";
                 var_dump($post);
+                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
                 echo YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->createCommand()->getRawSql();
+                $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
                 echo Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->createCommand()->getRawSql();
+                $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
                 echo Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->createCommand()->getRawSql();
                 var_dump($yijifu_data);
                 var_dump($order_data);
