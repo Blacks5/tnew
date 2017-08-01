@@ -46,6 +46,13 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="hr-line-dashed"></div>
             <div class="form-group">
+                <label class="col-sm-3 control-label">结算账户的账户所有人姓名：</label>
+                <div class="col-sm-8">
+                    <p class="form-control-static"><?= $model->s_bank_people_name; ?></p>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group">
                 <label class="col-sm-3 control-label">结算账户所有人身份证号码：</label>
                 <div class="col-sm-8">
                     <p class="form-control-static"><?= $model->s_idcard_num; ?></p>
