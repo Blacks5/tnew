@@ -104,6 +104,8 @@ class ReturnMoney extends AbstractYijifu
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
 
+
+
         // 发起请求
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
@@ -112,6 +114,13 @@ class ReturnMoney extends AbstractYijifu
         $reuturn = false;
         if($response->getIsOk()){
             $ret = $response->getData();
+
+            ob_start();
+            var_dump($param_arr);
+            echo "=========================\r\n";
+            var_dump($ret);
+            file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);
+
             // 代表接口调用成功
             if(true === $ret['success']) {
                 $status = 2; // 等待回掉
