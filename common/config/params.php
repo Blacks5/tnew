@@ -118,11 +118,18 @@ return [
 
 
 
-    "yijifu"=>[
+    "yijifu-test"=>[
         "api"=>"http://merchantapi.yijifu.net/gateway.html",
         "partnerId"=>"20160831020000752643", // 签约的服务平台账号对应的合作方ID
         "privateKey"=>"b04fbc6afc77b131c355dd1788215dbb" , // 私钥
     ],
+
+    "yijifu"=>[
+        "api"=>"https://api.yxtweb.com/gateway.html",
+        "partnerId"=>"20170725020014672546", // 签约的服务平台账号对应的合作方ID
+        "privateKey"=>"3eb7482931b0f9b99c032e49cd4546fe" , // 私钥
+    ],
+
     "junziqian"=>[
         'appkey' =>  'b24da5e8ccc283cb',
         'secret' => '8e369967b24da5e8ccc283cb34fc6efc',
