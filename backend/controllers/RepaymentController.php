@@ -262,7 +262,7 @@ class RepaymentController extends CoreBackendController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionRepay_bak($refund_id)
+    private function RepayBak($refund_id)
     {
         if(Yii::$app->getRequest()->getIsAjax()) {
             $trans = Yii::$app->getDb()->beginTransaction();
@@ -311,6 +311,7 @@ class RepaymentController extends CoreBackendController
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
+
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
