@@ -97,7 +97,8 @@ class ReturnMoney extends AbstractYijifu
             'operateType'=>'SIGN',
         ];
 //        $this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['borrow/verify-pass-callback']);
-        $this->notifyUrl = "http://119.23.15.90:8383/borrow/verify-pass-callback";
+//        $this->notifyUrl = "http://119.23.15.90:8383/borrow/verify-pass-callback";
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
@@ -181,7 +182,8 @@ class ReturnMoney extends AbstractYijifu
             'merchSignOrderNo'=>$merchSignOrderNo,
             'deductAmount'=>$deductAmount
         ];
-        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
+//        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/repayment/deduct-callback";
         $common_param = $this->getCommonParams();
         $param = array_merge($common_param, $param_arr);
         $param = $this->prepQueryParams($param);

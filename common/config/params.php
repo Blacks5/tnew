@@ -116,7 +116,8 @@ return [
 
 
 
-
+    // 易极付回调需要使用
+    'domain'=>'http://119.23.15.90:8383',
 
     "yijifu-test"=>[
         "api"=>"http://merchantapi.yijifu.net/gateway.html",
