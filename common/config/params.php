@@ -130,10 +130,15 @@ return [
         "privateKey"=>"3eb7482931b0f9b99c032e49cd4546fe" , // 私钥
     ],
 
-    "junziqian"=>[
+    "junziqian-test"=>[
         'appkey' =>  'b24da5e8ccc283cb',
         'secret' => '8e369967b24da5e8ccc283cb34fc6efc',
         'service_url' => 'http://sandbox.api.junziqian.com/services'
+    ],
+    "junziqian"=>[
+        'appkey' =>  'bdbb597509c94cd2',
+        'secret' => '5bd94203bdbb597509c94cd294f69e8a',
+        'service_url' => 'http://api.junziqian.com/services'
     ],
     'ws'=>'ws://119.23.15.90:8081'
 ];
