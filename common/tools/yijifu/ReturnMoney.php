@@ -115,11 +115,11 @@ class ReturnMoney extends AbstractYijifu
         if($response->getIsOk()){
             $ret = $response->getData();
 
-            ob_start();
+            /*ob_start();
             var_dump($param_arr);
             echo "=========================\r\n";
             var_dump($ret);
-            file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);
+            file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);*/
 
             // 代表接口调用成功
             if(true === $ret['success']) {
