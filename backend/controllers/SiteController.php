@@ -2,6 +2,7 @@
 namespace backend\controllers;
 // tz
 use common\models\Department;
+use common\tools\Tools;
 use common\tools\yijifu\Loan;
 use common\tools\yijifu\ReturnMoney;
 use common\tools\yijifu\Sign;
@@ -171,6 +172,9 @@ SIGN_SUCCESS：签约成功
         echo "success";
     }
 
+    public function actionT()
+    {
+    }
     /**
      * ws客户端页面，用于检查数据接收
      * @return string
