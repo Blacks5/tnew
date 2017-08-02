@@ -64,8 +64,8 @@ return [
     'bank_list'=>[
         ['bank_id'=>1, 'bank_name'=>'中国银行股份有限公司 '],
         ['bank_id'=>2, 'bank_name'=>'中国工商银行股份有限公司'],
-        ['bank_id'=>3, 'bank_name'=>'中国农业银行股份有限公司 '],
-        ['bank_id'=>4, 'bank_name'=>'中国建设银行股份有限公司 '],
+        ['bank_id'=>3, 'bank_name'=>'中国农业银行股份有限公司'],
+        ['bank_id'=>4, 'bank_name'=>'中国建设银行股份有限公司'],
         ['bank_id'=>5, 'bank_name'=>'中国光大银行'],
         ['bank_id'=>6, 'bank_name'=>'兴业银行'],
         ['bank_id'=>7, 'bank_name'=>'民生银行'],
