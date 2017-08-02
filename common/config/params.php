@@ -151,5 +151,6 @@ return [
         'secret' => '5bd94203bdbb597509c94cd294f69e8a',
         'service_url' => 'http://api.junziqian.com/services'
     ],
-    'ws'=>'ws://119.23.15.90:8081'
+    'ws'=>'ws://119.23.15.90:8081',
+    'customernew_date'=>'2017-07-03 00:00:00'//新用户创建时间,用于筛选
 ];
