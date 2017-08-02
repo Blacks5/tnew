@@ -12,6 +12,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
+use Codeception\Lib\Connector\Yii1;
 use com\jzq\api\model\account\OrganizationAuditStatusRequest;
 use com\jzq\api\model\account\OrganizationCreateRequest;
 use com\jzq\api\model\bean\Signatory;
@@ -68,7 +69,8 @@ class JunController extends CoreBackendController
                     return ['status' => 2, 'message' => '数据不存在!'];
                 }else{
 
-                    $contract_url = "http://119.23.15.90:8383/contract/index?o_id=". $order_data['o_id'] ."&pdf=.pdf";
+//                    $contract_url = "http://119.23.15.90:8383/contract/index?o_id=". $order_data['o_id'] ."&pdf=.pdf";
+                    $contract_url = Yii::$app->params['domain'] ."/contract/index?o_id=". $order_data['o_id'] ."&pdf=.pdf";
                     $requestObj = new ApplySignFileRequest();
                     $requestObj->file = new UploadFile("$contract_url"); // 合同文件
                     $requestObj->contractName = $order_data['c_customer_name'] . '合同'; // 合同名
