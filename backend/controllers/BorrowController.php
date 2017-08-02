@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 use backend\components\CustomBackendException;
+use com\jzq\api\model\sign\FileLinkRequest;
 use common\components\CustomCommonException;
 use common\models\CalInterest;
 use common\models\Customer;
@@ -22,6 +23,7 @@ use common\models\YijifuLoan;
 use common\models\YijifuSign;
 use common\models\YijifuSignReturnmoney;
 use common\tools\yijifu\ReturnMoney;
+use org\ebq\api\tool\RopUtils;
 use WebSocket\Client;
 use yii;
 use backend\core\CoreBackendController;
@@ -354,21 +356,26 @@ left join customer on customer.c_id=orders.o_customer_id
                 $purchasedProductName = $_goods['g_goods_name']. $_goods['g_goods_models'];
 
 
-//                $model['oi_after_contract'] = 'http://local80t.ngrok.cc/img/tianniu.jpg';
                 $loanAmount = round($model['o_total_price'] - $model['o_total_deposit'], 3);
 
 
-                /*var_dump($model['c_customer_name'],//'钟建蓉',
-                    $model['c_customer_id_card'],//'510623197905114125',
-                    $model['c_banknum'],
-                    $model['c_customer_cellphone'],
-                    $purchasedProductName,
-                    $model['o_serial_id'],
-                    $model['oi_after_contract'],
-                    $r_total_repay,
-                    $loanAmount
-                );die;*/
 
+                // 获取签约合同
+                $applyNo = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id'], 'signStatus'=>JzqSign::STATUS_SIGN_AND_BAOQUAN])->scalar();
+                if(false === !empty($applyNo)){
+                    throw new CustomBackendException('易保全签约+保全尚未处理完成，请稍后！', 5);
+                }
+                //组建请求参数
+                $requestObj=new FileLinkRequest();
+                $requestObj->applyNo=$applyNo; //签约编号
+//请求
+                $junziqian = \Yii::$app->params['junziqian'];
+                $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
+//以下为返回的一些处理
+                $responseJson=json_decode($response);
+                if($responseJson->success === false){
+                    throw new CustomBackendException($responseJson->error->message, 5);
+                }
 
                 $handle->signContractWithCustomer($model['c_customer_name'],//'钟建蓉',
                     $model['c_customer_id_card'],//'510623197905114125',
@@ -376,7 +383,7 @@ left join customer on customer.c_id=orders.o_customer_id
                     $model['c_customer_cellphone'],
                     $purchasedProductName,
                     $model['o_serial_id'],
-                    $model['oi_after_contract'],
+                    $responseJson->link, // 签约合同地址
                     $r_total_repay,
                     $loanAmount
                     );

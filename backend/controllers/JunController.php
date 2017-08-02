@@ -309,13 +309,18 @@ class JunController extends CoreBackendController
     public function actionA11(){
         //组建请求参数
         $requestObj=new FileLinkRequest();
-        $requestObj->applyNo="APL890216212989087744"; //签约编号
+        $requestObj->applyNo="APL892616500865798144"; //签约编号
 //请求
         $junziqian = \Yii::$app->params['junziqian'];
         $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
 //以下为返回的一些处理
         $responseJson=json_decode($response);
-        var_dump($responseJson); //null
+        if($responseJson->success === false){
+            var_dump($responseJson->error->message);die;
+        }else{
+            var_dump($responseJson->link);die;
+        }
+        var_dump($responseJson->success); //null
     }
 
     /**
