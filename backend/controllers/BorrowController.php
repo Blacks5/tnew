@@ -361,7 +361,7 @@ left join customer on customer.c_id=orders.o_customer_id
 
 
                 // 获取签约合同
-                $applyNo = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id'], 'signStatus'=>JzqSign::STATUS_SIGN_AND_BAOQUAN])->scalar();
+                $applyNo = JzqSign::find()->select(['applyNo'])->where(['o_serial_id'=>$model['o_serial_id'], 'signStatus'=>JzqSign::STATUS_SIGN_AND_BAOQUAN])->scalar();
                 if(false === !empty($applyNo)){
                     throw new CustomBackendException('易保全签约+保全尚未处理完成，请稍后！', 5);
                 }
@@ -371,11 +371,11 @@ left join customer on customer.c_id=orders.o_customer_id
 //请求
                 $junziqian = \Yii::$app->params['junziqian'];
                 $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
-//以下为返回的一些处理
                 $responseJson=json_decode($response);
                 if($responseJson->success === false){
                     throw new CustomBackendException($responseJson->error->message, 5);
                 }
+
 
                 $handle->signContractWithCustomer($model['c_customer_name'],//'钟建蓉',
                     $model['c_customer_id_card'],//'510623197905114125',
