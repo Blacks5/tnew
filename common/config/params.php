@@ -60,11 +60,21 @@ return [
 //        ['kinship_id'=>7, 'kinship_str'=>'表姐妹'],
     ], // 亲属关系
 
+    // app银行列表
     'bank_list'=>[
         ['bank_id'=>1, 'bank_name'=>'中国银行股份有限公司 '],
         ['bank_id'=>2, 'bank_name'=>'中国工商银行股份有限公司'],
         ['bank_id'=>3, 'bank_name'=>'中国农业银行股份有限公司 '],
         ['bank_id'=>4, 'bank_name'=>'中国建设银行股份有限公司 '],
+        ['bank_id'=>5, 'bank_name'=>'中国光大银行'],
+        ['bank_id'=>6, 'bank_name'=>'兴业银行'],
+        ['bank_id'=>7, 'bank_name'=>'民生银行'],
+        ['bank_id'=>8, 'bank_name'=>'中信银行'],
+        ['bank_id'=>9, 'bank_name'=>'重庆农村商业银行'],
+        ['bank_id'=>10, 'bank_name'=>'中国邮政储蓄银行'],
+        ['bank_id'=>11, 'bank_name'=>'平安银行'],
+        ['bank_id'=>12, 'bank_name'=>'交通银行'],
+        ['bank_id'=>13, 'bank_name'=>'广东发展银行'],
     ],
 
     // 公司性质
