@@ -4,7 +4,7 @@ use yii\helpers\Url;
 ?>
 
 <!--<link rel="stylesheet" href="/statics/css/animate.min.css">-->
-<link rel="stylesheet" href="/statics/css/style.min.css">
+<!--<link rel="stylesheet" href="/statics/css/style.min.css">-->
 
 <div class="">
     <div class="row">
@@ -121,7 +121,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <script src="/plugins/layer/layer.js"></script>
+<!--        <script src="/plugins/layer/layer.js"></script>-->
         <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
         <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script>
