@@ -524,5 +524,6 @@ class JunController extends CoreBackendController
         }else{
             header("Location:" . $link);
         }
+        return $this->render('view');
     }
 }
