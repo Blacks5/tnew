@@ -520,10 +520,10 @@ class JunController extends CoreBackendController
         $ret = $this->actionA10($_data['applyNo']);
         $link = $ret->success ? $ret->link : '';
         if(!$link){
-            $this->error('签约处理中!');
+            return $this->error('签约处理中!');
         }else{
             header("Location:" . $link);
         }
-
+        return;
     }
 }
