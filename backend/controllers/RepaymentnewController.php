@@ -237,7 +237,7 @@ class RepaymentnewController extends CoreBackendController
      * @return string
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public function actionOverdueRepay_bak()
+    /*public function actionOverdueRepay_bak()
     {
         $this->getView()->title = '已逾期还款列表';
         $model = new RepaymentSearch();
@@ -247,7 +247,7 @@ class RepaymentnewController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
+        $data = $query
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         array_walk($data, function (&$v) {
             $v['r_overdue_money'] = 108;
@@ -259,7 +259,7 @@ class RepaymentnewController extends CoreBackendController
             'totalpage' => $pages->pageCount,
             'pages'=>$pages
         ]);
-    }
+    }*/
 
     /**
      * 还款操作
@@ -312,7 +312,7 @@ class RepaymentnewController extends CoreBackendController
      * @return array
      * @author too <hayto@foxmail.com>
      */
-    public function actionRepayBak($refund_id)
+    /*public function actionRepayBak($refund_id)
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
@@ -341,12 +341,12 @@ class RepaymentnewController extends CoreBackendController
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
-    }
+    }*/
     /**
      * 易极付扣款异步回调
      * @author too <hayto@foxmail.com>
      */
-    public function actionDeductCallback()
+/*    public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
         if('true' === $post['success']){
@@ -402,7 +402,7 @@ class RepaymentnewController extends CoreBackendController
                         throw new CustomBackendException('还款操作失败', 5);
                     }
                 }
-                /*累积客户的 总支付利息*/
+                //累积客户的 总支付利息
                 $sql = "select * from customer where c_id=".$repay_model->r_customer_id. " limit 1 for update";
                 $c = Customer::findBySql($sql)->one();
                 $c->c_total_interest += $repay_model->r_total_repay+ $repay_model->r_overdue_money;
@@ -421,7 +421,7 @@ class RepaymentnewController extends CoreBackendController
         }else{
             // 接口调用失败
         }
-    }
+    }*/
     private function sendToWsByDeduct($o_serial_id, $o_id, $status_str)
     {
         $client = new Client(\Yii::$app->params['ws']);
