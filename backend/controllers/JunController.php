@@ -291,15 +291,16 @@ class JunController extends CoreBackendController
     /**
      * 签约详情
      */
-    public function actionA10(){
+    public function actionA10($applyNo){
         $requestObj=new DetailAnonyLinkRequest();
-        $requestObj->applyNo="APL890933932307124224";
+        $requestObj->applyNo = $applyNo;
         //请求
         $junziqian = \Yii::$app->params['junziqian'];
         $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
         //以下为返回的一些处理
         $responseJson=json_decode($response);
-        var_dump($responseJson); //null
+        //var_dump($responseJson);
+        return $responseJson;
 
     }
 
@@ -471,5 +472,60 @@ class JunController extends CoreBackendController
             echo json_encode(['success'=>false, 'msg'=>$e->getMessage()]);
         }
     }
+
+    /**
+     * 君子签-签约记录列表
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+    public function actionJzqlogs(){
+        $request = Yii::$app->getRequest();
+        $o_serial_id = $request->get('o_serial_id') ? trim($request->get('o_serial_id')) : '';
+        $applyNo = $request->get('applyNo') ? trim($request->get('applyNo')) : '';
+
+        $query = (new Query())->from(JzqSign::tableName());
+        $query->Where(['>','id','0']);
+        if (!empty($o_serial_id)) {
+            $query->andWhere(['o_serial_id'=>$o_serial_id]);
+        }
+        if (!empty($applyNo)) {
+            $query->andWhere(['applyNo'=>$applyNo]);
+        }
+        $querycount = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+        $pages->pageSize = Yii::$app->params['page_size'];
+        $data = $query->orderBy(['created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->all();
+        foreach ($data as $k=>$v){
+            $ret = $this->actionA10($v['applyNo']);
+            $data[$k]['link'] = $ret->success ? $ret->link : '';
+        }
+        return $this->render('jzqlogs', [
+            'model' => $data,
+            'o_serial_id'=>$o_serial_id,
+            'applyNo'=>$applyNo,
+            'totalpage' => $pages->pageCount,
+            'pages' => $pages
+        ]);
+    }
+
+    /**
+     * 君子签-签约记录详情
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+
+    public function actionView($o_serial_id){
+        $_data = (new Query())->from(JzqSign::tableName())->where(['o_serial_id'=>$o_serial_id])->one();
+        if(!$_data){
+            $this->error('信息不存在!');
+        }
+        $ret = $this->actionA10($_data->applyNo);
+        $_data['link'] = $ret->success ? $ret->link : '';
+        return $this->render('view', [
+            'model' => $_data,
+            'o_serial_id' => $o_serial_id
+        ]);
+    }
+
+
+
 
 }
