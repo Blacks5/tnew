@@ -76,13 +76,9 @@ $jzq_stauts = [
                                                         <td class="client-status"><?= $_v['operator_realname']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['created_at']) ?></td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/view']))) { ?>
-                                                                <?php if($_v['link']){ ?>
-                                                                    <a target="_blank" href="<?= $_v['link']; ?>"
-                                                                       class="btn btn-primary btn-xs">详情</a>
-                                                                <?php }else{ ?>
-                                                                    <a class="btn btn-primary btn-xs">处理中</a>
-                                                                <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['jun/view']))) { ?>
+                                                                <a target="_blank" href="<?= Yii::$app->getUrlManager()->createUrl(['jun/view', 'o_serial_id' => $_v['o_serial_id']]);; ?>"
+                                                                   class="btn btn-primary btn-xs">详情</a>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>

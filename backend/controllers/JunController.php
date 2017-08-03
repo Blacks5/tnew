@@ -506,4 +506,24 @@ class JunController extends CoreBackendController
             'pages' => $pages
         ]);
     }
+
+    /**
+     * 君子签-签约记录详情
+     * @author lilaotou <liwansen@foxmail.com>
+     */
+
+    public function actionView($o_serial_id){
+        $_data = (new Query())->from(JzqSign::tableName())->where(['o_serial_id'=>$o_serial_id])->one();
+        if(!$_data){
+            $this->error('信息不存在!');
+        }
+        $ret = $this->actionA10($_data['applyNo']);
+        $link = $ret->success ? $ret->link : '';
+        if(!$link){
+            $this->error('签约处理中!');
+        }else{
+            header("Location:" . $link);
+        }
+
+    }
 }
