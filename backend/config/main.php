@@ -22,9 +22,10 @@ return [
         'allowActions' => [
 
             //允许访问的action
-            //controller/action
 //            '*',
             'borrow/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
+            'borrownew/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
+
             'login/login',
             'contract/index', // 订单合同页面，Android app里webview用
             'contract/paymentdesc', // 代扣说明页面，Android app里webview用1
@@ -36,7 +37,7 @@ return [
             'borrow/verify-pass-callback', // 易极付签约回调地址
             'repayment/deduct-callback', // 易极付代扣回调地址
             'loan/async', // 易极付回调地址
-
+            'jun/callback', // 君子签回调
             /*'jun/a',
             'jun/a6',
             'jun/a7',
@@ -46,7 +47,7 @@ return [
             'jun/a13',
             'jun/a15',
             'jun/a16',*/
-            'jun/callback',
+
         ]
     ],
 

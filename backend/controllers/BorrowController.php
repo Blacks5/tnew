@@ -53,7 +53,7 @@ class BorrowController extends CoreBackendController
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => [Orders::STATUS_WAIT_CHECK, Orders::STATUS_WAIT_CHECK_AGAIN, Orders::STATUS_WAIT_APP_UPLOAD_AGAIN]]);
-        $query = $query->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['<','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
