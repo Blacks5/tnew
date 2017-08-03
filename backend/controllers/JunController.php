@@ -512,7 +512,7 @@ class JunController extends CoreBackendController
      * @author lilaotou <liwansen@foxmail.com>
      */
 
-    public function actionView($o_serial_id){
+    public function actionView1($o_serial_id){
         $_data = (new Query())->from(JzqSign::tableName())->where(['o_serial_id'=>$o_serial_id])->one();
         if(!$_data){
             $this->error('信息不存在!');
@@ -524,6 +524,5 @@ class JunController extends CoreBackendController
         }else{
             header("Location:" . $link);
         }
-        return;
     }
 }
