@@ -119,11 +119,17 @@ use yii\helpers\Url;
                                                             <?php } ?>
 
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repaymentnew/repay']))) { ?>
-                                                                <button data-value="<?= $_v['r_id'] ?>"
-                                                                        class="btn btn-info btn-xs repay"><i
-                                                                        class="fa fa-folder"></i>
-                                                                    还款
-                                                                </button>
+                                                                <?php if($_v['r_status'] == \common\models\Repayment::STATUS_NOT_PAY){ ?>
+                                                                    <button data-value="<?= $_v['r_id'] ?>"
+                                                                            class="btn btn-info btn-xs repay"><i
+                                                                                class="fa fa-folder"></i>
+                                                                        还款
+                                                                    </button>
+                                                                <?php }elseif($_v['r_status'] == \common\models\Repayment::STATUS_PROCESSING){ ?>
+                                                                    <button class="btn btn-info btn-xs">
+                                                                        <i class="fa fa-folder"></i>处理中
+                                                                    </button>
+                                                                <?php } ?>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>

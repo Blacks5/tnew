@@ -96,17 +96,17 @@
                                                         </td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at']) ?></td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))) { ?>
-                                                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrownew/view']))) { ?>
+                                                                <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrownew/view', 'order_id' => $_v['o_id']]); ?>"
                                                                    class="btn btn-primary btn-xs">详情</a>
                                                             <?php } ?>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/revoke']))) { ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrownew/revoke']))) { ?>
                                                                 <a class="btn btn-danger btn-xs revoke"
                                                                    data-value="<?= $_v['o_id']; ?>">撤销订单</a>
                                                             <?php } ?>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/all-repayment-list']))) { ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrownew/all-repayment-list']))) { ?>
                                                                 <a class="btn btn-danger btn-xs"
-                                                                   href="<?= \yii\helpers\Url::toRoute(['repayment/all-repayment-list', 'order_id' => $_v['o_id']]) ?>">还款计划</a>
+                                                                   href="<?= \yii\helpers\Url::toRoute(['borrownew/all-repayment-list', 'order_id' => $_v['o_id']]) ?>">还款计划</a>
                                                             <?php } ?>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/loan']))) { ?>
                                                                 <?php if($_v['status'] == 2){ ?>
@@ -154,7 +154,7 @@
             var loading = layer.load();
 
             var order_id = $(ev.target).attr("data-value");
-            var url = "' . \yii\helpers\Url::toRoute(['borrow/revoke']) . '";
+            var url = "' . \yii\helpers\Url::toRoute(['borrownew/revoke']) . '";
             $.ajax({
                 url: url,
                 type: "get",
