@@ -37,6 +37,7 @@ class CustomernewController extends CoreBackendController
      */
     public function actionIndex()
     {
+        echo "hello";die;
         $this->getView()->title = '客户列表(新)';
         $model = new CustomerSearch();
         $params = Yii::$app->getRequest()->getQueryParams();
@@ -51,8 +52,8 @@ class CustomernewController extends CoreBackendController
             $user['u_id'] = $params["CustomerSearch"]['u_id'];
         }else{
             // 这里区分一下新旧
-            $query->
-            var_dump($query);die;
+            /*$query->
+            var_dump($query);die;*/
         }
 
         $querycount = clone $query;
