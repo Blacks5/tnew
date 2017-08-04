@@ -56,7 +56,7 @@ class RepaymentnewController extends CoreBackendController
         $model = new RepaymentSearch();
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
-        $query = $query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])
+        $query = $query->andWhere(['r_status' => [Repayment::STATUS_NOT_PAY, Repayment::STATUS_PROCESSING]])
             ->andWhere(['<', 'r_overdue_day', 30]);
         $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
