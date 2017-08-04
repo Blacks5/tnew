@@ -58,7 +58,7 @@ class RepaymentnewController extends CoreBackendController
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
         $query = $query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])
             ->andWhere(['<', 'r_overdue_day', 30]);
-        $query = $query->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -97,7 +97,7 @@ class RepaymentnewController extends CoreBackendController
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
         $query = $query->andWhere(['r_status' => Repayment::STATUS_ALREADY_PAY])/*->andWhere(['<=', 'r_pre_repay_date', $time])*/;
-        $query = $query->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -156,7 +156,7 @@ class RepaymentnewController extends CoreBackendController
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_PAY_OVER]);
-        $query = $query->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -184,7 +184,7 @@ class RepaymentnewController extends CoreBackendController
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
         $query = $query
             ->andWhere(['>', 'r_overdue_day', 0])->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]);
-        $query = $query->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -243,7 +243,7 @@ class RepaymentnewController extends CoreBackendController
         $model = new RepaymentSearch();
         $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['>', 'r_overdue_day', 0]);
-        $query = $query->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -262,7 +262,7 @@ class RepaymentnewController extends CoreBackendController
     }*/
 
     /**
-     * 还款操作
+     * 老的还款操作
      * @param $refund_id
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
