@@ -111,7 +111,7 @@ use yii\helpers\Url;
                                                                     详情</a>
                                                             <?php } ?>
 
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/all-repayment-list']), ['order_id' => $_v['o_id']])) { ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repaymentnew/all-repayment-list']), ['order_id' => $_v['o_id']])) { ?>
                                                                 <a href="<?= Url::toRoute(['repayment/all-repayment-list', 'order_id' => $_v['o_id']]); ?>"
                                                                    class="btn btn-primary btn-xs"><i
                                                                             class="fa fa-folder"></i>
@@ -158,7 +158,7 @@ use yii\helpers\Url;
         <?php
         $this->registerJs('
 $(".repay").click(function(env){
-    var url = "' . Url::toRoute(['repayment/repay']) . '";
+    var url = "' . Url::toRoute(['repaymentnew/repay']) . '";
     var r_id = $(env.target).attr("data-value");
     layer.confirm("确定要进行还款操作吗？", {title:"还款操作", icon:3}, function(index){
         var loading = layer.load(4);
