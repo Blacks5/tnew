@@ -35,18 +35,19 @@ object(yii\rbac\Permission)[105]
 array (size=1)
   'id' => string '12' (length=2) // 参数 User::find()->where(['id'=>$user, ''])->exists()
 */
-//        p($user, $params);
 
 
 
         // wlb 能修改所有人的
         // 本人能修改自己的
         // 王妃能修改除了wlb和cuichaowang之外的所有的
-        if($user == 56){
+        if(Yii::$app->getUser()->getId() == 56){// 56王妃
             if(in_array($params['id'], [40, 11])){ // 40王翠超 11王翠波
                 return false;
             }
+            return true;
         }
+
         if(($user == 11) || ($user == $params['id'])){
             return true;
         }
