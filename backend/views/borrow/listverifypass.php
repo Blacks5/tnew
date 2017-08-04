@@ -108,19 +108,6 @@
                                                                 <a class="btn btn-danger btn-xs"
                                                                    href="<?= \yii\helpers\Url::toRoute(['repayment/all-repayment-list', 'order_id' => $_v['o_id']]) ?>">还款计划</a>
                                                             <?php } ?>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['loan/loan']))) { ?>
-                                                                <?php if($_v['status'] == 1){ ?>
-                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_serial_id'];?>">快捷代发</a>
-                                                                <?php }elseif($_v['status'] == 2){ ?>
-                                                                    <a class="btn btn-danger btn-xs">处理中</a>
-                                                                <?php }elseif($_v['status'] == 3){ ?>
-                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_serial_id'];?>">快捷代发</a>
-                                                                <?php }elseif($_v['status'] == 4){ ?>
-                                                                    <a class="btn btn-danger btn-xs">已代发</a>
-                                                                <?php }else{ ?>
-                                                                    <a class="btn btn-danger btn-xs loan" data-value="<?= $_v['o_serial_id']; ?>">快捷代发</a>
-                                                                <?php } ?>
-                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
