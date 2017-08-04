@@ -267,7 +267,7 @@ class RepaymentController extends CoreBackendController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    private function RepayBak($refund_id)
+    public function actionRepay($refund_id)
     {
         if(Yii::$app->getRequest()->getIsAjax()) {
             $trans = Yii::$app->getDb()->beginTransaction();
@@ -312,7 +312,7 @@ class RepaymentController extends CoreBackendController
      * @return array
      * @author too <hayto@foxmail.com>
      */
-    public function actionRepay($refund_id)
+    private function actionRepayBak($refund_id)
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
@@ -346,7 +346,7 @@ class RepaymentController extends CoreBackendController
      * 易极付扣款异步回调
      * @author too <hayto@foxmail.com>
      */
-    public function actionDeductCallback()
+    private function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
         if('true' === $post['success']){

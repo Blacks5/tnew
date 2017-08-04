@@ -267,7 +267,7 @@ class RepaymentnewController extends CoreBackendController
      * @return array
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    private function actionRepay($refund_id)
+    private function actionRepayBak($refund_id)
     {
         if(Yii::$app->getRequest()->getIsAjax()) {
             $trans = Yii::$app->getDb()->beginTransaction();
@@ -312,7 +312,7 @@ class RepaymentnewController extends CoreBackendController
      * @return array
      * @author too <hayto@foxmail.com>
      */
-    /*public function actionRepayBak($refund_id)
+    public function actionRepay($refund_id)
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
@@ -341,12 +341,12 @@ class RepaymentnewController extends CoreBackendController
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
-    }*/
+    }
     /**
      * 易极付扣款异步回调
      * @author too <hayto@foxmail.com>
      */
-/*    public function actionDeductCallback()
+    public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
         if('true' === $post['success']){
@@ -421,7 +421,7 @@ class RepaymentnewController extends CoreBackendController
         }else{
             // 接口调用失败
         }
-    }*/
+    }
     private function sendToWsByDeduct($o_serial_id, $o_id, $status_str)
     {
         $client = new Client(\Yii::$app->params['ws']);
