@@ -119,11 +119,11 @@ use yii\helpers\Url;
                                                             <?php } ?>
 
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
-                                                                <!--<button data-value="<?/*= $_v['r_id'] */?>"
+                                                                <button data-value="<?= $_v['r_id'] ?>"
                                                                         class="btn btn-info btn-xs repay"><i
                                                                         class="fa fa-folder"></i>
                                                                     还款
-                                                                </button>-->
+                                                                </button>
                                                             <?php } ?>
                                                         </td>
                                                     </tr>
