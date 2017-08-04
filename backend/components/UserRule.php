@@ -36,8 +36,19 @@ array (size=1)
   'id' => string '12' (length=2) // 参数 User::find()->where(['id'=>$user, ''])->exists()
 */
 //        p($user, $params);
-        // wlb 或者员工本人才有权限
-//        var_dump($user, $item, $params);die;
+
+
+
+        // wlb 能修改所有人的
+        // 本人能修改自己的
+        // 王妃能修改除了wlb和cuichaowang之外的所有的
+
+        // 王妃（人事）
+        if($user == 56){
+            if(in_array($params['id'], [40, 11])){ // 40王翠超 11王翠波
+                return false;
+            }
+        }
         if(($user == 11) || ($user == $params['id'])){
             return true;
         }
