@@ -104,15 +104,15 @@ use yii\helpers\Url;
                                                         <td class="client-status"><?= $_v['r_overdue_day']; ?></td>
                                                         <td class="client-status"><?= $_v['r_overdue_money']; ?></td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))) { ?>
-                                                                <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrownew/view']))) { ?>
+                                                                <a href="<?= Url::toRoute(['borrownew/view', 'order_id' => $_v['o_id']]); ?>"
                                                                    class="btn btn-primary btn-xs"><i
                                                                         class="fa fa-folder"></i>
                                                                     详情</a>
                                                             <?php } ?>
 
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repaymentnew/all-repayment-list']), ['order_id' => $_v['o_id']])) { ?>
-                                                                <a href="<?= Url::toRoute(['repayment/all-repayment-list', 'order_id' => $_v['o_id']]); ?>"
+                                                                <a href="<?= Url::toRoute(['repaymentnew/all-repayment-list', 'order_id' => $_v['o_id']]); ?>"
                                                                    class="btn btn-primary btn-xs"><i
                                                                             class="fa fa-folder"></i>
                                                                     所有期数</a>
