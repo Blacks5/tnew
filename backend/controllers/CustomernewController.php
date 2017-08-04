@@ -37,7 +37,7 @@ class CustomernewController extends CoreBackendController
      */
     public function actionIndex()
     {
-        echo "hello";die;
+        echo "我啥子用都莫得，等哈还会消失";die;
         $this->getView()->title = '客户列表(新)';
         $model = new CustomerSearch();
         $params = Yii::$app->getRequest()->getQueryParams();
