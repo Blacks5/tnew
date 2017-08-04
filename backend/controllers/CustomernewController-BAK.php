@@ -25,7 +25,7 @@ use backend\core\CoreBackendController;
  * @package app\controllers
  * @author 涂鸿 <hayto@foxmail.com>
  */
-class CustomernewController extends CoreBackendController
+class BAK extends CoreBackendController
 {
     public function actionIndexp()
     {
