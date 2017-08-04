@@ -42,7 +42,7 @@ class CustomernewController extends CoreBackendController
         $params = Yii::$app->getRequest()->getQueryParams();
 
         //新增客户筛选条件
-        $query = $model->search($params)->andWhere(['>=','c_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $model->search($params)->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         // 如果查看某个销售的客户，就执行
         $user = null;
         if(!empty($params["CustomerSearch"]['u_id'])){
