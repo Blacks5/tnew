@@ -38,6 +38,8 @@ return [
             'frontend/web/assets',
             'api/runtime',
             'api/web/assets',
+            'wechat/runtime',
+            'wechat/web/assets',
         ],
         'setExecutable' => [
             'yii',
@@ -47,6 +49,7 @@ return [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
             'api/config/main-local.php',
+            'wechat/config/main-local.php',
         ],
     ],
     'Production' => [
@@ -58,6 +61,8 @@ return [
             'frontend/web/assets',
             'api/runtime',
             'api/web/assets',
+            'wechat/runtime',
+            'wechat/web/assets',
         ],
         'setExecutable' => [
             'yii',
@@ -66,6 +71,7 @@ return [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
             'api/config/main-local.php',
+            'wechat/config/main-local.php',
         ],
     ],
 ];
