@@ -472,7 +472,7 @@ left join customer on customer.c_id=orders.o_customer_id
 
 
                 $customer_data->c_total_money += $order_data->o_total_price - $order_data->o_total_deposit; // 累加总借款金额
-                $customer_data->c_total_borrow_times += 1; // 借款次数加一
+//                $customer_data->c_total_borrow_times += 1; // 借款次数加一 客户端提交订单时已经+1了
 
                 if (false === $customer_data->save(false)) {
                     throw new CustomBackendException('客户信息修改失败', 5);
