@@ -112,7 +112,7 @@ class LoanController extends CoreBackendController
                         $sellerBankCity = $helper_address->getAddrName($_data['s_city']) ? $helper_address->getAddrName($_data['s_city']) : $_data['s_bank_addr'];
                         $sellerBankAddress = $_data['s_bank_sub'];
 
-                        $return_data = $Loan_model->userLoan(
+                        $return_data = $Loan_model->storeLoan(
                             $o_serial_id,
                             $amount,
                             $outOrderNo,
