@@ -17,7 +17,6 @@ class WechatController extends Controller
 {
     public function actionIndex()
     {
-        echo 1;die;
         $config = \Yii::$app->params['wechat'];
         $app = new Application($config);
 
