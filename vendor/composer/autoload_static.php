@@ -14,6 +14,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '841780ea2e1d6545ea3a253239d59c05' => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu/functions.php',
+        '9e090711773bfc38738f5dbaee5a7f14' => __DIR__ . '/..' . '/overtrue/wechat/src/Payment/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -59,6 +60,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Process\\' => 26,
+            'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\DomCrawler\\' => 29,
@@ -66,6 +68,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\BrowserKit\\' => 29,
+            'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
             'Stecman\\Component\\Symfony\\Console\\BashCompletion\\' => 49,
         ),
         'Q' => 
@@ -76,6 +79,15 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
+        ),
+        'O' => 
+        array (
+            'Overtrue\\Socialite\\' => 19,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
         ),
         'G' => 
         array (
@@ -88,9 +100,14 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
             'Faker\\' => 6,
             'Facebook\\WebDriver\\' => 19,
         ),
+        'E' => 
+        array (
+            'EasyWeChat\\' => 11,
+        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\Common\\Cache\\' => 22,
             'DeepCopy\\' => 9,
         ),
         'C' => 
@@ -179,6 +196,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
         ),
+        'Symfony\\Component\\HttpFoundation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/http-foundation',
+        ),
         'Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
@@ -207,6 +228,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             0 => __DIR__ . '/..' . '/symfony/browser-kit',
         ),
+        'Symfony\\Bridge\\PsrHttpMessage\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
+        ),
         'Stecman\\Component\\Symfony\\Console\\BashCompletion\\' => 
         array (
             0 => __DIR__ . '/..' . '/stecman/symfony-console-completion/src',
@@ -222,6 +247,18 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Overtrue\\Socialite\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/overtrue/socialite/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -243,9 +280,17 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             0 => __DIR__ . '/..' . '/facebook/webdriver/lib',
         ),
+        'EasyWeChat\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/overtrue/wechat/src',
+        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
         'DeepCopy\\' => 
         array (
@@ -267,6 +312,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
+            ),
+            'Pimple' => 
+            array (
+                0 => __DIR__ . '/..' . '/pimple/pimple/src',
             ),
         ),
         'H' => 
