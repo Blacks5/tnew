@@ -41,7 +41,7 @@ array (size=1)
         // wlb 能修改所有人的
         // 本人能修改自己的
         // 王妃能修改除了wlb和cuichaowang之外的所有的
-        if($user == 56){// 56王妃 Yii::$app->getUser()->getId()
+        if($user == 57){// 56王妃 Yii::$app->getUser()->getId()
             if(in_array($params['id'], [40, 11])){ // 40王翠超 11王翠波
                 return false;
             }
