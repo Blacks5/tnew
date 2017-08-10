@@ -31,7 +31,7 @@ class WechatController extends Controller
             ob_start();
             var_dump($message);
 
-            $app->menu->destroy();
+//            $app->menu->destroy();
             $buttons = [
                 [
                     "type" => "click",
@@ -61,7 +61,7 @@ class WechatController extends Controller
                     "name" => "天1",
                     "key"  => "V1001_TODAY_MUSIC"
                 ],
-                [
+                /*[
                     "name"       => "牛1",
                     "sub_button" => [
                         [
@@ -75,7 +75,7 @@ class WechatController extends Controller
                             "key" => "V1001_GOOD"
                         ]
                     ],
-                ],
+                ],*/
             ];
             $matchRule = [
 //                "tag_id"=>"2",
@@ -86,7 +86,7 @@ class WechatController extends Controller
 //                "client_platform_type"=>"2",
                 "language"=>"zh_CN"
             ];
-//            var_dump($app->menu->add($buttons_gx, $matchRule));
+            var_dump($app->menu->add($buttons_gx, $matchRule));
 //            var_dump($app->menu->add($buttons));
 //            var_dump($app->menu->destroy(415564445));
 
