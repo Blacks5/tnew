@@ -86,10 +86,10 @@ class WechatController extends Controller
 //                "client_platform_type"=>"2",
                 "language"=>"zh_CN"
             ];
-            var_dump($app->menu->add($buttons_gx, $matchRule));
+//            var_dump($app->menu->add($buttons_gx, $matchRule));
 //            var_dump($app->menu->add($buttons));
 //            var_dump($app->menu->destroy(415564445));
-
+            var_dump($app->user_tag->lists());
             $ret = ob_get_clean();
             return $ret;
 //            return $message->MsgType. "您好！欢迎关注!";
