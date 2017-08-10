@@ -14,7 +14,7 @@ return [
          */
         'app_id'  => 'wx34acc0fd1b7cb76e',         // AppID
         'secret'  => '24eaf3803c809b958395c475bb1a0453',     // AppSecret
-        'token'   => 'dsa8J()8fdsaf90udsaf*(gb87t',          // Token
+        'token'   => '234f235f235rf235gh2354rdf24rfc',          // Token
         'aes_key' => 'ojD0UQMVQ1CoAkFh31uP0XngZ54LlhZtbdyVo8hBbuu',                    // EncodingAESKey，安全模式下请一定要填写！！！
         /**
          * 日志配置
@@ -24,11 +24,11 @@ return [
          * permission：日志文件权限(可选)，默认为null（若为null值,monolog会取0644）
          * file：日志文件位置(绝对路径!!!)，要求可写权限
          */
-        /*'log' => [
+        'log' => [
             'level'      => 'debug',
             'permission' => 0777,
-            'file'       => '/tmp/easywechat.log',
-        ],*/
+            'file'       => '/dev.txt',
+        ],
         /**
          * OAuth 配置
          *

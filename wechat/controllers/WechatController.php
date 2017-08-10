@@ -15,16 +15,30 @@ use yii\web\Controller;
 
 class WechatController extends Controller
 {
+    public $enableCsrfValidation = false;
     public function actionIndex()
     {
         $config = \Yii::$app->params['wechat'];
         $app = new Application($config);
 
-        $app->server->setMessageHandler(function($message){
-            return "您好！欢迎关注天牛金融!";
+        /**
+         *
+         */
+
+        $app->server->setMessageHandler(function($message) use($app){
+//            $userinfo = $app->user->get($message['FromUserName']);
+
+            ob_start();
+            var_dump($message);
+//            var_dump($userinfo);
+
+            $ret = ob_get_clean();
+            return $ret;
+//            return $message->MsgType. "您好！欢迎关注!";
         });
+
         $response = $app->server->serve();
 
-        $response->send();
+        return $response->send();
     }
 }
