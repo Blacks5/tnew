@@ -29,7 +29,7 @@ class WechatController extends Controller
 //            $userinfo = $app->user->get($message['FromUserName']);
 
             ob_start();
-            var_dump($message);
+//            var_dump($message);
 
 //            $app->menu->destroy();
             $buttons = [
@@ -89,6 +89,9 @@ class WechatController extends Controller
 //            var_dump($app->menu->add($buttons_gx, $matchRule));
 //            var_dump($app->menu->add($buttons));
 //            var_dump($app->menu->destroy(415564445));
+//            var_dump($app->menu->current()->all());
+echo 121212;
+
             var_dump($app->user_tag->lists());
             $ret = ob_get_clean();
             return $ret;
