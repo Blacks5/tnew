@@ -90,9 +90,9 @@ class WechatController extends Controller
 //            var_dump($app->menu->add($buttons));
 //            var_dump($app->menu->destroy(415564445));
 //            var_dump($app->menu->all());
-//echo 121212;
+            echo 121212;
 
-            var_dump($app->menu->all());
+            var_dump($app->user->lists());
             $ret = ob_get_clean();
             return $ret;
 //            return $message->MsgType. "您好！欢迎关注!";
