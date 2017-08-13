@@ -13,7 +13,7 @@
 <body>
 <section class="ui-container">
     <div class="weui-cells">
-        <a class="weui-cell weui-cell_access" href="<?= commit_order.html ?>">
+        <a class="weui-cell weui-cell_access" href="<?= Yii::$app->getUrlManager()->createUrl(['manage/commitorder'])?>">
             <div class="weui-cell__hd"><img src="/wechat/img/order.png" alt="" style="width:35px;margin-right:15px;display:block"></div>
             <div class="weui-cell__bd">
                 <p>提交订单</p>
