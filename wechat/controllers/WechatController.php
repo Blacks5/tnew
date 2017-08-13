@@ -66,16 +66,5 @@ class WechatController extends Controller
 
         echo "<pre>";
         var_dump($user);
-    }
-
-    public function actionBindUser()
-    {
-        Wechat::Login(['wechat/bind-user']);
-
-        echo "<pre>";
-        echo "====";
-        $session = \Yii::$app->getSession();
-        $user = $session->get('wechat_user');
-        var_dump($user);
     }*/
 }
