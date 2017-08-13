@@ -160,11 +160,9 @@ abstract class AbstractProvider implements ProviderInterface
         if (!is_null($redirectUrl)) {
             $this->redirectUrl = $redirectUrl;
         }
-
         if ($this->usesState()) {
             $state = $this->makeState();
         }
-
         return new RedirectResponse($this->getAuthUrl($state));
     }
 

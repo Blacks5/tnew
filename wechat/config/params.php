@@ -8,7 +8,7 @@ return [
          *
          * 当值为 false 时，所有的日志都不会记录
          */
-        'debug'  => true,
+        'debug'  => false,
         /**
          * 账号基本信息，请从微信公众平台/开放平台获取
          */
@@ -24,21 +24,22 @@ return [
          * permission：日志文件权限(可选)，默认为null（若为null值,monolog会取0644）
          * file：日志文件位置(绝对路径!!!)，要求可写权限
          */
-        'log' => [
+        /*'log' => [
             'level'      => 'debug',
             'permission' => 0777,
             'file'       => '/dev.txt',
-        ],
+        ],*/
         /**
          * OAuth 配置
          *
          * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
          * callback：OAuth授权完成后的回调页地址
          */
-        /*'oauth' => [
+        'oauth' => [
             'scopes'   => ['snsapi_userinfo'],
-            'callback' => '/examples/oauth_callback.php',
-        ],*/
+            'callback' => '/wechat/oauth-callback',
+//            'callback' => '/a',
+        ],
         /**
          * 微信支付
          */
@@ -58,7 +59,7 @@ return [
          * 更多请参考： http://docs.guzzlephp.org/en/latest/request-options.html
          */
         'guzzle' => [
-            'timeout' => 10, // 超时时间（秒）
+            'timeout' => 3, // 超时时间（秒）
 //            'verify' => false, // 关掉 SSL 认证（强烈不建议！！！）
         ],
     ]

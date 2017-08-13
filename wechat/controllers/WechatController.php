@@ -21,86 +21,61 @@ class WechatController extends Controller
         $config = \Yii::$app->params['wechat'];
         $app = new Application($config);
 
-        /**
-         *
-         */
-
-        $app->server->setMessageHandler(function($message) use($app){
-//            $userinfo = $app->user->get($message['FromUserName']);
-
-            ob_start();
+        $app->server->setMessageHandler(function($message){
 //            var_dump($message);
-
-//            $app->menu->destroy();
-            $buttons = [
-                [
-                    "type" => "click",
-                    "name" => "天",
-                    "key"  => "V1001_TODAY_MUSIC"
-                ],
-                [
-                    "name"       => "牛",
-                    "sub_button" => [
-                        [
-                            "type" => "view",
-                            "name" => "金融",
-                            "url"  => "http://www.baidu.com/"
-                        ],
-                        [
-                            "type" => "click",
-                            "name" => "赞一下我们",
-                            "key" => "V1001_GOOD"
-                        ]
-                    ],
-                ],
-            ];
-
-            $buttons_gx = [
-                [
-                    "type" => "click",
-                    "name" => "天1",
-                    "key"  => "V1001_TODAY_MUSIC"
-                ],
-                /*[
-                    "name"       => "牛1",
-                    "sub_button" => [
-                        [
-                            "type" => "view",
-                            "name" => "金融1",
-                            "url"  => "http://www.baidu.com/"
-                        ],
-                        [
-                            "type" => "click",
-                            "name" => "赞一下我们1",
-                            "key" => "V1001_GOOD"
-                        ]
-                    ],
-                ],*/
-            ];
-            $matchRule = [
-//                "tag_id"=>"2",
-                "sex"=>"1",
-                "country"=>"中国",
-                "province"=>"四川",
-                "city"=>"成都",
-//                "client_platform_type"=>"2",
-                "language"=>"zh_CN"
-            ];
-//            var_dump($app->menu->add($buttons_gx, $matchRule));
-//            var_dump($app->menu->add($buttons));
-//            var_dump($app->menu->destroy(415564445));
-//            var_dump($app->menu->all());
-            echo 121212222;
-
-            var_dump($app->user_tag->lists());
-//            var_dump($app->menu->all());
-            $ret = ob_get_clean();
-            return $ret;
-//            return $message->MsgType. "您好！欢迎关注!";
+            return "您好！欢迎关注!";
         });
 
-        $response = $app->server->serve();
-
-        return $response->send();
+        return $app->server->serve()->send();
     }
+
+
+    /**
+     * 微信授权回调
+     * @return \yii\web\Response
+     * @author too <hayto@foxmail.com>
+     */
+    public function actionOauthCallback()
+    {
+        $config = \Yii::$app->params['wechat'];
+        $app = new Application($config);
+
+        // Overtrue\Socialite\User
+        $user = $app->oauth->user();
+        $session = \Yii::$app->getSession();
+        $session->set('wechat_user', $user);
+
+        $targetUrl = empty($session->get('target_url'))? '/': $session->get('target_url');
+        return $this->redirect($targetUrl);
+    }
+
+
+
+
+    /**
+     * 需要授权的页面
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @author too <hayto@foxmail.com>
+     */
+    /*public function actionTestLogin()
+    {
+        Wechat::Login(['wechat/test-login']);
+
+        $session = \Yii::$app->getSession();
+        $user = $session->get('wechat_user');
+
+        echo "<pre>";
+        var_dump($user);
+    }
+
+    public function actionBindUser()
+    {
+        Wechat::Login(['wechat/bind-user']);
+
+        echo "<pre>";
+        echo "====";
+        $session = \Yii::$app->getSession();
+        $user = $session->get('wechat_user');
+        var_dump($user);
+    }*/
 }

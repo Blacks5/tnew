@@ -36,6 +36,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+//                "a"=>"wechat/oauth-callback",
             ],
         ],
 
