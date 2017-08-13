@@ -10,10 +10,15 @@
 namespace wechat\controllers;
 
 
+use common\services\Order;
+
 class OrderController
 {
     public function actionCreateOrder()
     {
-
+        $request = \Yii::$app->getRequest();
+        $params = $request->post();
+        $orderServer = new Order();
+        $orderServer->addOrder($params);
     }
 }

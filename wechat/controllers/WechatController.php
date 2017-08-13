@@ -44,6 +44,8 @@ class WechatController extends Controller
         $user = $app->oauth->user();
         $session = \Yii::$app->getSession();
         $session->set('wechat_user', $user);
+//        $user->id
+//        \Yii::$app->getUser()->login();
 
         $targetUrl = empty($session->get('target_url'))? '/': $session->get('target_url');
         return $this->redirect($targetUrl);
