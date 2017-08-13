@@ -1,0 +1,9 @@
+body{background-color: #fff;}
+/*登录*/
+.tn-logo-div{padding:20px 0 0 0px;}
+#see-password{color: #c3c3c3;position: absolute;top:0;right: 15px;line-height: 44px;}
+#commit-form{margin-top: 15px;}
+.weui-cells{font-size: 14px;}
+.button-fixed{position: fixed;bottom:0;width:100%;height: 50px; text-align: center;background: #1AAD19;z-index: 10}
+.button-fixed a{line-height: 50px;color: #fff;font-size: 16px;font-weight: bold;}
+/*首页*/
