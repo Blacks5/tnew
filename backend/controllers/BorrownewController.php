@@ -640,9 +640,10 @@ left join customer on customer.c_id=orders.o_customer_id
                 $e = new yii\db\Expression("c_total_money=c_total_money-$x");
                 $attr = ["c_total_money" => $e]; // 此处要减掉客户的累积借款金额
 
-                if (1 !== Customer::updateAll($attr, ['c_id' => $model['o_customer_id']])) {
+                Customer::updateAll($attr, ['c_id' => $model['o_customer_id']]);
+                /*if (1 !== ) {
                     throw new CustomBackendException('操作客户失败', 5);
-                }
+                }*/
 
                 return ['status' => 1, 'message' => '取消订单成功'];
             } catch (CustomBackendException $e) {
