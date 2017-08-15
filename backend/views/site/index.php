@@ -387,6 +387,8 @@ use mdm\admin\components\MenuHelper;
                     $('#newOrderNotify').text(textDetail);
                     $('#newOrderli').show();
                     $('#dividerNotice').show();
+                    var audio = new Audio("/web/audio_ws/neworder.mp3");
+                    audio.play();
                 }else{
                     $('#newOrderli').hide();
                 }
