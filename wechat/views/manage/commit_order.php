@@ -31,10 +31,13 @@
                     </select>
                 </div>
             </div>
-            <div class="weui-cell">
+            <div class="weui-cell weui-cell_warn">
                 <div class="weui-cell__hd"><label class="weui-label">商品品牌</label></div>
                 <div class="weui-cell__bd">
                     <input class="weui-input" name="g_goods_name" id="g_goods_name" type="text" placeholder="请输入商品品牌"/>
+                </div>
+                <div class="weui-cell__ft">
+                    <i class="weui-icon-warn"></i>
                 </div>
             </div>
             <div class="weui-cell">
