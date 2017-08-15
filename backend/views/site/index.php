@@ -380,6 +380,8 @@ use mdm\admin\components\MenuHelper;
             //判断消息类型,根据消息类型创建dom
             var newdataStorage = JSON.parse(localStorage.getItem(key));
             if(key == 'newOrderNotify'){
+                var audio = new Audio("/audio_ws/neworder.mp3");
+                audio.play();
                 textDetail = '';
                 var numOrder =  newdataStorage ? newdataStorage.length : 0;
                 if(numOrder){

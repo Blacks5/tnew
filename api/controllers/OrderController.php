@@ -26,6 +26,7 @@ use common\models\Stores;
 use common\models\TooRegion;
 use common\models\UploadFile;
 use Qiniu\Processing\ImageUrlBuilder;
+use WebSocket\Client;
 use yii;
 use api\core\CoreApiController;
 
@@ -411,6 +412,7 @@ class OrderController extends CoreApiController
                     throw new CustomApiException('验证码错误5');
                 }
                 $trans->commit();
+                $this->sendToWs();
                 return ['status' => 1, 'message' => '上传成功', 'data' => []];
             }
             throw new CustomApiException('上传失败5');
@@ -422,7 +424,20 @@ class OrderController extends CoreApiController
             return ['status' => 0, 'message' => '上传失败4', 'data' => []];
         }
     }
-
+    private function sendToWs($customer_name='', $order_id=0)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+        $string = '顾客:'. $customer_name. '产生了新订单';
+        $data = [
+            'cmd'=>'Orders:newOrderNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$order_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
+    }
 
     /**
      * 获取消息 审核后的返回内容
