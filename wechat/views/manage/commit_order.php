@@ -32,24 +32,20 @@
                         </select>
                     </div>
                 </div>
-                <div class="weui-cell weui-cell_warn">
+                <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">商品品牌</label></div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" name="g_goods_name" id="g_goods_name" type="text" placeholder="请输入商品品牌"/>
                     </div>
-                    <div class="weui-cell__ft">
-                        <i class="weui-icon-warn"></i>
-                    </div>
                 </div>
-                <div class="weui-cell weui-cell_warn warning-div">
-                    <span class="warning-text">名称不能为空</span>
-                </div>
+                <div class="weui-cell weui-cell_warn warning-div"></div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">商品型号</label></div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" name="g_goods_models" id="g_goods_models" type="text" placeholder="请输入商品型号"/>
                     </div>
                 </div>
+                <div class="weui-cell weui-cell_warn warning-div"></div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">商品价格</label></div>
                     <div class="weui-cell__bd">
@@ -66,7 +62,7 @@
         </div>
 
         <!--订单信息-->
-        <div class="commit-order-step order-info" style="display: none;">
+        <div class="commit-order-step order-info">
             <div class="weui-cells__title">订单信息</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -121,7 +117,7 @@
         </div>
 
         <!--客户基本信息-->
-        <div class="commit-order-step customer-info" style="display: none;">
+        <div class="commit-order-step customer-info">
             <div class="weui-cells__title">客户基本信息</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -296,7 +292,7 @@
         </div>
 
         <!--客户单位信息-->
-        <div class="commit-order-step customer-jobs-info" style="display: none;">
+        <div class="commit-order-step customer-jobs-info">
             <div class="weui-cells__title">客户单位信息</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
@@ -377,7 +373,7 @@
         </div>
 
         <!--客户其他联系人信息-->
-        <div class="commit-order-step customer-others-info" style="display: none;">
+        <div class="commit-order-step customer-others-info">
             <div class="weui-cells__title">客户其他联系人信息</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -471,56 +467,97 @@
         })(Zepto);
 
         //上一步
-        $('.prev-step').on('click',function () {
-            //获取当前显示是第几步
-            var index_step;
-            $('.commit-order-step').each(function(index){
-                if($(this).css("display") == 'block'){
-                    index_step = index;
-                    return false;
-                }
-            });
-            if(index_step >= 1){
-
-                //操作元素
-                $('.commit-order-step').css("display",'none');
-                $('.commit-order-step').eq(index_step - 1).css('display','block');
-
-                //存储数据
-
-            }else{
-                weui.alert('没有上一步了', function () {
-                    //console.log('ok')
-                }, {
-                    title: '系统提示'
-                });
-            }
-        });
-        //下一步
-        $('.next-step').on('click',function () {
-            //获取当前显示是第几步
-            var index_step;
-            $('.commit-order-step').each(function(index){
-                if($(this).css("display") == 'block'){
-                    index_step = index;
-                    return false;
-                }
-            });
-            if(index_step < 4){
-                //操作元素
-                $('.commit-order-step').css("display",'none');
-                $('.commit-order-step').eq(index_step + 1).css('display','block');
-
-                //存储数据
-
-            }else{
-                weui.alert('这一步提交数据了,没有下一步', function () {
-                    //console.log('ok')
-                }, {
-                    title: '系统提示'
-                });
-            }
-        });
+//        $('.prev-step').on('click',function () {
+//            //获取当前显示是第几步
+//            var index_step;
+//            $('.commit-order-step').each(function(index){
+//                if($(this).css("display") == 'block'){
+//                    index_step = index;
+//                    return false;
+//                }
+//            });
+//            if(index_step >= 1){
+//                //操作元素
+//                $('.commit-order-step').css("display",'none');
+//                $('.commit-order-step').eq(index_step - 1).css('display','block');
+//            }else{
+//                weui.alert('没有上一步了', function () {
+//                    //console.log('ok')
+//                }, {
+//                    title: '系统提示'
+//                });
+//            }
+//        });
+//        //下一步
+//        $('.next-step').on('click',function () {
+//            //获取当前显示是第几步
+//            var index_step;
+//            $('.commit-order-step').each(function(index){
+//                if($(this).css("display") == 'block'){
+//                    index_step = index;
+//                    return false;
+//                }
+//            });
+//            if(index_step < 4){
+//
+//                //存储数据
+//                saveDate.savedata(index_step);
+//
+//            }else{
+//                weui.alert('这一步提交数据了,没有下一步', function () {
+//                    //console.log('ok')
+//                }, {
+//                    title: '系统提示'
+//                });
+//            }
+//        });
     });
+
+    //http://wnworld.com/mobilevalidate  表单验证插件
+
+
+
+//    var saveDate = {
+//        savedata:function(index_step){
+//            switch (index_step){
+//                case 0:
+//                    if(!$('#g_goods_name').val()){
+//                        this.notice_dom($('#g_goods_name'),'测试报错的');
+//                        return false;
+//                    }else{
+//                        this.del_notice_dom($('#g_goods_name'));
+//                    }
+//                    if(!$('#g_goods_models').val()){
+//                        this.notice_dom($('#g_goods_models'),'测试报错的');
+//                        return false;
+//                    }else{
+//                        this.del_notice_dom($('#g_goods_models'));
+//                    }
+//                    localStorage.g_goods_type = $('#g_goods_type').val();
+//                    localStorage.g_goods_name = $('#g_goods_name').val();
+//                    localStorage.g_goods_models = $('#g_goods_models').val();
+//                    localStorage.g_goods_price = $('#g_goods_price').val();
+//                    localStorage.g_goods_deposit = $('#g_goods_deposit').val();
+//
+//                    //操作元素
+//                    $('.commit-order-step').css("display",'none');
+//                    $('.commit-order-step').eq(index_step + 1).css('display','block');
+//                    break;
+//            }
+//        },
+//        notice_dom:function (dom,text) {
+//            dom.parents('div.weui-cell').addClass('weui-cell_warn');
+//            dom.parents('div.weui-cell').append('<div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>');
+//            dom.parents('div.weui-cell').next("div.warning-div").show().text(text);
+//        },
+//        del_notice_dom:function (dom) {
+//            if(dom.parents('div.weui-cell').hasClass('weui-cell_warn')){
+//                dom.parents('div.weui-cell').removeClass('weui-cell_warn');
+//            }
+//            dom.parent().siblings('div.weui-cell__ft').remove();
+//            dom.parents('div.weui-cell').next("div.warning-div").hide();
+//        }
+//    }
+
 </script>
 </html>
