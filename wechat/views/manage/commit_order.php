@@ -14,7 +14,7 @@
 </head>
 <body>
 <section class="ui-container" style="margin-bottom: 60px;">
-    <div class="demo-item ">
+    <form class="demo-item" id="form">
         <!--商品信息-->
         <div class="commit-order-step product-info">
             <div class="weui-cells__title">商品信息</div>
@@ -35,7 +35,7 @@
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">商品品牌</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" name="g_goods_name" id="g_goods_name" type="text" placeholder="请输入商品品牌"/>
+                        <input class="weui-input" name="g_goods_name" id="g_goods_name" type="text" placeholder="请输入商品品牌" />
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_warn warning-div"></div>
@@ -92,25 +92,25 @@
                 <div class="weui-cell weui-cell_switch">
                     <div class="weui-cell__bd">自动代扣</div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch" type="checkbox"/>
+                        <input class="weui-switch" id="o_is_auto_pay" name="o_is_auto_pay" type="checkbox"/>
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_switch">
                     <div class="weui-cell__bd">贵宾服务包</div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch" type="checkbox"/>
+                        <input class="weui-switch" id="o_is_free_pack_fee"  name="o_is_free_pack_fee" type="checkbox"/>
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_switch">
                     <div class="weui-cell__bd">个人保障服务</div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch" type="checkbox"/>
+                        <input class="weui-switch" id="o_is_add_service_fee" name="o_is_add_service_fee" type="checkbox"/>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">注释</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" name="username" type="text" placeholder="请填写注释"/>
+                        <input class="weui-input" name="o_remark" id="o_remark" type="text" placeholder="请填写注释"/>
                     </div>
                 </div>
             </div>
@@ -166,13 +166,13 @@
                 <div class="weui-cell weui-cell_switch">
                     <div class="weui-cell__bd">身份证过期时间是否永久</div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch" type="checkbox" name="checkbox" id="IDperpetual" />
+                        <input class="weui-switch" type="checkbox" name="c_customer_id_card_endtime_status" id="IDperpetual" />
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">客户身份证地址</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" id="cascadePickerBtn" name="username" type="text" placeholder="请选择省市区"/>
+                        <input class="weui-input" id="cascadePickerBtn" name="idcard_addr" type="text" placeholder="请选择省市区"/>
                         <input type="hidden" class="province_id" id="c_customer_province" value="" />
                         <input type="hidden" class="city_id" id="c_customer_city" value="" />
                         <input type="hidden" class="country_id" id="c_customer_county" value="" />
@@ -402,11 +402,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </section>
 <div class="weui-flex button-fixed">
-    <div class="weui-flex__item prev-step">上一步</div>
-    <div class="weui-flex__item next-step">下一步</div>
+    <div class="weui-flex__item prev-step">提交</div>
 </div>
 <!--<footer class="button-fixed">-->
 <!--    <a href="javascript:;" class="" id="commit-order">下一步</a>-->
@@ -466,98 +465,104 @@
             });
         })(Zepto);
 
-        //上一步
-//        $('.prev-step').on('click',function () {
-//            //获取当前显示是第几步
-//            var index_step;
-//            $('.commit-order-step').each(function(index){
-//                if($(this).css("display") == 'block'){
-//                    index_step = index;
-//                    return false;
-//                }
-//            });
-//            if(index_step >= 1){
-//                //操作元素
-//                $('.commit-order-step').css("display",'none');
-//                $('.commit-order-step').eq(index_step - 1).css('display','block');
-//            }else{
-//                weui.alert('没有上一步了', function () {
-//                    //console.log('ok')
-//                }, {
-//                    title: '系统提示'
-//                });
-//            }
-//        });
-//        //下一步
-//        $('.next-step').on('click',function () {
-//            //获取当前显示是第几步
-//            var index_step;
-//            $('.commit-order-step').each(function(index){
-//                if($(this).css("display") == 'block'){
-//                    index_step = index;
-//                    return false;
-//                }
-//            });
-//            if(index_step < 4){
-//
-//                //存储数据
-//                saveDate.savedata(index_step);
-//
-//            }else{
-//                weui.alert('这一步提交数据了,没有下一步', function () {
-//                    //console.log('ok')
-//                }, {
-//                    title: '系统提示'
-//                });
-//            }
-//        });
     });
+    //失去焦点存储数据
+    $("input,select").blur(function () {
+        saveDate.savelocal();
+    });
+    var saveDate = {
+        savelocal:function(){
+            //商品信息
+            localStorage.g_goods_type = $('#g_goods_type').val();
+            localStorage.g_goods_name = $('#g_goods_name').val();
+            localStorage.g_goods_models = $('#g_goods_models').val();
+            localStorage.g_goods_price = $('#g_goods_price').val();
+            localStorage.g_goods_deposit = $('#g_goods_deposit').val();
 
-    //http://wnworld.com/mobilevalidate  表单验证插件
+            //订单信息
+            localStorage.o_store_id = $('#o_store_id').val();
+            localStorage.o_product_id = $('#o_product_id').val();
+            localStorage.o_is_auto_pay = $('#o_is_auto_pay').is(':checked');
+            localStorage.o_is_free_pack_fee = $('#o_is_free_pack_fee').is(':checked');
+            localStorage.o_is_add_service_fee = $('#o_is_add_service_fee').is(':checked');
+            localStorage.o_remark = $('#o_remark').val();
+
+            //客户基本信息
+            localStorage.c_bank = $('#c_bank').val();
+            localStorage.c_banknum = $('#c_banknum').val();
+            localStorage.c_customer_name = $('#c_customer_name').val();
+            localStorage.c_customer_cellphone = $('#c_customer_cellphone').val();
+            localStorage.c_customer_id_card = $('#c_customer_id_card').val();
+            localStorage.c_customer_id_card_endtime = $('#c_customer_id_card_endtime').val();
+            localStorage.c_customer_id_card_endtime_status = $('#c_customer_id_card_endtime_status').is(':checked');
+            localStorage.cascadePickerBtn = $('#cascadePickerBtn').val();
+            localStorage.c_customer_province = $('#c_customer_province').val();
+            localStorage.c_customer_city = $('#c_customer_city').val();
+            localStorage.c_customer_county = $('#c_customer_county').val();
+            localStorage.c_customer_idcard_detail_addr = $('#c_customer_idcard_detail_addr').val();
+            localStorage.c_customer_gender = $('#c_customer_gender').val();
+            localStorage.c_customer_qq = $('#c_customer_qq').val();
+            localStorage.c_customer_wechat = $('#c_customer_wechat').val();
+            localStorage.c_customer_county = $('#c_customer_county').val();
+            localStorage.c_family_marital_status = $('#c_family_marital_status').val();
+            localStorage.c_family_marital_partner_name = $('#c_family_marital_partner_name').val();
+            localStorage.c_family_marital_partner_cellphone = $('#c_family_marital_partner_cellphone').val();
+            localStorage.c_family_house_info = $('#c_family_house_info').val();
+            localStorage.c_family_income = $('#c_family_income').val();
+            localStorage.c_kinship_name = $('#c_kinship_name').val();
+            localStorage.cascadePickerBtn_2 = $('#cascadePickerBtn_2').val();
+            localStorage.c_customer_addr_province = $('#c_customer_addr_province').val();
+            localStorage.c_customer_addr_city = $('#c_customer_addr_city').val();
+            localStorage.c_customer_addr_county = $('#c_customer_addr_county').val();
+            localStorage.c_customer_addr_detail = $('#c_customer_addr_detail').val();
+
+            //客户单位信息
+            localStorage.c_customer_jobs_company = $('#c_customer_jobs_company').val();
+            localStorage.c_customer_jobs_industry = $('#c_customer_jobs_industry').val();
+            localStorage.c_customer_jobs_type = $('#c_customer_jobs_type').val();
+            localStorage.c_customer_jobs_section = $('#c_customer_jobs_section').val();
+            localStorage.c_customer_jobs_is_shebao = $('#c_customer_jobs_is_shebao').val();
+            localStorage.cascadePickerBtn_3 = $('#cascadePickerBtn_3').val();
+            localStorage.c_customer_jobs_province = $('#c_customer_jobs_province').val();
+            localStorage.c_customer_jobs_city = $('#c_customer_jobs_city').val();
+            localStorage.c_customer_jobs_county = $('#c_customer_jobs_county').val();
+            localStorage.c_customer_jobs_detail_addr = $('#c_customer_jobs_detail_addr').val();
+            localStorage.c_customer_jobs_phone = $('#c_customer_jobs_phone').val();
+
+            //其他联系人信息
+            localStorage.c_other_people_relation = $('#c_other_people_relation').val();
+            localStorage.c_other_people_name = $('#c_other_people_name').val();
+            localStorage.c_other_people_cellphone = $('#c_other_people_cellphone').val();
+        },
+        validateform:function () {
+            if(!$('#g_goods_name').val()){
+                this.notice_dom($('#g_goods_name'),'测试报错的');
+                return false;
+            }else{
+                this.del_notice_dom($('#g_goods_name'));
+            }
+            if(!$('#g_goods_models').val()){
+                this.notice_dom($('#g_goods_models'),'测试报错的');
+                return false;
+            }else{
+                this.del_notice_dom($('#g_goods_models'));
+            }
+        },
+        notice_dom:function (dom,text) {
+            dom.parents('div.weui-cell').addClass('weui-cell_warn');
+            dom.parents('div.weui-cell').append('<div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>');
+            dom.parents('div.weui-cell').next("div.warning-div").show().text(text);
+        },
+        del_notice_dom:function (dom) {
+            if(dom.parents('div.weui-cell').hasClass('weui-cell_warn')){
+                dom.parents('div.weui-cell').removeClass('weui-cell_warn');
+            }
+            dom.parent().siblings('div.weui-cell__ft').remove();
+            dom.parents('div.weui-cell').next("div.warning-div").hide();
+        }
+    }
 
 
-
-//    var saveDate = {
-//        savedata:function(index_step){
-//            switch (index_step){
-//                case 0:
-//                    if(!$('#g_goods_name').val()){
-//                        this.notice_dom($('#g_goods_name'),'测试报错的');
-//                        return false;
-//                    }else{
-//                        this.del_notice_dom($('#g_goods_name'));
-//                    }
-//                    if(!$('#g_goods_models').val()){
-//                        this.notice_dom($('#g_goods_models'),'测试报错的');
-//                        return false;
-//                    }else{
-//                        this.del_notice_dom($('#g_goods_models'));
-//                    }
-//                    localStorage.g_goods_type = $('#g_goods_type').val();
-//                    localStorage.g_goods_name = $('#g_goods_name').val();
-//                    localStorage.g_goods_models = $('#g_goods_models').val();
-//                    localStorage.g_goods_price = $('#g_goods_price').val();
-//                    localStorage.g_goods_deposit = $('#g_goods_deposit').val();
-//
-//                    //操作元素
-//                    $('.commit-order-step').css("display",'none');
-//                    $('.commit-order-step').eq(index_step + 1).css('display','block');
-//                    break;
-//            }
-//        },
-//        notice_dom:function (dom,text) {
-//            dom.parents('div.weui-cell').addClass('weui-cell_warn');
-//            dom.parents('div.weui-cell').append('<div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>');
-//            dom.parents('div.weui-cell').next("div.warning-div").show().text(text);
-//        },
-//        del_notice_dom:function (dom) {
-//            if(dom.parents('div.weui-cell').hasClass('weui-cell_warn')){
-//                dom.parents('div.weui-cell').removeClass('weui-cell_warn');
-//            }
-//            dom.parent().siblings('div.weui-cell__ft').remove();
-//            dom.parents('div.weui-cell').next("div.warning-div").hide();
-//        }
-//    }
 
 </script>
 </html>
