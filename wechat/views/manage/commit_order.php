@@ -414,6 +414,7 @@
 <script src="/wechat/js/zepto.min.js"></script>
 </body>
 <script>
+
     $(function () {
         (function(){
             // 时间选择器
@@ -444,7 +445,7 @@
                 }
             });
             // 级联选择器
-            $('#cascadePickerBtn,#cascadePickerBtn_2').on('click', function () {
+            $('#cascadePickerBtn,#cascadePickerBtn_2,#cascadePickerBtn_3').on('click', function () {
                 var that  = $(this);
                 weui.picker(<?= $data_json; ?>, {
                     depth: 3,
@@ -453,7 +454,7 @@
                        // console.log(result);
                     },
                     onConfirm: function (result) {
-                        console.log(result);
+                        //console.log(result);
                         var val_str = result[0].label + ' ' + result[1].label + ' ' +result[2].label;
                         that.val(val_str);
                         that.siblings('input.province_id').val(result[0].value);
@@ -464,13 +465,80 @@
                 });
             });
         })(Zepto);
-
+        saveDate.initval();
     });
+
     //失去焦点存储数据
     $("input,select").blur(function () {
         saveDate.savelocal();
+        saveDate.savejson();
     });
     var saveDate = {
+        //初始化
+        initval:function () {
+            //商品信息
+            localStorage.g_goods_type ? $('#g_goods_type').val(localStorage.g_goods_type) : '';
+            localStorage.g_goods_name != 'undefined' ? $('#g_goods_name').val(localStorage.g_goods_name) : '';
+            localStorage.g_goods_models != 'undefined' ? $('#g_goods_models').val(localStorage.g_goods_models) : '';
+            localStorage.g_goods_price != 'undefined' ? $('#g_goods_price').val(localStorage.g_goods_price) : '';
+            localStorage.g_goods_deposit != 'undefined' ? $('#g_goods_deposit').val(localStorage.g_goods_deposit) : '';
+
+            //订单信息
+            localStorage.o_store_id!= '' ? $('#o_store_id').val(localStorage.o_store_id) : '';
+            localStorage.o_product_id!= '' ? $('#o_product_id').val(localStorage.o_product_id) : '';
+            (localStorage.o_is_auto_pay=='true') ? $('#o_is_auto_pay').attr('checked','checked') : '';
+            (localStorage.o_is_free_pack_fee=='true')  ? $('#o_is_free_pack_fee').attr('checked','checked') : '';
+            (localStorage.o_is_add_service_fee=='true')  ? $('#o_is_add_service_fee').attr('checked','checked') : '';
+            localStorage.o_remark!= 'undefined' ? $('#o_remark').val(localStorage.o_remark) : '';
+
+            //客户基本信息
+            localStorage.c_bank!= '' ? $('#c_bank').val(localStorage.c_bank) : '';
+            localStorage.c_banknum!= 'undefined' ? $('#c_banknum').val(localStorage.c_banknum) : '';
+            localStorage.c_customer_name!= 'undefined' ? $('#c_customer_name').val(localStorage.c_customer_name) : '';
+            localStorage.c_customer_cellphone!= 'undefined' ? $('#c_customer_cellphone').val(localStorage.c_customer_cellphone) : '';
+            localStorage.c_customer_id_card!= 'undefined' ? $('#c_customer_id_card').val(localStorage.c_customer_id_card) : '';
+            localStorage.c_customer_id_card_endtime!= 'undefined' ? $('#c_customer_id_card_endtime').val(localStorage.c_customer_id_card_endtime) : '';
+            (localStorage.c_customer_id_card_endtime_status=='true')  ? $('#c_customer_id_card_endtime_status').attr('checked','checked') : '';
+            localStorage.cascadePickerBtn!= 'undefined' ? $('#cascadePickerBtn').val(localStorage.cascadePickerBtn) : '';
+            localStorage.c_customer_province!= 'undefined' ? $('#c_customer_province').val(localStorage.c_customer_province) : '';
+            localStorage.c_customer_city!= 'undefined' ? $('#c_customer_city').val(localStorage.c_customer_city) : '';
+            localStorage.c_customer_county!= 'undefined' ? $('#c_customer_county').val(localStorage.c_customer_county) : '';
+            localStorage.c_customer_idcard_detail_addr!= 'undefined' ? $('#c_customer_idcard_detail_addr').val(localStorage.c_customer_idcard_detail_addr) : '';
+            localStorage.c_customer_gender!= '' ? $('#c_customer_gender').val(localStorage.c_customer_gender) : '';
+            localStorage.c_customer_qq!= 'undefined' ? $('#c_customer_qq').val(localStorage.c_customer_qq) : '';
+            localStorage.c_customer_wechat!= 'undefined' ? $('#c_customer_wechat').val(localStorage.c_customer_wechat) : '';
+            localStorage.c_family_marital_status!= '' ? $('#c_family_marital_status').val(localStorage.c_family_marital_status) : '';
+            localStorage.c_family_marital_partner_name!= 'undefined' ? $('#c_family_marital_partner_name').val(localStorage.c_family_marital_partner_name) : '';
+            localStorage.c_family_marital_partner_cellphone!= 'undefined' ? $('#c_family_marital_partner_cellphone').val(localStorage.c_family_marital_partner_cellphone) : '';
+            localStorage.c_family_house_info!= '' ? $('#c_family_house_info').val(localStorage.c_family_house_info) : '';
+            localStorage.c_family_income!= 'undefined' ?  $('#c_family_income').val(localStorage.c_family_income) : '';
+            localStorage.c_kinship_relation!= '' ?  $('#c_kinship_relation').val(localStorage.c_kinship_relation) : '';
+            localStorage.c_kinship_name!= 'undefined' ? $('#c_kinship_name').val(localStorage.c_kinship_name) : '';
+            localStorage.cascadePickerBtn_2!= 'undefined' ? $('#cascadePickerBtn_2').val(localStorage.cascadePickerBtn_2) : '';
+            localStorage.c_customer_addr_province!= 'undefined' ? $('#c_customer_addr_province').val(localStorage.c_customer_addr_province) : '';
+            localStorage.c_customer_addr_city!= 'undefined' ? $('#c_customer_addr_city').val(localStorage.c_customer_addr_city) : '';
+            localStorage.c_customer_addr_county!= 'undefined' ? $('#c_customer_addr_county').val(localStorage.c_customer_addr_county) : '';
+            localStorage.c_customer_addr_detail!= 'undefined' ? $('#c_customer_addr_detail').val(localStorage.c_customer_addr_detail) : '';
+
+            //客户单位信息
+            localStorage.c_customer_jobs_company!= 'undefined' ? $('#c_customer_jobs_company').val(localStorage.c_customer_jobs_company) : '';
+            localStorage.c_customer_jobs_industry!= 'undefined' ? $('#c_customer_jobs_industry').val(localStorage.c_customer_jobs_industry) : '';
+            localStorage.c_customer_jobs_type!= 'undefined' ? $('#c_customer_jobs_type').val(localStorage.c_customer_jobs_type) : '';
+            localStorage.c_customer_jobs_section!= 'undefined' ? $('#c_customer_jobs_section').val(localStorage.c_customer_jobs_section) : '';
+            localStorage.c_customer_jobs_is_shebao!= 'undefined' ? $('#c_customer_jobs_is_shebao').val(localStorage.c_customer_jobs_is_shebao) : '';
+            localStorage.cascadePickerBtn_3!= 'undefined' ? $('#cascadePickerBtn_3').val(localStorage.cascadePickerBtn_3) : '';
+            localStorage.c_customer_jobs_province!= 'undefined' ? $('#c_customer_jobs_province').val(localStorage.c_customer_jobs_province) : '';
+            localStorage.c_customer_jobs_city!= 'undefined' ? $('#c_customer_jobs_city').val(localStorage.c_customer_jobs_city) : '';
+            localStorage.c_customer_jobs_county!= 'undefined' ? $('#c_customer_jobs_county').val(localStorage.c_customer_jobs_county) : '';
+            localStorage.c_customer_jobs_detail_addr!= 'undefined' ? $('#c_customer_jobs_detail_addr').val(localStorage.c_customer_jobs_detail_addr) : '';
+            localStorage.c_customer_jobs_phone!= 'undefined' ? $('#c_customer_jobs_phone').val(localStorage.c_customer_jobs_phone) : '';
+
+            //其他联系人信息
+            localStorage.c_other_people_relation!= 'undefined' ? $('#c_other_people_relation').val(localStorage.c_other_people_relation) : '';
+            localStorage.c_other_people_name!= 'undefined' ? $('#c_other_people_name').val(localStorage.c_other_people_name) : '';
+            localStorage.c_other_people_cellphone!= 'undefined' ? $('#c_other_people_cellphone').val(localStorage.c_other_people_cellphone) : '';
+        },
+        //存储数据
         savelocal:function(){
             //商品信息
             localStorage.g_goods_type = $('#g_goods_type').val();
@@ -478,7 +546,6 @@
             localStorage.g_goods_models = $('#g_goods_models').val();
             localStorage.g_goods_price = $('#g_goods_price').val();
             localStorage.g_goods_deposit = $('#g_goods_deposit').val();
-
             //订单信息
             localStorage.o_store_id = $('#o_store_id').val();
             localStorage.o_product_id = $('#o_product_id').val();
@@ -503,12 +570,12 @@
             localStorage.c_customer_gender = $('#c_customer_gender').val();
             localStorage.c_customer_qq = $('#c_customer_qq').val();
             localStorage.c_customer_wechat = $('#c_customer_wechat').val();
-            localStorage.c_customer_county = $('#c_customer_county').val();
             localStorage.c_family_marital_status = $('#c_family_marital_status').val();
             localStorage.c_family_marital_partner_name = $('#c_family_marital_partner_name').val();
             localStorage.c_family_marital_partner_cellphone = $('#c_family_marital_partner_cellphone').val();
             localStorage.c_family_house_info = $('#c_family_house_info').val();
             localStorage.c_family_income = $('#c_family_income').val();
+            localStorage.c_kinship_relation = $('#c_kinship_relation').val();
             localStorage.c_kinship_name = $('#c_kinship_name').val();
             localStorage.cascadePickerBtn_2 = $('#cascadePickerBtn_2').val();
             localStorage.c_customer_addr_province = $('#c_customer_addr_province').val();
@@ -534,6 +601,79 @@
             localStorage.c_other_people_name = $('#c_other_people_name').val();
             localStorage.c_other_people_cellphone = $('#c_other_people_cellphone').val();
         },
+        savejson:function () {
+            var goodsjson = {
+                g_goods_type:$('#g_goods_type').val(),
+                g_goods_name:$('#g_goods_name').val(),
+                g_goods_models:$('#g_goods_models').val(),
+                g_goods_price:$('#g_goods_price').val(),
+                g_goods_deposit:$('#g_goods_deposit').val()
+            };
+            goodsjson = JSON.stringify(goodsjson);//将JSON对象转化成字符串
+            localStorage.setItem("goodsjson",goodsjson);//用localStorage保存转化好的的字符串
+
+            var orderjson = {
+                o_store_id:$('#o_store_id').val(),
+                o_product_id:$('#o_product_id').val(),
+                o_is_auto_pay:($('#o_is_auto_pay').is(':checked')=='true') ? 1 : 0,
+                o_is_free_pack_fee:($('#o_is_free_pack_fee').is(':checked')=='true') ? 1 : 0,
+                o_is_add_service_fee:($('#o_is_add_service_fee').is(':checked')=='true') ? 1 : 0,
+                o_remark:$('#o_remark').val()
+            };
+            orderjson = JSON.stringify(orderjson);//将JSON对象转化成字符串
+            localStorage.setItem("orderjson",orderjson);//用localStorage保存转化好的的字符串
+
+            var customerjson = {
+                c_bank:$('#c_bank').val(),
+                c_banknum:$('#c_banknum').val(),
+                c_customer_name:$('#c_customer_name').val(),
+                c_customer_cellphone:$('#c_customer_cellphone').val(),
+                c_customer_id_card:$('#c_customer_id_card').val(),
+                c_customer_id_card_endtime:$('#c_customer_id_card_endtime').val(),
+                c_customer_id_card_endtime_status:($('#c_customer_id_card_endtime_status').is(':checked')=='true') ? 1 : 0,
+               // cascadePickerBtn:$('#cascadePickerBtn').val(),
+                c_customer_province:$('#c_customer_province').val(),
+                c_customer_city:$('#c_customer_city').val(),
+                c_customer_county:$('#c_customer_county').val(),
+                c_customer_idcard_detail_addr:$('#c_customer_idcard_detail_addr').val(),
+                c_customer_gender:$('#c_customer_gender').val(),
+                c_customer_qq:$('#c_customer_qq').val(),
+                c_customer_wechat:$('#c_customer_wechat').val(),
+                c_family_marital_status:$('#c_family_marital_status').val(),
+                c_family_marital_partner_name:$('#c_family_marital_partner_name').val(),
+                c_family_marital_partner_cellphone:$('#c_family_marital_partner_cellphone').val(),
+                c_family_house_info:$('#c_family_house_info').val(),
+                c_family_income:$('#c_family_income').val(),
+                c_kinship_relation:$('#c_kinship_relation').val(),
+                c_kinship_name:$('#c_kinship_name').val(),
+                //cascadePickerBtn_2:$('#cascadePickerBtn_2').val(),
+                c_customer_addr_province:$('#c_customer_addr_province').val(),
+                c_customer_addr_city:$('#c_customer_addr_city').val(),
+                c_customer_addr_county:$('#c_customer_addr_county').val(),
+                c_customer_addr_detail:$('#c_customer_addr_detail').val(),
+
+                //客户单位信息
+                c_customer_jobs_company:$('#c_customer_jobs_company').val(),
+                c_customer_jobs_industry:$('#c_customer_jobs_industry').val(),
+                c_customer_jobs_type:$('#c_customer_jobs_type').val(),
+                c_customer_jobs_section:$('#c_customer_jobs_section').val(),
+                c_customer_jobs_is_shebao:$('#c_customer_jobs_is_shebao').val(),
+                //cascadePickerBtn_3:$('#cascadePickerBtn_3').val(),
+                c_customer_jobs_province:$('#c_customer_jobs_province').val(),
+                c_customer_jobs_city:$('#c_customer_jobs_city').val(),
+                c_customer_jobs_county:$('#c_customer_jobs_county').val(),
+                c_customer_jobs_detail_addr:$('#c_customer_jobs_detail_addr').val(),
+                c_customer_jobs_phone:$('#c_customer_jobs_phone').val(),
+
+                //其他联系人信息
+                c_other_people_relation:$('#c_other_people_relation').val(),
+                c_other_people_name:$('#c_other_people_name').val(),
+                c_other_people_cellphone:$('#c_other_people_cellphone').val()
+            };
+            customerjson = JSON.stringify(customerjson);//将JSON对象转化成字符串
+            localStorage.setItem("customerjson",customerjson);//用localStorage保存转化好的的字符串
+        },
+        //验证数据
         validateform:function () {
             if(!$('#g_goods_name').val()){
                 this.notice_dom($('#g_goods_name'),'测试报错的');
@@ -548,11 +688,13 @@
                 this.del_notice_dom($('#g_goods_models'));
             }
         },
+        //添加错误提示
         notice_dom:function (dom,text) {
             dom.parents('div.weui-cell').addClass('weui-cell_warn');
             dom.parents('div.weui-cell').append('<div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>');
             dom.parents('div.weui-cell').next("div.warning-div").show().text(text);
         },
+        //清楚错误提示
         del_notice_dom:function (dom) {
             if(dom.parents('div.weui-cell').hasClass('weui-cell_warn')){
                 dom.parents('div.weui-cell').removeClass('weui-cell_warn');
