@@ -438,7 +438,7 @@
             $('#IDperpetual').on('click', function () {
                 var that = $(this);
                 if(that.is(":checked")){
-                    $('#dateIDendtime').val('');
+                    $('#dateIDendtime').val('9999-12-12');
                     $('#dateIDendtime').attr('disabled','disabled');
                 }else{
                     $('#dateIDendtime').removeAttr('disabled');
