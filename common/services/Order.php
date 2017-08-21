@@ -33,11 +33,11 @@ class Order
     public function addOrder($params)
     {
         $data['data'] = $params;
-        // 判断验证码
-        $verify = new Sms();
+        // 判断验证码【不再需要短信验证码2017-08-21】
+        /*$verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
-//            throw new CustomCommonException('验证码错误');
-        }
+            throw new CustomCommonException('验证码错误');
+        }*/
 //        $user = \Yii::$app->getSession()->get('wechat_user'); // 微信资料
 
         $sys_user = (new \yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>"o9dGBv_lC9-6tzZPUNyXk-1AM3as"])->one(); // 系统资料
