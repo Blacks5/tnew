@@ -403,7 +403,7 @@
     </form>
 </section>
 <div class="weui-flex button-fixed">
-    <div class="weui-flex__item prev-step">提交</div>
+    <div class="weui-flex__item prev-step" onclick="saveDate.commitOrder();">提交</div>
 </div>
 <!--<footer class="button-fixed">-->
 <!--    <a href="javascript:;" class="" id="commit-order">下一步</a>-->
@@ -474,6 +474,35 @@
         saveDate.savejson();
     });
     var saveDate = {
+        //ajax提交订单
+        commitOrder:function () {
+            this.validateform();
+            $.ajax({
+                type: 'POST',
+                url: "<?= Yii::$app->getUrlManager()->createUrl(['manage/getproductsbytype'])?>",
+                data: { goodsjson: localStorage.getItem("goodsjson"),orderjson: localStorage.getItem("orderjson"),customerjson:localStorage.getItem("customerjson")},
+                dataType: 'json',
+                timeout: 5000,
+                success: function(data){
+                    if(data.status == 1) {
+                        console.log(data);
+                    }else{
+                        weui.alert(data.message, function () {
+                            //console.log('ok')
+                        }, {
+                            title: '系统提示'
+                        });
+                    }
+                },
+                error: function(xhr, type){
+                    weui.alert('系统错误', function () {
+                        //console.log('ok')
+                    }, {
+                        title: '系统提示'
+                    });
+                }
+            });
+        },
         //初始化
         initval:function () {
 
@@ -677,13 +706,13 @@
         //验证数据
         validateform:function () {
             if(!$('#g_goods_name').val()){
-                this.notice_dom($('#g_goods_name'),'测试报错的');
+                this.notice_dom($('#g_goods_name'),'商品名称不能为空');
                 return false;
             }else{
                 this.del_notice_dom($('#g_goods_name'));
             }
             if(!$('#g_goods_models').val()){
-                this.notice_dom($('#g_goods_models'),'测试报错的');
+                this.notice_dom($('#g_goods_models'),'商品类型不能为空');
                 return false;
             }else{
                 this.del_notice_dom($('#g_goods_models'));
@@ -703,9 +732,8 @@
             dom.parent().siblings('div.weui-cell__ft').remove();
             dom.parents('div.weui-cell').next("div.warning-div").hide();
         },
-        //
+        //根据商品类型获取商品
         getProduct:function (p_type) {
-            console.log(p_type);
             $.ajax({
                 type: 'GET',
                 url: "<?= Yii::$app->getUrlManager()->createUrl(['manage/getproductsbytype'])?>",
