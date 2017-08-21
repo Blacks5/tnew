@@ -9,9 +9,14 @@
 
 namespace wechat\controllers;
 
-
 use EasyWeChat\Foundation\Application;
 use wechat\Tools\Wechat;
+
+/**
+ * 需要授权的页面调用如下方法即可
+ * Wechat::Login(['manage/index']);
+ * $user = \Yii::$app->getSession()->get('wechat_user');
+ */
 
 /**
  * s-285072.gotocdn.com/manage 这个域名访问
@@ -65,7 +70,7 @@ class WechatController extends BaseController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @author too <hayto@foxmail.com>
      */
-    public function actionTestLogin()
+    /*public function actionTestLogin()
     {
         Wechat::Login(['wechat/test-login']);
 
@@ -74,5 +79,5 @@ class WechatController extends BaseController
 
         echo "<pre>";
         var_dump($user);
-    }
+    }*/
 }

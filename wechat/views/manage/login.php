@@ -83,10 +83,11 @@
                 timeout: 3000,
                 context: $('body'),
                 success: function(data){
-                    console.log(data);
+                    if(data.status == 1){
+                        return location.href = data.data;
+                    }
                 },
                 error: function(xhr, type){
-                    console.log(type);
                     alert('Ajax error!')
                 }
             });

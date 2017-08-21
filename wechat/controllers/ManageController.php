@@ -28,21 +28,18 @@ class ManageController extends BaseController
      */
     public function actionIndex(){
         Wechat::Login(['manage/index']);
-
-        $session = \Yii::$app->getSession();
-        $user = $session->get('wechat_user');
-        $user->id; //openid
+        $user = \Yii::$app->getSession()->get('wechat_user');
 
         $sys_user = (new yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>$user->id])->one();
         // 还没绑定账号
         if(false === $sys_user){
-            return $this->redirect(['manage/login', 'openid'=>$user->id]);
+            return $this->redirect(['manage/login']);
         }
-        var_dump(Yii::$app->getUser()->getIdentity(), $user);
         return $this->renderPartial('index');
     }
 
     /**
+     * 绑定用户
      * @return string
      * @author lilaotou <liwansen@foxmail.com>
      * 登录
@@ -50,6 +47,8 @@ class ManageController extends BaseController
     public function actionLogin(){
         $request = Yii::$app->getRequest();
         if($request->getIsAjax() && $request->getIsPost()){
+            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
             $openid = $request->post('openid');
             $model = new LoginForm();
             $data['data'] = $request->post();
@@ -63,8 +62,9 @@ class ManageController extends BaseController
             return ['status'=>0, 'message'=>'绑定失败'];
         }
 
-        $openid = $request->get('openid');
-        return $this->renderPartial('login', ['openid'=>$openid]);
+        Wechat::Login(['manage/login']);
+        $user = \Yii::$app->getSession()->get('wechat_user');
+        return $this->renderPartial('login', ['openid'=>$user->id]);
     }
 
     /**
