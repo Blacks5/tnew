@@ -477,10 +477,13 @@
         //ajax提交订单
         commitOrder:function () {
             this.validateform();
+            var goodsjson = JSON.parse(localStorage.getItem("goodsjson"));
+            var orderjson = JSON.parse(localStorage.getItem("orderjson"));
+            var customerjson = JSON.parse(localStorage.getItem("customerjson"));
             $.ajax({
                 type: 'POST',
                 url: "<?= Yii::$app->getUrlManager()->createUrl(['manage/getproductsbytype'])?>",
-                data: { goodsjson: localStorage.getItem("goodsjson"),orderjson: localStorage.getItem("orderjson"),customerjson:localStorage.getItem("customerjson")},
+                data: { goodsjson: goodsjson,orderjson: orderjson,customerjson:customerjson},
                 dataType: 'json',
                 timeout: 5000,
                 success: function(data){
