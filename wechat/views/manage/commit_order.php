@@ -22,10 +22,10 @@
 
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label for="" class="weui-label">商品类型</label>
+                        <label for="" class="weui-label" >商品类型</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <select class="weui-select" name="g_goods_type" id="g_goods_type">
+                        <select class="weui-select" name="g_goods_type" id="g_goods_type" onchange="saveDate.getProduct(this.value);">
                             <?php foreach ($data['goods_type'] as $k=>$v){ ?>
                                 <option value="<?= $v['t_id']; ?>"><?= $v['t_name']; ?></option>
                             <?php } ?>
@@ -83,9 +83,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <select class="weui-select" name="o_product_id" id="o_product_id">
-                            <?php foreach ($data['products'] as $k=>$v){ ?>
-                                <option value="<?= $v['p_id']; ?>"><?= $v['p_name']; ?></option>
-                            <?php } ?>
+
                         </select>
                     </div>
                 </div>
@@ -414,9 +412,11 @@
 <script src="/wechat/js/zepto.min.js"></script>
 </body>
 <script>
-
     $(function () {
         (function(){
+
+            //初始化数据
+            saveDate.initval();
             // 时间选择器
             $('#dateIDendtime').on('click', function () {
                 var that = $(this);
@@ -465,8 +465,8 @@
                 });
             });
         })(Zepto);
-        saveDate.initval();
     });
+
 
     //失去焦点存储数据
     $("input,select").blur(function () {
@@ -476,67 +476,68 @@
     var saveDate = {
         //初始化
         initval:function () {
+
             //商品信息
             localStorage.g_goods_type ? $('#g_goods_type').val(localStorage.g_goods_type) : '';
-            localStorage.g_goods_name != 'undefined' ? $('#g_goods_name').val(localStorage.g_goods_name) : '';
-            localStorage.g_goods_models != 'undefined' ? $('#g_goods_models').val(localStorage.g_goods_models) : '';
-            localStorage.g_goods_price != 'undefined' ? $('#g_goods_price').val(localStorage.g_goods_price) : '';
-            localStorage.g_goods_deposit != 'undefined' ? $('#g_goods_deposit').val(localStorage.g_goods_deposit) : '';
+            (localStorage.g_goods_name != undefined) ? $('#g_goods_name').val(localStorage.g_goods_name) : '';
+            (localStorage.g_goods_models != undefined) ? $('#g_goods_models').val(localStorage.g_goods_models) : '';
+            (localStorage.g_goods_price != undefined) ? $('#g_goods_price').val(localStorage.g_goods_price) : '';
+            (localStorage.g_goods_deposit != undefined) ? $('#g_goods_deposit').val(localStorage.g_goods_deposit) : '';
 
             //订单信息
-            localStorage.o_store_id!= '' ? $('#o_store_id').val(localStorage.o_store_id) : '';
-            localStorage.o_product_id!= '' ? $('#o_product_id').val(localStorage.o_product_id) : '';
+            (localStorage.o_store_id!= '') ? $('#o_store_id').val(localStorage.o_store_id) : '';
+            (localStorage.o_product_id!= '') ? $('#o_product_id').val(localStorage.o_product_id) : '';
             (localStorage.o_is_auto_pay=='true') ? $('#o_is_auto_pay').attr('checked','checked') : '';
             (localStorage.o_is_free_pack_fee=='true')  ? $('#o_is_free_pack_fee').attr('checked','checked') : '';
             (localStorage.o_is_add_service_fee=='true')  ? $('#o_is_add_service_fee').attr('checked','checked') : '';
-            localStorage.o_remark!= 'undefined' ? $('#o_remark').val(localStorage.o_remark) : '';
+            (localStorage.o_remark!= undefined) ? $('#o_remark').val(localStorage.o_remark) : '';
 
             //客户基本信息
-            localStorage.c_bank!= '' ? $('#c_bank').val(localStorage.c_bank) : '';
-            localStorage.c_banknum!= 'undefined' ? $('#c_banknum').val(localStorage.c_banknum) : '';
-            localStorage.c_customer_name!= 'undefined' ? $('#c_customer_name').val(localStorage.c_customer_name) : '';
-            localStorage.c_customer_cellphone!= 'undefined' ? $('#c_customer_cellphone').val(localStorage.c_customer_cellphone) : '';
-            localStorage.c_customer_id_card!= 'undefined' ? $('#c_customer_id_card').val(localStorage.c_customer_id_card) : '';
-            localStorage.c_customer_id_card_endtime!= 'undefined' ? $('#c_customer_id_card_endtime').val(localStorage.c_customer_id_card_endtime) : '';
+            (localStorage.c_bank!= '') ? $('#c_bank').val(localStorage.c_bank) : '';
+            (localStorage.c_banknum!= undefined) ? $('#c_banknum').val(localStorage.c_banknum) : '';
+            (localStorage.c_customer_name!= undefined) ? $('#c_customer_name').val(localStorage.c_customer_name) : '';
+            (localStorage.c_customer_cellphone!= undefined) ? $('#c_customer_cellphone').val(localStorage.c_customer_cellphone) : '';
+            (localStorage.c_customer_id_card!= undefined) ? $('#c_customer_id_card').val(localStorage.c_customer_id_card) : '';
+            (localStorage.c_customer_id_card_endtime!= undefined) ? $('#c_customer_id_card_endtime').val(localStorage.c_customer_id_card_endtime) : '';
             (localStorage.c_customer_id_card_endtime_status=='true')  ? $('#c_customer_id_card_endtime_status').attr('checked','checked') : '';
-            localStorage.cascadePickerBtn!= 'undefined' ? $('#cascadePickerBtn').val(localStorage.cascadePickerBtn) : '';
-            localStorage.c_customer_province!= 'undefined' ? $('#c_customer_province').val(localStorage.c_customer_province) : '';
-            localStorage.c_customer_city!= 'undefined' ? $('#c_customer_city').val(localStorage.c_customer_city) : '';
-            localStorage.c_customer_county!= 'undefined' ? $('#c_customer_county').val(localStorage.c_customer_county) : '';
-            localStorage.c_customer_idcard_detail_addr!= 'undefined' ? $('#c_customer_idcard_detail_addr').val(localStorage.c_customer_idcard_detail_addr) : '';
-            localStorage.c_customer_gender!= '' ? $('#c_customer_gender').val(localStorage.c_customer_gender) : '';
-            localStorage.c_customer_qq!= 'undefined' ? $('#c_customer_qq').val(localStorage.c_customer_qq) : '';
-            localStorage.c_customer_wechat!= 'undefined' ? $('#c_customer_wechat').val(localStorage.c_customer_wechat) : '';
-            localStorage.c_family_marital_status!= '' ? $('#c_family_marital_status').val(localStorage.c_family_marital_status) : '';
-            localStorage.c_family_marital_partner_name!= 'undefined' ? $('#c_family_marital_partner_name').val(localStorage.c_family_marital_partner_name) : '';
-            localStorage.c_family_marital_partner_cellphone!= 'undefined' ? $('#c_family_marital_partner_cellphone').val(localStorage.c_family_marital_partner_cellphone) : '';
-            localStorage.c_family_house_info!= '' ? $('#c_family_house_info').val(localStorage.c_family_house_info) : '';
-            localStorage.c_family_income!= 'undefined' ?  $('#c_family_income').val(localStorage.c_family_income) : '';
-            localStorage.c_kinship_relation!= '' ?  $('#c_kinship_relation').val(localStorage.c_kinship_relation) : '';
-            localStorage.c_kinship_name!= 'undefined' ? $('#c_kinship_name').val(localStorage.c_kinship_name) : '';
-            localStorage.cascadePickerBtn_2!= 'undefined' ? $('#cascadePickerBtn_2').val(localStorage.cascadePickerBtn_2) : '';
-            localStorage.c_customer_addr_province!= 'undefined' ? $('#c_customer_addr_province').val(localStorage.c_customer_addr_province) : '';
-            localStorage.c_customer_addr_city!= 'undefined' ? $('#c_customer_addr_city').val(localStorage.c_customer_addr_city) : '';
-            localStorage.c_customer_addr_county!= 'undefined' ? $('#c_customer_addr_county').val(localStorage.c_customer_addr_county) : '';
-            localStorage.c_customer_addr_detail!= 'undefined' ? $('#c_customer_addr_detail').val(localStorage.c_customer_addr_detail) : '';
+            (localStorage.cascadePickerBtn!= undefined) ? $('#cascadePickerBtn').val(localStorage.cascadePickerBtn) : '';
+            (localStorage.c_customer_province!= undefined) ? $('#c_customer_province').val(localStorage.c_customer_province) : '';
+            (localStorage.c_customer_city!= undefined) ? $('#c_customer_city').val(localStorage.c_customer_city) : '';
+            (localStorage.c_customer_county!= undefined) ? $('#c_customer_county').val(localStorage.c_customer_county) : '';
+            (localStorage.c_customer_idcard_detail_addr!= undefined) ? $('#c_customer_idcard_detail_addr').val(localStorage.c_customer_idcard_detail_addr) : '';
+            (localStorage.c_customer_gender!= '') ? $('#c_customer_gender').val(localStorage.c_customer_gender) : '';
+            (localStorage.c_customer_qq!= undefined) ? $('#c_customer_qq').val(localStorage.c_customer_qq) : '';
+            (localStorage.c_customer_wechat!= undefined) ? $('#c_customer_wechat').val(localStorage.c_customer_wechat) : '';
+            (localStorage.c_family_marital_status!= '') ? $('#c_family_marital_status').val(localStorage.c_family_marital_status) : '';
+            (localStorage.c_family_marital_partner_name!= undefined) ? $('#c_family_marital_partner_name').val(localStorage.c_family_marital_partner_name) : '';
+            (localStorage.c_family_marital_partner_cellphone!= undefined) ? $('#c_family_marital_partner_cellphone').val(localStorage.c_family_marital_partner_cellphone) : '';
+            (localStorage.c_family_house_info!= '') ? $('#c_family_house_info').val(localStorage.c_family_house_info) : '';
+            (localStorage.c_family_income!= undefined) ?  $('#c_family_income').val(localStorage.c_family_income) : '';
+            (localStorage.c_kinship_relation!= '') ?  $('#c_kinship_relation').val(localStorage.c_kinship_relation) : '';
+            (localStorage.c_kinship_name!= undefined) ? $('#c_kinship_name').val(localStorage.c_kinship_name) : '';
+            (localStorage.cascadePickerBtn_2!= undefined) ? $('#cascadePickerBtn_2').val(localStorage.cascadePickerBtn_2) : '';
+            (localStorage.c_customer_addr_province!= undefined) ? $('#c_customer_addr_province').val(localStorage.c_customer_addr_province) : '';
+            (localStorage.c_customer_addr_city!= undefined) ? $('#c_customer_addr_city').val(localStorage.c_customer_addr_city) : '';
+            (localStorage.c_customer_addr_county!= undefined) ? $('#c_customer_addr_county').val(localStorage.c_customer_addr_county) : '';
+            (localStorage.c_customer_addr_detail!= undefined) ? $('#c_customer_addr_detail').val(localStorage.c_customer_addr_detail) : '';
 
             //客户单位信息
-            localStorage.c_customer_jobs_company!= 'undefined' ? $('#c_customer_jobs_company').val(localStorage.c_customer_jobs_company) : '';
-            localStorage.c_customer_jobs_industry!= 'undefined' ? $('#c_customer_jobs_industry').val(localStorage.c_customer_jobs_industry) : '';
-            localStorage.c_customer_jobs_type!= 'undefined' ? $('#c_customer_jobs_type').val(localStorage.c_customer_jobs_type) : '';
-            localStorage.c_customer_jobs_section!= 'undefined' ? $('#c_customer_jobs_section').val(localStorage.c_customer_jobs_section) : '';
-            localStorage.c_customer_jobs_is_shebao!= 'undefined' ? $('#c_customer_jobs_is_shebao').val(localStorage.c_customer_jobs_is_shebao) : '';
-            localStorage.cascadePickerBtn_3!= 'undefined' ? $('#cascadePickerBtn_3').val(localStorage.cascadePickerBtn_3) : '';
-            localStorage.c_customer_jobs_province!= 'undefined' ? $('#c_customer_jobs_province').val(localStorage.c_customer_jobs_province) : '';
-            localStorage.c_customer_jobs_city!= 'undefined' ? $('#c_customer_jobs_city').val(localStorage.c_customer_jobs_city) : '';
-            localStorage.c_customer_jobs_county!= 'undefined' ? $('#c_customer_jobs_county').val(localStorage.c_customer_jobs_county) : '';
-            localStorage.c_customer_jobs_detail_addr!= 'undefined' ? $('#c_customer_jobs_detail_addr').val(localStorage.c_customer_jobs_detail_addr) : '';
-            localStorage.c_customer_jobs_phone!= 'undefined' ? $('#c_customer_jobs_phone').val(localStorage.c_customer_jobs_phone) : '';
+            (localStorage.c_customer_jobs_company!= undefined) ? $('#c_customer_jobs_company').val(localStorage.c_customer_jobs_company) : '';
+            (localStorage.c_customer_jobs_industry!= undefined) ? $('#c_customer_jobs_industry').val(localStorage.c_customer_jobs_industry) : '';
+            (localStorage.c_customer_jobs_type!= undefined)? $('#c_customer_jobs_type').val(localStorage.c_customer_jobs_type) : '';
+            (localStorage.c_customer_jobs_section!= undefined) ? $('#c_customer_jobs_section').val(localStorage.c_customer_jobs_section) : '';
+            (localStorage.c_customer_jobs_is_shebao!= undefined) ? $('#c_customer_jobs_is_shebao').val(localStorage.c_customer_jobs_is_shebao) : '';
+            (localStorage.cascadePickerBtn_3!= undefined) ? $('#cascadePickerBtn_3').val(localStorage.cascadePickerBtn_3) : '';
+            (localStorage.c_customer_jobs_province!= undefined) ? $('#c_customer_jobs_province').val(localStorage.c_customer_jobs_province) : '';
+            (localStorage.c_customer_jobs_city!= undefined) ? $('#c_customer_jobs_city').val(localStorage.c_customer_jobs_city) : '';
+            (localStorage.c_customer_jobs_county!= undefined) ? $('#c_customer_jobs_county').val(localStorage.c_customer_jobs_county) : '';
+            (localStorage.c_customer_jobs_detail_addr!= undefined) ? $('#c_customer_jobs_detail_addr').val(localStorage.c_customer_jobs_detail_addr) : '';
+            (localStorage.c_customer_jobs_phone!= undefined)? $('#c_customer_jobs_phone').val(localStorage.c_customer_jobs_phone) : '';
 
             //其他联系人信息
-            localStorage.c_other_people_relation!= 'undefined' ? $('#c_other_people_relation').val(localStorage.c_other_people_relation) : '';
-            localStorage.c_other_people_name!= 'undefined' ? $('#c_other_people_name').val(localStorage.c_other_people_name) : '';
-            localStorage.c_other_people_cellphone!= 'undefined' ? $('#c_other_people_cellphone').val(localStorage.c_other_people_cellphone) : '';
+            (localStorage.c_other_people_relation!= undefined) ? $('#c_other_people_relation').val(localStorage.c_other_people_relation) : '';
+            (localStorage.c_other_people_name!= undefined) ? $('#c_other_people_name').val(localStorage.c_other_people_name) : '';
+            (localStorage.c_other_people_cellphone!= undefined) ? $('#c_other_people_cellphone').val(localStorage.c_other_people_cellphone) : '';
         },
         //存储数据
         savelocal:function(){
@@ -701,6 +702,35 @@
             }
             dom.parent().siblings('div.weui-cell__ft').remove();
             dom.parents('div.weui-cell').next("div.warning-div").hide();
+        },
+        //
+        getProduct:function (p_type) {
+            console.log(p_type);
+            $.ajax({
+                type: 'GET',
+                url: "<?= Yii::$app->getUrlManager()->createUrl(['manage/getproductsbytype'])?>",
+                data: { p_type: p_type },
+                dataType: 'json',
+                timeout: 5000,
+                success: function(data){
+                    if(data.status == 1) {
+                        $('#o_product_id').html(data.data);
+                    }else{
+                        weui.alert(data.message, function () {
+                            //console.log('ok')
+                        }, {
+                            title: '系统提示'
+                        });
+                    }
+                },
+                error: function(xhr, type){
+                    weui.alert('系统错误', function () {
+                        //console.log('ok')
+                    }, {
+                        title: '系统提示'
+                    });
+                }
+            });
         }
     }
 
