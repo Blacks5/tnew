@@ -530,7 +530,7 @@
             (localStorage.c_customer_name!= undefined) ? $('#c_customer_name').val(localStorage.c_customer_name) : '';
             (localStorage.c_customer_cellphone!= undefined) ? $('#c_customer_cellphone').val(localStorage.c_customer_cellphone) : '';
             (localStorage.c_customer_id_card!= undefined) ? $('#c_customer_id_card').val(localStorage.c_customer_id_card) : '';
-            (localStorage.c_customer_id_card_endtime!= undefined) ? $('#c_customer_id_card_endtime').val(localStorage.c_customer_id_card_endtime) : '';
+            (localStorage.c_customer_id_card_endtime!= undefined) ? $('#dateIDendtime').val(localStorage.c_customer_id_card_endtime) : '';
             (localStorage.c_customer_id_card_endtime_status=='true')  ? $('#c_customer_id_card_endtime_status').attr('checked','checked') : '';
             (localStorage.cascadePickerBtn!= undefined) ? $('#cascadePickerBtn').val(localStorage.cascadePickerBtn) : '';
             (localStorage.c_customer_province!= undefined) ? $('#c_customer_province').val(localStorage.c_customer_province) : '';
@@ -593,7 +593,7 @@
             localStorage.c_customer_name = $('#c_customer_name').val();
             localStorage.c_customer_cellphone = $('#c_customer_cellphone').val();
             localStorage.c_customer_id_card = $('#c_customer_id_card').val();
-            localStorage.c_customer_id_card_endtime = $('#c_customer_id_card_endtime').val();
+            localStorage.c_customer_id_card_endtime = $('#dateIDendtime').val();
             localStorage.c_customer_id_card_endtime_status = $('#c_customer_id_card_endtime_status').is(':checked');
             localStorage.cascadePickerBtn = $('#cascadePickerBtn').val();
             localStorage.c_customer_province = $('#c_customer_province').val();
@@ -662,7 +662,7 @@
                 c_customer_name:$('#c_customer_name').val(),
                 c_customer_cellphone:$('#c_customer_cellphone').val(),
                 c_customer_id_card:$('#c_customer_id_card').val(),
-                c_customer_id_card_endtime:$('#c_customer_id_card_endtime').val(),
+                c_customer_id_card_endtime:$('#dateIDendtime').val(),
                 c_customer_id_card_endtime_status:($('#c_customer_id_card_endtime_status').is(':checked')=='true') ? 1 : 0,
                // cascadePickerBtn:$('#cascadePickerBtn').val(),
                 c_customer_province:$('#c_customer_province').val(),
@@ -708,18 +708,18 @@
         },
         //验证数据
         validateform:function () {
-            if(!$('#g_goods_name').val()){
-                this.notice_dom($('#g_goods_name'),'商品名称不能为空');
-                return false;
-            }else{
-                this.del_notice_dom($('#g_goods_name'));
-            }
-            if(!$('#g_goods_models').val()){
-                this.notice_dom($('#g_goods_models'),'商品类型不能为空');
-                return false;
-            }else{
-                this.del_notice_dom($('#g_goods_models'));
-            }
+//            if(!$('#g_goods_name').val()){
+//                this.notice_dom($('#g_goods_name'),'商品名称不能为空');
+//                return false;
+//            }else{
+//                this.del_notice_dom($('#g_goods_name'));
+//            }
+//            if(!$('#g_goods_models').val()){
+//                this.notice_dom($('#g_goods_models'),'商品类型不能为空');
+//                return false;
+//            }else{
+//                this.del_notice_dom($('#g_goods_models'));
+//            }
         },
         //添加错误提示
         notice_dom:function (dom,text) {
