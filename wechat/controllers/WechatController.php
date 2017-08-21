@@ -11,11 +11,17 @@ namespace wechat\controllers;
 
 
 use EasyWeChat\Foundation\Application;
-use yii\web\Controller;
+use wechat\Tools\Wechat;
 
-class WechatController extends Controller
+/**
+ * s-285072.gotocdn.com/manage 这个域名访问
+ *
+ * Class WechatController
+ * @package wechat\controllers
+ * @author too <hayto@foxmail.com>
+ */
+class WechatController extends BaseController
 {
-    public $enableCsrfValidation = false;
     public function actionIndex()
     {
         $config = \Yii::$app->params['wechat'];
@@ -59,7 +65,7 @@ class WechatController extends Controller
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @author too <hayto@foxmail.com>
      */
-    /*public function actionTestLogin()
+    public function actionTestLogin()
     {
         Wechat::Login(['wechat/test-login']);
 
@@ -68,5 +74,5 @@ class WechatController extends Controller
 
         echo "<pre>";
         var_dump($user);
-    }*/
+    }
 }

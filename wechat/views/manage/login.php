@@ -32,12 +32,13 @@
                     <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" name="password" type="password" id="passwords" placeholder="请输入密码">
+                        <input class="weui-input" name="openid" type="hidden" value="<?=$openid?>">
                     </div>
                 </div>
             </div>
 
             <div class="weui-btn-area">
-                <a class="weui-btn weui-btn_primary" href="javascript:;" id="commit-form">登录</a>
+                <a class="weui-btn weui-btn_primary" href="javascript:;" id="commit-form">绑定</a>
             </div>
             <!--<div class="page__bd page__bd_spacing commit-form-div">-->
                 <!--<a href="javascript:;" class="weui-btn weui-btn_primary" id="commit-form">登录</a>-->
@@ -54,6 +55,7 @@
         $("#commit-form").on('click',function(){
             var username = $("#username").val();
             var password = $("#passwords").val();
+            var openid = $("input[name=openid]").val();
             if(username == ''){
                 weui.topTips('请输入用户名', {
                     duration: 2000,
@@ -75,8 +77,8 @@
             }
             $.ajax({
                 type: 'POST',
-                url: '/',
-                data: { username: username,password:password},
+                url: "<?=Yii::$app->getUrlManager()->createUrl(['manage/login'])?>",
+                data: { username: username,password:password, openid: openid},
                 dataType: 'json',
                 timeout: 3000,
                 context: $('body'),
@@ -84,6 +86,7 @@
                     console.log(data);
                 },
                 error: function(xhr, type){
+                    console.log(type);
                     alert('Ajax error!')
                 }
             });

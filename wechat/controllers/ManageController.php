@@ -10,19 +10,35 @@
 namespace wechat\controllers;
 
 
+use common\models\LoginForm;
 use common\models\Product;
 use common\models\Stores;
-use yii\web\Controller;
+use common\models\User;
+use wechat\Tools\Wechat;
 use yii;
 
-class ManageController extends Controller
+
+class ManageController extends BaseController
 {
     /**
+     * 微信授权+账号绑定才能进这个页面
      * @return string
      * @author lilaotou <liwansen@foxmail.com>
      * 首页
      */
     public function actionIndex(){
+        Wechat::Login(['manage/index']);
+
+        $session = \Yii::$app->getSession();
+        $user = $session->get('wechat_user');
+        $user->id; //openid
+
+        $sys_user = (new yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>$user->id])->one();
+        // 还没绑定账号
+        if(false === $sys_user){
+            return $this->redirect(['manage/login', 'openid'=>$user->id]);
+        }
+        var_dump(Yii::$app->getUser()->getIdentity(), $user);
         return $this->renderPartial('index');
     }
 
@@ -32,7 +48,23 @@ class ManageController extends Controller
      * 登录
      */
     public function actionLogin(){
-        return $this->renderPartial('login');
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax() && $request->getIsPost()){
+            $openid = $request->post('openid');
+            $model = new LoginForm();
+            $data['data'] = $request->post();
+            $model->load($data, 'data');
+
+            // 登录成功后，写入openid
+            if($model->login()){
+                Yii::$app->db->createCommand()->update(User::tableName(), ['wechat_openid'=>$openid], ['id'=>Yii::$app->getUser()->getId()])->execute();
+                return ['status'=>1, 'message'=>'绑定成功', 'data'=>Yii::$app->getUrlManager()->createUrl(['manage/index'])];
+            }
+            return ['status'=>0, 'message'=>'绑定失败'];
+        }
+
+        $openid = $request->get('openid');
+        return $this->renderPartial('login', ['openid'=>$openid]);
     }
 
     /**
