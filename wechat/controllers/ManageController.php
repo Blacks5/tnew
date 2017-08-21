@@ -69,6 +69,7 @@ class ManageController extends BaseController
     }
 
     /**
+     * 初始化订单数据
      * @return string
      * @author lilaotou <liwansen@foxmail.com>
      * 提交订单
