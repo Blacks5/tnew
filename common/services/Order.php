@@ -32,15 +32,17 @@ class Order
      */
     public function addOrder($params)
     {
+        $params = array_merge($params['goodsjson'], $params['orderjson'], $params['customerjson']);
         $data['data'] = $params;
+        var_dump($params);die;
         // 判断验证码【不再需要短信验证码2017-08-21】
         /*$verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
             throw new CustomCommonException('验证码错误');
         }*/
-//        $user = \Yii::$app->getSession()->get('wechat_user'); // 微信资料
+        $user = \Yii::$app->getSession()->get('wechat_user'); // 微信资料
 
-        $sys_user = (new \yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>"o9dGBv_lC9-6tzZPUNyXk-1AM3as"])->one(); // 系统资料
+        $sys_user = (new \yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>$user->id])->one(); // 系统资料
         // 1写order_images表
         $images_model = new OrderImages();
         $images_model->oi_user_id = $sys_user['id'];
@@ -66,6 +68,7 @@ class Order
             $customerModel->c_total_borrow_times = 1;
         }
         $customerModel->load($data, 'data');
+//        var_dump($customerModel->getAttributes());die;
         if(!$customerModel->validate()){
             $msg = $customerModel->getFirstErrors();
             throw new CustomCommonException(reset($msg));

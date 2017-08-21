@@ -18,7 +18,7 @@ class OrderController extends BaseController
 {
     public function actionCreateOrder()
     {
-//        Wechat::Login(['manage/index']);
+        Wechat::Login(['manage/index']);
         try{
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
@@ -30,7 +30,8 @@ class OrderController extends BaseController
         }catch (CustomCommonException $e){
             return ['status'=>0, 'message'=>$e->getMessage()];
         }catch (\Exception $e){
-            return ['status'=>0, 'message'=>$e->getMessage()];
+            throw $e;
+//            return ['status'=>0, 'message'=>$e->getMessage()];
             return ['status'=>0, 'message'=>'网络异常'];
         }
     }

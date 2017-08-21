@@ -75,10 +75,20 @@ class ManageController extends BaseController
      * 提交订单
      */
     public function actionCommitorder(){
-        $userinfo = Yii::$app->getUser()->getIdentity();
+        Wechat::Login(['manage/index']);
+        $user = \Yii::$app->getSession()->get('wechat_user');
 
-        $stores = $this->getStoresByUser();
-        //var_dump($stores);die;
+
+        $sys_user = (new yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>$user->id])->one();
+        $sub = (new yii\db\Query())->from('stores_saleman')->select(['ss_store_id'])->where(['ss_saleman_id'=>$sys_user['id']]);
+        // 可选商户 同一个区县
+        $stores = (new yii\db\Query())->select(['s_id', 's_name'])
+            ->from(Stores::tableName())->where(['s_status' => Stores::STATUS_ACTIVE, 's_county' => $sys_user['county'], 's_id'=>$sub])->all();
+//        var_dump($stores);die;
+        /*var_dump($stores);die;
+        if(false === !empty($stores)){
+            throw new CustomCommonException('该销售代表尚未绑定商户，请联系相关负责人进行绑定');
+        }*/
         // 商品类型
         $goods_type = Yii::$app->params['goods_type'];
 

@@ -482,7 +482,7 @@
             var customerjson = JSON.parse(localStorage.getItem("customerjson"));
             $.ajax({
                 type: 'POST',
-                url: "<?= Yii::$app->getUrlManager()->createUrl(['manage/getproductsbytype'])?>",
+                url: "<?= Yii::$app->getUrlManager()->createUrl(['order/create-order'])?>",
                 data: { goodsjson: goodsjson,orderjson: orderjson,customerjson:customerjson},
                 dataType: 'json',
                 timeout: 5000,
