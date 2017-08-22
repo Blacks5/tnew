@@ -228,4 +228,9 @@ class ManageController extends BaseController
             return ['status' => 0, 'data'=>[], 'message' => '网络异常'];
         }
     }
+
+    public function actionTest()
+    {
+        return $this->renderPartial('test.html');
+    }
 }
