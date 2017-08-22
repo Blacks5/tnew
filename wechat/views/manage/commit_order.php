@@ -26,6 +26,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <select class="weui-select" name="g_goods_type" id="g_goods_type" onchange="saveDate.getProduct(this.value);">
+                            <option value="">请选择商品类型</option>
                             <?php foreach ($data['goods_type'] as $k=>$v){ ?>
                                 <option value="<?= $v['t_id']; ?>"><?= $v['t_name']; ?></option>
                             <?php } ?>
@@ -83,7 +84,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <select class="weui-select" name="o_product_id" id="o_product_id">
-
+                            <option value="">请选择产品</option>
                         </select>
                     </div>
                 </div>
@@ -428,7 +429,7 @@
                         //console.log(result);
                     },
                     onConfirm: function (result) {
-                        //console.log($(this));
+//                        console.log($(this));
                         var val_str = result[0].value + '-' + result[1].value + '-' +result[2].value;
                         that.val(val_str);
                     }
@@ -438,7 +439,7 @@
             $('#IDperpetual').on('click', function () {
                 var that = $(this);
                 if(that.is(":checked")){
-                    $('#dateIDendtime').val('9999-12-12');
+                    $('#dateIDendtime').val('9999999999');
                     $('#dateIDendtime').attr('disabled','disabled');
                 }else{
                     $('#dateIDendtime').removeAttr('disabled');
@@ -471,15 +472,75 @@
     //失去焦点存储数据
     $("input,select").blur(function () {
         saveDate.savelocal();
-        saveDate.savejson();
     });
     var saveDate = {
         //ajax提交订单
         commitOrder:function () {
             this.validateform();
-            var goodsjson = JSON.parse(localStorage.getItem("goodsjson"));
-            var orderjson = JSON.parse(localStorage.getItem("orderjson"));
-            var customerjson = JSON.parse(localStorage.getItem("customerjson"));
+            var goodsjson = {
+                g_goods_type:$('#g_goods_type').val(),
+                g_goods_name:$('#g_goods_name').val(),
+                g_goods_models:$('#g_goods_models').val(),
+                g_goods_price:$('#g_goods_price').val(),
+                g_goods_deposit:$('#g_goods_deposit').val()
+            };
+            var orderjson = {
+                o_store_id:$('#o_store_id').val(),
+                o_product_id:$('#o_product_id').val(),
+                o_is_auto_pay:($('#o_is_auto_pay').is(':checked')=='true') ? 1 : 0,
+                o_is_free_pack_fee:($('#o_is_free_pack_fee').is(':checked')=='true') ? 1 : 0,
+                o_is_add_service_fee:($('#o_is_add_service_fee').is(':checked')=='true') ? 1 : 0,
+                o_remark:$('#o_remark').val()
+            };
+            var customerjson = {
+                c_bank:$('#c_bank').val(),
+                c_banknum:$('#c_banknum').val(),
+                c_customer_name:$('#c_customer_name').val(),
+                c_customer_cellphone:$('#c_customer_cellphone').val(),
+                c_customer_id_card:$('#c_customer_id_card').val(),
+                c_customer_id_card_endtime:new Date($('#dateIDendtime').val()).getTime()/1000,
+                c_customer_id_card_endtime_status:($('#c_customer_id_card_endtime_status').is(':checked')=='true') ? 1 : 0,
+                // cascadePickerBtn:$('#cascadePickerBtn').val(),
+                c_customer_province:$('#c_customer_province').val(),
+                c_customer_city:$('#c_customer_city').val(),
+                c_customer_county:$('#c_customer_county').val(),
+                c_customer_idcard_detail_addr:$('#c_customer_idcard_detail_addr').val(),
+                c_customer_gender:$('#c_customer_gender').val(),
+                c_customer_qq:$('#c_customer_qq').val(),
+                c_customer_wechat:$('#c_customer_wechat').val(),
+                c_family_marital_status:$("select[name=c_family_marital_status]").val(),
+                c_family_marital_partner_name:$('#c_family_marital_partner_name').val(),
+                c_family_marital_partner_cellphone:$('#c_family_marital_partner_cellphone').val(),
+                c_family_house_info:$('#c_family_house_info').val(),
+                c_kinship_cellphone:$('#c_kinship_cellphone').val(),
+                c_family_income:$('#c_family_income').val(),
+                c_kinship_relation:$('#c_kinship_relation').val(),
+                c_kinship_name:$('#c_kinship_name').val(),
+                //cascadePickerBtn_2:$('#cascadePickerBtn_2').val(),
+                c_customer_addr_province:$('#c_customer_addr_province').val(),
+                c_customer_addr_city:$('#c_customer_addr_city').val(),
+                c_customer_addr_county:$('#c_customer_addr_county').val(),
+                c_customer_addr_detail:$('#c_customer_addr_detail').val(),
+
+                //客户单位信息
+                c_customer_jobs_company:$('#c_customer_jobs_company').val(),
+                c_customer_jobs_industry:$('#c_customer_jobs_industry').val(),
+                c_customer_jobs_type:$('#c_customer_jobs_type').val(),
+                c_customer_jobs_section:$('#c_customer_jobs_section').val(),
+                c_customer_jobs_title:$('#c_customer_jobs_title').val(),
+                c_customer_jobs_is_shebao:$('#c_customer_jobs_is_shebao').val(),
+                //cascadePickerBtn_3:$('#cascadePickerBtn_3').val(),
+                c_customer_jobs_province:$('#c_customer_jobs_province').val(),
+                c_customer_jobs_city:$('#c_customer_jobs_city').val(),
+                c_customer_jobs_county:$('#c_customer_jobs_county').val(),
+                c_customer_jobs_detail_addr:$('#c_customer_jobs_detail_addr').val(),
+                c_customer_jobs_phone:$('#c_customer_jobs_phone').val(),
+
+                //其他联系人信息
+                c_other_people_relation:$('#c_other_people_relation').val(),
+                c_other_people_name:$('#c_other_people_name').val(),
+                c_other_people_cellphone:$('#c_other_people_cellphone').val()
+            };
             $.ajax({
                 type: 'POST',
                 url: "<?= Yii::$app->getUrlManager()->createUrl(['order/create-order'])?>",
@@ -488,7 +549,12 @@
                 timeout: 5000,
                 success: function(data){
                     if(data.status == 1) {
-                        console.log(data);
+//                        console.log(data);
+                        weui.alert(data.message, function () {
+                            return location.href = "<?= Yii::$app->getUrlManager()->createUrl(['manage'])?>";
+                        }, {
+                            title: '系统提示'
+                        });
                     }else{
                         weui.alert(data.message, function () {
                             //console.log('ok')
@@ -510,6 +576,7 @@
         initval:function () {
 
             //商品信息
+            localStorage.g_goods_type = '';// 无法和产品联动保存，所以不保存了
             localStorage.g_goods_type ? $('#g_goods_type').val(localStorage.g_goods_type) : '';
             (localStorage.g_goods_name != undefined) ? $('#g_goods_name').val(localStorage.g_goods_name) : '';
             (localStorage.g_goods_models != undefined) ? $('#g_goods_models').val(localStorage.g_goods_models) : '';
@@ -540,10 +607,11 @@
             (localStorage.c_customer_gender!= '') ? $('#c_customer_gender').val(localStorage.c_customer_gender) : '';
             (localStorage.c_customer_qq!= undefined) ? $('#c_customer_qq').val(localStorage.c_customer_qq) : '';
             (localStorage.c_customer_wechat!= undefined) ? $('#c_customer_wechat').val(localStorage.c_customer_wechat) : '';
-            (localStorage.c_family_marital_status!= '') ? $('#c_family_marital_status').val(localStorage.c_family_marital_status) : '';
+            (localStorage.c_family_marital_status!= '') ? $("select[name=c_family_marital_status]").val(localStorage.c_family_marital_status) : '';
             (localStorage.c_family_marital_partner_name!= undefined) ? $('#c_family_marital_partner_name').val(localStorage.c_family_marital_partner_name) : '';
             (localStorage.c_family_marital_partner_cellphone!= undefined) ? $('#c_family_marital_partner_cellphone').val(localStorage.c_family_marital_partner_cellphone) : '';
             (localStorage.c_family_house_info!= '') ? $('#c_family_house_info').val(localStorage.c_family_house_info) : '';
+            (localStorage.c_kinship_cellphone!= '') ? $('#c_kinship_cellphone').val(localStorage.c_kinship_cellphone) : '';
             (localStorage.c_family_income!= undefined) ?  $('#c_family_income').val(localStorage.c_family_income) : '';
             (localStorage.c_kinship_relation!= '') ?  $('#c_kinship_relation').val(localStorage.c_kinship_relation) : '';
             (localStorage.c_kinship_name!= undefined) ? $('#c_kinship_name').val(localStorage.c_kinship_name) : '';
@@ -558,6 +626,7 @@
             (localStorage.c_customer_jobs_industry!= undefined) ? $('#c_customer_jobs_industry').val(localStorage.c_customer_jobs_industry) : '';
             (localStorage.c_customer_jobs_type!= undefined)? $('#c_customer_jobs_type').val(localStorage.c_customer_jobs_type) : '';
             (localStorage.c_customer_jobs_section!= undefined) ? $('#c_customer_jobs_section').val(localStorage.c_customer_jobs_section) : '';
+            (localStorage.c_customer_jobs_title!= undefined) ? $('#c_customer_jobs_title').val(localStorage.c_customer_jobs_title) : '';
             (localStorage.c_customer_jobs_is_shebao!= undefined) ? $('#c_customer_jobs_is_shebao').val(localStorage.c_customer_jobs_is_shebao) : '';
             (localStorage.cascadePickerBtn_3!= undefined) ? $('#cascadePickerBtn_3').val(localStorage.cascadePickerBtn_3) : '';
             (localStorage.c_customer_jobs_province!= undefined) ? $('#c_customer_jobs_province').val(localStorage.c_customer_jobs_province) : '';
@@ -570,6 +639,9 @@
             (localStorage.c_other_people_relation!= undefined) ? $('#c_other_people_relation').val(localStorage.c_other_people_relation) : '';
             (localStorage.c_other_people_name!= undefined) ? $('#c_other_people_name').val(localStorage.c_other_people_name) : '';
             (localStorage.c_other_people_cellphone!= undefined) ? $('#c_other_people_cellphone').val(localStorage.c_other_people_cellphone) : '';
+            localStorage.setItem("goodsjson", '');//用localStorage保存转化好的的字符串
+//            localStorage.setItem("orderjson", '');//用localStorage保存转化好的的字符串
+//            localStorage.setItem("customerjson", '');//用localStorage保存转化好的的字符串
         },
         //存储数据
         savelocal:function(){
@@ -603,10 +675,11 @@
             localStorage.c_customer_gender = $('#c_customer_gender').val();
             localStorage.c_customer_qq = $('#c_customer_qq').val();
             localStorage.c_customer_wechat = $('#c_customer_wechat').val();
-            localStorage.c_family_marital_status = $('#c_family_marital_status').val();
+            localStorage.c_family_marital_status = $("select[name=c_family_marital_status]").val();
             localStorage.c_family_marital_partner_name = $('#c_family_marital_partner_name').val();
             localStorage.c_family_marital_partner_cellphone = $('#c_family_marital_partner_cellphone').val();
             localStorage.c_family_house_info = $('#c_family_house_info').val();
+            localStorage.c_kinship_cellphone = $('#c_kinship_cellphone').val();
             localStorage.c_family_income = $('#c_family_income').val();
             localStorage.c_kinship_relation = $('#c_kinship_relation').val();
             localStorage.c_kinship_name = $('#c_kinship_name').val();
@@ -621,6 +694,7 @@
             localStorage.c_customer_jobs_industry = $('#c_customer_jobs_industry').val();
             localStorage.c_customer_jobs_type = $('#c_customer_jobs_type').val();
             localStorage.c_customer_jobs_section = $('#c_customer_jobs_section').val();
+            localStorage.c_customer_jobs_title = $('#c_customer_jobs_title').val();
             localStorage.c_customer_jobs_is_shebao = $('#c_customer_jobs_is_shebao').val();
             localStorage.cascadePickerBtn_3 = $('#cascadePickerBtn_3').val();
             localStorage.c_customer_jobs_province = $('#c_customer_jobs_province').val();
@@ -634,79 +708,6 @@
             localStorage.c_other_people_name = $('#c_other_people_name').val();
             localStorage.c_other_people_cellphone = $('#c_other_people_cellphone').val();
         },
-        savejson:function () {
-            var goodsjson = {
-                g_goods_type:$('#g_goods_type').val(),
-                g_goods_name:$('#g_goods_name').val(),
-                g_goods_models:$('#g_goods_models').val(),
-                g_goods_price:$('#g_goods_price').val(),
-                g_goods_deposit:$('#g_goods_deposit').val()
-            };
-            goodsjson = JSON.stringify(goodsjson);//将JSON对象转化成字符串
-            localStorage.setItem("goodsjson",goodsjson);//用localStorage保存转化好的的字符串
-
-            var orderjson = {
-                o_store_id:$('#o_store_id').val(),
-                o_product_id:$('#o_product_id').val(),
-                o_is_auto_pay:($('#o_is_auto_pay').is(':checked')=='true') ? 1 : 0,
-                o_is_free_pack_fee:($('#o_is_free_pack_fee').is(':checked')=='true') ? 1 : 0,
-                o_is_add_service_fee:($('#o_is_add_service_fee').is(':checked')=='true') ? 1 : 0,
-                o_remark:$('#o_remark').val()
-            };
-            orderjson = JSON.stringify(orderjson);//将JSON对象转化成字符串
-            localStorage.setItem("orderjson",orderjson);//用localStorage保存转化好的的字符串
-
-            var customerjson = {
-                c_bank:$('#c_bank').val(),
-                c_banknum:$('#c_banknum').val(),
-                c_customer_name:$('#c_customer_name').val(),
-                c_customer_cellphone:$('#c_customer_cellphone').val(),
-                c_customer_id_card:$('#c_customer_id_card').val(),
-                c_customer_id_card_endtime:$('#dateIDendtime').val(),
-                c_customer_id_card_endtime_status:($('#c_customer_id_card_endtime_status').is(':checked')=='true') ? 1 : 0,
-               // cascadePickerBtn:$('#cascadePickerBtn').val(),
-                c_customer_province:$('#c_customer_province').val(),
-                c_customer_city:$('#c_customer_city').val(),
-                c_customer_county:$('#c_customer_county').val(),
-                c_customer_idcard_detail_addr:$('#c_customer_idcard_detail_addr').val(),
-                c_customer_gender:$('#c_customer_gender').val(),
-                c_customer_qq:$('#c_customer_qq').val(),
-                c_customer_wechat:$('#c_customer_wechat').val(),
-                c_family_marital_status:$('#c_family_marital_status').val(),
-                c_family_marital_partner_name:$('#c_family_marital_partner_name').val(),
-                c_family_marital_partner_cellphone:$('#c_family_marital_partner_cellphone').val(),
-                c_family_house_info:$('#c_family_house_info').val(),
-                c_family_income:$('#c_family_income').val(),
-                c_kinship_relation:$('#c_kinship_relation').val(),
-                c_kinship_name:$('#c_kinship_name').val(),
-                //cascadePickerBtn_2:$('#cascadePickerBtn_2').val(),
-                c_customer_addr_province:$('#c_customer_addr_province').val(),
-                c_customer_addr_city:$('#c_customer_addr_city').val(),
-                c_customer_addr_county:$('#c_customer_addr_county').val(),
-                c_customer_addr_detail:$('#c_customer_addr_detail').val(),
-
-                //客户单位信息
-                c_customer_jobs_company:$('#c_customer_jobs_company').val(),
-                c_customer_jobs_industry:$('#c_customer_jobs_industry').val(),
-                c_customer_jobs_type:$('#c_customer_jobs_type').val(),
-                c_customer_jobs_section:$('#c_customer_jobs_section').val(),
-                c_customer_jobs_is_shebao:$('#c_customer_jobs_is_shebao').val(),
-                //cascadePickerBtn_3:$('#cascadePickerBtn_3').val(),
-                c_customer_jobs_province:$('#c_customer_jobs_province').val(),
-                c_customer_jobs_city:$('#c_customer_jobs_city').val(),
-                c_customer_jobs_county:$('#c_customer_jobs_county').val(),
-                c_customer_jobs_detail_addr:$('#c_customer_jobs_detail_addr').val(),
-                c_customer_jobs_phone:$('#c_customer_jobs_phone').val(),
-
-                //其他联系人信息
-                c_other_people_relation:$('#c_other_people_relation').val(),
-                c_other_people_name:$('#c_other_people_name').val(),
-                c_other_people_cellphone:$('#c_other_people_cellphone').val()
-            };
-            customerjson = JSON.stringify(customerjson);//将JSON对象转化成字符串
-            localStorage.setItem("customerjson",customerjson);//用localStorage保存转化好的的字符串
-        },
-        //验证数据
         validateform:function () {
 //            if(!$('#g_goods_name').val()){
 //                this.notice_dom($('#g_goods_name'),'商品名称不能为空');

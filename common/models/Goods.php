@@ -34,8 +34,9 @@ class Goods extends CoreCommonActiveRecord
             [['g_order_id', 'g_goods_name', 'g_goods_models', 'g_goods_price', 'g_goods_type', 'g_goods_deposit'], 'required'],
             [['g_order_id', 'g_goods_type'], 'integer'],
             [['g_goods_price', 'g_goods_deposit'], 'number'],
-            [['g_goods_name'], 'string', 'max' => 50],
-            [['g_goods_models'], 'string', 'max' => 255],
+            [['g_goods_name'], 'string', 'max' => 20],
+            [['g_goods_models'], 'string', 'max' => 20],
+            [['g_goods_price'], 'compare', 'compareAttribute'=>'g_goods_deposit', 'operator'=>'>'],
         ];
     }
 

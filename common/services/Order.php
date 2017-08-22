@@ -24,7 +24,7 @@ class Order
 {
     /**
      * 客户端提交订单，成功返回true，失败直接抛异常
-     * 调用此方法的控制器，需要得到微信的授权
+     * 调用此方法的控制器，需要得到微信的授权，还需要开启事物
      * @param $params
      * @return bool
      * @throws CustomCommonException
@@ -34,14 +34,14 @@ class Order
     {
         $params = array_merge($params['goodsjson'], $params['orderjson'], $params['customerjson']);
         $data['data'] = $params;
-        var_dump($params);die;
+
+//        throw new CustomCommonException('通过');
         // 判断验证码【不再需要短信验证码2017-08-21】
         /*$verify = new Sms();
         if(!$verify->verify($params['c_customer_cellphone'], $params['verify_code'])){
             throw new CustomCommonException('验证码错误');
         }*/
         $user = \Yii::$app->getSession()->get('wechat_user'); // 微信资料
-
         $sys_user = (new \yii\db\Query())->from(User::tableName())->where(['wechat_openid'=>$user->id])->one(); // 系统资料
         // 1写order_images表
         $images_model = new OrderImages();

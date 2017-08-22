@@ -116,8 +116,7 @@ class Customer extends CoreCommonActiveRecord
             [['c_family_marital_partner_name', 'c_other_people_name'], 'string', 'max' => 10],
             [['c_kinship_name'], 'string', 'max' => 15],
             [[/*'c_kinship_addr', */'c_customer_addr_detail'], 'string', 'max' => 100],
-            [['c_customer_jobs_company', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_detail_addr', 'c_customer_jobs_phone'], 'string', 'max' => 20],
-
+            [['c_customer_jobs_company', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_detail_addr'], 'string', 'max' => 20],
 
             [['c_created_at', 'c_updated_at', 'c_total_interest', 'c_status', 'c_total_borrow_times'], 'safe']
         ];
@@ -150,7 +149,7 @@ class Customer extends CoreCommonActiveRecord
             'c_customer_qq' => '客户qq号码',
             'c_customer_wechat' => '客户微信',
 //            'c_customer_email' => '客户email',
-            'c_family_marital_status' => '婚姻状况：0未婚 1已婚 2离异 3 丧偶',
+            'c_family_marital_status' => '婚姻状况：1未婚 2已婚 3离异 4丧偶',
             'c_family_marital_partner_name' => '配偶姓名1',
             'c_family_marital_partner_cellphone' => '配偶电话',
             'c_family_house_info' => '住房情况：1自有 2租住 3父母房产 4单位提供福利',
@@ -168,7 +167,7 @@ class Customer extends CoreCommonActiveRecord
             'c_customer_jobs_industry' => '客户单位行业：1餐饮 2娱乐 3金融【随便几个示例】',
             'c_customer_jobs_type' => '客户行业性质：1私有 2公有 3国企',
             'c_customer_jobs_section' => '客户任职部门，随便填',
-            'c_customer_jobs_title' => '客户职务，随便写',
+            'c_customer_jobs_title' => '客户职务',
             'c_customer_jobs_is_shebao' => '是否购买社保：1是0否',
             'c_customer_jobs_province' => '客户单位省',
             'c_customer_jobs_city' => '客户单位市',
