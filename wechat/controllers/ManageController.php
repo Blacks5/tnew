@@ -233,4 +233,11 @@ class ManageController extends BaseController
     {
         return $this->renderPartial('test.html');
     }
+    /**
+     * @author lilaotou <liwansen@foxmail.com>
+     * 影响采集测试
+     */
+    public function actionPhotopicker(){
+        return $this->renderPartial('photopicker',[]);
+    }
 }
