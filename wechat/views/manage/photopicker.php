@@ -21,14 +21,24 @@
                         <div class=weui-uploader__hd><p class=weui-uploader__title>图片上传</p>
                         <!--<div class=weui-uploader__info><span id=uploadCount>0</span>/5</div>-->
                         </div>
-                        <div class=weui-uploader__bd>
-                            <ul class=weui-uploader__files id=uploaderFiles>
 
-                            </ul>
-                            <div class=weui-uploader__input-box>
-                                <input id=uploaderInput class=weui-uploader__input type=file accept=image/* capture=camera multiple=""/>
+                        <form id="testform" method="post" enctype="multipart/form-data">
+                            <div class=weui-uploader__bd>
+                                <ul class=weui-uploader__files id=uploaderFiles>
+
+                                </ul>
+                                <div class=weui-uploader__input-box>
+                                    <input name="key" id="key" type="hidden" value="bttq0y8axx.png">
+                                    <input name="token" type="hidden" value="QWYn5TFQsLLU1pL5MFEmX3s5DmHdUThav9WyOWOm:ssda7u_8Uc70Sv-Z-6iBrHs1XV4=:eyJkZWxldGVBZnRlckRheXMiOjcsInNjb3BlIjoianNzZGsiLCJkZWFkbGluZSI6MTUwMzQ5MjQ5MH0=">
+                                    <input name="accept" type="hidden">
+                                    <input id="userfile" class=weui-uploader__input type=file accept=image/* capture=camera multiple=""/>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+                        <!-- upload info -->
+                        <div class="selected-file"></div>
+                        <div class="progress"></div>
+                        <div class="uploaded-result"></div>
                     </div>
                 </div>
             </div>
@@ -40,87 +50,67 @@
 <script src="http://cdn.staticfile.org/plupload/2.1.5/plupload.full.min.js"></script>
 <script src="https://cdn.staticfile.org/qiniu-js-sdk/1.0.14-beta/qiniu.js"></script>
 <script>
-    var uploader = Qiniu.uploader({
-        runtimes: 'html5,flash,html4', //上传模式,依次退化
-        browse_button: 'uploaderInput', //上传选择的点选按钮，**必需**
-        uptoken:getTokenMessage().token,
-    //  uptoken_url: getToken(), //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
-    //  uptoken : '', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-    //  unique_names: true, // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
-    //  save_key: true, // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
-        domain: 'http://qiniu-plupload.qiniudn.com/', //bucket 域名，下载资源时用到，**必需**
-        get_new_uptoken: false, //设置上传文件的时候是否每次都重新获取新的token
-        container: '', //上传区域DOM ID，默认是browser_button的父元素，
-        max_file_size: '100mb', //最大文件体积限制
-        flash_swf_url: 'Moxie.swf', //引入flash,相对路径
-        max_retries: 3, //上传失败最大重试次数
-        dragdrop: true, //开启可拖曳上传
-        drop_element: 'container', //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-        chunk_size: '4mb', //分块上传时，每片的体积
-        auto_start: false, //选择文件后自动上传，若关闭需要自己绑定事件触发上传
-        init: {
-            'FilesAdded': function(up, files) {
-                plupload.each(files, function(file) {
-                    // 文件添加进队列后,处理相关的事情
-                    console.log(file.name);
-                });
-            },
-            'BeforeUpload': function(up, file) {
-                // 每个文件上传前,处理相关的事情
-            },
-            'UploadProgress': function(up, file) {
-                // 每个文件上传时,处理相关的事情
-            },
-            'FileUploaded': function(up, file, info) {
-                // 每个文件上传成功后,处理相关的事情
-                // 其中 info 是文件上传成功后，服务端返回的json，形式如
-                // {
-                // "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
-                // "key": "gogopher.jpg"
-                // }
-                // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
+    var domain = "http://7j1xky.com2.z0.glb.qiniucdn.com/"; // you bucket domain  eg: http://xxx.bkt.clouddn.com
 
-                // var domain = up.getOption('domain');
-                // var res = parseJSON(info);
-                // var sourceLink = domain + res.key; 获取上传成功后的文件的Url
-            },
-            'Error': function(up, err, errTip) {
-            //上传出错时,处理相关的事情
-            },
-            'UploadComplete': function() {
-                //队列文件处理完毕后,处理相关的事情
-            },
-            'Key': function(up, file) {
-                // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                var key = "12.png";
-                // do something with key here
-                return key
+    $(function(){
+        var $key = $('#key');  // file name    eg: the file is image.jpg,but $key='a.jpg', you will upload the file named 'a.jpg'
+        var $userfile = $('#userfile');  // the file you selected
+
+        // upload info
+        var $selectedFile = $('.selected-file');
+        var $progress = $(".progress");
+        var $uploadedResult = $('.uploaded-result');
+        var $uploaderFiles = $('#uploaderFiles');
+
+        $("#userfile").change(function() {  // you can ues 'onchange' here to uplpad automatically after select a file
+            $uploadedResult.html('');
+            var selectedFile = $userfile.val();
+            if (selectedFile) {
+                // randomly generate the final file name
+                var ramdomName = Math.random().toString(36).substr(2) + $userfile.val().match(/\.?[^.\/]+$/);
+                $key.val(ramdomName);
+                $selectedFile.html('文件：' + selectedFile);
+                var li_str = '<li class="weui-uploader__file weui-uploader__file_status" data-id="2" style="background-image: url('+ selectedFile +');"> </li>';
+                $uploaderFiles.html(li_str);
+            } else {
+                return false;
             }
-        }
+            var f = new FormData(document.getElementById("testform"));
+            $.ajax({
+                url: 'http://upload.qiniu.com/',  // Different bucket zone has different upload url, you can get right url by the browser error massage when uploading a file with wrong upload url.
+                type: 'POST',
+                data: f,
+                processData: false,
+                contentType: false,
+                xhr: function(){
+                    myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload){
+                        myXhr.upload.addEventListener('progress',function(e) {
+                            // console.log(e);
+                            if (e.lengthComputable) {
+                                var percent = e.loaded/e.total*100;
+                                $progress.html('上传：' + e.loaded + "/" + e.total+" bytes. " + percent.toFixed(2) + "%");
+                            }
+                        }, false);
+                    }
+                    return myXhr;
+                },
+                success: function(res) {
+                    console.log("成功：" + JSON.stringify(res));
+                    var str = '<span>已上传：' + res.key + '</span>';
+                    if (res.key && res.key.match(/\.(jpg|jpeg|png|gif)$/)) {
+                        str += '<img src="' + domain + res.key + '"/>';
+                    }
+                    $uploadedResult.html(str);
+                },
+                error: function(res) {
+                    console.log("失败:" +  JSON.stringify(res));
+                    $uploadedResult.html('上传失败：' + res.responseText);
+                }
+            });
+            return false;
+        });
     });
-
-    // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
-    // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
-    function getTokenMessage() {
-        var token = {token:'QWYn5TFQsLLU1pL5MFEmX3s5DmHdUThav9WyOWOm:-C98mj-EN_Vz2rH80uB9xP2ERkw=:eyJkZWxldGVBZnRlckRheXMiOjcsInNjb3BlIjoianNzZGsiLCJkZWFkbGluZSI6MTUwMzQxNzQzMn0='};
-//        $.ajax({
-//            url:'http://jssdk.demo.qiniu.io/token',
-//            async:false,
-//            success:function (data) {
-//                var obj = JSON.parse(data);
-//                token.token = obj.uploadToken;
-//                token.filename = obj.filename;
-//            }
-//        });
-        return token;
-    }
-    document.getElementById('uploadfiles').onclick = function() {
-        uploader.start();
-    };
-
-
-
 
 
 
