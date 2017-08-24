@@ -34,7 +34,7 @@ class WechatController extends BaseController
 
         $app->server->setMessageHandler(function($message){
 //            var_dump($message);
-            return "您好！欢迎关注!";
+            return "您好！欢迎关注";
         });
 
         return $app->server->serve()->send();
