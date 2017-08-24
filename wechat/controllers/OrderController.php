@@ -41,13 +41,5 @@ class OrderController extends BaseController
         }
     }
 
-    public function actionT()
-    {
-        $id = '510623198812250210';
-        $cell = '18990232122';
-        $name = "涂鸿";
-        $bank_id = "6221532320005581447";
-        $api = "sandboxapi.100credit.cn";
-//        new
-    }
+
 }
