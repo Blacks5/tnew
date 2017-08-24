@@ -16,6 +16,12 @@ use common\services\Order;
 
 class OrderController extends BaseController
 {
+    /**
+     * 提交订单
+     * @return array
+     * @throws \Exception
+     * @author too <hayto@foxmail.com>
+     */
     public function actionCreateOrder()
     {
         Wechat::Login(['manage/index']);
