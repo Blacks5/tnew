@@ -23,23 +23,37 @@ use \yii\helpers\Url;
     <?= $form->field($model, 'password_hash_1')->passwordInput(['maxlength' => true])->label('重复密码') ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-sm-2">
+            <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only']) ?>
+        </div>
+        <div class="col-sm-2">
+            <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList(['请选择职位'])->label('请选择职位', ['class' => 'sr-only']) ?>
+        </div>
+        <div class="col-sm-1">
+            <?= $form->field($model, 'province', ['options' => ['class' => 'form-group']])->dropDownList($all_province)->label('请选择省', ['class' => 'sr-only']) ?>
+        </div>
+        <div class="col-sm-1">
+            <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList(['请选择市'])->label('请选择城市', ['class' => 'sr-only']) ?>
+        </div>
+        <div class="col-sm-1">
+            <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList(['请选择县/区'])->label('请选择城县/区', ['class' => 'sr-only']) ?>
+        </div>
+        <div class="col-sm-1">
+            <?= $form->field($model, 'leader')->dropDownList(['请选择直属领导'])->label('请选择直属领导', ['class' => 'sr-only']) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only'])->label('所属部门') ?>
-    <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList(['请选择职位'])->label('请选择职位', ['class' => 'sr-only']) ?>
 
-    <?= $form->field($model, 'province', ['options' => ['class' => 'form-group']])->dropDownList($all_province)->label('请选择省', ['class' => 'sr-only'])->label('负责区域') ?>
-    <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList(['请选择市'])->label('请选择城市', ['class' => 'sr-only']) ?>
-    <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList(['请选择县/区'])->label('请选择城县/区', ['class' => 'sr-only']) ?>
 
     <?= $form->field($model, 'id_card_pic_one')->hiddenInput(['class'=>'form-group'])->label('');?>
-
     <div class="form-group field-stores-s_remark required">
         <label class="control-label col-sm-3" for="stores-s_remark">身份证照片</label>
         <div class="col-sm-9">
             <div class="wraper">
                 <ul id="file-list-one" class="file-list">
                     <li>
-                        <p>营业执照</p>
+                        <p>身份证照片</p>
                         <?= Html::img('@web/img/image.png'); ?>
                     </li>
                 </ul>
@@ -133,18 +147,59 @@ use \yii\helpers\Url;
     }
 
     loadinit('one');
+
+    //如果是销售岗位显示上级主管下拉列表和地区
+    $('#user-department_id').change(function(){
+        if($('#user-department_id').val()==26){
+            $('#leader').removeClass('hidden');
+        }else{
+            $('#leader').addClass('hidden');
+            $('#user-province').addClass('hidden');
+            $('#user-city').addClass('hidden');
+            $('#user-county').addClass('hidden');
+        }
+    });
+    //根据销售岗位选择省市区可选区域
+    $('#user-job_id').change(function(){
+        var job=$('#user-job_id').val();
+       if(job==45){  //销售总监和大区经理 不用选择省市区
+           $('#leader').addClass('hidden');
+           $('#user-province').addClass('hidden');
+           $('#user-city').addClass('hidden');
+           $('#user-county').addClass('hidden');
+       }else if(job==46){       //城市经理只用选择省
+           $('#leader').removeClass('hidden');
+           $('#user-province').removeClass('hidden');
+           $('#user-city').addClass('hidden');
+           $('#user-county').addClass('hidden');
+       }else if(job==47 || job==58){     //销售经理需要选择省,市
+           $('#leader').removeClass('hidden');
+           $('#user-province').removeClass('hidden');
+           $('#user-city').removeClass('hidden');
+           $('#user-county').addClass('hidden');
+       }else{       //销售人员需要选择省市区
+           $('#leader').removeClass('hidden');
+           $('#user-province').removeClass('hidden');
+           $('#user-city').removeClass('hidden');
+           $('#user-county').removeClass('hidden');
+       }
+    });
 </script>
 
 <?php
 $this->registerJs('
     var url = "'.Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
     var url_jobs = "'.Url::toRoute(['user/get-jobs']).'"; // 获取职位
+    var url_leader = "'.Url::toRoute(['user/get-leader']).'"; //获取上级
     
     // 部门变化
     $("#user-department_id").change(function(){
         var d_id = $(this).val();
         $.get(url_jobs, {d_id:d_id}, function(data){
-            var dom  = createDom(data);
+            var dom  = "";
+            $.each(data, function(k ,v){
+                dom += "<option  value="+k+">"+v+"</option>";
+            })
             $("#user-job_id").html(dom);
         });
     });
@@ -152,26 +207,52 @@ $this->registerJs('
     // 省变化
     $("#user-province").change(function(){
         var province_id = $(this).val();
-        $.get(url, {p_id:province_id}, function(data){
-            var dom  = createDom(data);
-            $("#user-city").html(dom);
-            
-            $("#user-city").trigger("change");
-        });     
+            if(province_id==1){
+                $("#user-city").html("<option value="+0+">全部</option>");
+            }else{
+                $.get(url, {p_id:province_id}, function(data){  
+                    var dom  = createDom(data);
+                    $("#user-city").html(dom);
+                });
+                
+                $.get(url_leader, {cityName:"province",cityId:"1",leader:"1"}, function(data){
+                    var dom  = createDoms(data);
+                    $("#user-leader").html(dom);
+                });
+                
+            }
+            //$("#user-city").trigger("change");
     });
     
     // 市变化
     $("#user-city").change(function(){
         var city_id = $(this).val();
-        $.get(url, {p_id:city_id}, function(data){
-            var dom  = createDom(data);
-            $("#user-county").html(dom);
-        });
+        if(city_id==0){
+            $("#user-county").html("<option value="+0+">全部</option>");
+        }else{
+            $.get(url, {p_id:city_id}, function(data){
+                var dom  = createDom(data);
+                $("#user-county").html(dom);
+            });
+            
+            $.get(url_leader, {cityName:"province",cityId:$("#user-province").val(),leader:"2"}, function(data){
+                    var dom  = createDoms(data);
+                    $("#user-leader").html(dom);
+                });
+        }
     });
     
-    // 专业造dom
-    function createDom(data){
+    function createDoms(data){
         var dom = "";
+        $.each(data, function(k ,v){
+            dom += "<option value="+k+">"+v+"</option>";
+        })
+        return dom;
+    }
+    
+    // 带默认选中非数据项dom
+    function createDom(data){
+        var dom = "<option  value="+0+" selected>全部</option>";
         $.each(data, function (k, v) {
             dom += "<option  value="+k+">"+v+"</option>";
         })

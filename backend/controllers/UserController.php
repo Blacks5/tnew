@@ -6,6 +6,7 @@ use backend\core\CoreBackendController;
 use backend\models\AuthAssignment;
 use backend\models\AuthItem;
 use backend\models\Menu;
+use backend\models\User as Users;
 use backend\models\PasswordForm;
 use common\components\Helper;
 use common\models\Department;
@@ -89,6 +90,15 @@ class UserController extends CoreBackendController
         return Jobs::getJobs($d_id);
     }
 
+    public function actionGetLeader($cityName,$leader)
+    {
+        Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+
+
+        return Users::getLeader($cityName,$leader);
+
+    }
+
 
     public function actionList()
     {
@@ -148,7 +158,6 @@ class UserController extends CoreBackendController
         $item = $auth->getRoles(); // 获取所有角色
         $item_one = array_keys($item);
         $item_one = array_combine($item_one, $item_one);
-
         $request = Yii::$app->getRequest();
         if ($request->getIsPost()) {
             $post = $request->post();
