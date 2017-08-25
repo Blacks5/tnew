@@ -15,21 +15,49 @@ class ProductController extends CoreBackendController
     public function actionIndex()
     {
         $this->getView()->title = '产品列表';
-
+        $arr = Yii::$app->getRequest()->getQueryParams();
         $model = new Product();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['p_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-
+        $status = 100;
+        if(!empty($arr['Product']['p_status'])){
+            $status = $arr['Product']['p_status'];
+        }
         return $this->render('index', [
+            'status' => $status,
             'sear' => $model->getAttributes(),
             'model' => $data,
             'totalpage' => $pages->pageCount,
             'pages' => $pages
         ]);
     }
+
+    /**
+     * 筛选产品
+     * @return $this|string1
+     * @author 皮潇世 <p30436397@163.com>
+     */
+//    public function actionFilter()
+//    {
+//        $this->getView()->title = '产品列表';
+//
+//        $model = new Product();
+//        $query = $model->search(Yii::$app->getRequest()->getQueryParams());
+//        $querycount = clone $query;
+//        $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
+//        $pages->pageSize = Yii::$app->params['page_size'];
+//        $data = $query->orderBy(['p_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+//
+//        return $this->render('index', [
+//            'sear' => $model->getAttributes(),
+//            'model' => $data,
+//            'totalpage' => $pages->pageCount,
+//            'pages' => $pages
+//        ]);
+//    }
 
     /**
      * 创建产品
@@ -103,5 +131,37 @@ class ProductController extends CoreBackendController
             return $this->success('删除成功！');
         }
         return $this->error('删除失败！');
+    }
+
+    /**
+     * 冻结产品
+     * @param $p_id 产品id
+     * @return yii\web\Response
+     * @author 皮潇世 <p30436397@163.com>
+     */
+    public function actionFreeze($p_id)
+    {
+        if ($model = Product::findOne($p_id)) {
+            $model->p_status = Product::STATUS_STOP;
+            $model->save(false);
+            return $this->success('冻结成功！');
+        }
+        return $this->error('冻结失败！');
+    }
+
+    /**
+     * 解冻产品
+     * @param $p_id 产品id
+     * @return yii\web\Response
+     * @author 皮潇世 <p30436397@163.com>
+     */
+    public function actionThaw($p_id)
+    {
+        if ($model = Product::findOne($p_id)) {
+            $model->p_status = Product::STATUS_OK;
+            $model->save(false);
+            return $this->success('解冻成功！');
+        }
+        return $this->error('解冻失败！');
     }
 }
