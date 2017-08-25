@@ -121,7 +121,30 @@ $form = ActiveForm::begin(
                             <button id="start_upload_three" type="button">开始上传</button>
                         </div>
                     </div>
-
+                    <div class="wraper">
+                        <ul id="file-list-six" class="file-list">
+                            <li>
+                                <p>法人身份证反面</p>
+                                <?= Html::img('@web/img/image.png'); ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-six"/>
+                            <button id="start_upload_six" type="button">开始上传</button>
+                        </div>
+                    </div>
+                    <div class="wraper">
+                        <ul id="file-list-seven" class="file-list">
+                            <li>
+                                <p>合同照</p>
+                                <?= Html::img('@web/img/image.png'); ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-seven"/>
+                            <button id="start_upload_seven" type="button">开始上传</button>
+                        </div>
+                    </div>
                     <div class="wraper">
                         <ul id="file-list-four" class="file-list">
                             <li>
@@ -147,30 +170,6 @@ $form = ActiveForm::begin(
                         </div>
                     </div>
 
-                    <div class="wraper">
-                        <ul id="file-list-six" class="file-list">
-                            <li>
-                                <p>法人身份证反面</p>
-                                <?= Html::img('@web/img/image.png'); ?>
-                            </li>
-                        </ul>
-                        <div class="btn-wraper">
-                            <input type="button" value="选择文件..." id="browse-six"/>
-                            <button id="start_upload_six" type="button">开始上传</button>
-                        </div>
-                    </div>
-                    <div class="wraper">
-                        <ul id="file-list-seven" class="file-list">
-                            <li>
-                                <p>合同照</p>
-                                <?= Html::img('@web/img/image.png'); ?>
-                            </li>
-                        </ul>
-                        <div class="btn-wraper">
-                            <input type="button" value="选择文件..." id="browse-seven"/>
-                            <button id="start_upload_seven" type="button">开始上传</button>
-                        </div>
-                    </div>
                     <div class="wraper">
                         <ul id="file-list-eight" class="file-list">
                             <li>
