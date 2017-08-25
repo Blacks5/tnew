@@ -26,10 +26,18 @@ use yii\widgets\LinkPager;
                                 <input type="text" name="Product[p_name]" placeholder="产品名"
                                        value="<?= $sear['p_name']; ?>" class="input form-control">
                             </div>
-                            <div class="col-sm-3">
-                            <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
-                            </span>
+                            <div class="col-sm-10">
+                                <span class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                </span>
+                                <div class="col-sm-2">
+                                    <select class="form-control p_filter" name="">
+                                        <option value="100" <?php if($status == 100){ echo 'selected';} ?>>全&nbsp&nbsp&nbsp&nbsp部</option>
+                                        <option value="1" <?php if($status == 1){ echo 'selected';} ?>>已冻结</option>
+                                        <option value="10" <?php if($status == 10){ echo 'selected';} ?>>未冻结</option>
+                                    </select>
+                                    <input type="hidden" name="Product[p_status]" id="pro_status"/>
+                                </div>
                             </div>
                         </form>
 
@@ -60,18 +68,16 @@ use yii\widgets\LinkPager;
                                         <td><?= $vo['p_customer_management'] ?></td>
                                         <td><?= \common\models\Product::getAllStatus()[$vo['p_status']]; ?></td>
                                         <td>
-
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/view']))) { ?>
-                                                <a class="btn btn-primary btn-xs"
-                                               href="<?= Url::toRoute(['product/view', 'id' => $vo['p_id']]) ?>"><i
-                                                    class="fa fa-edit"></i>查看
-                                            </a>
+                                                <a class="btn btn-primary btn-xs" href="<?= Url::toRoute(['product/view', 'id' => $vo['p_id']]) ?>"><i class="fa fa-edit"></i>查看</a>
+                                            <?php } ?>
+                                            <?php if($vo['p_status'] == 10){ ?>
+                                                <button class="btn btn-success btn-xs freeze-product" data-value="<?= $vo['p_id'] ?>"><i class="fa fa-edit"></i>冻结</button>
+                                            <?php }else if($vo['p_status'] == 1){ ?>
+                                                <button class="btn btn-warning btn-xs thaw-product" data-value="<?= $vo['p_id'] ?>"><i class="fa fa-edit"></i>解冻</button>
                                             <?php } ?>
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/delete']))) { ?>
-                                                <button class="btn btn-danger btn-xs del-product"
-                                                        data-value="<?= $vo['p_id'] ?>"><i
-                                                        class="fa fa-close"></i>删除
-                                                </button>
+                                                <button class="btn btn-danger btn-xs del-product" data-value="<?= $vo['p_id'] ?>"><i class="fa fa-close"></i>删除</button>
                                             <?php } ?>
                                     </tr>
                                 <?php } ?>
@@ -108,4 +114,33 @@ $this->registerJs("
             });
         });
     ");
+
+$this->registerJs("
+        var freeze_url = '" . Url::toRoute(["product/freeze"]) . "';
+        $('.freeze-product').on('click', function(ev){
+            layer.confirm('是否冻结产品?', {icon: 3, title:'冻结产品'}, function(index){
+                  window.location.href=freeze_url+'?p_id='+$(ev.target).attr('data-value');
+                  layer.close(index);
+                  layer.close(index);
+            });
+        });
+    ");
+
+$this->registerJs("
+        var thaw_url = '" . Url::toRoute(["product/thaw"]) . "';
+        $('.thaw-product').on('click', function(ev){
+            layer.confirm('是否解冻产品?', {icon: 3, title:'解冻产品'}, function(index){
+                  window.location.href=thaw_url+'?p_id='+$(ev.target).attr('data-value');
+                  layer.close(index);
+                  layer.close(index);
+            });
+        });
+    ");
+
+$this->registerJs("
+    $('.p_filter').on('change', function(){
+        $('#pro_status').val($(this).val());
+        $('form').submit();
+    });
+");
 ?>
