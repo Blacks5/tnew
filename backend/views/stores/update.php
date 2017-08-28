@@ -140,39 +140,6 @@ $t = new \common\models\UploadFile();
                             <button id="start_upload_three" type="button">开始上传</button>
                         </div>
                     </div>
-
-                    <div class="wraper">
-                        <ul id="file-list-four" class="file-list">
-                            <li>
-                                <p>门店照片</p>
-                                <?php if($model->s_photo_four){ ?>
-                                    <img src="<?=$t->getUrl($model->s_photo_four);?>" alt="">
-                                <?php }else{ ?>
-                                    <img src="/statics/images/image.png" alt="">
-                                <?php } ?>
-                            </li>
-                        </ul>
-                        <div class="btn-wraper">
-                            <input type="button" value="选择文件..." id="browse-four" />
-                            <button id="start_upload_four" type="button">开始上传</button>
-                        </div>
-                    </div>
-                    <div class="wraper">
-                        <ul id="file-list-five" class="file-list">
-                            <li>
-                                <p>店内照片</p>
-                                <?php if($model->s_photo_five){ ?>
-                                    <img src="<?=$t->getUrl($model->s_photo_five);?>" alt="">
-                                <?php }else{ ?>
-                                    <img src="/statics/images/image.png" alt="">
-                                <?php } ?>
-                            </li>
-                        </ul>
-                        <div class="btn-wraper">
-                            <input type="button" value="选择文件..." id="browse-five" />
-                            <button id="start_upload_five" type="button">开始上传</button>
-                        </div>
-                    </div>
                     <div class="wraper">
                         <ul id="file-list-six" class="file-list">
                             <li>
@@ -203,6 +170,38 @@ $t = new \common\models\UploadFile();
                         <div class="btn-wraper">
                             <input type="button" value="选择文件..." id="browse-seven" />
                             <button id="start_upload_seven" type="button">开始上传</button>
+                        </div>
+                    </div>
+                    <div class="wraper">
+                        <ul id="file-list-four" class="file-list">
+                            <li>
+                                <p>门店照片</p>
+                                <?php if($model->s_photo_four){ ?>
+                                    <img src="<?=$t->getUrl($model->s_photo_four);?>" alt="">
+                                <?php }else{ ?>
+                                    <img src="/statics/images/image.png" alt="">
+                                <?php } ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-four" />
+                            <button id="start_upload_four" type="button">开始上传</button>
+                        </div>
+                    </div>
+                    <div class="wraper">
+                        <ul id="file-list-five" class="file-list">
+                            <li>
+                                <p>店内照片</p>
+                                <?php if($model->s_photo_five){ ?>
+                                    <img src="<?=$t->getUrl($model->s_photo_five);?>" alt="">
+                                <?php }else{ ?>
+                                    <img src="/statics/images/image.png" alt="">
+                                <?php } ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-five" />
+                            <button id="start_upload_five" type="button">开始上传</button>
                         </div>
                     </div>
                     <div class="wraper">
