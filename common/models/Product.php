@@ -30,7 +30,7 @@ class Product extends CoreCommonActiveRecord
     {
         return [
             self::STATUS_OK=>'正常',
-            self::STATUS_STOP=>'禁用',
+            self::STATUS_STOP=>'冻结',
             self::STATUS_DEL=>'删除'
         ];
     }
@@ -120,6 +120,15 @@ class Product extends CoreCommonActiveRecord
         $this->setScenario('search');
         $this->load($param);
         $query = self::find()->where(['!=', 'p_status', self::STATUS_DEL]);
+        $status = '';
+        if(!empty($param['Product']['p_status'])){
+            $status = $param['Product']['p_status'];
+        }
+        if($status == 1){
+            $query->where(['=', 'p_status', self::STATUS_STOP]);
+        }else if($status == 10){
+            $query->where(['=', 'p_status', self::STATUS_OK]);
+        }
         if(!$this->validate()){
             return $query->where('1=2');
         }

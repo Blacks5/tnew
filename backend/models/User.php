@@ -15,6 +15,7 @@ use backend\models\AuthAssignment;
  * @property string $email
  * @property integer $role
  * @property integer $status
+ * @property
  * @property integer $created_at
  * @property integer $updated_at
  */
@@ -97,6 +98,22 @@ class User extends \yii\db\ActiveRecord
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * 根绝城市选择上级领导
+     * @param $city
+     * @param $leader
+     * @return array
+     */
+    public static function getLeader($cityName,$cityId,$leader)
+    {
+        $data = static::find()->select(['realname'])->indexBy(['id'])->where([$cityName=>$cityId,'department_id'=>26,'leader'=>$leader])->column();
+
+
+
+
+        return $data;
     }
 
 }

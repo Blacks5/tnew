@@ -23,7 +23,7 @@ class Helper
     {
         $data = (new Query())
             ->select(['region_name'])
-            ->from(TooRegion::tableName())->where(['parent_id'=>1])->indexBy('region_id')->column();
+            ->from(TooRegion::tableName())->where(['parent_id'=>1])->orWhere(['parent_id'=>0])->indexBy('region_id')->column();
         return $data;
     }
 
