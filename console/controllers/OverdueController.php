@@ -40,7 +40,7 @@ class OverdueController extends Controller
     {
         $_time = strtotime(date('Y-m-d')); // 当天零点整的时间戳
 //        $_time = strtotime(date('Y-m-d', strtotime('-3 days'))); // 过期3天内都不计算逾期
-        $sql = "select * from repayment where r_pre_repay_date<=". $_time. " and r_status=". Repayment::STATUS_NOT_PAY. " and r_overdue_day < 90 order by r_pre_repay_date desc for update";
+        $sql = "select * from repayment where r_pre_repay_date<=". $_time. " and r_status=". Repayment::STATUS_NOT_PAY. " and r_overdue_day < 1000 order by r_pre_repay_date desc for update";
         $data = Yii::$app->getDb()->createCommand($sql)->queryAll();
         if(false === !empty($data)){
             throw new CustomCommonException('没有需要计算的逾期客户');
