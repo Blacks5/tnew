@@ -131,7 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <th>总还款金额</th>
                                                 <th>贷款金额</th>
                                                 <th>借款次数</th>
-                                                <th>提交时间</th>
+                                                <th>通过时间</th>
                                                 <th>操作</th>
                                             </tr>
                                             </thead>
@@ -154,7 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         元
                                                     </td>
                                                     <td class="client-status"><?= $_v['c_total_borrow_times']; ?>次</td>
-                                                    <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at']) ?></td>
+                                                    <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_operator_date']) ?></td>
                                                     <td>
                                                         <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))) { ?>
                                                             <a href="<?= Yii::$app->getUrlManager()->createUrl(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
