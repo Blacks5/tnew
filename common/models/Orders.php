@@ -38,7 +38,7 @@ class Orders extends CoreCommonActiveRecord
     const STATUS_PAYING = 10; // 还款中
     const STATUS_PAY_OVER = 5; // 已还清
     const STATUS_CANCEL = 4; // 取消
-    const STATUS_REVOKE = 3; // 还款中
+    const STATUS_REVOKE = 3; // 已撤销
 
     /**
      * @inheritdoc

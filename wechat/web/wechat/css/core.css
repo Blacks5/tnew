@@ -1,0 +1,111 @@
+body, html {
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+.demos-title {
+  text-align: center;
+  font-size: 34px;
+  color: #3cc51f;
+  font-weight: 400;
+  margin: 0 15%;
+}
+
+.demos-sub-title {
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+.demos-header {
+  padding: 35px 0;
+}
+
+.demos-content-padded {
+  padding: 15px;
+}
+
+.demos-second-title {
+  text-align: center;
+  font-size: 24px;
+  color: #3cc51f;
+  font-weight: 400;
+  margin: 0 15%;
+}
+
+footer {
+  text-align: center;
+  font-size: 14px;
+  padding: 20px;
+}
+
+footer a {
+  color: #999;
+  text-decoration: none;
+}
+
+.weui-top-bar{
+  display: flex;
+  position: fixed;
+  z-index: 500;
+  top:0;
+  left:0;
+  width:100%;
+}
+.weui-search-bar{
+  width:100%;
+  position: absolute;
+  top:0;
+  left:0;
+}
+.weui-select-bar{
+  width:100%;
+  position: absolute;
+  top:44px;
+  left:0;
+}
+
+.weui-select-bar:before{
+  content: "";
+  left: 0;
+}
+.weui-select-bar{
+  padding: 10px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #efeff4;
+}
+.weui-select-bar input{
+  text-align: center;
+}
+.weui-order-preview{
+  padding-top: 84px;
+}
+.weui-order-preview .weui-form-preview__hd .weui-form-preview__value {
+  font-size: 1rem;
+  color: red;
+}
+
+/*提交订单页面*/
+.commit-order-container .swiper-slide{
+  height: 100%;
+  overflow-y: auto;
+}
+.weui-btn-next{
+  position: fixed;
+  bottom: 0;
+  left:0;
+  width:100%;
+  z-index: 500;
+}
+.demos-header{
+  padding: 10px 0;
+}
+
+
+/*首页版权*/
+.weui-footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left:0;
+  margin: 25px 0 10px 0;
+}
