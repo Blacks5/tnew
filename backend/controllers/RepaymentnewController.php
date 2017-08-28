@@ -160,7 +160,7 @@ class RepaymentnewController extends CoreBackendController
         $querycount = clone $query;
         $pages = new Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
         $provinces = Helper::getAllProvince();
         return $this->render('payoverlist', [
