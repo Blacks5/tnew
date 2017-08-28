@@ -29,9 +29,13 @@ class UserPerformanceController extends CoreBackendController
     {
         $yejidrv = new YejiSearch();
         $list = $yejidrv->search(\yii::$app->request->getQueryParams());
+
+        //var_dump($list['sear']);die;
+
         $provinces = Helper::getAllProvince();
         return $this->render('index', [
             'data'=>$list,
+            'all'=>$list['all'],
             'sear'=>$list['sear'],
             'pages'=>$list['pages'],
             'provinces'=>$provinces

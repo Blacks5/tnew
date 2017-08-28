@@ -106,14 +106,46 @@ class User extends \yii\db\ActiveRecord
      * @param $leader
      * @return array
      */
-    public static function getLeader($cityName,$cityId,$leader)
+    public static function getLeader($cityName,$cityId,$parentLeader)
     {
-        $data = static::find()->select(['realname'])->indexBy(['id'])->where([$cityName=>$cityId,'department_id'=>26,'leader'=>$leader])->column();
 
 
+        if($parentLeader==1){
+            $data = static::find()->select(['id','realname'])->where(['province'=>1,'department_id'=>26,'leader'=>1])->all();
+        }else{
+            $data = static::find()->select(['id','realname'])->where([$cityName=>$cityId,'department_id'=>26,'leader'=>$parentLeader])->all();
+        }
 
 
         return $data;
+    }
+
+    /**
+     * 根据job_id返回当前用户的级别
+     * @param $leader
+     * @return int
+     */
+    public function jobToleader($leader){
+        switch ($leader){
+            case $leader== 45:  //销售总监
+                return 1;
+                break;
+            case $leader == 46 :    //大区经理
+                return 2;
+                break;
+            case $leader==47 || $leader==48:    //城市经理
+                return 3;
+                break;
+            case $leader ==49 || $leader==50 ||$leader==51: //销售经理
+                return 4;
+                break;
+            case $leader == 52: //销售主管
+                return 5;
+                break;
+            case $leader==53||$leader==54:  //销售人员
+                return 6;
+                break;
+        }
     }
 
 }

@@ -33,6 +33,11 @@
                                 <?php } ?>
                             </select>
                         </div>
+                        <div class="col-sm-1">
+                            <select class="input form-control" name="YejiSearch[level]" id="user-level">
+
+                            </select>
+                        </div>
                         <div class="col-md-1">
                             <select class="input form-control" name="YejiSearch[city]" id="user-city">
                             </select>
@@ -94,6 +99,27 @@
                             </span>
                         </div>
                     </form>
+                    <!-- 下级销售数据汇总 by OneStep -->
+                    <div class="row" style="margin-top: 20px;font-size:20px;">
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">总放款<span style="display: block;float:right"><?= $all['s_amount']?></span> </a>
+                            <a class="list-group-item">总提单<span style="display: block;float:right"><?= $all['t_ordercount']?></span> </a>
+                            <a class="list-group-item">成功提单<span style="display: block;float:right"><?= $all['s_ordercount']?></span> </a>
+                        </div>
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">个人保障计划捆绑率<span style="display: block;float:right"><?= $all['a_services']?></span> </a>
+                            <a class="list-group-item">贵宾服务包捆绑率<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                        </div>
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">风控率(单数)<span style="display: block;float:right"><?= $all['a_services']?></span> </a>
+                            <a class="list-group-item">风控率(金额)<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                        </div>
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">逾期率<span style="display: block;float:right"><?= $all['a_services']?></span> </a>
+                            <a class="list-group-item">逾期单数<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                            <a class="list-group-item">逾期金额<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                        </div>
+                    </div>
 
                     <div class="clients-list">
                         <div class="tab-content">
