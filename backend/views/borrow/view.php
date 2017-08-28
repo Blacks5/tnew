@@ -505,14 +505,14 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a']))) { ?>
                                 <?php if(!isset($jzq_sign_log['applyNo'])){ ?>
-                                    <button class="btn btn-success" id="jun-a">上传合同</button>
+                                    <button class="btn btn-success" id="jun-a">发起签约</button>
                                 <?php } ?>
                             <?php } ?>
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a7']))) { ?>
-                                <?php if($jzq_sign_log['signStatus'] == 0){ ?>
-                                    <button class="btn btn-success" id="jun-a7">发送签约短信</button>
-                                <?php } ?>
-                            <?php } ?>
+<!--                            --><?php //if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a7']))) { ?>
+<!--                                --><?php //if($jzq_sign_log['signStatus'] == 0){ ?>
+<!--                                    <button class="btn btn-success" id="jun-a7">发送签约短信</button>-->
+<!--                                --><?php //} ?>
+<!--                            --><?php //} ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-pass']))) { ?>
                                 <button class="btn btn-success verify-end">终审放款</button>
                             <?php } ?>
@@ -897,7 +897,28 @@ $(".failpic").click(function(){
                 success: function (data) {
                     if (data.status === 1) {
                         return layer.alert(data.message, {icon: data.status}, function(){
-                            return window.location.reload();
+//                            return window.location.reload();
+                            $.ajax({
+                                url: "<?= \yii\helpers\Url::toRoute(['jun/a7', 'order_id' => $model['o_id']]) ?>",
+                                type: "get",
+                                dataType: "json",
+                                data: {},
+                                success: function (data) {
+                                    if (data.status === 1) {
+                                        return layer.alert(data.message, {icon: data.status}, function(){
+                                            return window.location.reload();
+                                        });
+                                    }else{
+                                        return layer.alert(data.message, {icon: data.status});
+                                    }
+                                },
+                                error: function () {
+                                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                                },
+                                complete: function () {
+                                    layer.close(loading);
+                                },
+                            });
                         });
                     }else{
                         return layer.alert(data.message, {icon: data.status});
