@@ -78,6 +78,7 @@ $form = ActiveForm::begin(
             <?= $form->field($model, 's_photo_three')->hiddenInput(['class' => 'form-control'])->label(''); ?>
             <?= $form->field($model, 's_photo_four')->hiddenInput(['class' => 'form-control'])->label(''); ?>
             <?= $form->field($model, 's_photo_five')->hiddenInput(['class' => 'form-control'])->label(''); ?>
+            <?= $form->field($model, 's_photo_six')->hiddenInput(['class' => 'form-control'])->label(''); ?>
             <?= $form->field($model, 's_photo_seven')->hiddenInput(['class'=>'form-control'])->label('');?>
             <?= $form->field($model, 's_photo_eight')->hiddenInput(['class'=>'form-control'])->label('');?>
 
