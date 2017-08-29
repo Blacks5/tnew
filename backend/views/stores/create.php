@@ -67,6 +67,7 @@ $form = ActiveForm::begin(
             <?= $form->field($model, 's_gov_name')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_service_charge')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_addr')->textInput(['class' => 'form-control']); ?>
+            <?= $form->field($model, 's_real_addr')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_status')->dropDownList([3 => '待激活'])->label('状态'); ?>
             <?= $form->field($model, 's_province')->dropDownList($provinces, ['class' => 'form-control getpcc']); ?>
             <?= $form->field($model, 's_city')->dropDownList([], ['class' => 'form-control getpcc']); ?>

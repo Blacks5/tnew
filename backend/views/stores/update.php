@@ -61,6 +61,7 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_gov_name')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_service_charge')->textInput(['class'=>'form-control']); ?>
             <?= $form->field($model, 's_addr')->textInput(['class'=>'form-control']); ?>
+            <?= $form->field($model, 's_real_addr')->textInput(['class'=>'form-control']); ?>
             <?php if(in_array($model->s_status,array(0,2,4))){ ?>
                 <div class="form-group field-stores-s_addr required">
                     <label class="control-label col-sm-3" for="stores-s_addr">状态</label>
