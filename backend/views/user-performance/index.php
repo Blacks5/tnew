@@ -6,6 +6,7 @@
             <div class="ibox">
                 <div class="ibox-content">
                     <form class="row" method="get" action="">
+                        <!-- 暂时不用这2个输入框 by OneStep
                         <div class="col-sm-1">
                             <input type="text" name="YejiSearch[username]" placeholder="用户名"
                                    value="<?php echo $sear['username']; ?>" class="input form-control">
@@ -13,7 +14,7 @@
                         <div class="col-sm-1">
                             <input type="text" name="YejiSearch[realname]" placeholder="真实姓名"
                                    value="<?php echo $sear['realname']; ?>" class="input form-control">
-                        </div>
+                        </div> -->
 
                         <div class="col-sm-2">
                             <div class="input-daterange input-group" id="datepicker">
@@ -26,24 +27,33 @@
                         </div>
 
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[province]" id="user-province">
-                                <option value="">选择省</option>
-                                <?php foreach ($provinces as $k=>$v){ ?>
+                            <select class="input form-control" name="YejiSearch[province]" id="user-province" <?= $user->identity->level>1?'disabled':'';?> >
+                                <?php foreach ($area['province'] as $k=>$v){ ?>
                                     <option <?php if($sear['province'] == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[level]" id="user-level">
 
-                            </select>
-                        </div>
                         <div class="col-md-1">
-                            <select class="input form-control" name="YejiSearch[city]" id="user-city">
+                            <select class="input form-control" name="YejiSearch[city]" id="user-city" <?php echo $user->identity->level>2?'disabled':'';?>>
+                                <?php if($user->identity->level>2){?>
+                                    <option value="<?= $user->identity->city?>"><?=$area['city']?></option>
+                                <?php }?>
                             </select>
                         </div>
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[county]" id="user-county">
+                            <select class="input form-control" name="YejiSearch[county]" id="user-county" <?php echo $user->identity->level>3?'disabled':'';?>>
+                                <?php if($user->identity->level>3){?>
+                                    <option value="<?= $user->identity->county?>"><?=$area['county']?></option>
+                                <?php }?>
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <select class="input form-control" name="YejiSearch[realname]" id="user-realname">
+                                <option value="">全部</option>
+                                <?php foreach ($users as $k => $v){ ?>
+                                    <option value="<?= $v['realname'] ?>"><?= $v['realname'] ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                         <script>
@@ -115,9 +125,9 @@
                             <a class="list-group-item">风控率(金额)<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">逾期率<span style="display: block;float:right"><?= $all['a_services']?></span> </a>
-                            <a class="list-group-item">逾期单数<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
-                            <a class="list-group-item">逾期金额<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                            <a class="list-group-item">逾期率<span style="display: block;float:right"><?= $all['overdun_count']?></span> </a>
+                            <a class="list-group-item">逾期单数<span style="display: block;float:right"><?= $all['overdun_num']?></span> </a>
+                            <a class="list-group-item">逾期金额<span style="display: block;float:right"><?= $all['overdun_money']?></span> </a>
                         </div>
                     </div>
 
@@ -140,6 +150,9 @@
                                                     <th class="client-status">总提单</th>
                                                     <th>成功提单</th>
                                                     <th>总借出金额</th>
+                                                    <th>逾期单数</th>
+                                                    <th>逾期金额</th>
+                                                    <th>逾期率</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -156,6 +169,9 @@
                                                         <td class="client-status"><?= $_v['t_ordercount'] ?></td>
                                                         <td class="client-status"><?= $_v['s_ordercount'] ?></td>
                                                         <td class="client-status"><?= $_v['s_amount'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdun_num'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdun_money'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdun_count'] ?></td>
                                                         <td class="client-status">
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/index']))) { ?>
                                                                 <a class="btn btn-primary btn-xs"

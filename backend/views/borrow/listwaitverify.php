@@ -59,7 +59,7 @@ use yii\helpers\Url;
                                                     <th>总金额</th>
                                                     <th>贷款金额</th>
                                                     <th>借款次数</th>
-                                                    <th>提交时间</th>
+                                                    <th>通过时间</th>
                                                     <th>状态</th>
                                                     <th>操作</th>
                                                 </tr>
@@ -89,7 +89,7 @@ use yii\helpers\Url;
                                                     <td class="client-status"><?= $_v['o_total_price']+0;?>元</td>
                                                     <td class="client-status"><?= $_v['o_total_price']-$_v['o_total_deposit'];?>元</td>
                                                     <td class="client-status"><?= $_v['c_total_borrow_times'];?>次</td>
-                                                    <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_created_at'])?></td>
+                                                    <td class="client-status"><?= date("Y-m-d H:i:s", $_v['o_operator_date'])?></td>
                                                     <td><button class="btn btn-xs <?=btn_color($_v['o_status']);?>"><?= \common\models\Orders::getAllStatus()[$_v['o_status']]?></button></td>
                                                     <td>
                                                         <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))){ ?>
