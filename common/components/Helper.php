@@ -28,6 +28,22 @@ class Helper
     }
 
     /**
+     * 根据省份id 获取省份
+     * @param $province
+     * @return array
+     * @author OneStep
+     */
+    public static function getProvinceByProvinceId($province)
+    {
+        $data = (new Query())
+            ->select(['region_name'])
+            ->from(TooRegion::tableName())->where(['region_id'=>$province])->indexBy('region_id')->column();
+
+        return $data;
+    }
+
+
+    /**
      * 获取全部子地区
      * @param $p_id
      * @return array [1=>'chengdu', 2=>'chongqing']

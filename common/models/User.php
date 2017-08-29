@@ -120,6 +120,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
             'id_card_pic_one' => '身份证照片', //
             'created_at' => '创建时间',
             'updated_at' => 'Updated At',
+            'leader'    => '上级领导',
+            'level' => '销售级别', //1销售总监 2大区经理 3城市经理 4销售经理 5销售主管 6销售代表
         ];
     }
 

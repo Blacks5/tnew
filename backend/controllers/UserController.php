@@ -90,12 +90,22 @@ class UserController extends CoreBackendController
         return Jobs::getJobs($d_id);
     }
 
-    public function actionGetLeader($cityName,$leader)
+    /**
+     * 增加销售时获取上级领导
+     * @param $cityName
+     * @param $cityId
+     * @param $leader
+     * @return array
+     * @author OneStep
+     */
+    public function actionGetLeader($cityName,$cityId,$leader)
     {
         Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
+        $User = new Users();
+        $parentLeader = $User->jobToleader($leader)-1;
 
-        return Users::getLeader($cityName,$leader);
+        return Users::getLeader($cityName,$cityId,$parentLeader);
 
     }
 
@@ -152,6 +162,7 @@ class UserController extends CoreBackendController
         Yii::$app->getView()->title = '新增员工';
 
         $model = new User();
+        $Users = new Users();
 //        $model1 = new AuthItem();
 
         $auth = Yii::$app->getAuthManager();
@@ -161,6 +172,7 @@ class UserController extends CoreBackendController
         $request = Yii::$app->getRequest();
         if ($request->getIsPost()) {
             $post = $request->post();
+            $post['User']['level'] = $Users->jobToleader($post['User']['job_id']);
             try{
                 if ($model->createUser($post)) {
                     // 分配部门角色
