@@ -49,113 +49,122 @@ class OrderController extends BaseController {
 
 	// 历史订单
 	public function actionOrderList() {
-		$session = Yii::$app->session;
-		$request = Yii::$app->request;
+        $request = Yii::$app->request;
 
-		// 获取系统用户数据
-		$sys_user = $session->get('sys_user');
+        if($request->isAjax && $request->isGet){
+            $session = Yii::$app->session;
 
-        $r_data = $request->getQueryParams();
+            // 关键字查询
+            $keywords = $request->get('keywords');
 
-		// 查询订单
-		$model = new OrdersSearch();
-		$query = $model->search($r_data);
+            // 查询订单
+            $model = new OrdersSearch();
+            $query = $model->search([
+                'OrdersSearch' => [
+                    'customer_name' => $keywords,
+                ]]);
 
-		// 特定员工订单
-		// $condition['o_user_id'] = $sys_user->id;
+            // 获取系统用户数据
+            $sys_user = $session->get('sys_user');
 
-		// 获取筛选状态
-		$screen_type = $request->get('screen_type');
+            // 特定员工订单
+            // $query = $query->andWhere(['o_user_id' => $sys_user->id]);
 
-		switch ($screen_type) {
-		case 'wait': // 待审核
-			$condition['o_status'] = [
-				Orders::STATUS_WAIT_CHECK,
-				Orders::STATUS_WAIT_CHECK_AGAIN,
-				Orders::STATUS_WAIT_APP_UPLOAD_AGAIN,
-			];
-			break;
+            // 获取筛选状态
+            $screen_type = $request->get('screen_type');
 
-		case 'refuse': // 已拒绝
-			$condition['o_status'] = Orders::STATUS_REFUSE;
-			break;
+            switch ($screen_type) {
+            case 'near': // 近一月
+                $query = $query->andWhere(['>=', 'o_created_at', strtotime(date('Y-m-d', strtotime('-1 Month')))]);
+                break;
 
-		case 'revoke': // 已撤销
-			$condition['o_status'] = Orders::STATUS_REVOKE;
-			break;
+            case 'wait': // 待审核
+                $query = $query->andWhere(['o_status' => [
+                    Orders::STATUS_WAIT_CHECK,
+                    Orders::STATUS_WAIT_CHECK_AGAIN,
+                    Orders::STATUS_WAIT_APP_UPLOAD_AGAIN,
+                ]]);
+                break;
 
-		case 'cancel': // 已撤销
-			$condition['o_status'] = Orders::STATUS_CANCEL;
-			break;
+            case 'refuse': // 已拒绝
+                $query = $query->andWhere(['o_status' => Orders::STATUS_REFUSE]);
+                break;
 
-		case 'paying': // 还款中
-			$condition['o_status'] = Orders::STATUS_PAYING;
-			break;
+            case 'revoke': // 已撤销
+                $query = $query->andWhere(['o_status' => Orders::STATUS_REVOKE]);
+                break;
 
-		case 'payover': // 已还清
-			$condition['o_status'] = Orders::STATUS_PAY_OVER;
-			break;
+            case 'cancel': // 已撤销
+                $query = $query->andWhere(['o_status' => Orders::STATUS_CANCEL]);
+                break;
 
-		default:
-			$condition['o_status'] = [
-				Orders::STATUS_WAIT_CHECK,
-				Orders::STATUS_WAIT_CHECK_AGAIN,
-				Orders::STATUS_WAIT_APP_UPLOAD_AGAIN,
-				Orders::STATUS_REFUSE,
-				Orders::STATUS_REVOKE,
-				Orders::STATUS_CANCEL,
-				Orders::STATUS_PAYING,
-				Orders::STATUS_PAY_OVER,
-			];
-			break;
-		}
+            case 'paying': // 还款中
+                $query = $query->andWhere(['o_status' => Orders::STATUS_PAYING]);
+                break;
 
-		// 获取订单状态
-		$query = $query->andWhere($condition);
+            case 'payover': // 已还清
+                $query = $query->andWhere(['o_status' => Orders::STATUS_PAY_OVER]);
+                break;
 
-		$querycount = clone $query;
+            default:
+                $query = $query->andWhere(['o_status' => [
+                    Orders::STATUS_WAIT_CHECK,
+                    Orders::STATUS_WAIT_CHECK_AGAIN,
+                    Orders::STATUS_WAIT_APP_UPLOAD_AGAIN,
+                    Orders::STATUS_REFUSE,
+                    Orders::STATUS_REVOKE,
+                    Orders::STATUS_CANCEL,
+                    Orders::STATUS_PAYING,
+                    Orders::STATUS_PAY_OVER,
+                ]]);
+                break;
+            }
 
-		$pages = new \yii\data\Pagination(['totalCount' => $querycount->count()]);
+            // 调取分页
+            $pages = new \yii\data\Pagination(['totalCount' => $query->count()]);
 
-		// 分页数据量
-		$pages->pageSize = Yii::$app->params['page_size'];
+            // 分页数据量
+            $pages->pageSize = Yii::$app->params['page_size'];
 
-		// 获取分页数据
-		$data = $query->orderBy(['orders.o_created_at' => SORT_DESC])
-			->offset($pages->offset)
-			->limit($pages->limit)
-			->asArray()
-			->all();
+            // 获取分页数据
+            $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])
+                    ->offset($pages->offset)
+                    ->limit($pages->limit)
+                    ->asArray()
+                    ->all();
 
-		if ($request->isAjax && $request->isGet) {
-			Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
 
-			$response = [];
+            $response = [];
 
-			foreach ($data as $item) {
-				$response[] = [
-					'o_id' => $item['o_id'],
-					'o_serial_id' => $item['o_serial_id'],
-					'p_period' => $item['p_period'],
-					'o_total_price' => round($item['o_total_price'], 2),
-					'o_total_deposit' => round($item['o_total_deposit'], 2),
-					'c_customer_name' => $item['c_customer_name'],
-					'c_customer_cellphone' => $item['c_customer_cellphone'],
-					'p_name' => $item['p_name'],
-					'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
-					'o_status' => $item['o_status'],
-				];
-			}
+            foreach ($data as $item) {
+                $response[] = [
+                    'o_id' => $item['o_id'],
+                    'o_serial_id' => $item['o_serial_id'],
+                    'p_period' => $item['p_period'],
+                    'o_total_price' => round($item['o_total_price'], 2),
+                    'o_total_deposit' => round($item['o_total_deposit'], 2),
+                    'c_customer_name' => $item['c_customer_name'],
+                    'c_customer_cellphone' => $item['c_customer_cellphone'],
+                    'p_name' => $item['p_name'],
+                    'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
+                    'o_status' => $item['o_status'],
+                ];
+            }
 
-			if ($response) {
-				return ['status' => 1, 'message' => 'success', 'data' => $response];
-			} else {
-				return ['status' => 0, 'message' => 'no data'];
-			}
-		} else {
-			return $this->renderPartial('list', [
-				'list' => $data,
-			]);
-		}
+            if ($response) {
+                return ['status' => 1, 'message' => 'success', 'data' => [
+                    'data' => $response, 
+                    'page' => $pages->page
+                ]];
+            } else {
+                return ['status' => 0, 'message' => 'no data' , 'data' => [
+                    'data' => [], 
+                    'page' => $pages->page
+                ]];
+            }
+        }else{
+            return $this->renderPartial('list');
+        }
 	}
 }
