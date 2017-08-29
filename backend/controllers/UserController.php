@@ -161,7 +161,7 @@ class UserController extends CoreBackendController
         $request = Yii::$app->getRequest();
         if ($request->getIsPost()) {
             $post = $request->post();
-            // try{
+            try{
                 if ($model->createUser($post)) {
                     // 分配部门角色
                     /*$role = $auth->createRole($post['AuthItem']['name']);
@@ -169,9 +169,9 @@ class UserController extends CoreBackendController
                     return $this->success('添加成功！', Url::toRoute(['user/list']));
 //                return $this->redirect(['list']);
                 }
-            // }catch (CustomBackendException $e){
-                // return $this->error($e->getMessage());
-            // }
+            }catch (CustomBackendException $e){
+                return $this->error($e->getMessage());
+            }
 
         }
 //        var_dump($model->attributes);die;
