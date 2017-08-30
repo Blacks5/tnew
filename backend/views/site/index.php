@@ -138,6 +138,7 @@ use mdm\admin\components\MenuHelper;
             </button>
             <nav class="page-tabs J_menuTabs">
                 <div class="page-tabs-content">
+                    <a href="javascript:history.back(-1);" data-id="0">上一页</a>
                     <a href="javascript:;" class="active J_menuTab" data-id="0">首页</a>
                 </div>
             </nav>
