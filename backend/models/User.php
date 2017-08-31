@@ -131,22 +131,22 @@ class User extends \yii\db\ActiveRecord
      */
     public function jobToleader($leader){
         switch ($leader){
-            case $leader== 45:  //销售总监
+            case  46:  //销售总监
                 return 1;
                 break;
-            case $leader == 46 :    //大区经理
+            case  47 :    //大区经理
                 return 2;
                 break;
-            case $leader==47 || $leader==48:    //城市经理
+            case 48 || 49:    //城市经理
                 return 3;
                 break;
-            case $leader ==49 || $leader==50 ||$leader==51: //销售经理
+            case 50 || 51 ||52: //销售经理
                 return 4;
                 break;
-            case $leader == 52: //销售主管
+            case  53: //销售主管
                 return 5;
                 break;
-            case $leader==53||$leader==54:  //销售人员
+            case 54||55:  //销售人员
                 return 6;
                 break;
         }

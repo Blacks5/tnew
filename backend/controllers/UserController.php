@@ -173,6 +173,7 @@ class UserController extends CoreBackendController
         if ($request->getIsPost()) {
             $post = $request->post();
             $post['User']['level'] = $Users->jobToleader($post['User']['job_id']);
+
             try{
                 if ($model->createUser($post)) {
                     // 分配部门角色
