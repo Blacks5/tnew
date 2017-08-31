@@ -25,6 +25,7 @@ return [
 //            '*',
             'borrow/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
             'borrownew/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
+            'user/get-leader', //获取上级领导, 权限太复杂,   放这里了
 
             'login/login',
             'contract/index', // 订单合同页面，Android app里webview用
