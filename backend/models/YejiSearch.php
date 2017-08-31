@@ -46,7 +46,11 @@ class YejiSearch extends CoreBackendModel{
     {
         $user = yii::$app->getUser();
         $leader = [1=>'province', 2=>'province', 3=>'city', 4=>'county'];
-        $area = array();
+        $area = [
+            'level' => 6,
+            'area'  => 'province',
+            'area_value' => '24',
+        ];
 
         foreach ($leader as $k => $l){
             if($user->identity->level==$k){
