@@ -233,6 +233,9 @@ class UserController extends CoreBackendController
                 $model1->auth_key = $post['User']['auth_key'];
             }*/
             if ($model->validate()) {
+                $Users = new Users();
+                $model['level'] = $Users->jobToleader($model['job_id']);
+                //var_dump($model['leader']);die;
                 $model->save();
                 //分配角色
                 /*$role = $auth->createRole($post['AuthAssignment']['item_name']);                //创建角色对象
@@ -250,14 +253,36 @@ class UserController extends CoreBackendController
         $user_status = User::getAllStatus();
         $all_province = Helper::getAllProvince();
         $all_departments = Department::getAllDepartments();
+        $all_leader = [6=>'不需要上级'];
+
+        if($model->department_id==26){
+            if ($model->leader!=6){
+                $leader = User::find()->select(['realname'])->indexBy('id')->where(['level'=>$model->level-1]);
+                if($model->level<4){
+                    $leader->andWhere(['county'=>$model->county]);
+                }elseif($model->level==4){
+                    $leader->andWhere(['city'=>$model->city]);
+                }elseif ($model->level==3){
+                    $leader->andWhere(['province'=>$model->province]);
+                }
+                $all_leader = $leader->column();
+            }
+        }
+
+
+        //var_dump($leader->column());die;
+        //$all_leader = User::find()->select(['id','realname'])->where(['leader'=>$leader->leader])->andWhere(['level'=>$model]);
+
+        //var_dump($all_leader);die;
 
         $all_citys = Helper::getSubAddr($model->province);
+
         $all_countys = Helper::getSubAddr($model->city);
         $all_jobs = Jobs::find()->select('j_name')->indexBy('j_id')->where(['j_department_id' => $model->department_id])->column();
         return $this->render('update', [
             'model' => $model,
             'item' => $item_one,
-
+            'leader'=>$all_leader,
             'user_status' => $user_status,
             'all_province' => $all_province,
             'all_citys' => $all_citys,

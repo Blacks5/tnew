@@ -30,29 +30,13 @@ class UserPerformanceController extends CoreBackendController
     {
         $yejidrv = new YejiSearch();
         $list = $yejidrv->search(\yii::$app->request->getQueryParams());
-        $user = yii::$app->getUser();
-        $area = array();
+        $user = yii::$app->user->identity;
+        $area = $yejidrv->getArea($user);
 
-        if($user->identity->level==1){  //获取所有省份
-            $area['province'] = Helper::getAllProvince();
-        }
-
-        if($user->identity->level>1){  //获取用户省份
-            $area['province'] = Helper::getProvinceByProvinceId($user->identity->province);
-
-            if($user->identity->level>2){  // 获取省份和城市
-                $area['city'] = Helper::getAddrName($user->identity->city);
-
-                if($user->identity->level>3){ //获取省份,城市,区域
-                    $area['county'] = Helper::getAddrName($user->identity->county);
-                }
-            }
-        }
-        //var_dump($area['city']);die;
 
         return $this->render('index', [
             'data'=>$list,
-            'user'=>yii::$app->getUser(),
+            'user'=>$user,
             'users'=>$list['data'],
             'all'=>$list['all'],
             'sear'=>$list['sear'],
