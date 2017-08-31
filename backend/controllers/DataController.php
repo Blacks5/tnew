@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 
 use backend\models\DataSearch;
+use backend\models\YejiSearch;
 use common\components\Helper;
 use backend\core\CoreBackendController;
 use yii;
@@ -21,6 +22,11 @@ class DataController extends CoreBackendController
 
     }
 
+    /**
+     * 获取平台总数据
+     * @return string
+     * @author OneStep
+     */
     public function actionGather()
     {
         $data = new DataSearch();
@@ -33,6 +39,22 @@ class DataController extends CoreBackendController
             'users'=>$list['user'],
             'area' => $province,
             'sear' => $list['sear'],
+        ]);
+    }
+
+    /**
+     * 获取审核数据
+     * @return string
+     * @author OneStep
+     */
+    public function actionVerify()
+    {
+        $data = new DataSearch();
+        $list = $data->verify(\yii::$app->request->getQueryParams());
+
+        return $this->render('verify', [
+          'all' => $list['all'],
+          'sear'=> $list['sear'],
         ]);
     }
 }
