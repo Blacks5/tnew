@@ -162,17 +162,17 @@ use \yii\helpers\Url;
     //根据销售岗位选择省市区可选区域
     $('#user-job_id').change(function(){
         var job=$('#user-job_id').val();
-       if(job==45){  //销售总监和大区经理 不用选择省市区
+       if(job==46){  //销售总监和大区经理 不用选择省市区
            $('#leader').addClass('hidden');
            $('#user-province').addClass('hidden');
            $('#user-city').addClass('hidden');
            $('#user-county').addClass('hidden');
-       }else if(job==46){       //城市经理只用选择省
+       }else if(job==47){       //城市经理只用选择省
            $('#leader').removeClass('hidden');
            $('#user-province').removeClass('hidden');
            $('#user-city').addClass('hidden');
            $('#user-county').addClass('hidden');
-       }else if(job==47 || job==48){     //销售经理需要选择省,市
+       }else if(job==48 || job==49){     //销售经理需要选择省,市
            $('#leader').removeClass('hidden');
            $('#user-province').removeClass('hidden');
            $('#user-city').removeClass('hidden');
@@ -239,7 +239,7 @@ $this->registerJs('
     
     //县变化
     $("#user-county").change(function(){
-        if($("#user-job_id").val()<52){
+        if($("#user-job_id").val()<53){
         
             getLeader("city",$("#user-city").val());
         }else{

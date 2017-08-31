@@ -160,7 +160,7 @@ class YejiSearch extends CoreBackendModel{
             $userlist[$_k]['overdue_cout'] = $overdue['count'];
             $userlist[$_k]['overdue_num'] = $overdue['num'];
             $userlist[$_k]['overdue_money'] = round($overdue['money'],3);
-            $userlist[$_k]['overdue_ratio'] = $overdue['num'] ? round($overdue['num']/$overdue['count']*100,3). "%":"0%";
+            $userlist[$_k]['overdue_ratio'] = $overdue['num'] ? round($overdue['num']/$s_ordercount*100,3). "%":"0%";
             //var_dump($overdue['serial_no']);die;
 
             $userlist[$_k]['risk_num'] = $overdue['serial_no']? $this->getRisk($overdue['serial_no'], $s_ordercount). '%':'0%';
@@ -173,7 +173,6 @@ class YejiSearch extends CoreBackendModel{
             $all_list['f_packcount'] += $f_packcount;
 
             //总逾期统计
-            $all_list['overdue_count'] += $overdue['count'];
             $all_list['overdue_num'] += $overdue['num'];
             $all_list['overdue_money'] += round($overdue['money'],3);
 
@@ -182,7 +181,7 @@ class YejiSearch extends CoreBackendModel{
 
         $all_list['a_services'] = $all_list['s_ordercount'] ? round($all_list['a_servicecount']/$all_list['s_ordercount']*100, 3).'%':'0%';
         $all_list['f_packcount'] = $all_list['s_ordercount'] ? round($all_list['f_packcount']/$all_list['s_ordercount']*100, 3).'%':'0%';
-        $all_list['overdue_ratio'] = $all_list['overdue_num'] ? round($all_list['overdue_num']/$all_list['overdue_count']*100, 3). '%': '0%';
+        $all_list['overdue_ratio'] = $all_list['overdue_num'] ? round($all_list['overdue_num']/$all_list['s_ordercount']*100, 3). '%': '0%';
         $all_list['risk_num'] = $all_list['serial_no']? $this->getRisk($all_list['serial_no'],$all_list['s_ordercount']). '%':'0%';
 
         //var_dump($all_list['risk_num']);die;
@@ -253,18 +252,14 @@ class YejiSearch extends CoreBackendModel{
 //        /var_dump($o_id);die;
         foreach ($o_id as $k => $o){
             $orderinfo = Repayment::find()->where(['r_orders_id'=>$o]);
-
-            $overdue['count'] += $orderinfo->count();
-
             $orderinfo->andWhere(['>','r_overdue_money',$this->repay_day])->andWhere(['r_repay_date'=>'0']);
             $overdue['num'] += $orderinfo->count()>0?1:0;
 
-            $overdue_info = $orderinfo->select('sum(r_principal)')->scalar();
-            var_dump($overdue_info);
-            $overdue['money'] += $overdue_info;
-
+            if($overdue['num']>0){
+                $overdue['money'] += Repayment::find()->select('sum(r_principal)')->where(['r_orders_id'=>$o])->andWhere(['r_repay_date'=>'0'])->scalar();
+            }
             $serial_no = $orderinfo->select('r_serial_no')->asArray()->column();
-            $overdue['ratio'] = $overdue['num'] ? round($overdue['num']/$overdue['count']*100,3):0;
+
             //$overdue['serial_no']=$this->getSerialNo($serial_no);
             $risk = $this->getSerialId($serial_no ,$risk);
 

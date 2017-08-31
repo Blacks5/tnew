@@ -222,4 +222,53 @@ class DataSearch extends CoreBackendModel
             'service'   => $this->service,
         ];
     }
+
+    /**
+     * 获取审计人员数据统计
+     * @param null $param
+     * @return array
+     * @author OneStep
+     */
+    public function verify($param = null)
+    {
+        $this->load($param);
+        if(!$this->validate()){
+            return [];
+        }
+        if(!empty($this->start_time)){
+            $this->start_time = strtotime($this->start_time);
+        }
+
+        if(!empty($this->end_time)){
+            $this->end_time = strtotime($this->end_time);
+        }
+
+        $user = yii::$app->user->id;
+
+        $query = Orders::find()->where(['o_operator_id'=> $user])
+            ->andFilterWhere(['in', 'o_status', [Orders::STATUS_NOT_COMPLETE, Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
+            ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
+            ->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
+        $verify['orderCount'] = $query->count();
+        $verify['orderMoney'] = $query->sum('o_total_price - o_total_deposit');
+        $verify['overdueMoney'] = 0;
+        $verify['overdueNum'] = 0;
+        foreach ($query->select(['o_id'])->asArray()->column() as $_k => $v){
+            $repayQuery = Repayment::find()->where(['r_orders_id'=>$v]);
+            $isOverdue= $repayQuery->andWhere(['>', 'r_overdue_day', '3'])->andWhere(['=', 'r_repay_date' ,'0'])->count()>0?1:0;
+            if($isOverdue==1){
+                $verify['overdueMoney'] += Repayment::find()->where(['r_orders_id'=>$v])->andWhere(['r_repay_date'=>0])->sum('r_principal');
+            }
+            $verify['overdueNum'] += $isOverdue;
+
+        }
+
+        $verify['overdueRatio'] = $verify['overdueNum']? round($verify['overdueNum']/$verify['orderCount']*100, 3). '%':'0%';
+
+        return [
+            'all'   => $verify,
+            'sear'  => $this->getAttributes(),
+        ];
+
+    }
 }
