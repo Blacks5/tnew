@@ -90,8 +90,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['create'] = ['id_card_num', 'id_card_pic_one', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id'];
-        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'id_card_pic_one', 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address'];
+        $scen['create'] = ['id_card_num', 'id_card_pic_one', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id','leader','level'];
+        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'id_card_pic_one', 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address','leader','level'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
 //        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
         return $scen;
