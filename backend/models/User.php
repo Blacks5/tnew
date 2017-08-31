@@ -18,6 +18,8 @@ use backend\models\AuthAssignment;
  * @property
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $leader
+ * @property integer $level
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -58,6 +60,8 @@ class User extends \yii\db\ActiveRecord
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'leader'    =>  '上级领导',
+            'level'     =>  '销售级别', //1销售总监 2大区经理 3城市经理 4销售经理 5销售主管 6销售人员
         ];
     }
     //获取所有用户
@@ -111,9 +115,9 @@ class User extends \yii\db\ActiveRecord
 
 
         if($parentLeader==1){
-            $data = static::find()->select(['id','realname'])->where(['province'=>1,'department_id'=>26,'leader'=>1])->all();
+            $data = static::find()->select(['id','realname'])->where(['province'=>1,'department_id'=>26,'level'=>1])->all();
         }else{
-            $data = static::find()->select(['id','realname'])->where([$cityName=>$cityId,'department_id'=>26,'leader'=>$parentLeader])->all();
+            $data = static::find()->select(['id','realname'])->where([$cityName=>$cityId,'department_id'=>26,'level'=>$parentLeader])->all();
         }
 
 

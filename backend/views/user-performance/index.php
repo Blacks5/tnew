@@ -27,7 +27,10 @@
                         </div>
 
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[province]" id="user-province" <?= $user->identity->level>1?'disabled':'';?> >
+                            <select class="input form-control" name="YejiSearch[province]" id="user-province" <?= $user->level>1?'disabled':'';?> >
+                                <?php if($user->level==1){ ?>
+                                    <option value="" selected>全部</option>
+                                <?php }?>
                                 <?php foreach ($area['province'] as $k=>$v){ ?>
                                     <option <?php if($sear['province'] == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
                                 <?php } ?>
@@ -35,16 +38,16 @@
                         </div>
 
                         <div class="col-md-1">
-                            <select class="input form-control" name="YejiSearch[city]" id="user-city" <?php echo $user->identity->level>2?'disabled':'';?>>
-                                <?php if($user->identity->level>2){?>
-                                    <option value="<?= $user->identity->city?>"><?=$area['city']?></option>
+                            <select class="input form-control" name="YejiSearch[city]" id="user-city" <?php echo $user->level>2?'disabled':'';?>>
+                                <?php if($user->level>2){?>
+                                    <option value="<?= $user->city?>"><?=$area['city']?></option>
                                 <?php }?>
                             </select>
                         </div>
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[county]" id="user-county" <?php echo $user->identity->level>3?'disabled':'';?>>
-                                <?php if($user->identity->level>3){?>
-                                    <option value="<?= $user->identity->county?>"><?=$area['county']?></option>
+                            <select class="input form-control" name="YejiSearch[county]" id="user-county" <?php echo $user->level>3?'disabled':'';?>>
+                                <?php if($user->level>3){?>
+                                    <option value="<?= $user->county?>"><?=$area['county']?></option>
                                 <?php }?>
                             </select>
                         </div>
@@ -121,13 +124,15 @@
                             <a class="list-group-item">贵宾服务包捆绑率<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">风控率(单数)<span style="display: block;float:right"><?= $all['a_services']?></span> </a>
+                            <a class="list-group-item <?=(int)$all['risk_num']>=6?'list-group-item-warning':''?> <?=(int)$all['risk_num']>=8?'list-group-item-danger':''?>">
+                                风控率(单数)<span style="display: block;float:right"><?= $all['risk_num']?></span>
+                            </a>
                             <a class="list-group-item">风控率(金额)<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">逾期率<span style="display: block;float:right"><?= $all['overdun_count']?></span> </a>
-                            <a class="list-group-item">逾期单数<span style="display: block;float:right"><?= $all['overdun_num']?></span> </a>
-                            <a class="list-group-item">逾期金额<span style="display: block;float:right"><?= $all['overdun_money']?></span> </a>
+                            <a class="list-group-item">逾期率<span style="display: block;float:right"><?= $all['overdue_ratio']?></span> </a>
+                            <a class="list-group-item">逾期单数<span style="display: block;float:right"><?= $all['overdue_num']?></span> </a>
+                            <a class="list-group-item">逾期金额<span style="display: block;float:right"><?= $all['overdue_money']?></span> </a>
                         </div>
                     </div>
 
@@ -153,6 +158,8 @@
                                                     <th>逾期单数</th>
                                                     <th>逾期金额</th>
                                                     <th>逾期率</th>
+                                                    <th>风控率(单数)</th>
+                                                    <th>风控率(金额)</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -169,9 +176,10 @@
                                                         <td class="client-status"><?= $_v['t_ordercount'] ?></td>
                                                         <td class="client-status"><?= $_v['s_ordercount'] ?></td>
                                                         <td class="client-status"><?= $_v['s_amount'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdun_num'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdun_money'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdun_count'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdue_num'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdue_money'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdue_ratio'] ?></td>
+                                                        <td class="client-status"><?= $_v['risk_num'] ?></td>
                                                         <td class="client-status">
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/index']))) { ?>
                                                                 <a class="btn btn-primary btn-xs"

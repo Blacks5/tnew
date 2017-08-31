@@ -73,7 +73,7 @@ use mdm\admin\components\MenuHelper;
                                     <?php } else { ?>
                                         <li><!--二级菜单-->
                                             <a class="J_menuItem" href="<?= Url::toRoute($v2['route']); ?>"
-                                               data-index="0"><?= $v2['name'] ?></a>
+                                               data-index="0" data-id="<?= Url::toRoute($v2['route']); ?>"><?= $v2['name'] ?></a>
                                         </li>
                                     <?php } ?>
                                 <?php } ?>
@@ -137,6 +137,7 @@ use mdm\admin\components\MenuHelper;
             <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
             </button>
             <nav class="page-tabs J_menuTabs">
+                <a href="javascript:history.back(-1);" data-id="0">上一页</a>
                 <div class="page-tabs-content">
                     <a href="javascript:;" class="active J_menuTab" data-id="0">首页</a>
                 </div>
@@ -144,18 +145,7 @@ use mdm\admin\components\MenuHelper;
             <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
             </button>
             <div class="btn-group roll-nav roll-right">
-                <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span>
-
-                </button>
-                <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                    <li class="J_tabShowActive"><a>定位当前选项卡</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
-                    </li>
-                    <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
-                    </li>
-                </ul>
+                <button class="J_tabCloseAll">关闭所有</button>
             </div>
             <a href="<?= Url::toRoute('login/logout') ?>" class="roll-nav roll-right J_tabExit"><i
                         class="fa fa fa-sign-out"></i> 退出</a>
@@ -427,4 +417,19 @@ use mdm\admin\components\MenuHelper;
         notify.data.server.send(x1);
     },100000);
     //aaa
+
+    $('.J_menuItem').on('click' , refreshTab);
+
+    //刷新iframe
+    function refreshTab() {
+        var target = $('.J_iframe[data-id="' + $(this).data('id') + '"]');
+        var url = target.attr('src');
+        //显示loading提示
+        var loading = layer.load();
+        target.attr('src', url).load(function () {
+            //关闭loading提示
+            layer.close(loading);
+        });
+    }
+
 </script>

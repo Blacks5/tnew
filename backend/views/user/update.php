@@ -31,9 +31,11 @@ $this->title = '更新用户 ';
                 <?= $form->field($model, 'department_id', ['options' => ['class' => 'form-group']])->dropDownList($all_departments)->label('请选择部门', ['class' => 'sr-only'])->label('所属部门') ?>
                 <?= $form->field($model, 'job_id', ['options' => ['class' => 'form-group']])->dropDownList($all_jobs)->label('请选择职位', ['class' => 'sr-only']) ?>
 
-                <?= $form->field($model, 'province', ['options' => ['class' => 'form-group']])->dropDownList($all_province)->label('请选择省', ['class' => 'sr-only'])->label('负责区域') ?>
+                <?= $form->field($model, 'province', ['options' => ['class' => 'form-group']])->dropDownList($all_province)->label('请选择省', ['class' => 'sr-only']) ?>
                 <?= $form->field($model, 'city', ['options' => ['class' => 'form-group']])->dropDownList($all_citys)->label('请选择城市', ['class' => 'sr-only']) ?>
                 <?= $form->field($model, 'county', ['options' => ['class' => 'form-group']])->dropDownList($all_countys)->label('请选择城县/区', ['class' => 'sr-only']) ?>
+
+                <?= $form->field($model, 'leader', ['options' => ['class' => 'from-group']])->dropDownList($leader)->label('请选择上级领导', ['class'=> 'sr-only']) ?>
 
 
                 <?= $form->field($model, 'id_card_pic_one')->hiddenInput(['class'=>'form-group'])->label('');?>
@@ -156,31 +158,80 @@ $this->title = '更新用户 ';
 
         loadinit('one');
     </script>
+<script>
+
+    //如果是销售岗位显示上级主管下拉列表和地区
+    $('#user-department_id').change(function(){
+
+        if($('#user-department_id').val()==26){
+            $('#user-leader').removeClass('hidden');
+        }else{
+            $('#user-leader').addClass('hidden');
+            $('#user-province').addClass('hidden');
+            $('#user-city').addClass('hidden');
+            $('#user-county').addClass('hidden');
+        }
+    });
+    //根据销售岗位选择省市区可选区域
+    $('#user-job_id').change(function(){
+        var job=$('#user-job_id').val();
+        if(job==45){  //销售总监和大区经理 不用选择省市区
+            $('#leader').addClass('hidden');
+            $('#user-province').addClass('hidden');
+            $('#user-city').addClass('hidden');
+            $('#user-county').addClass('hidden');
+        }else if(job==46){       //城市经理只用选择省
+            $('#leader').removeClass('hidden');
+            $('#user-province').removeClass('hidden');
+            $('#user-city').addClass('hidden');
+            $('#user-county').addClass('hidden');
+        }else if(job==47 || job==48){     //销售经理需要选择省,市
+            $('#leader').removeClass('hidden');
+            $('#user-province').removeClass('hidden');
+            $('#user-city').removeClass('hidden');
+            $('#user-county').addClass('hidden');
+        }else if(job>48){       //销售人员需要选择省市区
+            $('#leader').removeClass('hidden');
+            $('#user-province').removeClass('hidden');
+            $('#user-city').removeClass('hidden');
+            $('#user-county').removeClass('hidden');
+        }
+    });
+</script>
 
 <?php
 $this->registerJs('
     var url = "'.Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
     var url_jobs = "'.Url::toRoute(['user/get-jobs']).'"; // 获取职位
+    var url_leader = "'.Url::toRoute(['user/get-leader']).'"; //获取上级
     
     // 部门变化
     $("#user-department_id").change(function(){
         var d_id = $(this).val();
         $.get(url_jobs, {d_id:d_id}, function(data){
-            var dom  = createDom(data);
+            var dom  = "";
+            $.each(data, function(k ,v){
+                dom += "<option  value="+k+">"+v+"</option>";
+            })
             $("#user-job_id").html(dom);
+            
+            
         });
     });
 
-
+    $("#user-job_id").click(function(){
+        $("#user-province").val(1);
+        $("#user-province").trigger("change");
+    });
     
     
     // 省变化
     $("#user-province").change(function(){
         var province_id = $(this).val();
         $.get(url, {p_id:province_id}, function(data){
-            var dom  = createDom(data);
+            var dom  = createDoms(data);
             $("#user-city").html(dom);
-            
+            getLeader("province",1); //大区经理上级
             $("#user-city").trigger("change");
         });     
     });
@@ -189,23 +240,58 @@ $this->registerJs('
     $("#user-city").change(function(){
         var city_id = $(this).val();
         $.get(url, {p_id:city_id}, function(data){
-            var dom  = createDom(data);
+            var dom  = createDoms(data);
             $("#user-county").html(dom);
         });
+        getLeader("province",$("#user-province").val());  //城市经理上级
     });
     
+    //县变化
+    $("#user-county").change(function(){
+        if($("#user-job_id").val()<52){
+        
+            getLeader("city",$("#user-city").val());
+        }else{
+            getLeader("county",$("#user-county").val());
+        }
+    });
+    
+    //获取上级领导名称
+    function getLeader(cityName,cityId){
+        var leader =$("#user-job_id").val();
+        var postData={
+            cityName:cityName,
+            cityId:cityId,
+            leader:leader,
+        };
+        $.get(url_leader, postData, function(data){
+            var dom =  createDom(data);
+            $("#user-leader").html(dom);
+        })
+    }
+    
     // 专业造dom
-    function createDom(data){
-        var dom = "";
+    function createDoms(data){
+        var dom = "<option  value="+0+">全部</option>";
         $.each(data, function (k, v) {
             dom += "<option  value="+k+">"+v+"</option>";
         })
         return dom;
     }
     
+    function createDom(data){
+        var dom = "";
+        for(var l in data){
+            dom += "<option value="+data[l].id+">"+data[l].realname+"</option>";
+        }
+            
+        return dom;
+    }
+    
     // 初始化
-//    $("#user-province").trigger("change");
-//    $("#user-department_id").trigger("change");
+    $("#user-province").trigger("change");
+    $("#user-department_id").trigger("change");
+    $("#user-job_id").trigger("change");
  ');
 
 

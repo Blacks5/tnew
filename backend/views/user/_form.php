@@ -202,6 +202,7 @@ $this->registerJs('
             })
             $("#user-job_id").html(dom);
         });
+        
     });
     
     // 省变化
