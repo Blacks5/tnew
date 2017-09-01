@@ -122,6 +122,8 @@ class UserController extends CoreBackendController
 //        array_unshift($provinces, '省');
         //员工状态
         $user_status = User::getAllStatus();
+
+        //var_dump($user);die;
         return $this->render('list', [
             'sear' => $query->getAttributes(),
             'user' => $user,
