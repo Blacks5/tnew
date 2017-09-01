@@ -533,5 +533,10 @@ class StoresController extends CoreBackendController
         }
     }
 
+    public function actionHasmany()
+    {
+
+    }
+
 }
 

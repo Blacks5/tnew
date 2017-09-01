@@ -223,10 +223,10 @@ class Stores extends CoreCommonActiveRecord
      * @return $this
      * @author OneStep
      */
-    public function getStoreByUserId()
+    public function getUserByStore()
     {
         return $this->hasMany(User::className(), ['id'=> 'ss_saleman_id'])
-            ->viaTable('stores_saleman', ['ss_store_id'=> 'id']);
+            ->viaTable('stores_saleman', ['ss_store_id'=> 's_id']);
     }
 
 

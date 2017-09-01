@@ -237,7 +237,7 @@ class UserController extends CoreBackendController
             }*/
             if ($model->validate()) {
                 $Users = new Users();
-                $model['level'] = $Users->jobToleader($model['job_id']);
+                $model['level'] = empty($model['job_id'])?'1':$Users->jobToleader($model['job_id']);
                 $model->save();
                 //分配角色
                 /*$role = $auth->createRole($post['AuthAssignment']['item_name']);                //创建角色对象

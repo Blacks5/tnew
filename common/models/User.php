@@ -127,6 +127,11 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     }
 
 
+    public function getStoreByUser()
+    {
+        return $this->hasMany(Stores::className(),['s_id'=>'ss_store_id'])
+            ->viaTable('stores_saleman', ['ss_saleman_id'=> 'id']);
+    }
 
     public function beforeSave($insert)
     {
