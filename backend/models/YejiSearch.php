@@ -71,7 +71,7 @@ class YejiSearch extends CoreBackendModel{
      */
     public function getArea($user)
     {
-        $area = array();
+        $area = [];
         if($user->level ==1 ){
             $area['province'] = Helper::getAllProvince();
         }
@@ -85,7 +85,6 @@ class YejiSearch extends CoreBackendModel{
                 }
             }
         }
-
         return $area;
     }
 

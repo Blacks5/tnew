@@ -40,7 +40,7 @@
                         <div class="col-md-1">
                             <select class="input form-control" name="YejiSearch[city]" id="user-city" <?php echo $user->level>2?'disabled':'';?>>
                                 <?php if($user->level>2){?>
-                                    <option value="<?= $user->city?>"><?=$area['city']?></option>
+                                    <option value="<?= $user->city?>" selected><?=$area['city']?></option>
                                 <?php }?>
                             </select>
                         </div>
@@ -68,7 +68,7 @@
                                 var province_id = $(this).val();
                                 $.get(url, {p_id:province_id}, function(data){
                                     var dom = "<option value=''>选择市</option>";
-                                    var t = "<?=$sear['city']?>";
+                                    var t = "<?=$user->city?>";
                                     $.each(data, function (k, v) {
                                         dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
                                     })
@@ -83,7 +83,7 @@
                                 var city_id = $(this).val();
                                 $.get(url, {p_id:city_id}, function(data){
                                     var dom = "<option value=''>选择县</option>";
-                                    var t = "<?=$sear['county']?>";
+                                    var t = "<?=$user->county?>";
                                     $.each(data, function (k, v) {
                                         dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
                                     })
