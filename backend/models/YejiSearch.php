@@ -85,7 +85,6 @@ class YejiSearch extends CoreBackendModel{
                 }
             }
         }
-
         return $area;
     }
 
