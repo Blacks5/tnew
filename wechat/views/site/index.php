@@ -1,53 +1,85 @@
-<?php
-
-/* @var $this yii\web\View */
-
-$this->title = 'My Yii Application';
-?>
-<div class="site-index">
-
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>天牛金融管理</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="/wechat/lib/weui.min.css">
+    <link rel="stylesheet" href="/wechat/css/jquery-weui.css">
+    <link rel="stylesheet" href="/wechat/css/core.css">
+</head>
+<body ontouchstart>
+<header class='demos-header'>
+    <h1 class="demos-title">天牛金融</h1>
+    <p class='demos-sub-title'>天牛金融微信管理服务平台</p>
+</header>
+<div class="weui-grids">
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/create-order'])?>" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/order.png" alt="">
         </div>
-
+        <p class="weui-grid__label">
+            提交订单
+        </p>
+    </a>
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/wait-order-list'])?>" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/photo_picker.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+            待审订单
+        </p>
+    </a>
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/order-list'])?>" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/history_order.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+            历史订单
+        </p>
+    </a>
+    <a href="toast.html" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/overdue_order.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+            逾期订单
+        </p>
+    </a>
+    <a href="form.html" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/msg.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+            消息中心
+        </p>
+    </a>
+    <a href="dialog.html" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/icon_nav_dialog.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+            我的二维码
+        </p>
+    </a>
+</div>
+<div class="weui-msg__extra-area">
+    <div class="weui-footer">
+        <p class="weui-footer__links">
+            <a href="http://tnew.cn" class="weui-footer__link">天牛金融</a>
+        </p>
+        <p class="weui-footer__text">Copyright © 2016 tnew.cn</p>
     </div>
 </div>
+<script src="/wechat/lib/jquery-2.1.4.js"></script>
+<script src="/wechat/lib/fastclick.js"></script>
+<script src="/wechat/js/jquery-weui.js"></script>
+<script>
+    $(function() {
+        FastClick.attach(document.body);
+    });
+</script>
+</body>
+</html>
