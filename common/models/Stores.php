@@ -185,9 +185,10 @@ class Stores extends CoreCommonActiveRecord
 
     public function search($param)
     {
+        $store = $this->getStoreList();
         $this->setScenario('search');
         $this->load($param);
-        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE]);
+        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])->andWhere(['in', 's_id', $store]);
         if (!$this->validate()) {
             return $query->where('1=2');
         }
@@ -200,6 +201,32 @@ class Stores extends CoreCommonActiveRecord
         $query->andFilterWhere(['s_city'=>$this->s_city]);
         $query->andFilterWhere(['s_county'=>$this->s_county]);
         return $query;
+    }
+
+    /**
+     * 通过用户获取下级用户管理的商户
+     * @return array
+     * @author OneStep
+     */
+    public function getStoreList()
+    {
+
+        $userList = User::getLowerForId();
+        $store = StoresSaleman::find()->select(['ss_store_id'])->where(['in', 'ss_saleman_id', $userList])->asArray()->column();
+
+        return $store;
+
+    }
+
+    /**
+     * 与User 表建立中间表关联
+     * @return $this
+     * @author OneStep
+     */
+    public function getStoreByUserId()
+    {
+        return $this->hasMany(User::className(), ['id'=> 'ss_saleman_id'])
+            ->viaTable('stores_saleman', ['ss_store_id'=> 'id']);
     }
 
 

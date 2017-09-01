@@ -86,7 +86,7 @@ class RepaymentSearch extends CoreBackendModel
                 ->andWhere([$area['area']=>$area['area_value']])
                 ->asArray()->column();
         }else{
-            return $query->andWhere(['id'=>$area['id']])->asArray()->column();
+            return $query->orWhere(['id'=>$area['id']])->asArray()->column();
         }
     }
 }

@@ -4,6 +4,7 @@ namespace common\models;
 
 use backend\components\CustomBackendException;
 use backend\models\AuthAssignment;
+use backend\models\YejiSearch;
 use yii;
 use common\core\CoreCommonActiveRecord;
 /**
@@ -329,5 +330,27 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface
     {
         $user->access_token = Yii::$app->security->generatePasswordHash($user->password_hash);
         return $user->save(false) ? : null;
+    }
+
+    /**
+     * 获取用户下级的ID
+     * @return $this
+     * @author OneStep
+     */
+    public static function getLowerForId()
+    {
+        $yeji = new YejiSearch();
+        $user = $yeji->getLower();
+
+        $list = User::find()->select(['id'])
+            ->andWhere(['department_id'=>26])
+            ->orWhere(['id'=>$user['id']]);
+
+        if($user['level']==1){
+            $data = $list->asArray()->column();
+        }else{
+            $data = $list->andWhere(['>', 'level', $user['level']])->andWhere([$user['area']=>$user['area_value']])->asArray()->column();
+        }
+        return $data;
     }
 }

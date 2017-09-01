@@ -43,6 +43,7 @@ class StoresController extends CoreBackendController
         $this->getView()->title = '商户列表';
 
         $model = new Stores();
+
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
