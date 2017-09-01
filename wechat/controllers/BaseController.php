@@ -31,4 +31,32 @@ class BaseController extends Controller {
 
 		return true;
 	}
+
+	/**
+	 * 渲染错误页面
+	 * @param  string $title 提示标题
+	 * @param  string $desc  提示描述
+	 * @return
+	 */
+	public function randerError($title, $desc = '') {
+		return $this->renderPartial('/site/page', [
+			'title' => $title,
+			'desc' => $desc,
+			'status' => 0,
+		]);
+	}
+
+	/**
+	 * 渲染正确页面
+	 * @param  string $title 提示标题
+	 * @param  string $desc  提示描述
+	 * @return
+	 */
+	public function randerSuccess($title, $desc = '') {
+		return $this->renderPartial('/site/page', [
+			'title' => $title,
+			'desc' => $desc,
+			'status' => 1,
+		]);
+	}
 }

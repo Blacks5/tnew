@@ -52,9 +52,6 @@
             // 页面处理类
             function Pages(url){
                 // 订单状态
-                this.WAIT_CHECK = <?=\common\models\Orders::STATUS_WAIT_CHECK?>;
-                this.WAIT_CHECK_AGAIN = <?=\common\models\Orders::STATUS_WAIT_CHECK_AGAIN?>;
-                this.WAIT_APP_UPLOAD_AGAIN = <?=\common\models\Orders::STATUS_WAIT_APP_UPLOAD_AGAIN?>;
                 this.REFUSE = <?=\common\models\Orders::STATUS_REFUSE?>;
                 this.REVOKE = <?=\common\models\Orders::STATUS_REVOKE?>;
                 this.CANCEL = <?=\common\models\Orders::STATUS_CANCEL?>;
@@ -115,7 +112,6 @@
                     },
                     items: [{title: "全部",value: "all"},
                         {title: "近一月",value: "near"},
-                        {title: "待审核",value: "wait"},
                         {title: "还款中",value: "paying"},
                         {title: "已逾期",value: "003"},
                         {title: "已取消",value: "cancel"},
@@ -202,12 +198,6 @@
                             html += '<div class="weui-form-preview"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div></div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">';
 
                             switch(parseInt(item.o_status)){
-                                case _this.WAIT_CHECK:
-                                case _this.WAIT_CHECK_AGAIN:
-                                case _this.WAIT_APP_UPLOAD_AGAIN:
-                                    html  += '待审核';
-                                break;
-
                                 case _this.REFUSE:
                                     html  += '已拒绝';
                                 break;

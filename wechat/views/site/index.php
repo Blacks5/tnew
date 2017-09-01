@@ -16,7 +16,7 @@
     <p class='demos-sub-title'>天牛金融微信管理服务平台</p>
 </header>
 <div class="weui-grids">
-    <a href="<?= Yii::$app->getUrlManager()->createUrl(['manage/commitorder'])?>" class="weui-grid js_grid">
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/create-order'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
             <img src="/wechat/images/order.png" alt="">
         </div>
@@ -24,12 +24,12 @@
             提交订单
         </p>
     </a>
-    <a href="cell.html" class="weui-grid js_grid">
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/wait-order-list'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
             <img src="/wechat/images/photo_picker.png" alt="">
         </div>
         <p class="weui-grid__label">
-            影像采集
+            待审订单
         </p>
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/order-list'])?>" class="weui-grid js_grid">
@@ -65,11 +65,13 @@
         </p>
     </a>
 </div>
-<div class="weui-footer">
-    <p class="weui-footer__links">
-        <a href="http://jqweui.com" class="weui-footer__link">天牛金融</a>
-    </p>
-    <p class="weui-footer__text">Copyright © 2016 tnew.cn</p>
+<div class="weui-msg__extra-area">
+    <div class="weui-footer">
+        <p class="weui-footer__links">
+            <a href="http://tnew.cn" class="weui-footer__link">天牛金融</a>
+        </p>
+        <p class="weui-footer__text">Copyright © 2016 tnew.cn</p>
+    </div>
 </div>
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
 <script src="/wechat/lib/fastclick.js"></script>

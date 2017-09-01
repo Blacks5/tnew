@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=0">
-    <meta content="yes" name="apple-mobile-web-app-capable">
-    <meta content="yes" name="apple-touch-fullscreen">
-    <meta content="telephone=no,email=no" name="format-detection">
-    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/wechat/style/weui.css"/>
-    <link rel="stylesheet" href="/wechat/style/example.css">
-    <link rel="stylesheet" href="/wechat/style/index.css">
-    <title>登录</title>
+    <title>天牛金融管理</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="/wechat/lib/weui.min.css">
+    <link rel="stylesheet" href="/wechat/css/jquery-weui.css">
+    <link rel="stylesheet" href="/wechat/css/core.css">
 </head>
-<body>
+<body ontouchstart>
 <section class="ui-container">
     <div class="login-item">
-        <form id="thisForm">
-            <div class="weui-flex tn-logo-div" >
+        <form id="thisForm" action="<?=Yii::$app->getUrlManager()->createUrl(['login/bind'])?>">
+            <div class="weui-flex" style="padding-top: 20px;">
                 <div class="weui-flex__item" style="text-align: center;">
-                    <img src="/wechat/img/tianniu.jpg" style="width: 70px;height: 70px;border-radius: 35px;" alt="">
+                    <?php if($avatar) { ?>
+                        <img src="<?=$avatar?>" style="width: 70px;height: 70px;border-radius: 35px;" alt="">
+                    <?php }else{ ?>
+                        <img src="/wechat/images/tianniu.jpg" style="width: 70px;height: 70px;border-radius: 35px;" alt="">
+                    <?php } ?>
                 </div>
             </div>
             <div class="weui-cells weui-cells_form">
@@ -26,75 +28,58 @@
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">用户名</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" id="username" name="username" type="text" placeholder="请输入用户名"/>
+                        <input class="weui-input" name="username" type="text" placeholder="请输入用户名">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" name="password" type="password" id="passwords" placeholder="请输入密码">
+                        <input class="weui-input" name="password" type="password" placeholder="请输入密码">
                         <input class="weui-input" name="openid" type="hidden" value="<?=$openid?>">
                     </div>
                 </div>
             </div>
-
+            <div class="weui-cells__tips">注：绑定账号的微信可直接登录系统</div>
             <div class="weui-btn-area">
-                <a class="weui-btn weui-btn_primary" href="javascript:;" id="commit-form">绑定</a>
+                <a class="weui-btn weui-btn_primary" href="javascript:;" id="commit-form">绑定账号</a>
             </div>
-            <!--<div class="page__bd page__bd_spacing commit-form-div">-->
-                <!--<a href="javascript:;" class="weui-btn weui-btn_primary" id="commit-form">登录</a>-->
-            <!--</div>-->
         </form>
     </div>
 </section>
-</body>
-<script src="/wechat/js/zepto.min.js"></script>
-<script src="/wechat/js/weui.js"></script>
-<script type="text/javascript">
-    //验证表单
-    (function () {
-        $("#commit-form").on('click',function(){
-            var username = $("#username").val();
-            var password = $("#passwords").val();
-            if(username == ''){
-                weui.topTips('请输入用户名' , {
-                    duration: 2000
-                });
-                return false;
-            }else if(password == ''){
-                weui.topTips('请输入密码' , {
-                    duration: 2000
-                });
-                return false;
-            }
-            $.ajax({
-                type: 'POST',
-                url: "<?=Yii::$app->getUrlManager()->createUrl(['login/bind'])?>",
-                data: $('#thisForm').serialize(),
-                dataType: 'json',
-                timeout: 3000,
-                context: $('body'),
-                success: function(res){
-                    if(res.status == 1){
-                        weui.topTips(res.message, {
-                            duration: 2000,
-                            callback : function(){
-                                return location.href = "<?=Yii::$app->getUrlManager()->createUrl(['site/index'])?>";
-                            }
-                        });
-                    }else{
-                        weui.topTips(res.message , {
-                            duration: 2000
-                        });
-                    }
-                },
-                error: function(xhr, type){
-                    weui.topTips('请求错误' , {
-                        duration: 2000
+<script src="/wechat/lib/jquery-2.1.4.js"></script>
+<script src="/wechat/lib/fastclick.js"></script>
+<script src="/wechat/js/jquery-weui.js"></script>
+<script src="/wechat/js/validform.min.js"></script>
+<script src="/wechat/js/jquery-weui-extend.js"></script>
+<script>
+    $(function() {
+        FastClick.attach(document.body);
+
+        // 验证数据并提交
+        var validator = $('#thisForm').validator({
+            btnSubmit: '#commit-form',
+            ajaxPost: true,
+            callback : function(res){
+                if(res.status == 1){
+                    $.toast(res.message, function(){
+                        return location.href = "<?=Yii::$app->getUrlManager()->createUrl(['site/index'])?>";
                     });
+                }else{
+                    $.toast(res.message, "text");
                 }
-            });
-        });
-    })(Zepto);
+            }
+        }).addRule([{
+            ele: "input[name=username]",
+            datatype: "s2-20",
+            nullmsg: "请输入用户名",
+            errormsg: "用户名不合法"
+        }, {
+            ele: "input[name=password]",
+            datatype: 's2-20',
+            nullmsg: "请输入密码",
+            errormsg: "密码长度为2~20之间"
+        }]);
+    });
 </script>
+</body>
 </html>

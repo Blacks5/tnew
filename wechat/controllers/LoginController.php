@@ -62,7 +62,10 @@ class LoginController extends Controller {
 			// 获取微信用户
 			$wechat_user = Yii::$app->session->get('wechat_user');
 
-			return $this->renderPartial('login', ['openid' => $wechat_user->id]);
+			return $this->renderPartial('login', [
+				'openid' => $wechat_user->id,
+				'avatar' => $wechat_user->avatar
+			]);
 		}
 	}
 
