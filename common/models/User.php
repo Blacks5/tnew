@@ -4,6 +4,11 @@ namespace common\models;
 
 use backend\components\CustomBackendException;
 use backend\models\AuthAssignment;
+<<<<<<< HEAD
+=======
+use backend\models\YejiSearch;
+use yii;
+>>>>>>> 594e866b66aeef8f4c12c1dc8e64d45b7b9815b9
 use common\core\CoreCommonActiveRecord;
 use yii;
 
@@ -79,6 +84,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 			[['password_hash_1'], 'compare', 'compareAttribute' => 'password_hash', 'message' => '两次密码不一致'],
 			[['department_id', 'job_id'], 'safe'],
 
+<<<<<<< HEAD
 			['address', 'string', 'min' => 10, 'max' => '150', 'tooShort' => '地址太短了', 'tooLong' => '地址太长了'],
 			['id_card_num', 'match', 'pattern' => '/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message' => '身份证号码错误'],
 		];
@@ -91,6 +97,50 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 //        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
 		return $scen;
 	}
+=======
+            ['address', 'string', 'min'=>10, 'max'=>'150', 'tooShort'=>'地址太短了', 'tooLong'=>'地址太长了'],
+            ['id_card_num', 'match', 'pattern'=>'/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message'=>'身份证号码错误']
+        ];
+    }
+    public function scenarios()
+    {
+        $scen = parent::scenarios();
+        $scen['create'] = ['id_card_num', 'id_card_pic_one', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id','leader','level'];
+        $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'id_card_pic_one', 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address','leader','level'];
+        $scen['modpwd'] = ['password_hash', 'password_hash_1'];
+//        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
+        return $scen;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'username' => '用户名',
+            'realname' => '真实姓名',
+            'auth_key' => 'Auth Key', // cookie登录用
+            'password_hash' => '密码',
+            'address'=>'联系地址',
+            'id_card_num'=>'身份证号码',
+            'password_hash_1' => '密码',
+            'password_reset_token' => 'Password Reset Token',
+            'email' => '邮箱',
+            'county' => '县/区',
+            'city' => '市',
+            'province' => '省',
+            'status' => '状态', // 10正常 0删除 1禁用 2离职
+            'id_card_pic_one' => '身份证照片', //
+            'created_at' => '创建时间',
+            'updated_at' => 'Updated At',
+            'leader'    => '上级领导',
+            'level' => '销售级别', //1销售总监 2大区经理 3城市经理 4销售经理 5销售主管 6销售代表
+        ];
+    }
+
+>>>>>>> 594e866b66aeef8f4c12c1dc8e64d45b7b9815b9
 
 	/**
 	 * @inheritdoc
@@ -302,6 +352,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 		return true;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * 更新access_token ，保证安全
 	 * @param User $user
@@ -312,4 +363,39 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 		$user->access_token = Yii::$app->security->generatePasswordHash($user->password_hash);
 		return $user->save(false) ?: null;
 	}
+=======
+    /**
+     * 更新access_token ，保证安全
+     * @param User $user
+     * @return null
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function updateAccessToken(\common\models\User $user)
+    {
+        $user->access_token = Yii::$app->security->generatePasswordHash($user->password_hash);
+        return $user->save(false) ? : null;
+    }
+
+    /**
+     * 获取用户下级的ID
+     * @return $this
+     * @author OneStep
+     */
+    public static function getLowerForId()
+    {
+        $yeji = new YejiSearch();
+        $user = $yeji->getLower();
+
+        $list = User::find()->select(['id'])
+            ->andWhere(['department_id'=>26])
+            ->orWhere(['id'=>$user['id']]);
+
+        if($user['level']==1){
+            $data = $list->asArray()->column();
+        }else{
+            $data = $list->andWhere(['>', 'level', $user['level']])->andWhere([$user['area']=>$user['area_value']])->asArray()->column();
+        }
+        return $data;
+    }
+>>>>>>> 594e866b66aeef8f4c12c1dc8e64d45b7b9815b9
 }

@@ -18,6 +18,8 @@ use backend\models\AuthAssignment;
  * @property
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $leader
+ * @property integer $level
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -58,6 +60,8 @@ class User extends \yii\db\ActiveRecord
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'leader'    =>  '上级领导',
+            'level'     =>  '销售级别', //1销售总监 2大区经理 3城市经理 4销售经理 5销售主管 6销售人员
         ];
     }
     //获取所有用户
@@ -106,14 +110,50 @@ class User extends \yii\db\ActiveRecord
      * @param $leader
      * @return array
      */
-    public static function getLeader($cityName,$cityId,$leader)
+    public static function getLeader($cityName,$cityId,$parentLeader)
     {
-        $data = static::find()->select(['realname'])->indexBy(['id'])->where([$cityName=>$cityId,'department_id'=>26,'leader'=>$leader])->column();
 
 
+        if($parentLeader==1){
+            $data = static::find()->select(['id','realname'])->where(['province'=>1,'department_id'=>26,'level'=>1])->all();
+        }else{
+            $data = static::find()->select(['id','realname'])->where([$cityName=>$cityId,'department_id'=>26,'level'=>$parentLeader])->all();
+        }
 
 
         return $data;
+    }
+
+    /**
+     * 根据job_id返回当前用户的级别
+     * @param $leader
+     * @return int
+     */
+    public function jobToleader($leader){
+        switch ($leader){
+            case  46:  //销售总监
+                return 1;
+                break;
+            case  47 :    //大区经理
+                return 2;
+                break;
+            case 48:
+            case 49:    //城市经理
+                return 3;
+                break;
+            case 50:
+            case 51:
+            case 52: //销售经理
+                return 4;
+                break;
+            case  53: //销售主管
+                return 5;
+                break;
+            case 54:
+            case 55:  //销售人员
+                return 6;
+                break;
+        }
     }
 
 }

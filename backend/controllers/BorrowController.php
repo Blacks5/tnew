@@ -57,7 +57,7 @@ class BorrowController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listwaitverify', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -82,7 +82,7 @@ class BorrowController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrefuse', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -129,7 +129,7 @@ class BorrowController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrevoke', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -152,7 +152,7 @@ class BorrowController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         //统计数据
         $stat_data = [];
         //总金额
@@ -636,13 +636,13 @@ left join customer on customer.c_id=orders.o_customer_id
                 }
 
                 // 更新客户信息
-                $x = $model['o_total_price'] - $model['o_total_deposit'];
-                $e = new yii\db\Expression("c_total_money=c_total_money-$x");
-                $attr = ["c_total_money" => $e]; // 此处要减掉客户的累积借款金额
-
-                if (1 !== Customer::updateAll($attr, ['c_id' => $model['o_customer_id']])) {
-                    throw new CustomBackendException('操作客户失败', 5);
-                }
+//                $x = $model['o_total_price'] - $model['o_total_deposit'];
+//                $e = new yii\db\Expression("c_total_money=c_total_money-$x");
+//                $attr = ["c_total_money" => $e]; // 此处要减掉客户的累积借款金额
+//
+//                if (1 !== Customer::updateAll($attr, ['c_id' => $model['o_customer_id']])) {
+//                    throw new CustomBackendException('操作客户失败', 5);
+//                }
 
                 return ['status' => 1, 'message' => '取消订单成功'];
             } catch (CustomBackendException $e) {

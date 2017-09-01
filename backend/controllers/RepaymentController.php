@@ -27,6 +27,9 @@ use yii;
 
 class RepaymentController extends CoreBackendController
 {
+
+
+
     public function actionIndex()
     {
 //        p(Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['site/index'])));
@@ -152,15 +155,18 @@ class RepaymentController extends CoreBackendController
      */
     public function actionPayOverList()
     {
+        $repay = new RepaymentSearch();
+        $userList = $repay->userList();
         $this->getView()->title = '已还清订单';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_PAY_OVER]);
         $query = $query->andWhere(['<','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['in', 'o_user_id', $userList]);
         $querycount = clone $query;
         $pages = new Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
         $provinces = Helper::getAllProvince();
         return $this->render('payoverlist', [

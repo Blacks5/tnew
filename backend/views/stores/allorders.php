@@ -13,6 +13,32 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <div class="animated fadeInRight">
+    <div class="row" style="padding: 15px;">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <li>商户总订单：<?php echo $totalData['totalOrderNum']; ?>单</li>
+                    <li>订单总金额：<?php echo $totalData['totalOrderPrice']; ?>元</li>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <li>逾期率：<?php echo $totalData['totalOverdueNum']; ?>%</li>
+                    <li>逾期金额：<?php echo $totalData['totalOverduePrice']; ?>元</li>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <li>风控率（单数）：<?php echo $totalData['totalOrderNum']; ?>单</li>
+                    <li>风控率（金额）：<?php echo $totalData['totalOrderNum']; ?>元</li>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox">
@@ -41,7 +67,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-sm-2 hidden">
                             <input type="text" name="id" value="<?php echo $_GET['id'];?>" placeholder="商铺ID" class="input form-control">
                         </div>
-                        <div  class="col-sm-3">
+                        <div class="col-sm-1">
+                            <select class="input form-control" id="o_status">
+                                <option value="">全部</option>
+                                <option value="10" <?php if($status == 10){ echo 'selected';}?>>已通过</option>
+                                <option value="1" <?php if($status == 1){ echo 'selected';}?>>已拒绝</option>
+                            </select>
+                            <input type="hidden" id="o_status_v" name="AllOrdersWithStoreSearch[o_status]"/>
+                        </div>
+                        <div  class="col-sm-2">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-primary"> <i class="fa fa-search"></i> 搜索</button>
                             </span>
@@ -134,5 +168,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 autoclose:true,
                 format: "yyyy-mm-dd",
                 todayHighlight: true
+            });
+
+            $('#o_status').change(function () {
+                $('#o_status_v').val($(this).val());
             });
         </script>

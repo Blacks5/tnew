@@ -77,7 +77,7 @@ class Stores extends CoreCommonActiveRecord
     {
         return [
             [['s_name', 's_owner_email', 's_owner_phone', 's_owner_name', 's_remark', 's_county', 's_bank_people_name','s_idcard_num', 's_bank_num', 's_bank_sub', 's_bank_addr',
-                's_bank_name', 's_bank_is_private', 's_city', 's_province', 's_addr', 's_service_charge'], 'required', 'except' => 'search'],
+                's_bank_name', 's_bank_is_private', 's_city', 's_province', 's_addr', 's_real_addr', 's_service_charge'], 'required', 'except' => 'search'],
 
             [['s_add_user_id', 's_auditor_id', 's_status', 's_bank_is_private', 's_created_at', 's_updated_at'], 'integer'],
             [['s_service_charge', 's_bank_num'], 'number'],
@@ -86,7 +86,7 @@ class Stores extends CoreCommonActiveRecord
             [['s_owner_phone'], 'string', 'max' => 11],
             [['s_remark', 's_refuse_reason'], 'string', 'max' => 250],
             [['s_county', 's_bank_sub', 's_bank_name', 's_city', 's_province'], 'string', 'max' => 20],
-            [['s_addr', 's_photo_one', 's_photo_two', 's_photo_three', 's_photo_four', 's_photo_five', 's_photo_six', 's_photo_seven', 's_photo_eight'], 'string', 'max' => 50],
+            [['s_addr', 's_real_addr', 's_photo_one', 's_photo_two', 's_photo_three', 's_photo_four', 's_photo_five', 's_photo_six', 's_photo_seven', 's_photo_eight'], 'string', 'max' => 50],
             ['s_idcard_num', 'match', 'pattern'=>'/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message'=>'身份证号码错误'],
             [['s_owner_phone'], 'match', 'pattern' => '/^1[3|5|7|8]\d{9}/', 'except' => 'search'],
             [['s_owner_email'], 'email', 'except' => 'search']
@@ -154,6 +154,7 @@ class Stores extends CoreCommonActiveRecord
             's_province' => '省',
             's_gov_name' => '商铺工商局注册名称',
             's_addr' => '商铺具体地址',
+            's_real_addr' => '商铺真实经营地址',
             's_service_charge' => '门店服务费',
             's_created_at' => '商铺添加时间',
             's_updated_at' => '商铺修改时间',
@@ -184,9 +185,10 @@ class Stores extends CoreCommonActiveRecord
 
     public function search($param)
     {
+        $store = $this->getStoreList();
         $this->setScenario('search');
         $this->load($param);
-        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE]);
+        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])->andWhere(['in', 's_id', $store]);
         if (!$this->validate()) {
             return $query->where('1=2');
         }
@@ -199,6 +201,32 @@ class Stores extends CoreCommonActiveRecord
         $query->andFilterWhere(['s_city'=>$this->s_city]);
         $query->andFilterWhere(['s_county'=>$this->s_county]);
         return $query;
+    }
+
+    /**
+     * 通过用户获取下级用户管理的商户
+     * @return array
+     * @author OneStep
+     */
+    public function getStoreList()
+    {
+
+        $userList = User::getLowerForId();
+        $store = StoresSaleman::find()->select(['ss_store_id'])->where(['in', 'ss_saleman_id', $userList])->asArray()->column();
+
+        return $store;
+
+    }
+
+    /**
+     * 与User 表建立中间表关联
+     * @return $this
+     * @author OneStep
+     */
+    public function getStoreByUserId()
+    {
+        return $this->hasMany(User::className(), ['id'=> 'ss_saleman_id'])
+            ->viaTable('stores_saleman', ['ss_store_id'=> 'id']);
     }
 
 

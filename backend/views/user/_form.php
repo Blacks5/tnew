@@ -151,9 +151,9 @@ use \yii\helpers\Url;
     //如果是销售岗位显示上级主管下拉列表和地区
     $('#user-department_id').change(function(){
         if($('#user-department_id').val()==26){
-            $('#leader').removeClass('hidden');
+            $('#user-leader').removeClass('hidden');
         }else{
-            $('#leader').addClass('hidden');
+            $('#user-leader').addClass('hidden');
             $('#user-province').addClass('hidden');
             $('#user-city').addClass('hidden');
             $('#user-county').addClass('hidden');
@@ -162,17 +162,17 @@ use \yii\helpers\Url;
     //根据销售岗位选择省市区可选区域
     $('#user-job_id').change(function(){
         var job=$('#user-job_id').val();
-       if(job==45){  //销售总监和大区经理 不用选择省市区
+       if(job==46){  //销售总监和大区经理 不用选择省市区
            $('#leader').addClass('hidden');
            $('#user-province').addClass('hidden');
            $('#user-city').addClass('hidden');
            $('#user-county').addClass('hidden');
-       }else if(job==46){       //城市经理只用选择省
+       }else if(job==47){       //城市经理只用选择省
            $('#leader').removeClass('hidden');
            $('#user-province').removeClass('hidden');
            $('#user-city').addClass('hidden');
            $('#user-county').addClass('hidden');
-       }else if(job==47 || job==58){     //销售经理需要选择省,市
+       }else if(job==48 || job==49){     //销售经理需要选择省,市
            $('#leader').removeClass('hidden');
            $('#user-province').removeClass('hidden');
            $('#user-city').removeClass('hidden');
@@ -202,6 +202,7 @@ $this->registerJs('
             })
             $("#user-job_id").html(dom);
         });
+        
     });
     
     // 省变化
@@ -215,13 +216,10 @@ $this->registerJs('
                     $("#user-city").html(dom);
                 });
                 
-                $.get(url_leader, {cityName:"province",cityId:"1",leader:"1"}, function(data){
-                    var dom  = createDoms(data);
-                    $("#user-leader").html(dom);
-                });
+               getLeader("province",1); //大区经理上级
                 
             }
-            //$("#user-city").trigger("change");
+            $("#user-city").trigger("change");
     });
     
     // 市变化
@@ -235,22 +233,45 @@ $this->registerJs('
                 $("#user-county").html(dom);
             });
             
-            $.get(url_leader, {cityName:"province",cityId:$("#user-province").val(),leader:"2"}, function(data){
-                    var dom  = createDoms(data);
-                    $("#user-leader").html(dom);
-                });
+            getLeader("province",$("#user-province").val());  //城市经理上级
         }
     });
     
+    //县变化
+    $("#user-county").change(function(){
+        if($("#user-job_id").val()<53){
+        
+            getLeader("city",$("#user-city").val());
+        }else{
+            getLeader("county",$("#user-county").val());
+        }
+    });
+    
+    //获取上级领导名称
+    function getLeader(cityName,cityId){
+        var leader =$("#user-job_id").val();
+        var postData={
+            cityName:cityName,
+            cityId:cityId,
+            leader:leader,
+        };
+        $.get(url_leader, postData, function(data){
+            var dom =  createDoms(data);
+            $("#user-leader").html(dom);
+        })
+    }
+    
+  
     function createDoms(data){
         var dom = "";
-        $.each(data, function(k ,v){
-            dom += "<option value="+k+">"+v+"</option>";
-        })
+        for(var l in data){
+            dom += "<option value="+data[l].id+">"+data[l].realname+"</option>";
+        }
+            
         return dom;
     }
     
-    // 带默认选中非数据项dom
+    // 带默认选中非数据库项dom
     function createDom(data){
         var dom = "<option  value="+0+" selected>全部</option>";
         $.each(data, function (k, v) {

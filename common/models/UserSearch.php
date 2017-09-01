@@ -48,6 +48,7 @@ class UserSearch extends User
     {
         $query = User::find()->select('*')
             ->leftJoin(Department::tableName(), 'd_id=department_id')
+            ->leftJoin(Jobs::tableName(), 'j_id=job_id')
             ->where(['!=', 'status', self::STATUS_DELETE])
             ->andWhere(['!=', 'username', 'admin']);
         $this->setScenario('search');
