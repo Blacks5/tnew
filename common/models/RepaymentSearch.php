@@ -8,6 +8,7 @@
 
 namespace common\models;
 
+use backend\models\YejiSearch;
 use yii;
 use backend\core\CoreBackendModel;
 class RepaymentSearch extends CoreBackendModel
@@ -30,11 +31,13 @@ class RepaymentSearch extends CoreBackendModel
      */
     public function repaymenlist($params)
     {
+        $user = $this->userList();
         $query = Repayment::find()
             ->select(['*'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
-            ->leftJoin(Product::tableName(), 'o_product_id=p_id');
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+            ->where(['in', 'orders.o_user_id', $user]);
         $this->load($params);
         if(!$this->validate()){
             return $query->andwhere('1=2');
@@ -52,6 +55,8 @@ class RepaymentSearch extends CoreBackendModel
             $this->e_time = strtotime($this->e_time . '23:59:59');
             $query->andWhere(['<=', 'r_pre_repay_date', $this->e_time]);
         }
+
+        //var_dump($query->createCommand()->getRawSql());
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
     }
 
@@ -67,5 +72,21 @@ class RepaymentSearch extends CoreBackendModel
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
+    }
+
+    public function userList()
+    {
+        $yejj = new YejiSearch();
+        $area = $yejj->getLower();
+        $query = User::find()->select(['id'])->where(['department_id'=>26]);
+        if($area['level']==1){
+            return  $query->asArray()->column();
+        }elseif($area['level']<6){
+            return $query->andWhere(['>=', 'level', $area['level']])
+                ->andWhere([$area['area']=>$area['area_value']])
+                ->asArray()->column();
+        }else{
+            return $query->andWhere(['id'=>$area['id']])->asArray()->column();
+        }
     }
 }
