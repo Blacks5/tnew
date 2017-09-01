@@ -174,7 +174,7 @@ class UserController extends CoreBackendController
         $request = Yii::$app->getRequest();
         if ($request->getIsPost()) {
             $post = $request->post();
-            $post['User']['level'] = $Users->jobToleader($post['User']['job_id']);
+            $post['User']['level'] = empty($post['User']['job_id'])?'1':$Users->jobToleader($post['User']['job_id']);
 
             try{
                 if ($model->createUser($post)) {
@@ -238,7 +238,6 @@ class UserController extends CoreBackendController
             if ($model->validate()) {
                 $Users = new Users();
                 $model['level'] = $Users->jobToleader($model['job_id']);
-                //var_dump($model['leader']);die;
                 $model->save();
                 //分配角色
                 /*$role = $auth->createRole($post['AuthAssignment']['item_name']);                //创建角色对象
@@ -259,9 +258,9 @@ class UserController extends CoreBackendController
         $all_leader = [6=>'不需要上级'];
 
         if($model->department_id==26){
-            if ($model->leader!=6){
+            if ($model->leader!=1){
                 $leader = User::find()->select(['realname'])->indexBy('id')->where(['level'=>$model->level-1]);
-                if($model->level<4){
+                if($model->level>4){
                     $leader->andWhere(['county'=>$model->county]);
                 }elseif($model->level==4){
                     $leader->andWhere(['city'=>$model->city]);
