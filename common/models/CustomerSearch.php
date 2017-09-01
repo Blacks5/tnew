@@ -8,6 +8,7 @@
 
 namespace common\models;
 
+use backend\models\YejiSearch;
 use common\models\Customer;
 use yii;
 use common\core\CoreCommonModel;
@@ -40,7 +41,6 @@ class CustomerSearch extends CoreCommonModel
      */
     public function search($params)
     {
-
         $query = Customer::find();
         $this->load($params);
         if(!$this->validate()){
@@ -66,4 +66,5 @@ class CustomerSearch extends CoreCommonModel
 
         return $query;
     }
+
 }

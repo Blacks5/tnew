@@ -152,11 +152,15 @@ class RepaymentnewController extends CoreBackendController
      */
     public function actionPayOverList()
     {
+        $repay = new RepaymentSearch();
+        $user = $repay->userList();
+
         $this->getView()->title = '已还清订单';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_PAY_OVER]);
         $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere(['in', 'o_user_id', $user]);
         $querycount = clone $query;
         $pages = new Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
