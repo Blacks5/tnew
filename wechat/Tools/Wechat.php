@@ -18,7 +18,7 @@ class Wechat
      * 微信登录
      * @param $callback_url 登陆后跳转的地址
      * @param $scopes snsapi_base | snsapi_userinfo | snsapi_login(开放平台)
-     * @return $this|bool
+     * @return bool
      * @author too <hayto@foxmail.com>
      */
     public static function Login(Array $callback_url, $scopes='snsapi_userinfo')

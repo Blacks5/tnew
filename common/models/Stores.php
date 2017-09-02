@@ -85,7 +85,7 @@ class Stores extends CoreCommonActiveRecord
             [['s_name', 's_bank_addr', 's_gov_name'], 'string', 'max' => 30],
             [['s_owner_phone'], 'string', 'max' => 11],
             [['s_remark', 's_refuse_reason'], 'string', 'max' => 250],
-            [['s_county', 's_bank_sub', 's_bank_name', 's_city', 's_province'], 'string', 'max' => 20],
+            [['s_county', 's_bank_sub', 's_bank_name', 's_city', 's_province'], 'string', 'max' => 40],
             [['s_addr', 's_real_addr', 's_photo_one', 's_photo_two', 's_photo_three', 's_photo_four', 's_photo_five', 's_photo_six', 's_photo_seven', 's_photo_eight'], 'string', 'max' => 50],
             ['s_idcard_num', 'match', 'pattern'=>'/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message'=>'身份证号码错误'],
             [['s_owner_phone'], 'match', 'pattern' => '/^1[3|5|7|8]\d{9}/', 'except' => 'search'],
@@ -186,9 +186,14 @@ class Stores extends CoreCommonActiveRecord
     public function search($param)
     {
         $store = $this->getStoreList();
+
+        // 用户
+        $user = Yii::$app->getUser()->getIdentity();
+
         $this->setScenario('search');
         $this->load($param);
-        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])->andWhere(['in', 's_id', $store]);
+        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])
+            ->andWhere(['or' , ['in', 's_id', $store] , ['s_add_user_id' => $user->getId()]]);
         if (!$this->validate()) {
             return $query->where('1=2');
         }
@@ -212,10 +217,14 @@ class Stores extends CoreCommonActiveRecord
     {
 
         $userList = User::getLowerForId();
+
+        // 2017-09-02修改，获取店铺是应该加入自己创建的店铺
+        $user = Yii::$app->getUser()->getIdentity();
+        $userList[] = $user->getId();
+
         $store = StoresSaleman::find()->select(['ss_store_id'])->where(['in', 'ss_saleman_id', $userList])->asArray()->column();
 
         return $store;
-
     }
 
     /**
@@ -223,10 +232,10 @@ class Stores extends CoreCommonActiveRecord
      * @return $this
      * @author OneStep
      */
-    public function getStoreByUserId()
+    public function getUserByStore()
     {
         return $this->hasMany(User::className(), ['id'=> 'ss_saleman_id'])
-            ->viaTable('stores_saleman', ['ss_store_id'=> 'id']);
+            ->viaTable('stores_saleman', ['ss_store_id'=> 's_id']);
     }
 
 
