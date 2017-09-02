@@ -187,9 +187,13 @@ class Stores extends CoreCommonActiveRecord
     {
         $store = $this->getStoreList();
 
+        // 用户
+        $user = Yii::$app->getUser()->getIdentity();
+
         $this->setScenario('search');
         $this->load($param);
-        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])->andWhere(['in', 's_id', $store]);
+        $query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])
+            ->andWhere(['or' , ['in', 's_id', $store] , ['s_add_user_id' => $user->getId()]]);
         if (!$this->validate()) {
             return $query->where('1=2');
         }
@@ -221,7 +225,6 @@ class Stores extends CoreCommonActiveRecord
         $store = StoresSaleman::find()->select(['ss_store_id'])->where(['in', 'ss_saleman_id', $userList])->asArray()->column();
 
         return $store;
-
     }
 
     /**
