@@ -5,6 +5,7 @@ namespace common\models;
 use backend\components\CustomBackendException;
 use backend\models\AuthAssignment;
 use backend\models\YejiSearch;
+use common\components\Helper;
 use common\core\CoreCommonActiveRecord;
 use yii;
 
@@ -360,5 +361,31 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
             $data = $list->andWhere(['>', 'level', $user['level']])->andWhere([$user['area']=>$user['area_value']])->asArray()->column();
         }
         return $data;
+    }
+
+    /**
+     * 获取员工所属区域
+     * @return array
+     */
+    public function getUserArea()
+    {
+        $user = yii::$app->user->identity;
+        $area = [
+            'id' => $user->id,
+            'level' => $user->level,
+            'area' => '',
+            'area_value' => '',
+        ];
+
+        $job_area = [1=>'province', 2=>'province', 3=>'city', 4=>'county', 5=> 'county', 6=>'county'];
+
+        foreach ($job_area as $k => $v){
+            if($user->level == $k){
+                $area['area'] = $v;
+                $area['area_value'] = $user->$v;
+            }
+        }
+
+        return $area;
     }
 }
