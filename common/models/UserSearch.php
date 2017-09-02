@@ -46,11 +46,20 @@ class UserSearch extends User
      */
     public function search($params)
     {
+        $user = new User();
+        $area = $this->getUserArea();
         $query = User::find()->select('*')
             ->leftJoin(Department::tableName(), 'd_id=department_id')
             ->leftJoin(Jobs::tableName(), 'j_id=job_id')
             ->where(['!=', 'status', self::STATUS_DELETE])
             ->andWhere(['!=', 'username', 'admin']);
+        if($area['level']>1){
+            $query->andWhere(['>=', 'level', $area['level']])->andWhere([$area['area']=>$area['area_value']])->orWhere(['id'=>$area['id']]);
+        }
+
+        /*if($area['level']>1){
+            $query->andWhere(['department_id'=>26, $area['area']=>$area['area_value']]);
+        }*/
         $this->setScenario('search');
         $this->load($params);
         if (!$this->validate()) {
