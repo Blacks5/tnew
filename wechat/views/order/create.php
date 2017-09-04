@@ -436,9 +436,9 @@
     $(function() {
         FastClick.attach(document.body);
         
-        document.body.addEventListener('touchmove' , function(e){
-            e.preventDefault();
-        } , false);
+        // document.body.addEventListener('touchmove' , function(e){
+        //     e.preventDefault();
+        // } , false);
 
         // city json数据包
         var city = <?= $data_json; ?>;
