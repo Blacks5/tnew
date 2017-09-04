@@ -18,11 +18,8 @@ use common\models\JzqSign;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
-<<<<<<< HEAD
 use common\models\RepaymentSearch;
-=======
 use common\models\User;
->>>>>>> 831af108776d1970213459dcabb87b73f43cfeca
 use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
