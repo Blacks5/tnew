@@ -370,9 +370,11 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
     public function getUserArea()
     {
         $user = yii::$app->user->identity;
+
         $area = [
             'id' => $user->id,
             'level' => $user->level,
+            'd_department_id' => $user->department_id,
             'area' => '',
             'area_value' => '',
         ];
