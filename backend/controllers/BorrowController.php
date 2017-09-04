@@ -866,21 +866,31 @@ left join customer on customer.c_id=orders.o_customer_id
         }else{
             $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
         }
-        $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
-        Yii::$app->getDb()->createCommand($sql)->execute();
-        $sql1 = "update repayment set r_free_pack_fee = 0 where $where";//再处理贵宾服务包金额
-        Yii::$app->getDb()->createCommand($sql1)->execute();
-        $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
+        $trans = Yii::$app->getDb()->beginTransaction();
         try{
+            $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            if($c1 <= 0){
+                throw new CustomBackendException('处理月供金额失败' , 0);
+            }
+            $sql1 = "update repayment set r_free_pack_fee = 0 where $where";//再处理贵宾服务包金额
+            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
+            if($c2 <= 0){
+                throw new CustomBackendException('处理贵宾服务包金额失败' , 0);
+            }
+            $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             if($count > 0){
+                $trans->commit();
                 return ['status' => 1, 'message' => '取消成功'];
             }else{
                 throw new CustomBackendException('取消失败' , 0);
             }
         } catch (CustomBackendException $e) {
+            $trans->rollBack();
             return ['status' => $e->getCode(), 'message' => $e->getMessage()];
         } catch (yii\base\Exception $e) {
+            $trans->rollBack();
             return ['status' => 2, 'message' => '系统错误'];
         }
     }
@@ -901,21 +911,31 @@ left join customer on customer.c_id=orders.o_customer_id
         }else{
             $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
         }
-        $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
-        Yii::$app->getDb()->createCommand($sql)->execute();
-        $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
-        Yii::$app->getDb()->createCommand($sql1)->execute();
-        $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
+        $trans = Yii::$app->getDb()->beginTransaction();
         try{
+            $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            if($c1 <= 0){
+                throw new CustomBackendException('处理月供金额失败' , 0);
+            }
+            $c2 = $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
+            Yii::$app->getDb()->createCommand($sql1)->execute();
+            if($c2 <= 0){
+                throw new CustomBackendException('处理个人保障服务金额失败' , 0);
+            }
+            $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             if($count > 0){
+                $trans->commit();
                 return ['status' => 1, 'message' => '取消成功'];
             }else{
                 throw new CustomBackendException('取消失败' , 0);
             }
         } catch (CustomBackendException $e) {
+            $trans->rollBack();
             return ['status' => $e->getCode(), 'message' => $e->getMessage()];
         } catch (yii\base\Exception $e) {
+            $trans->rollBack();
             return ['status' => 2, 'message' => '系统错误'];
         }
     }
