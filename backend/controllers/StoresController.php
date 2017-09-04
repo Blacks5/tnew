@@ -278,6 +278,10 @@ class StoresController extends CoreBackendController
 
             $request = Yii::$app->getRequest();
             if ($request->getIsPost()) {
+                if(empty($request->post('ss_saleman_id'))){
+                    throw new CustomBackendException('销售人员获取失败');
+                }
+
                 if (!$storedata = Stores::findOne($ss_store_id)) {
                     throw new CustomBackendException('店铺不存在');
                 }
