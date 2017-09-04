@@ -19,7 +19,6 @@ use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
 use common\models\RepaymentSearch;
-use common\models\User;
 use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
@@ -100,13 +99,11 @@ class BorrowController extends CoreBackendController
      */
     public function actionListVerifyRevoke()
     {
-        $userList = User::getLowerForId();
         $this->getView()->title = '已撤销列表';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_REVOKE]);
         $query = $query->andWhere(['<','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
-        $query = $query->andWhere([]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
@@ -870,6 +867,7 @@ left join customer on customer.c_id=orders.o_customer_id
             $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
         }
         $trans = Yii::$app->getDb()->beginTransaction();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
         try{
             $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
             $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
@@ -882,7 +880,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 throw new CustomBackendException('处理贵宾服务包金额失败' , 0);
             }
             $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
-            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             if($count > 0){
                 $trans->commit();
                 return ['status' => 1, 'message' => '取消成功'];
@@ -915,19 +912,19 @@ left join customer on customer.c_id=orders.o_customer_id
             $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
         }
         $trans = Yii::$app->getDb()->beginTransaction();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
         try{
             $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
             $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
             if($c1 <= 0){
                 throw new CustomBackendException('处理月供金额失败' , 0);
             }
-            $c2 = $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
-            Yii::$app->getDb()->createCommand($sql1)->execute();
+            $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
+            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
             if($c2 <= 0){
                 throw new CustomBackendException('处理个人保障服务金额失败' , 0);
             }
             $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
-            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             if($count > 0){
                 $trans->commit();
                 return ['status' => 1, 'message' => '取消成功'];
