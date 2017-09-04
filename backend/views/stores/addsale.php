@@ -55,9 +55,10 @@ $form = ActiveForm::begin(
             <div class="col-sm-4">
                 <input type="hidden" class="form-control" name="ss_saleman_id" id="ss_saleman_id" value=""/>
                 <input type="text" class="form-control" id="realname" name="realname" value=""
-                       onKeyUp="find_customer();">
+                       onKeyUp="find_customer();" autocomplete="off">
+                <span class="help">请输入销售人员姓名,并从下拉列表选择销售人员</span>
                 <div class="dropdown listcontent">
-                    <ul id="user_data" class="dropdown-menu pull-left">
+                    <ul id="user_data" class="dropdown-menu pull-left" style="color: red;">
 
                     </ul>
                 </div>

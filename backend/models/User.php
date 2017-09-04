@@ -137,16 +137,20 @@ class User extends \yii\db\ActiveRecord
             case  47 :    //大区经理
                 return 2;
                 break;
-            case 48 || 49:    //城市经理
+            case 48:
+            case 49:    //城市经理
                 return 3;
                 break;
-            case 50 || 51 ||52: //销售经理
+            case 50:
+            case 51:
+            case 52: //销售经理
                 return 4;
                 break;
             case  53: //销售主管
                 return 5;
                 break;
-            case 54||55:  //销售人员
+            case 54:
+            case 55:  //销售人员
                 return 6;
                 break;
         }

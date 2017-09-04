@@ -45,15 +45,16 @@ class YejiSearch extends CoreBackendModel{
     public function getLower()
     {
         $user = yii::$app->getUser();
-        $leader = [1=>'province', 2=>'province', 3=>'city', 4=>'county'];
+        $level = [1=>'province', 2=>'province', 3=>'city', 4=>'county' ,5=>'county', 6=>'county'];
         $area = [
             'level' => 6,
             'area'  => 'province',
             'area_value' => '24',
         ];
 
-        foreach ($leader as $k => $l){
+        foreach ($level as $k => $l){
             if($user->identity->level==$k){
+                $area['id'] = $user->identity->id;
                 $area['level'] = $user->identity->level;
                 $area['area'] = $l;
                 $area['area_value'] = $user->identity->$l;
@@ -85,7 +86,6 @@ class YejiSearch extends CoreBackendModel{
                 }
             }
         }
-
         return $area;
     }
 
