@@ -174,7 +174,8 @@ class UserController extends CoreBackendController
         $request = Yii::$app->getRequest();
         if ($request->getIsPost()) {
             $post = $request->post();
-            $post['User']['level'] = empty($post['User']['job_id'])?'1':$Users->jobToleader($post['User']['job_id']);
+            $post['User']['level'] = empty($Users->jobToleader($post['User']['job_id']))?'1':$Users->jobToleader($post['User']['job_id']);
+
 
             try{
                 if ($model->createUser($post)) {
@@ -237,7 +238,7 @@ class UserController extends CoreBackendController
             }*/
             if ($model->validate()) {
                 $Users = new Users();
-                $model['level'] = empty($model['job_id'])?'1':$Users->jobToleader($model['job_id']);
+                $model['level'] = empty($Users->jobToleader($model['job_id']))?1:$Users->jobToleader($model['job_id']);
                 $model->save();
                 //分配角色
                 /*$role = $auth->createRole($post['AuthAssignment']['item_name']);                //创建角色对象
