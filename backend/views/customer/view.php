@@ -27,7 +27,7 @@ use common\components\Helper;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">身份证号码：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?= $model['c_customer_id_card']; ?></p>
+                            <p class="form-control-static"><?= yii::$app->user->identity->level>1?substr_replace($model['c_customer_id_card'], str_repeat('*',10),4,-4):$model['c_customer_id_card']; ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

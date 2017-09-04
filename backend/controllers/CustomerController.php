@@ -37,6 +37,7 @@ class CustomerController extends CoreBackendController
      */
     public function actionIndex()
     {
+        $users = yii::$app->user->identity;
         $this->getView()->title = '客户列表';
         $model = new CustomerSearch();
         $params = Yii::$app->getRequest()->getQueryParams();
