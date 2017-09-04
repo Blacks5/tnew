@@ -79,10 +79,23 @@ class Order {
 			throw new CustomCommonException(reset($msg));
 		}
 
+		// 四要素验证
+		$status = $this->checkCustomerInfo(
+			$params['c_customer_name'],
+			$params['c_customer_cellphone'],
+			$params['c_customer_id_card'],
+			$params['c_banknum']
+		);
+
+		if (!$status) {
+			$trans->rollBack();
+			throw new CustomCommonException('身份验证失败');
+		}
+
 		$customerModel->c_created_at = $_SERVER['REQUEST_TIME'];
 		if (!$customerModel->save(false)) {
 			$trans->rollBack();
-			throw new CustomCommonException('用户写入失败');
+			throw new CustomCommonException('操作失败');
 		}
 
 		// 3.写入订单信息
@@ -146,6 +159,25 @@ class Order {
 		// 提交数据
 		$trans->commit();
 		return true;
+	}
+
+	/**
+	 * 验证客户身份信息
+	 * @param  [type] $realname   [description]
+	 * @param  [type] $mobile     [description]
+	 * @param  [type] $idcard     [description]
+	 * @param  [type] $creditcard [description]
+	 * @return [type]             [description]
+	 */
+	public function checkCustomerInfo($realname, $mobile, $idcard, $creditcard) {
+		$status = \Yii::$app->bair->check([
+			'idcard' => $idcard,
+			'mobile' => $mobile,
+			'creditcard' => $creditcard,
+			'realname' => $realname,
+		]);
+
+		return $status;
 	}
 
 	/**
@@ -364,7 +396,7 @@ class Order {
 		}
 
 		// 修改订单状态
-		if(!$orderModel->save(false)){
+		if (!$orderModel->save(false)) {
 			$trans->rollBack();
 			throw new CustomCommonException('保存失败');
 		}
@@ -462,6 +494,18 @@ class Order {
 		if (false === $customerModel->validate()) {
 			$msg = $customerModel->getFirstErrors();
 			throw new CustomCommonException(reset($msg));
+		}
+
+		// 四要素验证
+		$status = $this->checkCustomerInfo(
+			$params['c_customer_name'],
+			$params['c_customer_cellphone'],
+			$params['c_customer_id_card'],
+			$params['c_banknum']
+		);
+
+		if (!$status) {
+			throw new CustomCommonException('身份验证失败');
 		}
 
 		return true;
