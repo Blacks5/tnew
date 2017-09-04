@@ -54,7 +54,7 @@ class UserSearch extends User
             ->where(['!=', 'status', self::STATUS_DELETE])
             ->andWhere(['!=', 'username', 'admin']);
         if($area['level']>1){
-            $query->andWhere(['>=', 'level', $area['level']])->andWhere([$area['area']=>$area['area_value']])->orWhere(['id'=>$area['id']]);
+            $query->andWhere(['>=', 'level', $area['level']])->andWhere([$area['area']=>$area['area_value'], 'department_id'=>26])->orWhere(['id'=>$area['id']]);
         }
 
         /*if($area['level']>1){

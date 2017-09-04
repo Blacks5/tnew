@@ -18,6 +18,7 @@ use common\models\JzqSign;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\User;
 use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
@@ -98,11 +99,13 @@ class BorrowController extends CoreBackendController
      */
     public function actionListVerifyRevoke()
     {
+        $userList = User::getLowerForId();
         $this->getView()->title = '已撤销列表';
         $model = new OrdersSearch();
         $query = $model->search(Yii::$app->getRequest()->getQueryParams());
         $query = $query->andWhere(['o_status' => Orders::STATUS_REVOKE]);
         $query = $query->andWhere(['<','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->andWhere([]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];

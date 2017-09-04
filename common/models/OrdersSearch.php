@@ -42,6 +42,7 @@ class OrdersSearch extends CoreCommonModel
 
     public function search($param)
     {
+        $userList = User::getLowerForId();
         $select = ['orders.id as o_id', 'orders.total_price as o_total_price', 'orders.total_deposit as o_total_deposit', 'orders.created_at as o_created_at',
             'product.name as p_name', 'product.period as p_period'
             , 'customer.customer_name as c_customer_name', 'customer.customer_cellphone as c_customer_cellphone'
@@ -59,7 +60,9 @@ class OrdersSearch extends CoreCommonModel
             ->leftJoin(Customer::tableName(). ' customer', 'customer.c_id=orders.o_customer_id') // 关联客户
             ->leftJoin(Repayment::tableName(). ' repayment', 'repayment.r_orders_id=orders.o_id') // 要统计总还款金额
             ->leftJoin(YijifuLoan::tableName(). ' yijifu_loan', 'yijifu_loan.y_serial_id=orders.o_serial_id') // 查询是否已成功放款给商户
+            ->andWhere(['in', 'orders.o_user_id', $userList])
         ;
+        //var_dump($userList);die;
         if(!$this->validate()){
             return $query->where('1=2');
         }
@@ -83,5 +86,14 @@ class OrdersSearch extends CoreCommonModel
         if($this->start_time) $query->andWhere(['>=', 'o_created_at', strtotime($this->start_time)]);
         if($this->end_time) $query->andWhere(['<=', 'o_created_at', strtotime($this->end_time)]);
         return $query->groupBy(['o_id']); // 避免对应多个商品出现多行
+    }
+
+    public function getOrderId()
+    {
+        $userList = User::getLowerForId();
+
+        $orderId = Orders::find()->select(['o_serial_id'])->where(['in', 'o_user_id'], $userList)->asArray()->column();
+
+        return $orderId;
     }
 }

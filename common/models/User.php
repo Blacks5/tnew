@@ -348,8 +348,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
      */
     public static function getLowerForId()
     {
-        $yeji = new YejiSearch();
-        $user = $yeji->getLower();
+        $model = new User();
+        $user = $model->getUserArea();
 
         $list = User::find()->select(['id'])
             ->andWhere(['department_id'=>26])
@@ -388,4 +388,5 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 
         return $area;
     }
+
 }
