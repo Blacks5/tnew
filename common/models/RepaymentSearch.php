@@ -61,9 +61,9 @@ class RepaymentSearch extends CoreBackendModel
      * @return $this
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public static function repaymenlistbyorderid($order_id)
+    public static function repaymenlistbyorderid($order_id,$field='*')
     {
-        $query = Repayment::find()->select(['*'])->where(['r_orders_id'=>$order_id])
+        $query = Repayment::find()->select([$field])->where(['r_orders_id'=>$order_id])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
