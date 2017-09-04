@@ -53,8 +53,8 @@ class UserSearch extends User
             ->leftJoin(Jobs::tableName(), 'j_id=job_id')
             ->where(['!=', 'status', self::STATUS_DELETE])
             ->andWhere(['!=', 'username', 'admin']);
-        if($area['level']>1){
-            $query->andWhere(['>=', 'level', $area['level']])->andWhere([$area['area']=>$area['area_value']])->orWhere(['id'=>$area['id']]);
+        if($area['level']>1 && $area['d_department_id']==26){
+            $query->andWhere(['>=', 'level', $area['level']])->andWhere([$area['area']=>$area['area_value'], 'department_id'=>26])->orWhere(['id'=>$area['id']]);
         }
 
         /*if($area['level']>1){

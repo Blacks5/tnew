@@ -31,7 +31,7 @@ class RepaymentSearch extends CoreBackendModel
      */
     public function repaymenlist($params)
     {
-        $user = $this->userList();
+        $user = User::getLowerForId();
         $query = Repayment::find()
             ->select(['*'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
@@ -74,19 +74,4 @@ class RepaymentSearch extends CoreBackendModel
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
     }
 
-    public function userList()
-    {
-        $yejj = new YejiSearch();
-        $area = $yejj->getLower();
-        $query = User::find()->select(['id'])->where(['department_id'=>26]);
-        if($area['level']==1){
-            return  $query->asArray()->column();
-        }elseif($area['level']<6){
-            return $query->andWhere(['>=', 'level', $area['level']])
-                ->andWhere([$area['area']=>$area['area_value']])
-                ->asArray()->column();
-        }else{
-            return $query->orWhere(['id'=>$area['id']])->asArray()->column();
-        }
-    }
 }

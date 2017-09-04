@@ -18,6 +18,7 @@ use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\Repayment;
 use common\models\RepaymentSearch;
+use common\models\User;
 use common\models\YijifuDeduct;
 use common\models\YijifuSign;
 use common\tools\yijifu\ReturnMoney;
@@ -152,8 +153,7 @@ class RepaymentnewController extends CoreBackendController
      */
     public function actionPayOverList()
     {
-        $repay = new RepaymentSearch();
-        $user = $repay->userList();
+        $user = User::getLowerForId();
 
         $this->getView()->title = '已还清订单';
         $model = new OrdersSearch();
