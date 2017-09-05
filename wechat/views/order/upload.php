@@ -234,7 +234,7 @@
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
-<script src="/wechat/js/jquery-weui-extend.js"></script>
+<script src="/wechat/js/jquery-weui-extend-src.js"></script>
 <script type="text/javascript">
 $(function(){
 
