@@ -176,12 +176,12 @@
                             <input class="weui-input" type="text" name="c_customer_id_card_endtime" placeholder="请输入身份证号">
                         </div>
                     </div>
-                    <div class="weui-cell weui-cell_switch">
+<!--                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">身份证过期时间是否永久</div>
                         <div class="weui-cell__ft">
                             <input class="weui-switch" type="checkbox" name="c_customer_id_card_endtime_status">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">身份证地址</div>
                         <div class="weui-cell__ft">
@@ -588,8 +588,10 @@
             });
 
             // 时间选择器
+            var endtime = _this.localGet('c_customer_id_card_endtime');
+                endtime =  endtime ? endtime : '2020-01-01';
             $('input[name=c_customer_id_card_endtime]').calendar({
-                value : [_this.localGet('c_customer_id_card_endtime')],
+                value : [endtime],
                 onChange : function(p, values, displayValues){
                     $(this).val(values[0]);
                     _this.localSet('c_customer_id_card_endtime' , values[0]);

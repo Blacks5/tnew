@@ -42,7 +42,7 @@ class RepaymentSearch extends CoreBackendModel
             return $query->andwhere('1=2');
         }
 
-        if(yii::$app->user->identity){
+        if(!yii::$app->session->get('sys_user')){
             if($user = User::getLowerForId()){
                 $query->andWhere(['in', 'orders.o_user_id', $user]);
             }

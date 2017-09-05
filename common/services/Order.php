@@ -350,6 +350,7 @@ class Order {
 				'oi_back_id' => $params['oi_back_id'],
 				'oi_customer' => $params['oi_customer'],
 				'oi_front_bank' => $params['oi_front_bank'],
+				'oi_proxy_prove' => $params['oi_proxy_prove'],
 			]];
 
 			$orderImagesModel->scenario = 'uploadFirst';
