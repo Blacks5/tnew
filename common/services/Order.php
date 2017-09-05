@@ -497,15 +497,17 @@ class Order {
 		}
 
 		// 四要素验证
-		$status = $this->checkCustomerInfo(
-			$params['c_customer_name'],
-			$params['c_customer_cellphone'],
-			$params['c_customer_id_card'],
-			$params['c_banknum']
-		);
+		if($scenario == 'clientValidate1'){
+			$status = $this->checkCustomerInfo(
+				$params['c_customer_name'],
+				$params['c_customer_cellphone'],
+				$params['c_customer_id_card'],
+				$params['c_banknum']
+			);
 
-		if (!$status) {
-			throw new CustomCommonException('身份验证失败');
+			if (!$status) {
+				throw new CustomCommonException('身份验证失败');
+			}
 		}
 
 		return true;
