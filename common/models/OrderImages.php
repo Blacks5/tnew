@@ -63,6 +63,7 @@ class OrderImages extends CoreCommonActiveRecord {
 			'oi_video' => '录制视频',
 			'oi_pick_goods' => '提货照',
 			'oi_serial_num' => '串码照',
+			'oi_proxy_prove' => '授权书',
 		];
 	}
 

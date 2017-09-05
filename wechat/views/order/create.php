@@ -47,6 +47,12 @@
                         </div>
                     </div>
                     <div class="weui-cell">
+                        <div class="weui-cell__hd"><label class="weui-label">商品序列号</label></div>
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" type="text" name="g_goods_serial_no" placeholder="请输入商品序列号">
+                        </div>
+                    </div>
+                    <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">商品价格</label></div>
                         <div class="weui-cell__bd">
                             <input class="weui-input" type="text" name="g_goods_price" placeholder="请输入商品价格">
@@ -75,7 +81,7 @@
                         <div class="weui-cell__hd"><label class="weui-label">商铺</label></div>
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="o_store_id">
-                                <option value="22">请选择商铺</option>
+                                <option value="">请选择商铺</option>
                                 <?php foreach ($data['stores'] as $k=>$v){ ?>
                                     <option value="<?= $v['s_id']; ?>"><?= $v['s_name']; ?></option>
                                 <?php } ?>
@@ -674,6 +680,11 @@
                 datatype: "s2-20",
                 nullmsg: "请输入商品型号",
                 errormsg: "商品型号长度为2~20之间"
+            }, {
+                ele: "input[name=g_goods_serial_no]",
+                datatype: "s2-60",
+                nullmsg: "请输入商品序列号",
+                errormsg: "商品序列号长度为2~60之间"
             }, {
                 ele: "input[name=g_goods_price]",
                 datatype: "n",
