@@ -21,7 +21,7 @@ class Brhelper {
 	// api code
 	public $apicode;
 	// tokenid cache time
-	private $expire = 3600;
+	private $expire = 3599;
 	// after request fail retry times
 	private $retry = 1;
 	// retried times
@@ -71,7 +71,7 @@ class Brhelper {
 	 */
 	public function check($data = []) {
 		// 获取tokenid
-		if (!$tokenid = $this->getTokenId(true)) {
+		if (!$tokenid = $this->getTokenId()) {
 			return false;
 		}
 
