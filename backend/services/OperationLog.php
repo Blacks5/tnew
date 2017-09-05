@@ -24,35 +24,43 @@ class OperationLog
         }
         $this->config = $config[$pathInfo];
         if (!empty($this->config['active']) and method_exists($this, 'active' . $this->config['active']) ) {
+            // 每个 active 函数只给 $this->data 填充数据，不需要每个函数中作其它操作
             $this->{'active' . ucfirst($this->config['active'])}();
-        } else if (empty($this->config['memo'])) {
+        } elseif (empty($this->config['memo'])) {
             return;
         }
 
         $this->parse();
-        $this->write($this->config['tag'], $this->data['memo']);
-
-        // get_defined_vars
-        // $operator = \Yii::$app->getUser()->getIdentity();
-        
+        $this->write($this->config['tag'], $this->data['memo'], 0, $this->data['data']);
     }
 
     
+    /**
+     * 解析通用日志规则中的相关变量
+     *
+     * @return void
+     */
     protected function parse()
     {
-        // $varsTab = get_defined_vars();
+        if (empty($this->config['memo'])) {
+            return;
+        }
         $operator = \Yii::$app->getUser()->getIdentity();
         $varTab = [
             '{OPERATOR_ID}' => $operator->id,
             '{OPERATOR_USERNAME}' => $operator->username,
             '{OPERATOR_REALNAME}' => $operator->realname,
         ];
-        $this->data['memo'] = str_replace(array_keys($varTab), array_values($varTab), $this->config['memo']);
+        if (!$this->data['memo']) {
+            $this->data['memo'] = str_replace(array_keys($varTab), array_values($varTab), $this->config['memo']);
+        }
     }
 
     public function activeTest()
     {
         // TODO.
+        $this->data['memo'] = '这是各应用中处理的文本说明';
+        $this->data['data'] = ['test_a_id' => 9912, 'test_b_id' => 9913];
     }
 
     /**
