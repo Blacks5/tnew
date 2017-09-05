@@ -102,7 +102,7 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">自动代扣</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" checked="checked">
+                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" checked="checked" disabled="disabled">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
@@ -624,6 +624,9 @@
                 var val = $(this).is(':checked') ? 1 : 0;
                 _this.localSet(key , val);
             });
+
+            // 初始化
+            _this.localSet('o_is_auto_pay' , 1);
         }
 
         // 初始化本地存储数据
