@@ -276,7 +276,7 @@ $(function(){
             maxCount : 6,
             maxWidth : 400,
             inputName: 'image',
-            timeout : 5000,
+            timeout : 10000,
             data : { o_id : _this.data.o_id},
             upToken : "<?=$uptoken ?>",
             success : function(ele , res){
