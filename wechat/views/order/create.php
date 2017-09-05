@@ -14,7 +14,7 @@
     <div class="swiper-container commit-order-container">
         <div class="swiper-wrapper">
             <!--商品信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -69,7 +69,7 @@
             <!--商品信息end-->
 
             <!--订单信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -128,7 +128,7 @@
             <!--订单信息end-->
             
             <!--客户基本信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -304,7 +304,7 @@
             <!--客户基本信息end-->
 
             <!--客户单位信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -388,7 +388,7 @@
             <!--客户单位信息end-->
 
             <!--客户其他联系人信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep5" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
