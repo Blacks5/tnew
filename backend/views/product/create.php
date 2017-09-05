@@ -39,7 +39,20 @@
                                 </select>
                             </div>
                         </div>
-                        <!--<div class="hr-line-dashed"></div>-->
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">营销类型</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="m_t">
+                                    <option value="1">促销</option>
+                                    <option value="2">常规</option>
+                                </select>
+                                <input type="hidden" class="form-control" id="m_t_value" name="p_market_type" value="">
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
                         <div class="form-group <?php if ($msg = $model->getFirstError('p_name')) {
                             echo 'has-error';
                         } ?>">
@@ -143,6 +156,11 @@
             </div>
         </div>
     </div>
+<script>
+    $('#m_t').change(function(){
+        $('#m_t_value').val($(this).val());
+    });
+</script>
 
     <!-- iCheck -->
 <?= \yii\bootstrap\Html::jsFile('@web/js/plugins/iCheck/icheck.min.js') ?>
@@ -151,4 +169,6 @@
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
         });;
+        
+        
 ", \yii\web\View::PH_BODY_BEGIN); ?>
