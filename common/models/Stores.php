@@ -77,7 +77,7 @@ class Stores extends CoreCommonActiveRecord {
 	public function rules() {
 		return [
 			[['s_name', 's_owner_email', 's_owner_phone', 's_owner_name', 's_remark', 's_county', 's_bank_people_name', 's_idcard_num', 's_bank_num', 's_bank_sub', 's_bank_addr',
-				's_bank_name', 's_bank_is_private', 's_city', 's_province', 's_addr', 's_real_addr', 's_service_charge'], 'required', 'except' => 'search'],
+				's_bank_name', 's_bank_is_private', 's_city', 's_province', 's_addr', 's_real_addr', 's_service_charge', 's_real_addr'], 'required', 'except' => 'search'],
 
 			[['s_add_user_id', 's_auditor_id', 's_status', 's_bank_is_private', 's_created_at', 's_updated_at'], 'integer'],
 			[['s_service_charge', 's_bank_num'], 'number'],
