@@ -59,7 +59,7 @@ use yii\widgets\LinkPager;
                                 <tbody>
                                 <?php foreach ($model as $vo) { ?>
                                     <tr>
-                                        <td><?= $vo['p_name'] ?><span class="text-danger"><?php if($vo['p_market_type'] == 1){echo '（促销）';}else{echo '（常规）';} ?></span></td>
+                                        <td><?= $vo['p_name'] ?><span class="text-danger"><?php if($vo['p_is_promotional'] == 1){echo '（促销）';}else{echo '（常规）';} ?></span></td>
                                         <td><?= $vo['p_month_rate'] ?></td>
                                         <td><?= $vo['p_period'] ?></td>
                                         <td><?= $vo['p_free_pack_fee'] ?></td>
