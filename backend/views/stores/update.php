@@ -86,6 +86,7 @@ $t = new \common\models\UploadFile();
             <?= $form->field($model, 's_photo_six')->hiddenInput(['class'=>'form-control'])->label('');?>
             <?= $form->field($model, 's_photo_seven')->hiddenInput(['class'=>'form-control'])->label('');?>
             <?= $form->field($model, 's_photo_eight')->hiddenInput(['class'=>'form-control'])->label('');?>
+            <?= $form->field($model, 's_photo_nine')->hiddenInput(['class'=>'form-control'])->label('');?>
 
 
 
@@ -221,6 +222,22 @@ $t = new \common\models\UploadFile();
                             <button id="start_upload_eight" type="button">开始上传</button>
                         </div>
                     </div>
+                    <div class="wraper">
+                        <ul id="file-list-nine" class="file-list">
+                            <li>
+                                <p>授权书</p>
+                                <?php if($model->s_photo_nine){ ?>
+                                    <img src="<?=$t->getUrl($model->s_photo_nine);?>" alt="">
+                                <?php }else{ ?>
+                                    <img src="/statics/images/image.png" alt="">
+                                <?php } ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-nine" />
+                            <button id="start_upload_nine" type="button">开始上传</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -315,6 +332,7 @@ $t = new \common\models\UploadFile();
     loadinit('six');
     loadinit('seven');
     loadinit('eight');
+    loadinit('nine');
 </script>
 <?php
 $this->registerJs('
