@@ -50,7 +50,7 @@ $this->title = '更新用户 ';
                                     <?php
                                     $t = new \common\models\UploadFile();
                                     if($model->id_card_pic_one){ ?>
-                                        <?= Html::img($t->getUrl($model->id_card_pic_one)); ?>
+                                        <?= Html::img($t->getUrl($model->id_card_pic_one),['style'=>'max-width:500px;max-height:500px;']); ?>
                                     <?php }else{ ?>
                                         <?= Html::img('@web/img/image.png'); ?>
                                     <?php } ?>
@@ -190,7 +190,7 @@ $this->title = '更新用户 ';
             $('#user-province').removeClass('hidden');
             $('#user-city').removeClass('hidden');
             $('#user-county').addClass('hidden');
-        }else if(job>50){       //销售人员需要选择省市区
+        }else if(job>=50){       //销售人员需要选择省市区
             $('#leader').removeClass('hidden');
             $('#user-province').removeClass('hidden');
             $('#user-city').removeClass('hidden');
@@ -201,6 +201,10 @@ $this->title = '更新用户 ';
 
 <?php
 $this->registerJs('
+    //$("#user-province").trigger("change");
+    $("#user-department_id").trigger("change");
+    $("#user-job_id").trigger("change");
+    
     var url = "'.Url::toRoute(['user/get-sub-addr']).'"; // 获取子地区
     var url_jobs = "'.Url::toRoute(['user/get-jobs']).'"; // 获取职位
     var url_leader = "'.Url::toRoute(['user/get-leader']).'"; //获取上级
@@ -211,7 +215,7 @@ $this->registerJs('
         $.get(url_jobs, {d_id:d_id}, function(data){
             var dom  = "";
             $.each(data, function(k ,v){
-                dom += "<option  value="+k+">"+v+"</option>";
+                dom += "<option value="+k+">"+v+"</option>";
             })
             $("#user-job_id").html(dom);
             
@@ -249,7 +253,6 @@ $this->registerJs('
     //县变化
     $("#user-county").change(function(){
         if($("#user-job_id").val()<53){
-        
             getLeader("city",$("#user-city").val());
         }else{
             getLeader("county",$("#user-county").val());
@@ -258,11 +261,11 @@ $this->registerJs('
     
     //获取上级领导名称
     function getLeader(cityName,cityId){
-        var leader =$("#user-job_id").val();
+        var level =$("#user-job_id").val();
         var postData={
             cityName:cityName,
             cityId:cityId,
-            leader:leader,
+            leader:level,
         };
         $.get(url_leader, postData, function(data){
             var dom =  createDom(data);
@@ -271,10 +274,10 @@ $this->registerJs('
     }
     
     // 专业造dom
-    function createDoms(data){
+    function createDoms(data,t){
         var dom = "<option  value="+0+">全部</option>";
         $.each(data, function (k, v) {
-            dom += "<option  value="+k+">"+v+"</option>";
+            dom += "<option value="+k+">"+v+"</option>";
         })
         return dom;
     }
@@ -289,9 +292,7 @@ $this->registerJs('
     }
     
     // 初始化
-    $("#user-province").trigger("change");
-    $("#user-department_id").trigger("change");
-    $("#user-job_id").trigger("change");
+    
  ');
 
 

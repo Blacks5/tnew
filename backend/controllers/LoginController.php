@@ -45,6 +45,16 @@ class LoginController extends CoreCommonController
             $model->login();
             return $this->redirect(['site/index']);
         } else {
+            // 解决页面跳转问题
+            if ($referer = \Yii::$app->request->headers->get('referer')) {
+                $url_arr = parse_url($referer);
+
+                if(isset($url_arr['path']) && ltrim($url_arr['path'] , '/') != 'login/login'){
+                    echo "<script>top.location.href='/login/login'</script>";
+                    return;
+                }
+            }
+
             return $this->render('login', [
                 'model' => $model,
             ]);

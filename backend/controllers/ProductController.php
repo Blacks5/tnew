@@ -73,7 +73,6 @@ class ProductController extends CoreBackendController
         if ($request->getIsPost()) {
             $data['data'] = $request->post();
             $model->load($data, 'data');
-
             if ($model->createProduct()) {
                 return $this->success('添加成功', yii\helpers\Url::toRoute(['product/view', 'id' => $model->p_id]));
             }

@@ -8,6 +8,7 @@
 
 namespace common\models;
 
+use backend\models\YejiSearch;
 use yii;
 use backend\core\CoreBackendModel;
 class RepaymentSearch extends CoreBackendModel
@@ -30,11 +31,13 @@ class RepaymentSearch extends CoreBackendModel
      */
     public function repaymenlist($params)
     {
+        $user = User::getLowerForId();
         $query = Repayment::find()
             ->select(['*'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
-            ->leftJoin(Product::tableName(), 'o_product_id=p_id');
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+            ->where(['in', 'orders.o_user_id', $user]);
         $this->load($params);
         if(!$this->validate()){
             return $query->andwhere('1=2');
@@ -52,6 +55,8 @@ class RepaymentSearch extends CoreBackendModel
             $this->e_time = strtotime($this->e_time . '23:59:59');
             $query->andWhere(['<=', 'r_pre_repay_date', $this->e_time]);
         }
+
+        //var_dump($query->createCommand()->getRawSql());
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
     }
 
@@ -61,11 +66,12 @@ class RepaymentSearch extends CoreBackendModel
      * @return $this
      * @author 涂鸿 <hayto@foxmail.com>
      */
-    public static function repaymenlistbyorderid($order_id)
+    public static function repaymenlistbyorderid($order_id,$field='*')
     {
-        $query = Repayment::find()->select(['*'])->where(['r_orders_id'=>$order_id])
+        $query = Repayment::find()->select([$field])->where(['r_orders_id'=>$order_id])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
     }
+
 }

@@ -34,7 +34,7 @@
             </div>
             <div class="weui-cell__ft"></div>
         </a>
-        <a class="weui-cell weui-cell_access" href="javascript:;">
+        <a class="weui-cell weui-cell_access" href="<?= Yii::$app->getUrlManager()->createUrl(['order/order-list'])?>">
             <div class="weui-cell__hd"><img src="/wechat/img/history_order.png" alt="" style="width:35px;margin-right:15px;display:block"></div>
             <div class="weui-cell__bd">
                 <p>历史订单</p>

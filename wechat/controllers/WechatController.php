@@ -9,64 +9,61 @@
 
 namespace wechat\controllers;
 
-
+use common\models\User;
 use EasyWeChat\Foundation\Application;
+use Yii;
 use yii\web\Controller;
 
-class WechatController extends Controller
-{
-    public $enableCsrfValidation = false;
-    public function actionIndex()
-    {
-        $config = \Yii::$app->params['wechat'];
-        $app = new Application($config);
+/**
+ * 需要授权的页面调用如下方法即可
+ * Wechat::Login(['manage/index']);
+ * $user = \Yii::$app->getSession()->get('wechat_user');
+ */
 
-        $app->server->setMessageHandler(function($message){
-//            var_dump($message);
-            return "您好！欢迎关注!";
-        });
+/**
+ * s-285072.gotocdn.com/manage 这个域名访问
+ *
+ * Class WechatController
+ * @package wechat\controllers
+ * @author too <hayto@foxmail.com>
+ */
+class WechatController extends Controller {
+	public function actionIndex() {
+		$config = \Yii::$app->params['wechat'];
+		$app = new Application($config);
 
-        return $app->server->serve()->send();
-    }
+		$app->server->setMessageHandler(function ($message) {
+			return "您好！欢迎关注";
+		});
 
+		return $app->server->serve()->send();
+	}
 
-    /**
-     * 微信授权回调
-     * @return \yii\web\Response
-     * @author too <hayto@foxmail.com>
-     */
-    public function actionOauthCallback()
-    {
-        $config = \Yii::$app->params['wechat'];
-        $app = new Application($config);
+	// 微信授权回调
+	public function actionOauthCallback() {
+		$session = Yii::$app->session;
 
-        // Overtrue\Socialite\User
-        $user = $app->oauth->user();
-        $session = \Yii::$app->getSession();
-        $session->set('wechat_user', $user);
-//        $user->id
-//        \Yii::$app->getUser()->login();
+		// 获取配置参数
+		$config = Yii::$app->params['wechat'];
 
-        $targetUrl = empty($session->get('target_url'))? '/': $session->get('target_url');
-        return $this->redirect($targetUrl);
-    }
+		// 获取微信用户相关信息
+		if ($wechat_user = (new Application($config))->oauth->user()) {
+			// 保存微信登录信息
+			$session->set('wechat_user', $wechat_user);
 
+			// 检测是否绑定用户信息
+            $sys_user = User::findByWechatOpenid($wechat_user->id);
 
+			if ($sys_user) {
+				// 保存系统相关信息
+				$session->set('sys_user', $sys_user);
 
+				$targetUrl = empty($session->get('target_url')) ? '/' : $session->get('target_url');
 
-    /**
-     * 需要授权的页面
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @author too <hayto@foxmail.com>
-     */
-    /*public function actionTestLogin()
-    {
-        Wechat::Login(['wechat/test-login']);
-
-        $session = \Yii::$app->getSession();
-        $user = $session->get('wechat_user');
-
-        echo "<pre>";
-        var_dump($user);
-    }*/
+				return $this->redirect($targetUrl);
+			} else {
+				return $this->redirect(['login/bind']);
+			}
+		}
+	}
 }

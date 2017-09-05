@@ -18,6 +18,7 @@ use common\models\JzqSign;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\RepaymentSearch;
 use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
@@ -190,10 +191,15 @@ class BorrowController extends CoreBackendController
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 
+            $periodNum = 0;
+            if(RepaymentSearch::repaymenlistbyorderid($order_id)->andwhere(['r_status'=>10])->count() > 3){//判断已还期数是否已满3期
+                $periodNum = 1;//已满三期
+            }
+
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
 //            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'jzq_sign_log'=>$jzq_sign_log]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum, 'jzq_sign_log'=>$jzq_sign_log]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -843,4 +849,273 @@ left join customer on customer.c_id=orders.o_customer_id
             }
         }
     }
+
+    /**
+     * 取消贵宾服务包
+     * @param $order_id 订单id
+     * @return array
+     * @author 皮潇世 <p304363979@163.com>
+     */
+    public function actionCancelVipPack($order_id)
+    {
+        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+        $x = $this->day($data);
+        $rSerialNo = $data[$x]['r_serial_no'];
+        if($data[$x]['r_status'] == 10){
+            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
+        }else{
+            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
+        }
+        $trans = Yii::$app->getDb()->beginTransaction();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        try{
+            $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            if($c1 <= 0){
+                throw new CustomBackendException('处理月供金额失败' , 0);
+            }
+            $sql1 = "update repayment set r_free_pack_fee = 0 where $where";//再处理贵宾服务包金额
+            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
+            if($c2 <= 0){
+                throw new CustomBackendException('处理贵宾服务包金额失败' , 0);
+            }
+            $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
+            if($count > 0){
+                $trans->commit();
+                return ['status' => 1, 'message' => '取消成功'];
+            }else{
+                throw new CustomBackendException('取消失败' , 0);
+            }
+        } catch (CustomBackendException $e) {
+            $trans->rollBack();
+            return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+        } catch (yii\base\Exception $e) {
+            $trans->rollBack();
+            return ['status' => 2, 'message' => '系统错误'];
+        }
+    }
+
+    /**
+     * 取消个人保障计划
+     * @param $order_id 订单id
+     * @return array
+     * @author 皮潇世 <p304363979@163.com>
+     */
+    public function actionCancelPersonalProtection($order_id)
+    {
+        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+        $x = $this->day($data);
+        $rSerialNo = $data[$x]['r_serial_no'];
+        if($data[$x]['r_status'] == 10){
+            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
+        }else{
+            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
+        }
+        $trans = Yii::$app->getDb()->beginTransaction();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        try{
+            $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            if($c1 <= 0){
+                throw new CustomBackendException('处理月供金额失败' , 0);
+            }
+            $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
+            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
+            if($c2 <= 0){
+                throw new CustomBackendException('处理个人保障服务金额失败' , 0);
+            }
+            $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
+            if($count > 0){
+                $trans->commit();
+                return ['status' => 1, 'message' => '取消成功'];
+            }else{
+                throw new CustomBackendException('取消失败' , 0);
+            }
+        } catch (CustomBackendException $e) {
+            $trans->rollBack();
+            return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+        } catch (yii\base\Exception $e) {
+            $trans->rollBack();
+            return ['status' => 2, 'message' => '系统错误'];
+        }
+    }
+
+    /**
+     * 计算剩余应还款额
+     * @param $order_id 订单id
+     * @param $expected 预计还款期数
+     * @return array
+     * @author 皮潇世 <p304363979@163.com>
+     */
+    public function actionCalculationResidualLoan($order_id,$expected)
+    {
+        exit;
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+//            $isFreePackFee = Orders::find()->select('o_is_free_pack_fee')->where(['o_id'=>$order_id])->asArray()->one();
+//            $breachOfContract = 0;
+//            if($isFreePackFee['o_is_free_pack_fee'] == 0){
+//                $breachOfContract = 200;
+//            }
+            $totalPrice = 0;
+            $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+            $x = $this->day($data);
+            if($data[$x]['r_status'] == 10){//当期已还的
+                $data = $this->already($data,$expected);
+            }else {//当期未还的
+
+            }
+
+            var_dump($data);exit;
+//            $month = date('Y-m');
+//            $l = '';
+//            $j = 0;
+//            $j1 = 0;
+//            for($i = 0;$i < count($data);$i++){
+//                if(date('Y-m',$data[$i]['r_pre_repay_date']) == $month && $data[$i]['r_status'] == 1){
+////                    $j = $i;
+//                    $l = $i;
+////                }else if($data[$i]['r_status'] == 1){
+////                    $j1++;
+//                }
+//            }
+//            if($l == ''){
+//                for($i = 0;$i < count($data);$i++){
+//                    if(time() - $data[$j]['r_pre_repay_date'] > 3600*24*3){
+//
+//                    }
+//                }
+//            }else{
+//
+//            }
+//            $totalPrice = 0;
+//            if($l == ''){
+//                if(time() - $data[$j]['r_pre_repay_date'] > 3600*24*3){
+//                    $totalPrice = $data[$j+1]['r_total_repay'];
+//                    if(isset($data[$j+2])){
+//                        for($k = $j+2;$k < count($data) - 3;$k++){
+//                            $totalPrice += $data[$k]['r_principal'];
+//                        }
+//                    }
+//                }else{
+//                    for($k = $j+1;$k < count($data) - 2;$k++){
+//                        $totalPrice += $data[$k]['r_principal'];
+//                    }
+//                }
+//            }else{
+//                if($data[$j]['r_overdue_day'] > 3){
+//                    for($x = 0;$x > count($data);$x++){
+//                        if($x == $j){
+//                            $totalPrice += $data[$x]['r_total_repay'] + ($data[$x]['r_total_repay'] * 0.01 * $data[$x]['r_overdue_day']);
+//                            if(isset($data[$x+1])){
+//                                $totalPrice += $data[$x+1]['r_total_repay'];
+//                            }
+//                            $x++;
+//                        }else if($data[$x]['r_status'] == 1 && $data[$x]['r_overdue_day'] > 3 && $x != $j){
+//                            $totalPrice += $data[$x]['r_total_repay'] + ($data[$x]['r_total_repay'] * 0.01 * $data[$x]['r_overdue_day']);
+//                        }else if($data[$x]['r_status'] == 1 && $data[$x]['r_overdue_day'] == 0 && $x != $j){
+//                            $totalPrice += $data[$x]['r_principal'];
+//                        }
+//                        echo $totalPrice;
+//                    }exit;
+////                    $totalPrice = $data[$j]['r_total_repay'] + ($data[$j]['r_total_repay'] * 0.01 * $data[$j]['r_overdue_day']);
+////                    if(isset($data[$j+1])){
+////                        $totalPrice += $data[$j+1]['r_total_repay'];
+////                        if(isset($data[$j+2])){
+////                            for($k = $j+2;$k < count($data) - 3;$k++){
+////                                $totalPrice += $data[$k]['r_principal'];
+////                            }
+////                        }
+////                    }
+//                }else{
+//                    for($x = 0;$x > count($data);$x++){
+//                        if($x == $j){
+//                            $totalPrice += $data[$x]['r_total_repay'];
+//                            $x++;
+//                        }else if($data[$x]['r_status'] == 1 && $data[$x]['r_overdue_day'] > 3 && $x != $j){
+//                            $totalPrice += $data[$x]['r_total_repay'] + ($data[$x]['r_total_repay'] * 0.01 * $data[$x]['r_overdue_day']);
+//                        }else if($data[$x]['r_status'] == 1 && $data[$x]['r_overdue_day'] == 0 && $x != $j){
+//                            $totalPrice += $data[$x]['r_principal'];
+//                        }
+//
+//                    }
+////                    $totalPrice = $data[$j]['r_total_repay'];
+////                    if(isset($data[$j+1])){
+////                        for($k = $j+1;$k < count($data) - 2;$k++){
+////                            $totalPrice += $data[$k]['r_principal'];
+////                        }
+////                    }
+//                }
+//            }
+//            if($data['r_status'] == 1){
+//                $nowTotalRepay = 0;
+//                if($data['r_overdue_day'] > 3){
+//                    $nowTotalRepay = $data['r_total_repay'];
+//                    $nowSerialNo = $data['r_serial_no'];
+//                    $logic = '>';
+//                }else{
+//
+//                }
+//                RepaymentSearch::repaymenlistbyorderid($order_id,'sum(r_principal) r_principal')->andwhere($logic,'r_serial_no',$nowSerialNo)->andwhere('=','r_status',1)->queryOne();
+//            }
+//
+//            $overdueDay = RepaymentSearch::repaymenlistbyorderid($order_id,'r_overdue_day')->andwhere(['>','r_overdue_day',3])->count();
+
+            try {
+
+                return ['status' => 1, 'message' => '取消订单成功'];
+            } catch (CustomBackendException $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            } catch (yii\base\Exception $e) {
+//                p($e->getMessage());
+                return ['status' => 2, 'message' => '系统错误'];
+            }
+        }
+    }
+
+    //获取当前订单年月对应的期数下标
+    private function day($arr){
+        for($i = 0;$i < count($arr);$i++){
+            if(date('Y-m',$arr[$i]['r_pre_repay_date']) == date('Y-m')){
+                return $i;
+                break;
+            }
+        }
+    }
+
+    //当前期数已还的
+    private function already($arr,$expected = null){
+        $totalPrice = 0;
+        $x = $this->day($arr);
+        if($arr[$x]['r_overdue_day'] > 3){//申请时间超过还款日三天
+            $totalPrice = $arr[$x+1]['r_total_repay'];//下期月供金额
+            if($expected > 1){//选择的提前还款期数超过一期时计算后续期数本金
+
+            }
+
+            for($i = $x+2;$i < count($arr);$i++){
+
+            }
+        }else{//申请时间未超过还款日三天
+
+        }
+    }
+
+    //当前期数未还的
+    private function calculation(){
+
+    }
+
+    //获取未还期数数组
+    private function notYet($arr){
+        $newArr = array();
+        foreach($arr as $k => $v){
+            if($arr[$k]['r_status'] == 1){
+                $newArr[$k] = $arr[$k];
+            }
+        }
+        return $newArr;
+    }
 }
+
+
