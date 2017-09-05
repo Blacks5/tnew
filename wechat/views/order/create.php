@@ -102,7 +102,7 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">自动代扣</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" readonly="readonly" checked="checked">
+                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" checked="checked">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
