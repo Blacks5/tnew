@@ -60,6 +60,13 @@ class OrdersSearch extends CoreCommonModel
             ->leftJoin(Repayment::tableName(). ' repayment', 'repayment.r_orders_id=orders.o_id') // 要统计总还款金额
             ->leftJoin(YijifuLoan::tableName(). ' yijifu_loan', 'yijifu_loan.y_serial_id=orders.o_serial_id') // 查询是否已成功放款给商户
         ;
+
+        if($user = yii::$app->user->identity){
+            if($userList = User::getLowerForId()){
+                $query->andWhere(['in', 'orders.o_user_id', $userList]);
+            }
+        }
+
         if(!$this->validate()){
             return $query->where('1=2');
         }
@@ -83,5 +90,14 @@ class OrdersSearch extends CoreCommonModel
         if($this->start_time) $query->andWhere(['>=', 'o_created_at', strtotime($this->start_time)]);
         if($this->end_time) $query->andWhere(['<=', 'o_created_at', strtotime($this->end_time)]);
         return $query->groupBy(['o_id']); // 避免对应多个商品出现多行
+    }
+
+    public function getOrderId()
+    {
+        $userList = User::getLowerForId();
+
+        $orderId = Orders::find()->select(['o_serial_id'])->where(['in', 'o_user_id'], $userList)->asArray()->column();
+
+        return $orderId;
     }
 }

@@ -3,7 +3,8 @@ $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
     require(__DIR__ . '/params.php'),
-    require(__DIR__ . '/params-local.php')
+    require(__DIR__ . '/params-local.php'),
+    require(__DIR__ . '/operation-log.php')
 );
 
 return [
@@ -25,6 +26,7 @@ return [
 //            '*',
             'borrow/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
             'borrownew/check-product-code', // 检测商品代码是否重复，为了防止分配遗漏，干脆就不检测权限了
+            'user/get-leader', //获取上级领导, 权限太复杂,   放这里了
 
             'login/login',
             'contract/index', // 订单合同页面，Android app里webview用
@@ -36,6 +38,7 @@ return [
 //            'site/sendws', // ws测试页
             'borrow/verify-pass-callback', // 易极付签约回调地址
             'repayment/deduct-callback', // 易极付代扣回调地址
+            'repaymentnew/deduct-callback', // 易极付代扣回调地址(新API)
             'loan/async', // 易极付回调地址
             'jun/callback', // 君子签回调
             /*'jun/a',

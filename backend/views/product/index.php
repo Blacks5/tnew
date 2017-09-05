@@ -59,7 +59,7 @@ use yii\widgets\LinkPager;
                                 <tbody>
                                 <?php foreach ($model as $vo) { ?>
                                     <tr>
-                                        <td><?= $vo['p_name'] ?></td>
+                                        <td><?= $vo['p_name'] ?><span class="text-danger"><?php if($vo['p_is_promotional'] == 1){echo '（促销）';}else{echo '（常规）';} ?></span></td>
                                         <td><?= $vo['p_month_rate'] ?></td>
                                         <td><?= $vo['p_period'] ?></td>
                                         <td><?= $vo['p_free_pack_fee'] ?></td>
@@ -71,9 +71,9 @@ use yii\widgets\LinkPager;
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/view']))) { ?>
                                                 <a class="btn btn-primary btn-xs" href="<?= Url::toRoute(['product/view', 'id' => $vo['p_id']]) ?>"><i class="fa fa-edit"></i>查看</a>
                                             <?php } ?>
-                                            <?php if($vo['p_status'] == 10){ ?>
+                                            <?php if($vo['p_status'] == 10 && Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/freeze']))){ ?>
                                                 <button class="btn btn-success btn-xs freeze-product" data-value="<?= $vo['p_id'] ?>"><i class="fa fa-edit"></i>冻结</button>
-                                            <?php }else if($vo['p_status'] == 1){ ?>
+                                            <?php }else if($vo['p_status'] == 1 && Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/Thaw']))){ ?>
                                                 <button class="btn btn-warning btn-xs thaw-product" data-value="<?= $vo['p_id'] ?>"><i class="fa fa-edit"></i>解冻</button>
                                             <?php } ?>
                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['product/delete']))) { ?>

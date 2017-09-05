@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use common\components\Helper;
+use common\models\RepaymentSearch;
 use common\models\UploadFile;
 use common\models\AllOrdersWithStoreSearch;
 use common\models\Orders;
@@ -119,6 +120,7 @@ class StoresController extends CoreBackendController
             $model->s_photo_six = $model->s_photo_six ? $t->getUrl($model->s_photo_six) : '';
             $model->s_photo_seven = $model->s_photo_seven ? $t->getUrl($model->s_photo_seven) : '';
             $model->s_photo_eight = $model->s_photo_eight ? $t->getUrl($model->s_photo_eight) : '';
+            $model->s_photo_nine = $model->s_photo_nine ? $t->getUrl($model->s_photo_nine) : '';
             $all_sales = User::find()->select(['realname'])
                 ->where(['belong_stores_id' => $id, 'county' => $model->s_county, 'status' => User::STATUS_ACTIVE])
                 ->indexBy('id')->asArray()->column();
@@ -199,17 +201,42 @@ class StoresController extends CoreBackendController
         $this->getView()->title = '商户所有订单';
 
         $model = new AllOrdersWithStoreSearch();
-        $query = $model->search($id, Yii::$app->getRequest()->getQueryParams());
-
-
+        $params = Yii::$app->getRequest()->getQueryParams();
+        $status = '';
+        if(isset($params['AllOrdersWithStoreSearch']['o_status'])){
+            $status = $params['AllOrdersWithStoreSearch']['o_status'];
+        }
+        $query = $model->search($id, $params);
         $querycount = clone $query;
+
+        $totalPriceQuery = $model->totalOrder($id, $params);
+        $totalOrderPrice  = $totalPriceQuery->asArray()->one();
+        $totalData['totalOrderNum'] = $totalPriceQuery->count();
+        $totalData['totalOrderPrice'] = $totalOrderPrice['total_price']?$totalOrderPrice['total_price']:0;
+        $ids = $model->totalOverdueIds($id, $params)->asArray()->all();
+        if(empty($totalData['totalOrderNum'])){
+            $num = 0;
+        }else{
+            $num = count($ids)/$totalData['totalOrderNum'];
+        }
+        $totalData['totalOverdueNum'] = ($num)*100;
+        if(!empty($ids)){
+            $totalOverduePrice = $model->totalOverdue($ids, $params)->asArray()->one();
+        }else{
+            $totalOverduePrice['r_principal'] = 0;
+        }
+        $totalData['totalOverduePrice'] = $totalOverduePrice['r_principal'];
+
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $pages->pageSize = 6;
+        $pages->pageSize = 10;
         $data = $query->orderBy(['o_goods_num' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
         return $this->render('allorders', [
             'sear' => $model->getAttributes(),
+            'status' => $status,
             'model' => $data,
+            'totalData' => $totalData,
             'totalpage' => $pages->pageCount,
             'pages'=>$pages
         ]);
@@ -252,6 +279,10 @@ class StoresController extends CoreBackendController
 
             $request = Yii::$app->getRequest();
             if ($request->getIsPost()) {
+                if(empty($request->post('ss_saleman_id'))){
+                    throw new CustomBackendException('销售人员获取失败');
+                }
+
                 if (!$storedata = Stores::findOne($ss_store_id)) {
                     throw new CustomBackendException('店铺不存在');
                 }
@@ -504,6 +535,11 @@ class StoresController extends CoreBackendController
                 return ['status' => 2, 'message' => '系统错误'];
             }
         }
+    }
+
+    public function actionHasmany()
+    {
+
     }
 
 }

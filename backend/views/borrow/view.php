@@ -505,14 +505,14 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <button class="btn btn-xs btn-default" onclick="window.history.back()">返回上一页</button>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a']))) { ?>
                                 <?php if(!isset($jzq_sign_log['applyNo'])){ ?>
-                                    <button class="btn btn-success" id="jun-a">上传合同</button>
+                                    <button class="btn btn-success" id="jun-a">发起签约</button>
                                 <?php } ?>
                             <?php } ?>
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a7']))) { ?>
-                                <?php if($jzq_sign_log['signStatus'] == 0){ ?>
-                                    <button class="btn btn-success" id="jun-a7">发送签约短信</button>
-                                <?php } ?>
-                            <?php } ?>
+<!--                            --><?php //if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['Jun/a7']))) { ?>
+<!--                                --><?php //if($jzq_sign_log['signStatus'] == 0){ ?>
+<!--                                    <button class="btn btn-success" id="jun-a7">发送签约短信</button>-->
+<!--                                --><?php //} ?>
+<!--                            --><?php //} ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-pass']))) { ?>
                                 <button class="btn btn-success verify-end">终审放款</button>
                             <?php } ?>
@@ -537,6 +537,23 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         </div>
                     </div>
 
+                <?php } ?>
+                <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-3">
+                        <?php if($model['o_status'] == 10 && $periodNum == 1){ ?>
+                        <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price">10000.00</span></div>
+                        <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
+                        <button class="btn btn-danger col-md-offset-1">提前还款</button>
+                        <?php }?>
+                        <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                        <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
+                        <?php }?>
+                        <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                        <button class="btn btn-danger col-md-offset-1" id="cancel_vip_pack">取消贵宾服务包</button>
+                        <?php }?>
+                    </div>
+                </div>
                 <?php } ?>
         </div>
     </div>
@@ -743,6 +760,72 @@ $(".failpic").click(function(){
         },
     }) 
 });
+
+// 计算剩余应还款额
+$("#calculation_residual_loan").click(function(){
+    $.ajax({
+        url: "' . \yii\helpers\Url::toRoute(['borrow/calculation-residual-loan', 'order_id' => $model['o_id']]) . '",
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            if (data.status === 1) {
+                $("#calculation_residual_loan_price").html("");
+            }
+        }
+    });
+});
+
+// 取消贵宾包服务
+$("#cancel_vip_pack").click(function(){
+    layer.confirm("确定要取消贵宾包服务吗？", {title:"取消贵宾包服务", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrow/cancel-vip-pack', 'order_id' => $model['o_id']]) . '",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            }
+            ,
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
+});
+
+// 取消个人保障服务
+$("#cancel_personal_protection").click(function(){
+    layer.confirm("确定要取消个人保障服务吗？", {title:"取消个人保障服务", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrow/cancel-personal-protection', 'order_id' => $model['o_id']]) . '",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            }
+            ,
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
+});
 ');
 ?>
 
@@ -897,7 +980,28 @@ $(".failpic").click(function(){
                 success: function (data) {
                     if (data.status === 1) {
                         return layer.alert(data.message, {icon: data.status}, function(){
-                            return window.location.reload();
+//                            return window.location.reload();
+                            $.ajax({
+                                url: "<?= \yii\helpers\Url::toRoute(['jun/a7', 'order_id' => $model['o_id']]) ?>",
+                                type: "get",
+                                dataType: "json",
+                                data: {},
+                                success: function (data) {
+                                    if (data.status === 1) {
+                                        return layer.alert(data.message, {icon: data.status}, function(){
+                                            return window.location.reload();
+                                        });
+                                    }else{
+                                        return layer.alert(data.message, {icon: data.status});
+                                    }
+                                },
+                                error: function () {
+                                    layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+                                },
+                                complete: function () {
+                                    layer.close(loading);
+                                },
+                            });
                         });
                     }else{
                         return layer.alert(data.message, {icon: data.status});

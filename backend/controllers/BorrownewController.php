@@ -18,6 +18,7 @@ use common\models\JzqSign;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\RepaymentSearch;
 use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
@@ -82,7 +83,7 @@ class BorrownewController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrefuse', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -106,7 +107,7 @@ class BorrownewController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrevoke', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -129,7 +130,7 @@ class BorrownewController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         return $this->render('listverifyrevoke', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -152,7 +153,7 @@ class BorrownewController extends CoreBackendController
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->orderBy(['orders.o_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $query->orderBy(['orders.o_operator_date' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         //统计数据
         $stat_data = [];
         //总金额
@@ -190,10 +191,15 @@ class BorrownewController extends CoreBackendController
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 
+            $periodNum = 0;
+            if(RepaymentSearch::repaymenlistbyorderid($order_id)->andwhere(['r_status'=>10])->count() > 3){//判断已还期数是否已满3期
+                $periodNum = 1;//已满三期
+            }
+
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
 //            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'jzq_sign_log'=>$jzq_sign_log]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -842,6 +848,97 @@ left join customer on customer.c_id=orders.o_customer_id
             } catch (yii\base\Exception $e) {
                 return ['status' => 2, 'message' => '系统错误'];
             }
+        }
+    }
+
+
+    /**
+     * 取消贵宾服务包
+     * @param $order_id 订单id
+     * @return array
+     * @author 皮潇世 <p304363979@163.com>
+     */
+    public function actionCancelVipPack($order_id)
+    {
+        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+        $x = $this->day($data);
+        $rSerialNo = $data[$x]['r_serial_no'];
+        if($data[$x]['r_status'] == 10){
+            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
+        }else{
+            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
+        }
+        $trans = Yii::$app->getDb()->beginTransaction();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        try{
+            $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            if($c1 <= 0){
+                throw new CustomBackendException('处理月供金额失败' , 0);
+            }
+            $sql1 = "update repayment set r_free_pack_fee = 0 where $where";//再处理贵宾服务包金额
+            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
+            if($c2 <= 0){
+                throw new CustomBackendException('处理贵宾服务包金额失败' , 0);
+            }
+            $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
+            if($count > 0){
+                $trans->commit();
+                return ['status' => 1, 'message' => '取消成功'];
+            }else{
+                throw new CustomBackendException('取消失败' , 0);
+            }
+        } catch (CustomBackendException $e) {
+            $trans->rollBack();
+            return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+        } catch (yii\base\Exception $e) {
+            $trans->rollBack();
+            return ['status' => 2, 'message' => '系统错误'];
+        }
+    }
+
+    /**
+     * 取消个人保障计划
+     * @param $order_id 订单id
+     * @return array
+     * @author 皮潇世 <p304363979@163.com>
+     */
+    public function actionCancelPersonalProtection($order_id)
+    {
+        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+        $x = $this->day($data);
+        $rSerialNo = $data[$x]['r_serial_no'];
+        if($data[$x]['r_status'] == 10){
+            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
+        }else{
+            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
+        }
+        $trans = Yii::$app->getDb()->beginTransaction();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        try{
+            $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            if($c1 <= 0){
+                throw new CustomBackendException('处理月供金额失败' , 0);
+            }
+            $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
+            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
+            if($c2 <= 0){
+                throw new CustomBackendException('处理个人保障服务金额失败' , 0);
+            }
+            $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
+            if($count > 0){
+                $trans->commit();
+                return ['status' => 1, 'message' => '取消成功'];
+            }else{
+                throw new CustomBackendException('取消失败' , 0);
+            }
+        } catch (CustomBackendException $e) {
+            $trans->rollBack();
+            return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+        } catch (yii\base\Exception $e) {
+            $trans->rollBack();
+            return ['status' => 2, 'message' => '系统错误'];
         }
     }
 }

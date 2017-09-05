@@ -100,6 +100,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <p class="form-control-static"><?= $model->s_addr; ?></p>
                 </div>
             </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商铺真实经营地址：</label>
+                <div class="col-sm-8">
+                    <p class="form-control-static"><?= $model->s_real_addr; ?></p>
+                </div>
+            </div>
             <!--<div class="hr-line-dashed"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">销售人员：</label>
@@ -169,6 +176,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php if ($model->s_photo_eight) { ?>
                                         <div class="item">
                                             <?= \yii\helpers\Html::img($model->s_photo_eight,
+                                                ['class' => 'img-responsive', 'alt' => '图片']) ?>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if ($model->s_photo_nine) { ?>
+                                        <div class="item">
+                                            <?= \yii\helpers\Html::img($model->s_photo_nine,
                                                 ['class' => 'img-responsive', 'alt' => '图片']) ?>
                                         </div>
                                     <?php } ?>

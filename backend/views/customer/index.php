@@ -32,7 +32,7 @@ use common\models\CustomerSearch;
                                        placeholder="手机号" class="input form-control">
                             </div>
                             <div class="col-sm-2">
-                                <input type="text" name="CustomerSearch[c_customer_id_card]" value="<?=$sear['c_customer_id_card']; ?>"
+                                <input type="text" name="CustomerSearch[c_customer_id_card]" value="<?= $sear['c_customer_id_card']; ?>"
                                        placeholder="身份证" class="input form-control">
                             </div>
 
@@ -123,7 +123,7 @@ use common\models\CustomerSearch;
                                 <?php foreach ($model as $vo) { ?>
                                     <tr>
                                         <td><?= $vo['c_customer_name']; ?></td>
-                                        <td><?= $vo['c_customer_id_card']; ?></td>
+                                        <td><?= yii::$app->user->identity->level>1?substr_replace($vo['c_customer_id_card'], str_repeat('*',10),4,-4):$vo['c_customer_id_card']; ?></td>
                                         <td>
                                             <i class="fa fa-mobile" style="color: #00a2d4;"></i>
                                             <?= $vo['c_customer_cellphone']; ?>

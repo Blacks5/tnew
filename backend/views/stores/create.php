@@ -67,6 +67,7 @@ $form = ActiveForm::begin(
             <?= $form->field($model, 's_gov_name')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_service_charge')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_addr')->textInput(['class' => 'form-control']); ?>
+            <?= $form->field($model, 's_real_addr')->textInput(['class' => 'form-control']); ?>
             <?= $form->field($model, 's_status')->dropDownList([3 => '待激活'])->label('状态'); ?>
             <?= $form->field($model, 's_province')->dropDownList($provinces, ['class' => 'form-control getpcc']); ?>
             <?= $form->field($model, 's_city')->dropDownList([], ['class' => 'form-control getpcc']); ?>
@@ -81,7 +82,7 @@ $form = ActiveForm::begin(
             <?= $form->field($model, 's_photo_six')->hiddenInput(['class' => 'form-control'])->label(''); ?>
             <?= $form->field($model, 's_photo_seven')->hiddenInput(['class'=>'form-control'])->label('');?>
             <?= $form->field($model, 's_photo_eight')->hiddenInput(['class'=>'form-control'])->label('');?>
-
+            <?= $form->field($model, 's_photo_nine')->hiddenInput(['class'=> 'form-control'])->label('');?>
             <div class="form-group field-stores-s_remark required">
                 <label class="control-label col-sm-3" for="stores-s_remark">证件照</label>
                 <div class="col-sm-9">
@@ -183,6 +184,19 @@ $form = ActiveForm::begin(
                             <button id="start_upload_eight" type="button">开始上传</button>
                         </div>
                     </div>
+
+                    <div class="wraper">
+                        <ul id="file-list-nine" class="file-list">
+                            <li>
+                                <p>授权书</p>
+                                <?= Html::img('@web/img/image.png'); ?>
+                            </li>
+                        </ul>
+                        <div class="btn-wraper">
+                            <input type="button" value="选择文件..." id="browse-nine"/>
+                            <button id="start_upload_nine" type="button">开始上传</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -277,6 +291,7 @@ $form = ActiveForm::begin(
         loadinit('six');
         loadinit('seven');
         loadinit('eight');
+        loadinit('nine');
     </script>
 <?php
 $this->registerJs('
