@@ -272,7 +272,7 @@ $(function(){
         $('.weui-uploader__input').uploader({
             url : _this.url,
             allowTypes : ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'],
-            maxSize : 1024*1024,
+            maxSize : 10*1024*1024,
             maxCount : 6,
             maxWidth : 400,
             inputName: 'image',
