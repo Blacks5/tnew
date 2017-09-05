@@ -52,11 +52,7 @@ class OperationLog
 
     public function activeTest()
     {
-        echo 'xx';
-        die();
-        StoresSaleman::findOne();
-        echo 'TEST';
-        die();
+        // TODO.
     }
 
     /**
