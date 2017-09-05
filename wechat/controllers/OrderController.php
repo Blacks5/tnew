@@ -13,6 +13,8 @@ use common\components\CustomCommonException;
 use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\Product;
+use common\models\Repayment;
+use common\models\RepaymentSearch;
 use common\models\Stores;
 use common\models\UploadFile;
 use common\models\User;
@@ -406,6 +408,93 @@ class OrderController extends BaseController {
 		}
 	}
 
+	// 逾期订单
+	public function actionOverdueOrderList() {
+		$request = Yii::$app->request;
+
+		if ($request->isAjax && $request->isGet) {
+			$session = Yii::$app->session;
+
+			// 关键字查询
+			$keywords = $request->get('keywords');
+
+			// 查询订单
+			$model = new RepaymentSearch();
+			$query = $model->repaymenlist([
+				'RepaymentSearch' => [
+					'customer_name' => $keywords,
+				]]);
+
+			$query->andWhere(['>', 'r_overdue_day', 0]);
+			$query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY]);
+
+			// 获取系统用户数据
+			$sys_user = $session->get('sys_user');
+
+			// 特定员工订单
+			$query->andWhere(['o_user_id' => $sys_user->id]);
+
+			// 获取筛选状态
+			$screen_type = $request->get('screen_type');
+
+			// 调取分页
+			$pages = new \yii\data\Pagination(['totalCount' => $query->count()]);
+
+			// 分页数据量
+			$pages->pageSize = Yii::$app->params['page_size'];
+
+			// 获取分页数据
+			$data = $query->orderBy(['orders.o_created_at' => SORT_DESC])
+				->offset($pages->offset)
+				->limit($pages->limit)
+				->asArray()
+				->all();
+
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+
+			$response = [];
+
+			foreach ($data as $item) {
+				$response[] = [
+					'o_id' => $item['o_id'],
+					'o_serial_id' => $item['o_serial_id'],
+					'p_period' => $item['p_period'],
+					'o_total_price' => round($item['o_total_price'], 2),
+					'o_total_deposit' => round($item['o_total_deposit'], 2),
+					'c_customer_name' => $item['c_customer_name'],
+					'c_customer_cellphone' => $item['c_customer_cellphone'],
+					'p_name' => $item['p_name'],
+					'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
+					'r_overdue_day' => $item['r_overdue_day'],
+					'r_overdue_money' => round($item['r_overdue_money'], 2),
+					'r_total_repay' => round($item['r_total_repay'], 2),
+					'r_principal' => round($item['r_principal'], 2),
+					'r_interest' => round($item['r_interest'], 2),
+					'r_serial_no' => $item['r_serial_no'],
+					'r_add_service_fee' => round($item['r_add_service_fee'] , 2),
+					'r_free_pack_fee' => round($item['r_free_pack_fee'] , 2),
+					'r_finance_mangemant_fee' => round($item['r_finance_mangemant_fee'] , 2),
+					'r_customer_management' => round($item['r_customer_management'] , 2),
+					'o_status' => $item['o_status'],
+				];
+			}
+
+			if ($response) {
+				return ['status' => 1, 'message' => 'success', 'data' => [
+					'data' => $response,
+					'page' => $pages->page,
+				]];
+			} else {
+				return ['status' => 0, 'message' => 'no data', 'data' => [
+					'data' => [],
+					'page' => $pages->page,
+				]];
+			}
+		} else {
+			return $this->renderPartial('overdue_list');
+		}
+	}
+
 	// 取消订单
 	public function actionCancelOrder() {
 		$request = Yii::$app->request;
@@ -486,7 +575,10 @@ class OrderController extends BaseController {
 			$order = (new Order)->getOrder([
 				'o_id' => $o_id,
 				'o_user_id' => $sys_user->id,
-				'o_status' => Orders::STATUS_NOT_COMPLETE,
+				'o_status' => [
+					Orders::STATUS_NOT_COMPLETE,
+					Orders::STATUS_WAIT_APP_UPLOAD_AGAIN,
+				],
 			]);
 
 			// 订单
@@ -536,20 +628,25 @@ class OrderController extends BaseController {
 			try {
 				$orderService = new Order;
 
-				$orderService->modifyOrderImage([
-					'o_id' => $o_id,
-					'oi_front_id' => $request->post('oi_front_id', ''),
-					'oi_back_id' => $request->post('oi_back_id', ''),
-					'oi_customer' => $request->post('oi_customer', ''),
-					'oi_front_bank' => $request->post('oi_front_bank', ''),
-					'oi_family_card_one' => $request->post('oi_family_card_one', ''),
-					'oi_family_card_two' => $request->post('oi_family_card_two', ''),
-					'oi_driving_license_one' => $request->post('oi_driving_license_one', ''),
-					'oi_driving_license_two' => $request->post('oi_driving_license_two', ''),
-					'oi_pick_goods' => $request->post('oi_pick_goods', ''),
-					'oi_serial_num' => $request->post('oi_serial_num', ''),
-					'oi_after_contract' => $request->post('oi_after_contract', ''),
-				]);
+				if ($actionType == 'upload') {
+					$orderService->modifyOrderImage([
+						'o_id' => $o_id,
+						'oi_front_id' => $request->post('oi_front_id', ''),
+						'oi_back_id' => $request->post('oi_back_id', ''),
+						'oi_customer' => $request->post('oi_customer', ''),
+						'oi_front_bank' => $request->post('oi_front_bank', ''),
+						'oi_family_card_one' => $request->post('oi_family_card_one', ''),
+						'oi_family_card_two' => $request->post('oi_family_card_two', ''),
+						'oi_driving_license_one' => $request->post('oi_driving_license_one', ''),
+						'oi_driving_license_two' => $request->post('oi_driving_license_two', ''),
+						'oi_pick_goods' => $request->post('oi_pick_goods', ''),
+						'oi_serial_num' => $request->post('oi_serial_num', ''),
+						'oi_after_contract' => $request->post('oi_after_contract', ''),
+						'oi_proxy_prove' => $request->post('oi_proxy_prove', ''),
+					]);
+				} else if ($actionType == 'modify') {
+
+				}
 
 				return ['status' => 1, 'message' => '保存成功'];
 			} catch (CustomCommonException $e) {

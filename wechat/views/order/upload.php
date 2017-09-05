@@ -186,7 +186,7 @@
                         </div>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">还款小提示照(*)</p>
+                                <p class="weui-uploader__title">还款小提示照上传(*)</p>
                                 <div class="weui-uploader__info">0/1</div>
                             </div>
                             <div class="weui-progress">
@@ -202,9 +202,9 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="weui-uploader">
+                        <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">合同图片上传</p>
+                                <p class="weui-uploader__title">授权书上传</p>
                                 <div class="weui-uploader__info">0/1</div>
                             </div>
                             <div class="weui-progress">
@@ -216,10 +216,10 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_after_contract">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_proxy_prove">
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -262,6 +262,7 @@ $(function(){
             oi_pick_goods : "<?=$order['oi_pick_goods']?>",
             oi_serial_num : "<?=$order['oi_serial_num']?>",
             oi_after_contract : "<?=$order['oi_after_contract']?>",
+            oi_proxy_prove : "<?=$order['oi_proxy_prove']?>",
         };
     }
 
