@@ -274,9 +274,8 @@ $(function(){
             allowTypes : ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'],
             maxSize : 10*1024*1024,
             maxCount : 6,
-            maxWidth : 400,
+            maxWidth : 320,
             inputName: 'image',
-            timeout : 10000,
             data : { o_id : _this.data.o_id},
             upToken : "<?=$uptoken ?>",
             success : function(ele , res){
