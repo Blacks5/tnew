@@ -34,7 +34,7 @@ use common\components\Helper;
                     <div class="form-group">
                         <label class="col-sm-3 control-label">营销类型：</label>
                         <div class="col-sm-8">
-                            <p class="form-control-static"><?php if($model['p_market_type'] == 1){ echo '促销';}else{echo '常规';} ?></p>
+                            <p class="form-control-static"><?php if($model['p_is_promotional'] == 1){ echo '促销';}else{echo '常规';} ?></p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

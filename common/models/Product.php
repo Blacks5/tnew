@@ -48,7 +48,7 @@ class Product extends CoreCommonActiveRecord
     public function rules()
     {
         return [
-            [['p_name', 'p_type', 'p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management', 'p_market_type'], 'required', 'except'=>'search'],
+            [['p_name', 'p_type', 'p_period', 'p_month_rate', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management', 'p_is_promotional'], 'required', 'except'=>'search'],
             [['p_period', 'p_free_pack_fee', 'p_status', 'p_created_at', 'p_updated_at'], 'integer'],
             [['p_month_rate', 'p_add_service_fee', 'p_finance_mangemant_fee', 'p_customer_management'], 'number', 'max'=>'100', 'min'=>'0'],
             [['p_name'], 'unique', 'message' => '{attribute}不能重复'],
@@ -83,7 +83,7 @@ class Product extends CoreCommonActiveRecord
             'p_status' => '状态 10 正常 1 禁用',
             'p_created_at' => '添加时间',
             'p_updated_at' => '编辑时间',
-            'p_market_type' => '营销类型',
+            'p_is_promotional' => '营销类型',
         ];
     }
 
