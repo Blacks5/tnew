@@ -46,7 +46,7 @@
                             <div class="col-sm-4">
                                 <select class="form-control" id="m_t">
                                     <option value="1">促销</option>
-                                    <option value="2">常规</option>
+                                    <option value="0">常规</option>
                                 </select>
                                 <input type="hidden" class="form-control" id="m_t_value" name="p_is_promotional" value="1">
                             </div>
