@@ -102,19 +102,19 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">自动代扣</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay">
+                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" readonly="readonly" checked="checked">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">贵宾服务包</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_free_pack_fee">
+                            <input class="weui-switch" type="checkbox" name="o_is_free_pack_fee" checked="checked">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">个人保障服务</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_add_service_fee">
+                            <input class="weui-switch" type="checkbox" name="o_is_add_service_fee" checked="checked">
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -185,7 +185,7 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">身份证地址</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="idcardAddress" placeholder="请选择省市区">
+                            <input class="weui-input" type="text" id="idcardAddress" readonly="readonly" placeholder="请选择省市区">
                             <input type="hidden" class="province_id" name="c_customer_province" value="" />
                             <input type="hidden" class="city_id" name="c_customer_city" value="" />
                             <input type="hidden" class="county_id" name="c_customer_county" value="" />
@@ -287,7 +287,7 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">客户现居地</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="customerAddress" placeholder="请选择省市区">
+                            <input class="weui-input" type="text" id="customerAddress" readonly="readonly" placeholder="请选择省市区">
                             <input type="hidden" class="province_id" name="c_customer_addr_province" value="" />
                             <input type="hidden" class="city_id" name="c_customer_addr_city" value="" />
                             <input type="hidden" class="county_id" name="c_customer_addr_county" value="" />
