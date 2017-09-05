@@ -11,6 +11,7 @@ namespace common\models;
 use backend\models\YejiSearch;
 use yii;
 use backend\core\CoreBackendModel;
+use common\models\User;
 class RepaymentSearch extends CoreBackendModel
 {
     public $c_customer_name;
@@ -42,7 +43,7 @@ class RepaymentSearch extends CoreBackendModel
         }
 
         if(yii::$app->user->identity){
-            if($user = $this->userList()){
+            if($user = User::getLowerForId()){
                 $query->andWhere(['in', 'orders.o_user_id', $user]);
             }
         }
