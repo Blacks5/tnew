@@ -160,14 +160,14 @@ class DataSearch extends CoreBackendModel
         }
 
         return [
-            'principal'   => $this->principal,
-            'interest'    => $this->interest,
-            'repay_pri'   => $this->repay_pri,
-            'repay_int'   => $this->repay_int,
-            'overdue'     => $this->overdue,
-            'repay_ove'   => $this->repay_ove,
-            'freePack'    => $this->freePack,
-            'service'   => $this->service,
+            'principal'   => round($this->principal, 0),
+            'interest'    => round($this->interest, 0),
+            'repay_pri'   => round($this->repay_pri, 0),
+            'repay_int'   => round($this->repay_int, 0),
+            'overdue'     => round($this->overdue, 0),
+            'repay_ove'   => round($this->repay_ove, 0),
+            'freePack'    => round($this->freePack, 0),
+            'service'   => round($this->service, 0),
             'user'      => $userList,
             'sear'      => $this->getAttributes(),
         ];

@@ -416,7 +416,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div>
                             <label class="col-sm-2 control-label">商品类型：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= Yii::$app->params['goods_type'][$v['g_goods_type'] - 1]['t_name']; ?></p>
+                                <p class="form-control-static"><?= Yii::$app->params['goods_type'][$v['g_goods_type']]['t_name']; ?></p>
                             </div>
                         </div>
                         <div>
