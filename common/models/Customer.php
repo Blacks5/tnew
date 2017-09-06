@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use backend\components\CustomBackendException;
 use common\core\CoreCommonActiveRecord;
+use common\tools\yijifu\ReturnMoney;
+use EasyWeChat\Payment\Order;
 
 /**
  * This is the model class for table "customer".
@@ -238,5 +241,55 @@ class Customer extends CoreCommonActiveRecord {
 
 		return $scenarios;
 	}
+
+    /**
+     * 修改银行卡和图片
+     * @param $data
+     * @return bool
+     * @throws CustomBackendException
+     * @author OneStep
+     */
+	public function updateBank($data)
+    {
+        $customer = self::find()->where(['c_id'=>$data['customer_id']])->one();
+        if(empty($customer)){
+            throw new CustomBackendException('客户信息不存在',5);
+        }
+
+        //修改银行卡
+        $customer->c_bank = $data['c_bank'];
+        $old_banknum = $customer->c_banknum;
+        $customer->c_banknum = $data['c_bannum'];
+        if(!$customer->save()){
+            throw new CustomBackendException('修改银行卡失败!');
+        }
+
+        //修改银行卡图片
+        $orderImages = OrderImages::find()->where(['oi_id'=>$data['o_images_id']])->one();
+        if(empty($data['oi_front_bank'])){
+            throw new CustomBackendException('图片不存在');
+        }
+        $orderImages->oi_front_bank = $data['oi_front_bank'];
+        if(!$orderImages->save()){
+            throw new CustomBackendException('修改银行卡失败!');
+        }
+
+        $returnMoney = new ReturnMoney();
+        $yifid = Orders::find()->select(['*'])
+            ->leftJoin(YijifuSign::tableName(), 'yijifu_sign.o_serial_id=orders.o_serial_id')
+            ->leftJoin(OrderImages::tableName(),'order_images.oi_id=orders.o_images_id')
+            ->andWhere(['orders.o_images_id'=>$data['o_images_id']])
+            ->asArray()->one();
+
+        $customer = Customer::find()->where(['c_id'=>$data['customer_id']])->asArray()->one();
+        $returnMoney->modifySign($yifid, $customer);//修改易极付签约
+        return true;
+    }
+
+    public function checkBank()
+    {
+        $returnMoney = new ReturnMoney();
+
+    }
 
 }

@@ -13,6 +13,7 @@ use common\models\Customer;
 use common\models\Orders;
 use common\models\YijifuDeduct;
 use common\models\YijifuSign;
+use common\tools\junziqian\model\UploadFile;
 use yii\db\Query;
 use \yii\httpclient\Client as httpClient;
 
@@ -284,6 +285,69 @@ class ReturnMoney extends AbstractYijifu
             return $response->getData();
         }
         return false;
+    }
+
+    public function modifySign($yijifu, $customer)
+    {
+        $img = new \common\models\UploadFile();
+        $param_arr = [
+            'merchOrderNo'=>$yijifu['merchOrderNo'],
+            'merchContractNo'=>$yijifu['merchContractNo'],
+            'merchContractImageUrl'=>$img->getUrl($yijifu['oi_after_contract']),
+            'realName'=>$customer['c_customer_name'],
+            'certNo'=>$customer['c_customer_id_card'],
+            'bankCardNo'=>$customer['c_bank'],
+            'mobileNo'=>$customer['c_customer_cellphone'],
+            'productName'=>$yijifu['merchOrderNo'].'的订单',
+            'loanAmount'=>'', // 可以不填的，优先不填
+            'totalRepayAmount'=>$yijifu['o_total_price'] - $yijifu['o_total_deposit'],
+            'operateType'=>'MODIFY_SIGN',
+        ];
+
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
+
+        $common = $this->getCommonParams();
+        $param_arr = array_merge($common, $param_arr);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+
+
+        // 发起请求
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+
+        $status = 3; // 接口调用失败
+        $reuturn = false;
+        if($response->getIsOk()){
+            $ret = $response->getData();
+
+            /*ob_start();
+            var_dump($param_arr);
+            echo "=========================\r\n";
+            var_dump($ret);
+            file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);*/
+
+            // 代表接口调用成功
+            if(true === $ret['success']) {
+                $status = 2; // 等待回掉
+                $reuturn = true;
+            }else{
+                throw new CustomCommonException($ret['resultMessage']);
+            }
+        }
+        $operator_id = \Yii::$app->getUser()->getId();
+        // 写签约记录表
+        $yijifu_sign = YijifuSign::find()->where(['o_serial_id'=>$yijifu['o_serial_id']])->one();
+        $yijifu_sign->status = $status;
+        $yijifu_sign->bankName = $ret['bankName'];
+        $yijifu_sign->bankCardType = $ret['bankCardType'];
+        $yijifu_sign->bankCode = $ret['bankCode'];
+
+        if($yijifu_sign->save()){
+            $reuturn = true;
+        }
+
+        return $reuturn;
     }
 
 }
