@@ -181,7 +181,7 @@ class ReturnMoney extends AbstractYijifu
      * @param $merchSignOrderNo  商户签约订单号
      * @param $deductAmount 代扣金额
      */
-    public function deduct($o_serial_id,$repayment_id, $merchSignOrderNo, $deductAmount)
+    public function deduct($o_serial_id,$repayment_id, $merchSignOrderNo, $deductAmount, $url = "/repaymentnew/deduct-callback")
     {
         $this->service = 'fastDeduct';
         $randString = \Yii::$app->getSecurity()->generateRandomString(4);
@@ -191,8 +191,8 @@ class ReturnMoney extends AbstractYijifu
             'merchSignOrderNo'=>$merchSignOrderNo,
             'deductAmount'=>$deductAmount
         ];
-//        $this->notifyUrl = "http://119.23.15.90:8383/repayment/deduct-callback";
-        $this->notifyUrl = \Yii::$app->params['domain'] ."/repaymentnew/deduct-callback";
+        $this->notifyUrl = "http://119.23.15.90:8383/borrow/deduct-callback";
+//        $this->notifyUrl = \Yii::$app->params['domain'] . $url;
         $common_param = $this->getCommonParams();
         $param = array_merge($common_param, $param_arr);
         $param = $this->prepQueryParams($param);

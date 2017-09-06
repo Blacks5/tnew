@@ -941,4 +941,112 @@ left join customer on customer.c_id=orders.o_customer_id
             return ['status' => 2, 'message' => '系统错误'];
         }
     }
+
+
+    /**
+     * 计算剩余应还款额
+     * @param $order_id 订单id
+     * @param $expected 预计还款期数
+     * @return array
+     * @author 皮潇世 <p304363979@163.com>
+     */
+    public function actionCalculationResidualLoan($order_id,$expected)
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->getIsAjax()) {
+            $totalPrice = 0;
+            $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+            $x = $this->day($data);
+            if($data[$x]['r_status'] == 10){//当期已还的
+                $totalPrice = $this->already($data,$expected);
+            }else {//当期未还的
+                $totalPrice = $this->calculation($data,$expected);
+            }
+            $totalPrice = $this->getFloat($totalPrice);
+            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+            return ['status' => 1, 'totalPrice' => $totalPrice];
+        }
+    }
+
+    //获取当前订单年月对应的期数下标
+    private function day($arr){
+        for($i = 0;$i < count($arr);$i++){
+            if(date('Y-m',$arr[$i]['r_pre_repay_date']) == date('Y-m')){
+                return $i;
+                break;
+            }
+        }
+    }
+
+    //当前期数已还的
+    private function already($arr,$expected = 1){
+        $x = $this->day($arr);
+        $totalPrice = $arr[$x+1]['r_total_repay'];//下期月供金额
+
+        if($expected > 1){
+            for($i = ($x + 2);$i < ($expected + $x + 1);$i++){
+                $totalPrice += $arr[$i]['r_principal'];
+            }
+        }
+        return $totalPrice;
+    }
+
+    //当前期数未还的
+    private function calculation($arr,$expected = 1){
+        $x = $this->day($arr);
+        $notYet = $this->notYet($arr);
+        if($arr[$x]['r_serial_no'] == $notYet[0]['r_serial_no']){//当前期数是未还期数的第一期，前面期数无未还期
+            $totalPrice = $arr[$x]['r_total_repay'] + $arr[$x]['r_overdue_money'] + $arr[$x+1]['r_total_repay'];//当前期数月供加逾期金额加下月月供
+            if($expected > 1){
+                for($i = ($x + 2);$i < ($expected + $x + 1);$i++){
+                    $totalPrice += $arr[$i]['r_principal'];
+                }
+            }
+        }else if($arr[$x]['r_serial_no'] > $notYet[0]['r_serial_no']){//判断当前期数不是未还期数的第一期，当前期数之前有逾期未还的期数，要计算对应的逾期金额
+            $totalPrice = $arr[$x]['r_total_repay'] + $arr[$x]['r_overdue_money'] + $arr[$x+1]['r_total_repay'];
+            $y = count($arr) - count($this->notYet($arr));//未还款的第一期下标
+            for($j = $y;$j < $x;$j++){
+                $totalPrice += $arr[$j]['r_total_repay'] + $arr[$j]['r_overdue_money'];
+            }
+            for($k = ($x + 2);$k < count($arr);$k++){
+                $totalPrice += $arr[$k]['r_principal'];
+            }
+        }
+        return $totalPrice;
+    }
+
+    //获取未还期数数组
+    private function notYet($arr){
+        $newArr = array();
+        foreach($arr as $k => $v){
+            if($arr[$k]['r_status'] == 1){
+                $newArr[$k] = $arr[$k];
+            }
+        }
+        return $newArr;
+    }
+
+    //获取小数点后有多少位小数
+    private function getFloatLength($num) {
+        $count = 0;
+
+        $temp = explode ( '.', $num );
+
+        if (sizeof ( $temp ) > 1) {
+            $decimal = end ( $temp );
+            $count = strlen ( $decimal );
+        }
+
+        return $count;
+    }
+
+    //保存小数点后2位小数，超过2位的都进一
+    private function getFloat($num){
+        $numCount = $this->getFloatLength($num);
+        if($numCount > 2){
+            $num += 0.01;
+            $num = floor($num*100)/100;
+        }
+        return $num;
+    }
 }

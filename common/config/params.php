@@ -136,7 +136,8 @@ return [
     ],
 
     "yijifu"=>[
-        "api"=>"https://api.yxtweb.com/gateway.html",
+        "api"=>"http://merchantapi.yijifu.net/gateway.html",
+//        "api"=>"https://api.yxtweb.com/gateway.html",
         "partnerId"=>"20170725020014672546", // 签约的服务平台账号对应的合作方ID
         "privateKey"=>"3eb7482931b0f9b99c032e49cd4546fe" , // 私钥
     ],
