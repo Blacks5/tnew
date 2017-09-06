@@ -560,7 +560,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 </div>
                                 <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price"></span></div>
                                 <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
-                                <button class="btn btn-danger col-md-offset-1">提前还款</button>
+                                <button class="btn btn-danger col-md-offset-1" id="prepayment">提前还款</button>
                             <?php }?>
                             <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
                                 <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
