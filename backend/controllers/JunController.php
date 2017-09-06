@@ -176,7 +176,6 @@ class JunController extends CoreBackendController
                     $junziqian = \Yii::$app->params['junziqian'];
                     $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
                     $responseJson = json_decode($response);
-                    var_dump($responseJson);exit;
                     //echo $responseJson->applyNo;
                     if($responseJson->success){
                         //上传成功,写记录表
