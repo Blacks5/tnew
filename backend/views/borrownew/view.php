@@ -516,7 +516,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 <!--                                    <button class="btn btn-success" id="jun-a7">发送签约短信</button>-->
 <!--                                --><?php //} ?>
 <!--                            --><?php //} ?>
-                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-pass']))) { ?>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrownew/verify-pass']))) { ?>
                                 <button class="btn btn-success verify-end">终审放款</button>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/verify-cancel']))) { ?>
