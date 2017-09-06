@@ -963,12 +963,12 @@ left join customer on customer.c_id=orders.o_customer_id
         if ($request->getIsAjax()) {
             $totalPrice = 0;
             $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
-            if(!empty($data)){
-                $x = $this->day($data);
-                if($data[$x]['r_status'] == 10){//当期已还的
-                    $totalPrice = $this->already($data,$expected);
-                }else {//当期未还的
-                    $totalPrice = $this->calculation($data,$expected);
+            $x = $this->day($data);
+            if(!empty($x)) {
+                if ($data[$x]['r_status'] == 10) {//当期已还的
+                    $totalPrice = $this->already($data, $expected);
+                } else {//当期未还的
+                    $totalPrice = $this->calculation($data, $expected);
                 }
                 $totalPrice = $this->getFloat($totalPrice);
             }
@@ -979,12 +979,14 @@ left join customer on customer.c_id=orders.o_customer_id
 
     //获取当前订单年月对应的期数下标
     private function day($arr){
+        $x = 0;
         for($i = 0;$i < count($arr);$i++){
             if(date('Y-m',$arr[$i]['r_pre_repay_date']) == date('Y-m')){
-                return $i;
+                $x = $i;
                 break;
             }
         }
+        return $x;
     }
 
     //当前期数已还的
