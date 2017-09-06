@@ -411,16 +411,15 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <div class="hr-line-dashed"></div>
 
                 <!--商品信息-->
+                <?php 
+                $goods_types = array_combine(array_column(\Yii::$app->params['goods_type'], 't_id') , array_column(\Yii::$app->params['goods_type'], 't_name'));
+                ?>
                 <?php foreach ($goods_data as $v) { ?>
                     <div class="form-group">
                         <div>
                             <label class="col-sm-2 control-label">商品类型：</label>
                             <div class="col-sm-2">
-                                <?php foreach (\Yii::$app->params['goods_type'] as $item) { ?>
-                                    <?php if($item['t_id'] == $v['g_goods_type']){ ?>
-                                        <p class="form-control-static"><?= $item['t_name']; ?></p>
-                                    <?php } ?>
-                                <? } ?>
+                                <p class="form-control-static"><?= $goods_types[$v['g_goods_type']]; ?></p>
                             </div>
                         </div>
                         <div>
