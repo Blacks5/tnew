@@ -197,8 +197,10 @@ class BorrowController extends CoreBackendController
             }
             $notYet = Yii::$app->getDb()->createCommand("select * from repayment where r_status = 1 and r_orders_id = $order_id")->queryAll();
             $allPeriods = 0;
-            if($notYet[0]['r_overdue_money'] > 0){
-                $allPeriods = 1;
+            if(!empty($notYet)){
+                if($notYet[0]['r_overdue_money'] > 0){
+                    $allPeriods = 1;
+                }
             }
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
