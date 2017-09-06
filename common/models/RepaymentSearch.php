@@ -11,6 +11,7 @@ namespace common\models;
 use backend\models\YejiSearch;
 use yii;
 use backend\core\CoreBackendModel;
+use common\models\User;
 class RepaymentSearch extends CoreBackendModel
 {
     public $c_customer_name;
@@ -31,20 +32,23 @@ class RepaymentSearch extends CoreBackendModel
      */
     public function repaymenlist($params)
     {
-        $user = User::getLowerForId();
         $query = Repayment::find()
             ->select(['*'])
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
-            ->leftJoin(Product::tableName(), 'o_product_id=p_id')
-            ->where(['in', 'orders.o_user_id', $user]);
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id');
         $this->load($params);
         if(!$this->validate()){
             return $query->andwhere('1=2');
         }
 
-        $query
-            ->andFilterWhere(['like', 'c_customer_name', $this->c_customer_name])
+        if(!yii::$app->session->get('sys_user')){
+            if($user = User::getLowerForId()){
+                $query->andWhere(['in', 'orders.o_user_id', $user]);
+            }
+        }
+
+        $query->andFilterWhere(['like', 'c_customer_name', $this->c_customer_name])
             ->andFilterWhere(['like', 'c_customer_id_card', $this->c_customer_id_card])
             ->andFilterWhere(['like', 'c_customer_cellphone', $this->c_customer_cellphone]);
         if (!empty($this->s_time)) {

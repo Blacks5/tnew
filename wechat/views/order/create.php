@@ -14,7 +14,7 @@
     <div class="swiper-container commit-order-container">
         <div class="swiper-wrapper">
             <!--商品信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -69,7 +69,7 @@
             <!--商品信息end-->
 
             <!--订单信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -102,19 +102,19 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">自动代扣</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay">
+                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" checked="checked" disabled="disabled">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">贵宾服务包</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_free_pack_fee">
+                            <input class="weui-switch" type="checkbox" name="o_is_free_pack_fee" checked="checked">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">个人保障服务</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_add_service_fee">
+                            <input class="weui-switch" type="checkbox" name="o_is_add_service_fee" checked="checked">
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -128,7 +128,7 @@
             <!--订单信息end-->
             
             <!--客户基本信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -176,16 +176,16 @@
                             <input class="weui-input" type="text" name="c_customer_id_card_endtime" placeholder="请输入身份证号">
                         </div>
                     </div>
-                    <div class="weui-cell weui-cell_switch">
+<!--                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">身份证过期时间是否永久</div>
                         <div class="weui-cell__ft">
                             <input class="weui-switch" type="checkbox" name="c_customer_id_card_endtime_status">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">身份证地址</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="idcardAddress" placeholder="请选择省市区">
+                            <input class="weui-input" type="text" id="idcardAddress" readonly="readonly" placeholder="请选择省市区">
                             <input type="hidden" class="province_id" name="c_customer_province" value="" />
                             <input type="hidden" class="city_id" name="c_customer_city" value="" />
                             <input type="hidden" class="county_id" name="c_customer_county" value="" />
@@ -287,7 +287,7 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">客户现居地</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="customerAddress" placeholder="请选择省市区">
+                            <input class="weui-input" type="text" id="customerAddress" readonly="readonly" placeholder="请选择省市区">
                             <input type="hidden" class="province_id" name="c_customer_addr_province" value="" />
                             <input type="hidden" class="city_id" name="c_customer_addr_city" value="" />
                             <input type="hidden" class="county_id" name="c_customer_addr_county" value="" />
@@ -304,7 +304,7 @@
             <!--客户基本信息end-->
 
             <!--客户单位信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -388,7 +388,7 @@
             <!--客户单位信息end-->
 
             <!--客户其他联系人信息begin-->
-            <div class="swiper-slide">
+            <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep5" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                     <header class='demos-header'>
                         <h1 class="demos-title">提交订单</h1>
@@ -588,8 +588,10 @@
             });
 
             // 时间选择器
+            var endtime = _this.localGet('c_customer_id_card_endtime');
+                endtime =  endtime ? endtime : '2020-01-01';
             $('input[name=c_customer_id_card_endtime]').calendar({
-                value : [_this.localGet('c_customer_id_card_endtime')],
+                value : [endtime],
                 onChange : function(p, values, displayValues){
                     $(this).val(values[0]);
                     _this.localSet('c_customer_id_card_endtime' , values[0]);
@@ -624,6 +626,9 @@
                 var val = $(this).is(':checked') ? 1 : 0;
                 _this.localSet(key , val);
             });
+
+            // 初始化
+            _this.localSet('o_is_auto_pay' , 1);
         }
 
         // 初始化本地存储数据

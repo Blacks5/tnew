@@ -21,7 +21,7 @@ class Brhelper {
 	// api code
 	public $apicode;
 	// tokenid cache time
-	private $expire = 3600;
+	private $expire = 3599;
 	// after request fail retry times
 	private $retry = 1;
 	// retried times
@@ -34,7 +34,8 @@ class Brhelper {
 	 */
 	public function getTokenId($force = false) {
 		// 获取链接
-		$url = YII_ENV === 'prod' ? self::LOGIN_API_PRODUCE : self::LOGIN_API_DEVELOP;
+		// $url = YII_ENV === 'prod' ? self::LOGIN_API_PRODUCE : self::LOGIN_API_DEVELOP;
+		$url = self::LOGIN_API_PRODUCE;
 
 		// 缓存KEY
 		$key = md5(YII_ENV . ':' . $this->username . ':' . $this->apicode);
@@ -70,12 +71,13 @@ class Brhelper {
 	 */
 	public function check($data = []) {
 		// 获取tokenid
-		if (!$tokenid = $this->getTokenId(true)) {
+		if (!$tokenid = $this->getTokenId()) {
 			return false;
 		}
 
 		// url
-		$url = YII_ENV === 'prod' ? self::HAINA_API_PRODUCE : self::HAINA_API_DEVELOP;
+		// $url = YII_ENV === 'prod' ? self::HAINA_API_PRODUCE : self::HAINA_API_DEVELOP;
+		$url = self::HAINA_API_PRODUCE;
 
 		// 数据
 		$data = json_encode([

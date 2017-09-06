@@ -125,6 +125,11 @@ use yii\helpers\Url;
                                                                     还款
                                                                 </button>
                                                             <?php } ?>
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/update-repay-time']))) { ?>
+                                                                <a  class="btn btn-danger btn-xs" <?= $_v['can_update_time']==1?'href="'.Url::toRoute(["/repayment/update-repay-time","order_id"=>$_v["o_id"]]).'"':"disabled"?>>
+                                                                    <i class="fa fa-folder"></i>修改还款日期
+                                                                </a>
+                                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
@@ -184,6 +189,7 @@ $(".repay").click(function(env){
     });
     
 });
+    
 ');
         ?>
         <script>
@@ -195,4 +201,5 @@ $(".repay").click(function(env){
                 format: "yyyy-mm-dd",
                 todayHighlight: true
             });
+
         </script>

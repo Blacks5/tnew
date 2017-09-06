@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use common\components\Helper;
+use common\models\Repayment;
 use common\models\RepaymentSearch;
 use common\models\UploadFile;
 use common\models\AllOrdersWithStoreSearch;
