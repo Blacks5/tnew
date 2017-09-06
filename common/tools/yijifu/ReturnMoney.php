@@ -292,8 +292,8 @@ class ReturnMoney extends AbstractYijifu
         $img = new \common\models\UploadFile();
         $param_arr = [
             'service' => 'fastSign',
-            'merchOrderNo'=>$yijifu['merchOrderNo'],
-            'merchContractNo'=>$yijifu['merchContractNo']. mt_rand(1000,9000),
+            'merchOrderNo'=>$yijifu['merchOrderNo']. mt_rand(1000,9000),
+            'merchContractNo'=>$yijifu['merchContractNo'],
             'merchContractImageUrl'=>$img->getUrl($yijifu['oi_after_contract']),
             'realName'=>$customer['c_customer_name'],
             'certNo'=>$customer['c_customer_id_card'],
