@@ -267,6 +267,7 @@ class JunController extends CoreBackendController
                         $requestObj->signNotifyType=SignNotifyRequest::$NOTIFYTYPE_SIGN;
 
                         $junziqian = \Yii::$app->params['junziqian'];
+                        var_dump($junziqian);exit;
                         $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
                         //以下为返回的一些处理
                         $responseJson=json_decode($response);
