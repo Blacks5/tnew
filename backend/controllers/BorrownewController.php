@@ -191,15 +191,22 @@ class BorrownewController extends CoreBackendController
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 
-            $periodNum = 0;
-            if(RepaymentSearch::repaymenlistbyorderid($order_id)->andwhere(['r_status'=>10])->count() > 3){//判断已还期数是否已满3期
+//            $periodNum = 0;
+//            if(RepaymentSearch::repaymenlistbyorderid($order_id)->andwhere(['r_status'=>10])->count() > 3){//判断已还期数是否已满3期
                 $periodNum = 1;//已满三期
-            }
+//            }
+            $notYet = Yii::$app->getDb()->createCommand("select * from repayment where r_status = 1 and r_orders_id = $order_id")->queryAll();
+            $allPeriods = 0;
+//            if(!empty($notYet)){
+//                if($notYet[0]['r_overdue_money'] > 0){
+//                    $allPeriods = 1;
+//                }
+//            }
 
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
 //            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log, 'not_yet_count'=>count($notYet), 'all_periods'=>$allPeriods]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
