@@ -47,6 +47,8 @@ class OrdersHelper
         $total_price = 0; // 总金额
         $total_deposit = 0; // 总首付
         $goods_num = 0; // 订单包含的商品数
+        $total_service = 0; //订单服务费
+        $total_inquiry = 0; //订单查询费
         // 构造商品信息数组 todo 差个order_id
 
         $columns_goods = ['g_goods_name', 'g_goods_models', 'g_goods_price', 'g_goods_type', 'g_goods_deposit', 'g_order_id'];
@@ -69,6 +71,8 @@ class OrdersHelper
             if(0 > $params['g_goods_deposit'][$n]){
                 throw new CustomApiException('首付金额异常');
             }
+
+
             $data_goods[$n][]  = $params['g_goods_name'][$n];
             $data_goods[$n][]  = $params['g_goods_models'][$n];
             $data_goods[$n][]  = $params['g_goods_price'][$n];
@@ -130,6 +134,10 @@ class OrdersHelper
                 throw new CustomApiException('用户写入失败');
             }
 
+            //总金额增加商户服务费和查询费
+            //$total_price = $this->getALlTotal($total_price);
+
+
             // 3写orders表 todo 差个customer_id
             $ordersModel = new Orders();
             $ordersModel->load($data, 'data');
@@ -174,6 +182,12 @@ class OrdersHelper
         }
 
 
+
+    }
+
+
+    private function getALlTotal($total_price, $serial_total)
+    {
 
     }
 
