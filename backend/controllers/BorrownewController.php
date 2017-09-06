@@ -964,7 +964,7 @@ left join customer on customer.c_id=orders.o_customer_id
             $totalPrice = 0;
             $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
             $x = $this->day($data);
-            if(!empty($x)) {
+            if($x >= 0) {
                 if ($data[$x]['r_status'] == 10) {//当期已还的
                     $totalPrice = $this->already($data, $expected);
                 } else {//当期未还的
