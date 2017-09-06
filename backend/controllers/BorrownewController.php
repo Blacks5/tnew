@@ -963,13 +963,15 @@ left join customer on customer.c_id=orders.o_customer_id
         if ($request->getIsAjax()) {
             $totalPrice = 0;
             $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
-            $x = $this->day($data);
-            if($data[$x]['r_status'] == 10){//当期已还的
-                $totalPrice = $this->already($data,$expected);
-            }else {//当期未还的
-                $totalPrice = $this->calculation($data,$expected);
+            if(!empty($data)){
+                $x = $this->day($data);
+                if($data[$x]['r_status'] == 10){//当期已还的
+                    $totalPrice = $this->already($data,$expected);
+                }else {//当期未还的
+                    $totalPrice = $this->calculation($data,$expected);
+                }
+                $totalPrice = $this->getFloat($totalPrice);
             }
-            $totalPrice = $this->getFloat($totalPrice);
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             return ['status' => 1, 'totalPrice' => $totalPrice];
         }
