@@ -329,7 +329,7 @@ class ReturnMoney extends AbstractYijifu
             file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);*/
 
             // 代表接口调用成功
-            if(true === $ret['EXECUTE_SUCCESS']) {
+            if(true === $ret['success']) {
                 $status = 2; // 等待回掉
                 $reuturn = true;
             }else{
