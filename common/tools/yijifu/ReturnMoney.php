@@ -329,7 +329,7 @@ class ReturnMoney extends AbstractYijifu
             file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);*/
 
             // 代表接口调用成功
-            if(true === $ret['success']) {
+            if(true === $ret['EXECUTE_SUCCESS']) {
                 $status = 2; // 等待回掉
                 $reuturn = true;
             }else{
@@ -340,9 +340,7 @@ class ReturnMoney extends AbstractYijifu
         // 写签约记录表
         $yijifu_sign = YijifuSign::find()->where(['o_serial_id'=>$yijifu['o_serial_id']])->one();
         $yijifu_sign->status = $status;
-        $yijifu_sign->bankName = $ret['bankName'];
-        $yijifu_sign->bankCardType = $ret['bankCardType'];
-        $yijifu_sign->bankCode = $ret['bankCode'];
+        $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];
 
         if($yijifu_sign->save()){
             $reuturn = true;
