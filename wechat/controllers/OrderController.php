@@ -211,7 +211,7 @@ class OrderController extends BaseController {
 			$sys_user = $session->get('sys_user');
 
 			// 特定员工订单
-			$query = $query->andWhere(['o_user_id' => $sys_user->id]);
+			// $query = $query->andWhere(['o_user_id' => $sys_user->id]);
 
 			// 获取筛选状态
 			$screen_type = $request->get('screen_type');
@@ -288,6 +288,7 @@ class OrderController extends BaseController {
 					'p_name' => $item['p_name'],
 					'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
 					'o_status' => $item['o_status'],
+					'o_operator_remark' => $item['o_operator_remark'],
 				];
 			}
 
@@ -471,10 +472,10 @@ class OrderController extends BaseController {
 					'r_principal' => round($item['r_principal'], 2),
 					'r_interest' => round($item['r_interest'], 2),
 					'r_serial_no' => $item['r_serial_no'],
-					'r_add_service_fee' => round($item['r_add_service_fee'] , 2),
-					'r_free_pack_fee' => round($item['r_free_pack_fee'] , 2),
-					'r_finance_mangemant_fee' => round($item['r_finance_mangemant_fee'] , 2),
-					'r_customer_management' => round($item['r_customer_management'] , 2),
+					'r_add_service_fee' => round($item['r_add_service_fee'], 2),
+					'r_free_pack_fee' => round($item['r_free_pack_fee'], 2),
+					'r_finance_mangemant_fee' => round($item['r_finance_mangemant_fee'], 2),
+					'r_customer_management' => round($item['r_customer_management'], 2),
 					'o_status' => $item['o_status'],
 				];
 			}
