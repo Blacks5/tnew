@@ -196,7 +196,6 @@ class ReturnMoney extends AbstractYijifu
         $common_param = $this->getCommonParams();
         $param = array_merge($common_param, $param_arr);
         $param = $this->prepQueryParams($param);
-
         $client = new httpClient();
         $response = $client->post($this->api, $param)->send();
 

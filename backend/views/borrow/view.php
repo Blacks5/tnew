@@ -541,7 +541,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                 <div class="form-group">
                     <div class="col-sm-8 col-sm-offset-3">
-                        <?php if($model['o_status'] == 10 && $periodNum == 1){ ?>
+<!--                        --><?php //if($model['o_status'] == 10 && $periodNum == 1){ ?>
                         <div>
                             <div class="col-md-2">提前还款期数：</div>
                             <select class="col-md-2" id="period_num">
@@ -557,7 +557,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price"></span></div>
                         <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
                         <button class="btn btn-danger col-md-offset-1" id="prepayment">提前还款</button>
-                        <?php }?>
+<!--                        --><?php //}?>
                         <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
                         <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
                         <?php }?>
@@ -790,6 +790,7 @@ $("#calculation_residual_loan").click(function(){
 
 // 提前还款操作
 $("#prepayment").click(function(){
+    $("#calculation_residual_loan").trigger("click");
     layer.confirm("确定要提前还款" + period_num + "期吗？", {title:"确定提前还款", icon:3}, function(index){
         var period_num = $("#period_num").val();
         var price = $("#calculation_residual_loan_price").html();
