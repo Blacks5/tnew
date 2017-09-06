@@ -192,7 +192,22 @@ class CalInterest
                 $service = $total *0.05;
             }
         }
+
+        $this->updateOrders($orderInfo, $service);
+
         $allTotal = $total + $service + $this->inquiry;
         return $allTotal;
+    }
+
+    protected function updateOrders($orderInfo, $service)
+    {
+        $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();
+        $order->o_service_fee = $service;
+        $order->o_inquiry_fee = $this->inquiry;
+        if($order->save()){
+            return true;
+        }else{
+            throw new CustomBackendException('修改服务费和查询费失败', 5);
+        }
     }
 }
