@@ -211,7 +211,7 @@ class OrderController extends BaseController {
 			$sys_user = $session->get('sys_user');
 
 			// 特定员工订单
-			// $query = $query->andWhere(['o_user_id' => $sys_user->id]);
+			$query = $query->andWhere(['o_user_id' => $sys_user->id]);
 
 			// 获取筛选状态
 			$screen_type = $request->get('screen_type');
