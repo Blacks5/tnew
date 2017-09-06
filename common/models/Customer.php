@@ -259,7 +259,7 @@ class Customer extends CoreCommonActiveRecord {
         //修改银行卡
         $customer->c_bank = $data['c_bank'];
         $old_banknum = $customer->c_banknum;
-        $customer->c_banknum = $data['c_bannum'];
+        $customer->c_banknum = $data['c_banknum'];
         if(!$customer->save()){
             throw new CustomBackendException('修改银行卡失败!');
         }

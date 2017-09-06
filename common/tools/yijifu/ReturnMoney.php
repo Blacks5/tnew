@@ -291,14 +291,15 @@ class ReturnMoney extends AbstractYijifu
     {
         $img = new \common\models\UploadFile();
         $param_arr = [
+            'service' => 'fastSign',
             'merchOrderNo'=>$yijifu['merchOrderNo'],
-            'merchContractNo'=>$yijifu['merchContractNo'],
+            'merchContractNo'=>$yijifu['merchContractNo']. mt_rand(1000,9000),
             'merchContractImageUrl'=>$img->getUrl($yijifu['oi_after_contract']),
             'realName'=>$customer['c_customer_name'],
             'certNo'=>$customer['c_customer_id_card'],
-            'bankCardNo'=>$customer['c_bank'],
+            'bankCardNo'=>$customer['c_banknum'],
             'mobileNo'=>$customer['c_customer_cellphone'],
-            'productName'=>$yijifu['merchOrderNo'].'的订单',
+            'productName'=>$customer['c_customer_name'].'的订单',
             'loanAmount'=>'', // 可以不填的，优先不填
             'totalRepayAmount'=>$yijifu['o_total_price'] - $yijifu['o_total_deposit'],
             'operateType'=>'MODIFY_SIGN',
