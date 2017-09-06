@@ -28,9 +28,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="g_goods_type">
                                 <option value="">请选择商品类型</option>
-                                <?php foreach ($data['goods_type'] as $k=>$v){ ?>
-                                    <option value="<?= $v['t_id']; ?>"><?= $v['t_name']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['goods_type'] as $k => $v) {?>
+                                    <option value="<?=$v['t_id'];?>"><?=$v['t_name'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -82,9 +82,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="o_store_id">
                                 <option value="">请选择商铺</option>
-                                <?php foreach ($data['stores'] as $k=>$v){ ?>
-                                    <option value="<?= $v['s_id']; ?>"><?= $v['s_name']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['stores'] as $k => $v) {?>
+                                    <option value="<?=$v['s_id'];?>"><?=$v['s_name'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -93,9 +93,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="o_product_id">
                                 <option value="">请选择产品</option>
-                                <?php foreach ($data['products'] as $k=>$v){ ?>
-                                    <option value="<?= $v['p_id']; ?>"><?= $v['p_name']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['products'] as $k => $v) {?>
+                                    <option value="<?=$v['p_id'];?>"><?=$v['p_name'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                 </form>
             </div>
             <!--订单信息end-->
-            
+
             <!--客户基本信息begin-->
             <div class="swiper-slide swiper-no-swiping">
                 <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
@@ -140,9 +140,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="c_bank">
                                 <option value="">请选择开户银行</option>
-                                <?php foreach ($data['bank_list'] as $k=>$v){ ?>
-                                    <option value="<?= $v['bank_id']; ?>"><?= $v['bank_name']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['bank_list'] as $k => $v) {?>
+                                    <option value="<?=$v['bank_id'];?>"><?=$v['bank_name'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -226,9 +226,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="c_family_marital_status">
                                 <option value="">请选择婚姻状况</option>
-                                <?php foreach ($data['marital_status'] as $k=>$v){ ?>
-                                    <option value="<?= $v['marital_id']; ?>"><?= $v['marital_str']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['marital_status'] as $k => $v) {?>
+                                    <option value="<?=$v['marital_id'];?>"><?=$v['marital_str'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -249,9 +249,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="c_family_house_info">
                                 <option value="">请选择住房状况</option>
-                                <?php foreach ($data['house_info'] as $k=>$v){ ?>
-                                    <option value="<?= $v['house_info_id']; ?>"><?= $v['house_info_str']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['house_info'] as $k => $v) {?>
+                                    <option value="<?=$v['house_info_id'];?>"><?=$v['house_info_str'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -272,9 +272,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="c_kinship_relation">
                                 <option value="">请选择亲属关系</option>
-                                <?php foreach ($data['kinship'] as $k=>$v){ ?>
-                                    <option value="<?= $v['kinship_id']; ?>"><?= $v['kinship_str']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['kinship'] as $k => $v) {?>
+                                    <option value="<?=$v['kinship_id'];?>"><?=$v['kinship_str'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -323,9 +323,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="c_customer_jobs_industry">
                                 <option value="">请选择所属行业</option>
-                                <?php foreach ($data['company_kind'] as $k=>$v){ ?>
-                                    <option value="<?= $v['company_kind_id']; ?>"><?= $v['company_kind_name']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['company_kind'] as $k => $v) {?>
+                                    <option value="<?=$v['company_kind_id'];?>"><?=$v['company_kind_name'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -334,9 +334,9 @@
                         <div class="weui-cell__bd">
                             <select class="weui-select" name="c_customer_jobs_type">
                                 <option value="">请选择公司性质</option>
-                                <?php foreach ($data['company_type'] as $k=>$v){ ?>
-                                    <option value="<?= $v['company_type_id']; ?>"><?= $v['company_type_name']; ?></option>
-                                <?php } ?>
+                                <?php foreach ($data['company_type'] as $k => $v) {?>
+                                    <option value="<?=$v['company_type_id'];?>"><?=$v['company_type_name'];?></option>
+                                <?php }?>
                             </select>
                         </div>
                     </div>
@@ -425,10 +425,14 @@
         </div>
     </div>
 
-    <div class="weui-btn-next">
+<!--     <div class="weui-btn-next">
         <div class="weui-btn-area">
             <a class="weui-btn weui-btn_primary" href="javascript:" id="nextStep">下一步（<span id="currStep">1</span>/<span id="totalStep">1</span>）</a>
         </div>
+    </div> -->
+    <div class="weui-navbar-bar">
+        <div class="weui-navbar__item weui_bar__item_on" id="prevStep">上一步</div>
+        <div class="weui-navbar__item" id="nextStep">下一步（<span id="currStep">1</span>/<span id="totalStep">1</span>）</div>
     </div>
 </body>
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
@@ -441,13 +445,13 @@
 <script>
     $(function() {
         FastClick.attach(document.body);
-        
+
         // document.body.addEventListener('touchmove' , function(e){
         //     e.preventDefault();
         // } , false);
 
         // city json数据包
-        var city = <?= $data_json; ?>;
+        var city = <?=$data_json;?>;
 
         // 当前页面类
         function Page(){
@@ -493,6 +497,10 @@
                 onSlideChangeEnd : function(swiper){
                     var currStep = swiper.activeIndex;
                     switch(currStep){
+                        case 0:     // 第1步
+                            _this.checkStep1(currStep);
+                        break;
+
                         case 1:     // 第2步
                             _this.checkStep2(currStep);
                         break;
@@ -627,6 +635,11 @@
                 _this.localSet(key , val);
             });
 
+            // 监听上一步
+            $('#prevStep').bind('click' , function(){
+                _this.swiper.slidePrev();
+            });
+
             // 初始化
             _this.localSet('o_is_auto_pay' , 1);
         }
@@ -639,7 +652,7 @@
                     if(key == 'g_goods_type'){
                         $("input[name="+key+"]").val(data[key]);
                     }
-                    $("select[name="+key+"]").find("option[value='"+data[key]+"']").attr("selected",true); 
+                    $("select[name="+key+"]").find("option[value='"+data[key]+"']").attr("selected",true);
                 }else if(-1 !== $.inArray(key , this.checkboxs)){
                     if(data[key] == 1){
                         $("input[name="+key+"]").attr('checked' , true);
@@ -910,11 +923,11 @@
         Page.prototype.ajaxCommit = function(){
             var _this = this;
             var data = $.extend(
-                    {} , 
-                    $('#formStep1').serializeObject() , 
-                    $('#formStep2').serializeObject() , 
-                    $('#formStep3').serializeObject() , 
-                    $('#formStep4').serializeObject() , 
+                    {} ,
+                    $('#formStep1').serializeObject() ,
+                    $('#formStep2').serializeObject() ,
+                    $('#formStep3').serializeObject() ,
+                    $('#formStep4').serializeObject() ,
                     $('#formStep5').serializeObject()
                 );
 
