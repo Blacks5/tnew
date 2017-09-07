@@ -91,7 +91,7 @@ class User extends Component
      *
      * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
      */
-    public $loginUrl = ['login/login'];
+    public $loginUrl = ['site/login'];
     /**
      * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
      * @see Cookie

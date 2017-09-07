@@ -2,7 +2,6 @@
 
 namespace mdm\admin\models\searchs;
 
-use common\models\User;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -49,20 +48,16 @@ class Assignment extends Model
      */
     public function search($params, $class, $usernameField)
     {
-        $query = $class::find()->where(['!=', 'status', User::STATUS_DELETE]);
+        $query = $class::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
-        // 排除特殊用户
-        $query->andWhere(['not in', 'id', Yii::$app->params['SuperDiao']]);
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
         $query->andFilterWhere(['like', $usernameField, $this->username]);
-
 
         return $dataProvider;
     }
