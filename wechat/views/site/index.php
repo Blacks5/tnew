@@ -81,17 +81,19 @@
     $(function() {
         FastClick.attach(document.body);
 
-        wx.config(<?php echo $js->config(array('hideMenuItems'), true) ?>);
+        wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
 
-        wx.hideMenuItems({
-            menuList: [
-                'menuItem:share:appMessage',
-                'menuItem:share:timeline',
-                'menuItem:share:qq',
-                'menuItem:share:weiboApp',
-                'menuItem:share:facebook',
-                'menuItem:share:QZone',
-            ]
+        wx.ready(function(){
+            wx.hideMenuItems({
+                menuList: [
+                    'menuItem:share:appMessage',
+                    'menuItem:share:timeline',
+                    'menuItem:share:qq',
+                    'menuItem:share:weiboApp',
+                    'menuItem:share:facebook',
+                    'menuItem:share:QZone',
+                ]
+            });
         });
     });
 </script>
