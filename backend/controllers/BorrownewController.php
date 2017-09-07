@@ -1102,7 +1102,7 @@ left join customer on customer.c_id=orders.o_customer_id
         }
     }
 
-    public function testA($orderId){
+    public function actionTa($orderId){
         $handle = new ReturnMoney();
         $data = $handle->queryDeduct($orderId);
         var_dump($data);
