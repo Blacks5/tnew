@@ -56,9 +56,24 @@
     $(function() {
         FastClick.attach(document.body);
 
-        // 通过下面这个API隐藏右上角按钮
-        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-            WeixinJSBridge.call('hideOptionMenu');
+        wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+
+        wx.ready(function(){
+            wx.hideMenuItems({
+                menuList: [
+                    'menuItem:share:appMessage',
+                    'menuItem:share:timeline',
+                    'menuItem:share:qq',
+                    'menuItem:share:weiboApp',
+                    'menuItem:share:facebook',
+                    'menuItem:share:QZone',
+                    'menuItem:copyUrl',
+                    'menuItem:originPage',
+                    'menuItem:openWithQQBrowser',
+                    'menuItem:openWithSafari',
+                    'menuItem:share:email'
+                ]
+            });
         });
 
         // 验证数据并提交
