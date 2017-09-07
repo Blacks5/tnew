@@ -287,8 +287,18 @@ class ReturnMoney extends AbstractYijifu
         return false;
     }
 
-    public function modifySign($yijifu, $customer)
+    /**
+     * 修改签约
+     * @param $yijifu  (orders orders_images yijifu_sign)
+     * @param $customer  (customer)
+     * @param $logs     (日志文件)
+     * @return bool
+     * @throws CustomCommonException
+     * @author OneStep
+     */
+    public function modifySign($yijifu, $customer, $logs)
     {
+
         $img = new \common\models\UploadFile();
         $param_arr = [
             'service' => 'fastSign',
@@ -305,6 +315,7 @@ class ReturnMoney extends AbstractYijifu
             'operateType'=>'MODIFY_SIGN',
         ];
 
+
         $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
 
         $common = $this->getCommonParams();
@@ -313,7 +324,6 @@ class ReturnMoney extends AbstractYijifu
 
 
 
-        // 发起请求
         $http_client = new httpClient();
         $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
 
@@ -329,22 +339,33 @@ class ReturnMoney extends AbstractYijifu
             file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);*/
 
             // 代表接口调用成功
+
             if(true === $ret['success']) {
                 $status = 2; // 等待回掉
                 $reuturn = true;
+
+                $yijifu_sign =  YijifuSign::find()->where(['o_serial_id'=>$yijifu['o_serial_id']])->one();
+
+                $logs['old_merchOrderNo'] = $yijifu_sign->merchOrderNo;
+                $logs['orderNo'] = $yijifu_sign->orderNo;
+                $logs['status'] = $yijifu_sign->status;
+                $logs['bankName'] = $yijifu_sign->bankName;
+                $logs['bankCode'] = $yijifu_sign->bankCode;
+                $logs['bankCardType'] = $yijifu_sign->bankCardType;
+
+                $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
+                $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
+                $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
+                $yijifu_sign->logs = \GuzzleHttp\json_encode($logs);
+                if(false === $yijifu_sign->save(false)){
+                    $reuturn = true;
+                }
             }else{
                 throw new CustomCommonException($ret['resultMessage']);
             }
         }
-        $operator_id = \Yii::$app->getUser()->getId();
-        // 写签约记录表
-        $yijifu_sign = YijifuSign::find()->where(['o_serial_id'=>$yijifu['o_serial_id']])->one();
-        $yijifu_sign->status = $status;
-        $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];
 
-        if($yijifu_sign->save()){
-            $reuturn = true;
-        }
+
 
         return $reuturn;
     }

@@ -157,7 +157,6 @@ class CustomerController extends CoreBackendController
                 if(false === !empty($data['oi_front_bank'])){
                     throw new CustomBackendException('参数异常');
                 }
-
                 $customer = new Customer();
                 $customer->updateBank($data);
 

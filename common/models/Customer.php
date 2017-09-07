@@ -256,11 +256,13 @@ class Customer extends CoreCommonActiveRecord {
             throw new CustomBackendException('客户信息不存在',5);
         }
 
+        $old_banknum = $customer->c_banknum;
+        $old_bank =$customer->c_bank;
         //修改银行卡
         $customer->c_bank = $data['c_bank'];
-        $old_banknum = $customer->c_banknum;
         $customer->c_banknum = $data['c_banknum'];
-        if(!$customer->save()){
+
+        if(false===$customer->save(false)){
             throw new CustomBackendException('修改银行卡失败!');
         }
 
@@ -269,11 +271,11 @@ class Customer extends CoreCommonActiveRecord {
         if(empty($data['oi_front_bank'])){
             throw new CustomBackendException('图片不存在');
         }
-        $orderImages->oi_front_bank = $data['oi_front_bank'];
-        if(!$orderImages->save()){
-            throw new CustomBackendException('修改银行卡失败!');
-        }
 
+        $orderImages->oi_front_bank = $data['oi_front_bank'];
+        if(false===$orderImages->save(false)){
+            throw new CustomBackendException('修改银行卡图片失败!');
+        }
         $returnMoney = new ReturnMoney();
         $yifid = Orders::find()->select(['*'])
             ->leftJoin(YijifuSign::tableName(), 'yijifu_sign.o_serial_id=orders.o_serial_id')
@@ -281,8 +283,20 @@ class Customer extends CoreCommonActiveRecord {
             ->andWhere(['orders.o_images_id'=>$data['o_images_id']])
             ->asArray()->one();
 
+        //日志信息
+
+        $logs =[
+          'title'=> $customer['c_customer_name'].'修改银行卡为'.$data['c_banknum'],
+          'customer_id'=> $data['customer_id'],
+          'old_bank'=>$old_bank,
+          'new_bank'=>$data['c_bank'],
+          'old_banknum'=>$old_banknum,
+          'new_banknum'=>$data['c_banknum'],
+        ];
+
+
         $customer = Customer::find()->where(['c_id'=>$data['customer_id']])->asArray()->one();
-        $returnMoney->modifySign($yifid, $customer);//修改易极付签约
+        $returnMoney->modifySign($yifid, $customer, $logs);//修改易极付签约
         return true;
     }
 
