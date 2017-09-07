@@ -81,7 +81,7 @@
     $(function() {
         FastClick.attach(document.body);
 
-        wx.config(<?php echo $js->config(array('onMenuShareQQ', 'onMenuShareWeibo'), true) ?>);
+        wx.config(<?php echo $js->config(array('hideMenuItems'), true) ?>);
 
         wx.hideMenuItems({
             menuList: [
