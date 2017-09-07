@@ -191,7 +191,7 @@ class ReturnMoney extends AbstractYijifu
             'merchSignOrderNo'=>$merchSignOrderNo,
             'deductAmount'=>$deductAmount
         ];
-        $this->notifyUrl = "http://119.23.15.90:8383/borrow/deduct-callback";
+        $this->notifyUrl = "http://119.23.15.90:8383/borrownew/deduct-callback";
 //        $this->notifyUrl = \Yii::$app->params['domain'] . $url;
         $common_param = $this->getCommonParams();
         $param = array_merge($common_param, $param_arr);
