@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use backend\components\CustomBackendException;
 use common\core\CoreCommonActiveRecord;
+use common\tools\yijifu\ReturnMoney;
+use EasyWeChat\Payment\Order;
 
 /**
  * This is the model class for table "customer".
@@ -238,5 +241,67 @@ class Customer extends CoreCommonActiveRecord {
 
 		return $scenarios;
 	}
+
+    /**
+     * 修改银行卡和图片
+     * @param $data
+     * @return bool
+     * @throws CustomBackendException
+     * @author OneStep
+     */
+	public function updateBank($data)
+    {
+        $customer = self::find()->where(['c_id'=>$data['customer_id']])->one();
+        if(empty($customer)){
+            throw new CustomBackendException('客户信息不存在',5);
+        }
+
+        $old_banknum = $customer->c_banknum;
+        $old_bank =$customer->c_bank;
+        //修改银行卡
+        $customer->c_bank = $data['c_bank'];
+        $customer->c_banknum = $data['c_banknum'];
+
+        if(false===$customer->save(false)){
+            throw new CustomBackendException('修改银行卡失败!');
+        }
+
+        //修改银行卡图片
+        $orderImages = OrderImages::find()->where(['oi_id'=>$data['o_images_id']])->one();
+        if(empty($data['oi_front_bank'])){
+            throw new CustomBackendException('图片不存在');
+        }
+
+        $orderImages->oi_front_bank = $data['oi_front_bank'];
+        if(false===$orderImages->save(false)){
+            throw new CustomBackendException('修改银行卡图片失败!');
+        }
+        $returnMoney = new ReturnMoney();
+        $yifid = Orders::find()->select(['*'])
+            ->leftJoin(YijifuSign::tableName(), 'yijifu_sign.o_serial_id=orders.o_serial_id')
+            ->leftJoin(OrderImages::tableName(),'order_images.oi_id=orders.o_images_id')
+            ->andWhere(['orders.o_images_id'=>$data['o_images_id']])
+            ->asArray()->one();
+
+        //日志信息
+
+        $logs =[
+          'title'=> $customer['c_customer_name'].'修改银行卡为'.$data['c_banknum'],
+          'customer_id'=> $data['customer_id'],
+          'old_bank'=>$old_bank,
+          'new_bank'=>$data['c_bank'],
+          'old_banknum'=>$old_banknum,
+          'new_banknum'=>$data['c_banknum'],
+        ];
+
+        $customer = Customer::find()->where(['c_id'=>$data['customer_id']])->asArray()->one();
+        $returnMoney->modifySign($yifid, $customer, $logs);//修改易极付签约
+    }
+
+    public function checkBank()
+    {
+        $returnMoney = new ReturnMoney();
+
+    }
 
 }

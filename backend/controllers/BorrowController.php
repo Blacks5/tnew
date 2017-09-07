@@ -530,6 +530,42 @@ left join customer on customer.c_id=orders.o_customer_id
         }
     }
 
+    /**
+     * 修改银行卡后的异步回调
+     * @throws CustomBackendException
+     *
+     */
+    public function actionUpdateBankCallBack()
+    {
+        $post = Yii::$app->getRequest()->post();  //获取回调参数
+        if('true'===$post['success']){      //回调成功
+            if(YijifuSign::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){        //如果修改成功,屏蔽第二次回调
+                echo "success";
+                return;
+            }
+
+            $status_arr = [
+                'SIGN_DEALING' => 7, // 审核中
+                'SIGN_FAIL' => 6, // 审核失败
+                'CHECK_NEEDED' => 8, // 待审核
+                'CHECK_REJECT' => 5, // 审核拒绝
+                'SIGN_SUCCESS' => 1 // 签约成功
+            ];
+
+            $yijifu_data = YijifuSign::find()->where(['orderNo'=>$post['orderNo']])->one();
+            $yijifu_data->bankName = $post['bankName'];
+            $yijifu_data->bankCode = $post['bankCode'];
+            $yijifu_data->bankCardType = $post['bankCardType'];
+            $yijifu_data->status = $status_arr[$post['status']];
+
+            if(false===$yijifu_data->save(false)){
+                throw new CustomBackendException('订单信息修改失败', 5);
+            }
+
+        }
+
+    }
+
     private function sendToWsBySign($o_serial_id, $o_id, $status_str)
     {
         $client = new Client(\Yii::$app->params['ws']);

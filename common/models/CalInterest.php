@@ -18,7 +18,7 @@ use yii;
 class CalInterest
 {
 
-    public $inquiry = 15;
+    public $inquiry = 15;  //查询费用
     /**
      * 等额本息法：计算每月还款金额
      * @param $total_money
@@ -199,6 +199,12 @@ class CalInterest
         return $allTotal;
     }
 
+    /**
+     * 修改Orders 服务费和查询费
+     * @param $orderInfo
+     * @param $service
+     * @return bool
+     */
     protected function updateOrders($orderInfo, $service)
     {
         $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();

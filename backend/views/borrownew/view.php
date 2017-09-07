@@ -560,7 +560,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 </div>
                                 <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price"></span></div>
                                 <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
-                                <button class="btn btn-danger col-md-offset-1">提前还款</button>
+                                <button class="btn btn-danger col-md-offset-1" id="prepayment">提前还款</button>
                             <?php }?>
                             <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
                                 <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
@@ -778,11 +778,12 @@ $(".failpic").click(function(){
 });
 
 
+
 // 计算剩余应还款额
 $("#calculation_residual_loan").click(function(){
     var period_num = $("#period_num").val();
     $.ajax({
-        url: "' . \yii\helpers\Url::toRoute(['borrow/calculation-residual-loan', 'order_id' => $model['o_id']]) . '&expected=" + period_num,
+        url: "' . \yii\helpers\Url::toRoute(['borrownew/calculation-residual-loan', 'order_id' => $model['o_id']]) . '&expected=" + period_num,
         type: "post",
         dataType: "json",
         success: function (data) {
@@ -790,6 +791,34 @@ $("#calculation_residual_loan").click(function(){
                 $("#calculation_residual_loan_price").html(data.totalPrice);
             }
         }
+    });
+});
+
+// 提前还款操作
+$("#prepayment").click(function(){
+    $("#calculation_residual_loan").trigger("click");
+    layer.confirm("确定要提前还款" + period_num + "期吗？", {title:"确定提前还款", icon:3}, function(index){
+        var period_num = $("#period_num").val();
+        var price = $("#calculation_residual_loan_price").html();
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/prepayment', 'order_id' => $model['o_id']]) . '&expected=" + period_num + "&price=" + price,
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            },
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
     });
 });
 
