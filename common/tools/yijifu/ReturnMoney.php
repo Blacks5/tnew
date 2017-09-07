@@ -192,8 +192,8 @@ class ReturnMoney extends AbstractYijifu
             'merchSignOrderNo'=>$merchSignOrderNo,
             'deductAmount'=>$deductAmount
         ];
-        $this->notifyUrl = "http://119.23.15.90:8383/borrownew/deduct-callback";
-//        $this->notifyUrl = \Yii::$app->params['domain'] . $url;
+//        $this->notifyUrl = "http://119.23.15.90:8383/borrownew/deduct-callback";
+        $this->notifyUrl = \Yii::$app->params['domain'] . $url;
         $common_param = $this->getCommonParams();
         $param = array_merge($common_param, $param_arr);
         $param = $this->prepQueryParams($param);
@@ -203,7 +203,7 @@ class ReturnMoney extends AbstractYijifu
         $status = 8; //接口调用失败
         if($response->getIsOk()){
             $ret = $response->getData();
-            var_dump($ret);exit;
+//            var_dump($ret);exit;
             if(true === $ret['success']) {
                 $status = 0; // 等待回掉
                 $reuturn = true;
@@ -330,7 +330,7 @@ class ReturnMoney extends AbstractYijifu
         $status = 3; // 接口调用失败
         $reuturn = false;
         if($response->getIsOk()){
-            var_dump($response->getIsOk());
+//            var_dump($response->getIsOk());
             $ret = $response->getData();
 
             /*ob_start();
@@ -369,7 +369,7 @@ class ReturnMoney extends AbstractYijifu
         }
 
 
-        var_dump($reuturn);die;
+//        var_dump($reuturn);die;
         return $reuturn;
     }
 
