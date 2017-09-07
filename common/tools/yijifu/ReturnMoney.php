@@ -13,6 +13,7 @@ use common\models\Customer;
 use common\models\Orders;
 use common\models\YijifuDeduct;
 use common\models\YijifuSign;
+use common\tools\junziqian\model\UploadFile;
 use yii\db\Query;
 use \yii\httpclient\Client as httpClient;
 
@@ -284,6 +285,89 @@ class ReturnMoney extends AbstractYijifu
             return $response->getData();
         }
         return false;
+    }
+
+    /**
+     * 修改签约
+     * @param $yijifu  (orders orders_images yijifu_sign)
+     * @param $customer  (customer)
+     * @param $logs     (日志文件)
+     * @return bool
+     * @throws CustomCommonException
+     * @author OneStep
+     */
+    public function modifySign($yijifu, $customer, $logs)
+    {
+
+        $img = new \common\models\UploadFile();
+        $param_arr = [
+            'service' => 'fastSign',
+            'merchOrderNo'=>$yijifu['merchOrderNo']. mt_rand(1000,9000),
+            'merchContractNo'=>$yijifu['merchContractNo'],
+            'merchContractImageUrl'=>$img->getUrl($yijifu['oi_after_contract']),
+            'realName'=>$customer['c_customer_name'],
+            'certNo'=>$customer['c_customer_id_card'],
+            'bankCardNo'=>$customer['c_banknum'],
+            'mobileNo'=>$customer['c_customer_cellphone'],
+            'productName'=>$customer['c_customer_name'].'的订单',
+            'loanAmount'=>'', // 可以不填的，优先不填
+            'totalRepayAmount'=>$yijifu['o_total_price'] - $yijifu['o_total_deposit'],
+            'operateType'=>'MODIFY_SIGN',
+        ];
+
+
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
+
+        $common = $this->getCommonParams();
+        $param_arr = array_merge($common, $param_arr);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+
+
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
+
+        $status = 3; // 接口调用失败
+        $reuturn = false;
+        if($response->getIsOk()){
+            $ret = $response->getData();
+
+            /*ob_start();
+            var_dump($param_arr);
+            echo "=========================\r\n";
+            var_dump($ret);
+            file_put_contents('/dev.txt', ob_get_contents(), FILE_APPEND);*/
+
+            // 代表接口调用成功
+
+            if(true === $ret['success']) {
+                $status = 2; // 等待回掉
+                $reuturn = true;
+
+                $yijifu_sign =  YijifuSign::find()->where(['o_serial_id'=>$yijifu['o_serial_id']])->one();
+
+                $logs['old_merchOrderNo'] = $yijifu_sign->merchOrderNo;
+                $logs['orderNo'] = $yijifu_sign->orderNo;
+                $logs['status'] = $yijifu_sign->status;
+                $logs['bankName'] = $yijifu_sign->bankName;
+                $logs['bankCode'] = $yijifu_sign->bankCode;
+                $logs['bankCardType'] = $yijifu_sign->bankCardType;
+
+                $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
+                $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
+                $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
+                $yijifu_sign->logs = \GuzzleHttp\json_encode($logs);
+                if(false === $yijifu_sign->save(false)){
+                    $reuturn = true;
+                }
+            }else{
+                throw new CustomCommonException($ret['resultMessage']);
+            }
+        }
+
+
+
+        return $reuturn;
     }
 
 }
