@@ -203,6 +203,7 @@ class ReturnMoney extends AbstractYijifu
         $status = 8; //接口调用失败
         if($response->getIsOk()){
             $ret = $response->getData();
+            var_dump($ret);exit;
             if(true === $ret['success']) {
                 $status = 0; // 等待回掉
                 $reuturn = true;
