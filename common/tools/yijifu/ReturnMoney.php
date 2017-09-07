@@ -316,7 +316,7 @@ class ReturnMoney extends AbstractYijifu
         ];
 
 
-        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
@@ -356,9 +356,9 @@ class ReturnMoney extends AbstractYijifu
                 $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
                 $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
                 $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
-                $yijifu_sign->logs = \GuzzleHttp\json_encode($logs);
+                $yijifu_sign->logs = json_encode($logs);
                 if(false === $yijifu_sign->save(false)){
-                    $reuturn = true;
+                    $reuturn = false;
                 }
             }else{
                 throw new CustomCommonException($ret['resultMessage']);
