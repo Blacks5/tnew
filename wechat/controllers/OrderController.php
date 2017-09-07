@@ -19,6 +19,7 @@ use common\models\Stores;
 use common\models\UploadFile;
 use common\models\User;
 use common\services\Order;
+use wechat\Tools\Wechat;
 use Yii;
 use yii\db\Query;
 use yii\web\Response;
@@ -82,6 +83,7 @@ class OrderController extends BaseController {
 					'company_kind' => Yii::$app->params['company_kind'],
 					'company_type' => Yii::$app->params['company_type'],
 				],
+				'js' => Wechat::jssdk(),
 			]);
 		}
 	}
@@ -304,7 +306,9 @@ class OrderController extends BaseController {
 				]];
 			}
 		} else {
-			return $this->renderPartial('list');
+			return $this->renderPartial('list' , [
+				'js' => Wechat::jssdk(),
+			]);
 		}
 	}
 
@@ -405,7 +409,9 @@ class OrderController extends BaseController {
 				]];
 			}
 		} else {
-			return $this->renderPartial('wait_list');
+			return $this->renderPartial('wait_list' , [
+				'js' => Wechat::jssdk(),
+			]);
 		}
 	}
 
@@ -492,7 +498,9 @@ class OrderController extends BaseController {
 				]];
 			}
 		} else {
-			return $this->renderPartial('overdue_list');
+			return $this->renderPartial('overdue_list' , [
+				'js' => Wechat::jssdk(),
+			]);
 		}
 	}
 
@@ -587,6 +595,7 @@ class OrderController extends BaseController {
 				return $this->renderPartial('upload', [
 					'order' => $order,
 					'uptoken' => (new UploadFile)->genToken(),
+					'js' => Wechat::jssdk(),
 				]);
 			} else {
 				return $this->randerError('订单不存在', '该订单不存在或已取消，不能上传照片');

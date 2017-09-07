@@ -51,10 +51,26 @@
         $(function(){
             FastClick.attach(document.body);
 
-            // wx.hideMenuItems({
-            //     menuList: [] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
-            // });
+            wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
 
+            wx.ready(function(){
+                wx.hideMenuItems({
+                    menuList: [
+                        'menuItem:share:appMessage',
+                        'menuItem:share:timeline',
+                        'menuItem:share:qq',
+                        'menuItem:share:weiboApp',
+                        'menuItem:share:facebook',
+                        'menuItem:share:QZone',
+                        'menuItem:copyUrl',
+                        'menuItem:originPage',
+                        'menuItem:openWithQQBrowser',
+                        'menuItem:openWithSafari',
+                        'menuItem:share:email'
+                    ]
+                });
+            });
+            
             // 页面处理类
             function Page(){
                 // 订单状态

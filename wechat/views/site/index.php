@@ -92,6 +92,11 @@
                     'menuItem:share:weiboApp',
                     'menuItem:share:facebook',
                     'menuItem:share:QZone',
+                    'menuItem:copyUrl',
+                    'menuItem:originPage',
+                    'menuItem:openWithQQBrowser',
+                    'menuItem:openWithSafari',
+                    'menuItem:share:email'
                 ]
             });
         });
