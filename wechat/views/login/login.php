@@ -51,9 +51,15 @@
 <script src="/wechat/js/jquery-weui.js"></script>
 <script src="/wechat/js/validform.min.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
     $(function() {
         FastClick.attach(document.body);
+
+        // 通过下面这个API隐藏右上角按钮
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        });
 
         // 验证数据并提交
         var validator = $('#thisForm').validator({

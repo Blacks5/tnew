@@ -46,12 +46,12 @@
                             <input class="weui-input" type="text" name="g_goods_models" placeholder="请输入商品型号">
                         </div>
                     </div>
-                    <div class="weui-cell">
+                    <!-- <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">商品序列号</label></div>
                         <div class="weui-cell__bd">
                             <input class="weui-input" type="text" name="g_goods_serial_no" placeholder="请输入商品序列号">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">商品价格</label></div>
                         <div class="weui-cell__bd">
@@ -442,9 +442,15 @@
 <script src="/wechat/js/swiper.js"></script>
 <script src="/wechat/js/validform.min.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
     $(function() {
         FastClick.attach(document.body);
+
+        // 通过下面这个API隐藏右上角按钮
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        });
 
         // document.body.addEventListener('touchmove' , function(e){
         //     e.preventDefault();
@@ -698,11 +704,6 @@
                 datatype: "s2-20",
                 nullmsg: "请输入商品型号",
                 errormsg: "商品型号长度为2~20之间"
-            }, {
-                ele: "input[name=g_goods_serial_no]",
-                datatype: "s2-60",
-                nullmsg: "请输入商品序列号",
-                errormsg: "商品序列号长度为2~60之间"
             }, {
                 ele: "input[name=g_goods_price]",
                 datatype: "n",

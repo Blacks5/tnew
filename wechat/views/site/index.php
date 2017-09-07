@@ -76,9 +76,23 @@
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
     $(function() {
         FastClick.attach(document.body);
+
+        wx.config(<?php echo $js->config(array('onMenuShareQQ', 'onMenuShareWeibo'), true) ?>);
+
+        wx.hideMenuItems({
+            menuList: [
+                'menuItem:share:appMessage',
+                'menuItem:share:timeline',
+                'menuItem:share:qq',
+                'menuItem:share:weiboApp',
+                'menuItem:share:facebook',
+                'menuItem:share:QZone',
+            ]
+        });
     });
 </script>
 </body>

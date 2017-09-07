@@ -644,6 +644,7 @@ class OrderController extends BaseController {
 						'oi_serial_num' => $request->post('oi_serial_num', ''),
 						'oi_after_contract' => $request->post('oi_after_contract', ''),
 						'oi_proxy_prove' => $request->post('oi_proxy_prove', ''),
+						'g_goods_serial_no' => $request->post('g_goods_serial_no', ''),
 					]);
 				} else if ($actionType == 'modify') {
 

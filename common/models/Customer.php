@@ -111,7 +111,7 @@ class Customer extends CoreCommonActiveRecord {
 			[['c_family_marital_partner_name', 'c_other_people_name'], 'string', 'max' => 10],
 			[['c_kinship_name'], 'string', 'max' => 15],
 			[[/*'c_kinship_addr', */'c_customer_addr_detail'], 'string', 'max' => 100],
-			[['c_customer_jobs_company', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_detail_addr'], 'string', 'max' => 20],
+			[['c_customer_jobs_company', 'c_customer_jobs_section', 'c_customer_jobs_title', 'c_customer_jobs_detail_addr'], 'string', 'max' => 60],
 
 			[['c_created_at', 'c_updated_at', 'c_total_interest', 'c_status', 'c_total_borrow_times'], 'safe'],
 		];

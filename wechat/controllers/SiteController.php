@@ -4,6 +4,8 @@
  */
 namespace wechat\controllers;
 
+use wechat\Tools\Wechat;
+
 class SiteController extends BaseController {
 	/**
 	 * @inheritdoc
@@ -22,6 +24,8 @@ class SiteController extends BaseController {
 
 	// 首页
 	public function actionIndex() {
-		return $this->renderPartial('index');
+		return $this->renderPartial('index' , [
+			'js' => Wechat::jssdk()
+		]);
 	}
 }

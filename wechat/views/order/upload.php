@@ -123,7 +123,49 @@
                                 </div>
                             </div>
                         </div>
-                    <?php } else { ?>
+                        <div class="weui-uploader">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">户口本上传</p>
+                                <div class="weui-uploader__info">0/2</div>
+                            </div>
+                            <div class="weui-progress">
+                                <div class="weui-progress__bar">
+                                    <div class="weui-progress__inner-bar js_progress"></div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files"></ul>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_family_card_one">
+                                </div>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_family_card_two">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-uploader">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">驾照上传</p>
+                                <div class="weui-uploader__info">0/2</div>
+                            </div>
+                            <div class="weui-progress">
+                                <div class="weui-progress__bar">
+                                    <div class="weui-progress__inner-bar js_progress"></div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files"></ul>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_driving_license_one">
+                                </div>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_driving_license_two">
+                                </div>
+                            </div>
+                        </div>
+                        <?php } else { ?>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">合同上传<span class="color-danger">*</span></p>
@@ -180,44 +222,10 @@
                         </div>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">户口本上传</p>
-                                <div class="weui-uploader__info">0/2</div>
+                                <p class="weui-uploader__title">商品串码<span class="color-danger">*</span></p>
                             </div>
-                            <div class="weui-progress">
-                                <div class="weui-progress__bar">
-                                    <div class="weui-progress__inner-bar js_progress"></div>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="weui-uploader__bd">
-                                <ul class="weui-uploader__files"></ul>
-                                <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_family_card_one">
-                                </div>
-                                <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_family_card_two">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="weui-uploader">
-                            <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">驾照上传</p>
-                                <div class="weui-uploader__info">0/2</div>
-                            </div>
-                            <div class="weui-progress">
-                                <div class="weui-progress__bar">
-                                    <div class="weui-progress__inner-bar js_progress"></div>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="weui-uploader__bd">
-                                <ul class="weui-uploader__files"></ul>
-                                <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_driving_license_one">
-                                </div>
-                                <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_driving_license_two">
-                                </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="g_goods_serial_no" placeholder="请输入商品串码">
                             </div>
                         </div>
                     <?php } ?>
@@ -235,8 +243,15 @@
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script type="text/javascript">
 $(function(){
+    FastClick.attach(document.body);
+
+    // 通过下面这个API隐藏右上角按钮
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        WeixinJSBridge.call('hideOptionMenu');
+    });
 
     function Page(){
         // 订单状态
@@ -263,6 +278,7 @@ $(function(){
             oi_serial_num : "<?=$order['oi_serial_num']?>",
             oi_after_contract : "<?=$order['oi_after_contract']?>",
             oi_proxy_prove : "<?=$order['oi_proxy_prove']?>",
+            g_goods_serial_no : ""
         };
     }
 
@@ -285,6 +301,11 @@ $(function(){
             error : function(ele){
                 console.log(ele);
             }
+        });
+
+        // 失去焦点绑定
+        $('input[name=g_goods_serial_no]').bind('blur' , function(){
+            _this.data.g_goods_serial_no = $(this).val();
         });
 
         // 绑定提交

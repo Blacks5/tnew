@@ -45,9 +45,15 @@
     <script src="/wechat/lib/jquery-2.1.4.js"></script>
     <script src="/wechat/lib/fastclick.js"></script>
     <script src="/wechat/js/jquery-weui.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
         $(function(){
             FastClick.attach(document.body);
+
+            // 通过下面这个API隐藏右上角按钮
+            document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+                WeixinJSBridge.call('hideOptionMenu');
+            });
 
             // 页面处理类
             function Pages(url){

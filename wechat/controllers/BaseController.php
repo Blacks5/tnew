@@ -12,6 +12,7 @@ namespace wechat\controllers;
 use wechat\Tools\Wechat;
 use Yii;
 use yii\web\Controller;
+use EasyWeChat\Foundation\Application;
 
 class BaseController extends Controller {
 	public $enableCsrfValidation = false;
@@ -43,6 +44,7 @@ class BaseController extends Controller {
 			'title' => $title,
 			'desc' => $desc,
 			'status' => 0,
+			'js' => Wechat::jssdk()
 		]);
 	}
 
@@ -57,6 +59,7 @@ class BaseController extends Controller {
 			'title' => $title,
 			'desc' => $desc,
 			'status' => 1,
+			'js' => Wechat::jssdk()
 		]);
 	}
 }

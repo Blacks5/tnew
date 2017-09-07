@@ -46,9 +46,14 @@
     <script src="/wechat/lib/fastclick.js"></script>
     <script src="/wechat/js/jquery-weui.js"></script>
     <script src="/wechat/js/jquery-weui-extend.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
         $(function(){
             FastClick.attach(document.body);
+
+            // wx.hideMenuItems({
+            //     menuList: [] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            // });
 
             // 页面处理类
             function Page(){
