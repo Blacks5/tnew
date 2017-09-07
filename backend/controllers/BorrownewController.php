@@ -1102,6 +1102,13 @@ left join customer on customer.c_id=orders.o_customer_id
         }
     }
 
+    public function testA($orderId){
+        $handle = new ReturnMoney();
+        $data = $handle->queryDeduct($orderId);
+        var_dump($data);
+    }
+
+
     /**
      * 易极付扣款异步回调
      * @author too <hayto@foxmail.com>
