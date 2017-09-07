@@ -299,7 +299,6 @@ class ReturnMoney extends AbstractYijifu
      */
     public function modifySign($yijifu, $customer, $logs)
     {
-
         $img = new \common\models\UploadFile();
         $param_arr = [
             'service' => 'fastSign',
@@ -317,7 +316,7 @@ class ReturnMoney extends AbstractYijifu
         ];
 
 
-        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";
 
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
@@ -331,6 +330,7 @@ class ReturnMoney extends AbstractYijifu
         $status = 3; // 接口调用失败
         $reuturn = false;
         if($response->getIsOk()){
+            var_dump($response->getIsOk());
             $ret = $response->getData();
 
             /*ob_start();
@@ -354,12 +354,14 @@ class ReturnMoney extends AbstractYijifu
                 $logs['bankCode'] = $yijifu_sign->bankCode;
                 $logs['bankCardType'] = $yijifu_sign->bankCardType;
 
-                $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
+                $update = YijifuSign::updateAll(['merchOrderNo'=>$param_arr['merchOrderNo'], 'status'=>$status, 'orderNo'=>$ret['orderNo'] , 'logs'=>$logs],
+                    ['o_serial_id'=>$yijifu['o_serial_id']]);
+                /*$yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
                 $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
                 $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
-                $yijifu_sign->logs = \GuzzleHttp\json_encode($logs);
-                if(false === $yijifu_sign->save(false)){
-                    $reuturn = true;
+                $yijifu_sign->logs = json_encode($logs);*/
+                if($update == 0){
+                    $reuturn = false;
                 }
             }else{
                 throw new CustomCommonException($ret['resultMessage']);
@@ -367,7 +369,7 @@ class ReturnMoney extends AbstractYijifu
         }
 
 
-
+        var_dump($reuturn);die;
         return $reuturn;
     }
 
