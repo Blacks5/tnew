@@ -1127,7 +1127,7 @@ left join customer on customer.c_id=orders.o_customer_id
     {
         $post = Yii::$app->getRequest()->get();
 
-        @file_put_contents('deduct_callback.log' , json_encode($post , JSON_UNESCAPED_UNICODE));
+        @file_put_contents('deduct_callback.txt' , json_encode($post , JSON_UNESCAPED_UNICODE));
 
         if('true' === $post['success']){
             $status_arr = [
