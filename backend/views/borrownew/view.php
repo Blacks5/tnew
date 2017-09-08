@@ -815,7 +815,7 @@ $("#calculation_residual_loan").click(function(){
         success: function (data) {
             if (data.status === 1) {
                 $("#calculation_residual_loan_price").html(data.totalPrice);
-                $("#calculation_residual_loan_val").val();
+                $("#calculation_residual_loan_val").val(data.totalPrice);
             }
         }
     });
