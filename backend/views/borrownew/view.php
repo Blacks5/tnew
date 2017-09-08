@@ -665,7 +665,7 @@ $(".verify-end").click(function(){
             var loading = layer.load(4);
             var remark = $("#xx").val();
             $.ajax({
-                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-pass', 'order_id' => $model['o_id']]) . '",
+                url: "' . \yii\helpers\Url::toRoute(['borrownew/verify-pass', 'order_id' => $model['o_id']]) . '",
                 type: "post",
                 dataType: "json",
                 data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
