@@ -402,7 +402,8 @@ left join customer on customer.c_id=orders.o_customer_id
                     $purchasedProductName,
                     $model['o_serial_id'],
                     $responseJson->link, // 签约合同地址
-                    round($repayment['r_total_repay'] , 3),
+//                    round($repayment['r_total_repay'] , 3),
+                    $loanAmount,
                     $loanAmount
                     );
 
