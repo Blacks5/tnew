@@ -1,5 +1,6 @@
 <?php
 namespace backend\controllers;
+use common\components\CustomCommonException;
 use common\models\YijifuDeduct;
 use common\models\YijifuSign;
 use common\tools\yijifu\ReturnMoney;
@@ -75,7 +76,28 @@ class SignReturnController extends CoreBackendController
         //请求查询接口查询并将结果返回前台
         $loan = new ReturnMoney();
         $data = $loan->querySignedCustomer($_data['merchOrderNo']);
+        //var_dump($data);die;
+        if(false === $data['success']){
+            //$this->error('等待回调请稍后再试');
+            $data=[
+                'merchContractNo'=> '等待回调!',
+                'realName' => '等待回调!',
+                'certNo' => '等待回调!',
+                'bankCardNo' => '等待回调!',
+                'bankCode' => '等待回调!',
+                'bankName' => '等待回调!',
+                'bankCardType' => '等待回调!',
+                'mobileNo' => '等待回调!',
+                'productName' => '等待回调!',
+                'loanAmount' => '等待回调!',
+                'totalRepayAmount' => '等待回调!',
+                'status' => 'SIGN_DEALING',
 
+            ];
+           //throw new CustomCommonException('接口调用失败!');
+        }
+
+        //var_dump($data);die;
         return $this->render('signview', [
             'o_serial_id'=>$o_serial_id,
             'model' => $data,
