@@ -336,7 +336,7 @@ class RepaymentnewController extends CoreBackendController
                 $yi_data = YijifuSign::findBySql($sql, [':o_serial_id'=>$r_data['o_serial_id']])->one();
 
                 $handle = new ReturnMoney();
-                $handle->deduct($r_data['o_serial_id'], $refund_id, $yi_data['merchOrderNo'], 5);
+                $handle->deduct($r_data['o_serial_id'], $refund_id, $yi_data['merchOrderNo'], $r_data['deductAmount']);
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '扣款请求发起成功，请等待注意查看通知！'];

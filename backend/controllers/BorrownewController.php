@@ -964,6 +964,12 @@ left join customer on customer.c_id=orders.o_customer_id
             $totalPrice = 0;
             $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
             $x = $this->day($data);
+            if($x == null){
+                $totalPrice = $data[0]['r_total_repay'];
+                for($i = 1;$i < count($data);$i++){
+                    $totalPrice += $data[0]['r_principal'];
+                }
+            }
             if($x >= 0) {
                 if ($data[$x]['r_status'] == 10) {//当期已还的
                     $totalPrice = $this->already($data, $expected);
@@ -979,7 +985,7 @@ left join customer on customer.c_id=orders.o_customer_id
 
     //获取当前订单年月对应的期数下标
     private function day($arr){
-        $x = 0;
+        $x = null;
         for($i = 0;$i < count($arr);$i++){
             if(date('Y-m',$arr[$i]['r_pre_repay_date']) == date('Y-m')){
                 $x = $i;
@@ -1123,9 +1129,6 @@ left join customer on customer.c_id=orders.o_customer_id
 
         @file_put_contents('deduct_callback.log' , json_encode($post , JSON_UNESCAPED_UNICODE));
 
-
-
-//        Yii::$app->log->info(json_encode($post , JSON_UNESCAPED_UNICODE));
         if('true' === $post['success']){
             $status_arr = [
                 'INIT' => 1, // 待处理
@@ -1164,10 +1167,16 @@ left join customer on customer.c_id=orders.o_customer_id
 
                     $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
                     $yijifu_data['repayment_id'] = explode('-',$yijifu_data['repayment_id']);
-                    $sql = "select * from ". Repayment::tableName()." where r_id=:r_id and r_status=:r_status limit 1 for update";
+
+
+
+
+
+                    $sql = "select * from ". Repayment::tableName()." where r_id in (:r_id) and r_status=:r_status limit 1 for update";
                     if (!$repay_model = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_id'], ':r_status' => Repayment::STATUS_NOT_PAY])->all()) {
                         throw new CustomBackendException('数据异常', 2);
                     }
+
                     $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
                     $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间
                     $repay_model->r_operator_id = $yijifu_data['operator_id']; // 操作人ID
