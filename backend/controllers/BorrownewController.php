@@ -377,7 +377,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 $loanAmount = round($repayment['r_total_repay'] * $repayment['r_serial_total'], 3);
 
 
-
                 // 获取签约合同
                 $applyNo = JzqSign::find()->select(['applyNo'])->where(['o_serial_id'=>$model['o_serial_id'], 'signStatus'=>JzqSign::STATUS_SIGN_AND_BAOQUAN])->scalar();
                 if(false === !empty($applyNo)){
