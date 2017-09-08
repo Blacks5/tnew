@@ -1121,6 +1121,7 @@ left join customer on customer.c_id=orders.o_customer_id
     public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
+        Yii::$app->log->info(json_encode($post , JSON_UNESCAPED_UNICODE));
         if('true' === $post['success']){
             $status_arr = [
                 'INIT' => 1, // 待处理

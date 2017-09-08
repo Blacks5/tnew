@@ -584,6 +584,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                     </select>
                                 </div>
                                 <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price"></span></div>
+                                <input type="hidden" value="50" id="calculation_residual_loan_val"/>
                                 <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
                                 <button class="btn btn-danger col-md-offset-1" id="prepayment">提前还款</button>
                             <?php }?>
@@ -814,6 +815,7 @@ $("#calculation_residual_loan").click(function(){
         success: function (data) {
             if (data.status === 1) {
                 $("#calculation_residual_loan_price").html(data.totalPrice);
+                $("#calculation_residual_loan_val").val();
             }
         }
     });
@@ -824,7 +826,7 @@ $("#prepayment").click(function(){
     $("#calculation_residual_loan").trigger("click");
     layer.confirm("确定要提前还款" + period_num + "期吗？", {title:"确定提前还款", icon:3}, function(index){
         var period_num = $("#period_num").val();
-        var price = $("#calculation_residual_loan_price").html();
+        var price = $("#calculation_residual_loan_val").val();
         var loading = layer.load(4);
         $.ajax({
             url: "' . \yii\helpers\Url::toRoute(['borrownew/prepayment', 'order_id' => $model['o_id']]) . '&expected=" + period_num + "&price=" + price,
