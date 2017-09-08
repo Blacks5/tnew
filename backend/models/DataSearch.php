@@ -105,7 +105,7 @@ class DataSearch extends CoreBackendModel
     {
         $userList = User::find()
             ->where(['!=', 'username', 'admin'])
-            ->andWhere(['department_id'=> 26])
+            //->andWhere(['department_id'=> 26])
             ->filterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'realname' ,$this->realname])
             ->andFilterWhere(['user.province'=> $this->province])
@@ -207,7 +207,7 @@ class DataSearch extends CoreBackendModel
          $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
              ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
 
-        $total = $totalQuery->select(['sum(r_principal) as principal,sum(r_interest) as interest,sum(r_overdue_money) as overdue_total'])->asArray()->one();
+        $total = $totalQuery->select(['sum(r_principal) as principal,sum(r_interest) as interest'])->asArray()->one();
         //var_dump($tota);die;
         $data['principal']  = round($total['principal'], 0);   //本金
         $data['interest']   = round($total['interest'], 0);    //利息

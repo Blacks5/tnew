@@ -113,27 +113,29 @@
                         </div>
                     </form>
                     <!-- 下级销售数据汇总 by OneStep -->
-                    <div class="row" style="margin-top: 20px;font-size:20px;">
+                    <div class="row" style="margin-top: 20px;">
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">总放款<span style="display: block;float:right"><?= $all['s_amount']?></span> </a>
-                            <a class="list-group-item">总提单<span style="display: block;float:right"><?= $all['t_ordercount']?></span> </a>
-                            <a class="list-group-item">成功提单<span style="display: block;float:right"><?= $all['s_ordercount']?></span> </a>
+                            <a class="list-group-item">总放款<span class="badge"><?= round($total['s_orderMoney'], 0) ?></span> </a>
+                            <a class="list-group-item">总提单<span class="badge"><?= $total['a_orderCount'] ?></span> </a>
+                            <a class="list-group-item">成功提单<span class="badge"><?= $total['s_orderCount'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">个人保障计划捆绑率<span style="display: block;float:right"><?= $all['a_services']?></span> </a>
-                            <a class="list-group-item">贵宾服务包捆绑率<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                            <a class="list-group-item">逾期率<span class="badge"><?= $total['overdue_numRatio'] ?></span> </a>
+                            <a class="list-group-item">逾期单数<span class="badge"><?= $total['overdue_num'] ?></span> </a>
+                            <a class="list-group-item">逾期金额<span class="badge"><?= round($total['overdue_money'], 0) ?></span> </a>
+                        </div>
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">逾期金额比<span class="badge"><?= $total['overdue_moneyRatio'] ?></span> </a>
+                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
+                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
                             <a class="list-group-item <?=(int)$all['risk_num']>=6?'list-group-item-warning':''?> <?=(int)$all['risk_num']>=8?'list-group-item-danger':''?>">
-                                风控率(单数)<span style="display: block;float:right"><?= $all['risk_num']?></span>
+                                风控率(单数)<span class="badge"></span>
                             </a>
-                            <a class="list-group-item">风控率(金额)<span style="display: block;float:right"><?= $all['f_packcount']?></span> </a>
+                            <a class="list-group-item">风控率(金额)<span class="badge"></span> </a>
                         </div>
-                        <div class="list-group col-sm-3">
-                            <a class="list-group-item">逾期率<span style="display: block;float:right"><?= $all['overdue_ratio']?></span> </a>
-                            <a class="list-group-item">逾期单数<span style="display: block;float:right"><?= $all['overdue_num']?></span> </a>
-                            <a class="list-group-item">逾期金额<span style="display: block;float:right"><?= $all['overdue_money']?></span> </a>
-                        </div>
+
                     </div>
 
                     <div class="clients-list">
@@ -164,6 +166,23 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <tr>
+                                                        <td class="client-avatar"></td>
+                                                        <td>当页统计</td>
+                                                        <td></td>
+                                                        <td><?= $all['a_services']?></td>
+                                                        <td><?= $all['f_packcount']?></td>
+                                                        <td><?= $all['t_ordercount']?></td>
+                                                        <td><?= $all['s_ordercount']?></td>
+                                                        <td><?= $all['s_amount']?></td>
+                                                        <td><?= $all['overdue_num']?></td>
+                                                        <td><?= $all['overdue_money']?></td>
+                                                        <td><?= $all['overdue_ratio']?></td>
+                                                        <td><?= $all['risk_num']?></td>
+                                                        <td><?= $all['f_packcount']?></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
                                                 <?php foreach ($data['data'] as $_k => $_v) { ?>
                                                     <tr>
                                                         <td class="client-avatar"><?= $_v['id'] ?></td>
@@ -176,9 +195,10 @@
                                                         <td class="client-status"><?= $_v['t_ordercount'] ?></td>
                                                         <td class="client-status"><?= $_v['s_ordercount'] ?></td>
                                                         <td class="client-status"><?= $_v['s_amount'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdue_num'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdue_count'] ?></td>
                                                         <td class="client-status"><?= $_v['overdue_money'] ?></td>
                                                         <td class="client-status"><?= $_v['overdue_ratio'] ?></td>
+                                                        <td class="client-status"><?= $_v['risk_num'] ?></td>
                                                         <td class="client-status"><?= $_v['risk_num'] ?></td>
                                                         <td class="client-status">
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/index']))) { ?>
