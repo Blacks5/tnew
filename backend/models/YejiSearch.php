@@ -99,6 +99,7 @@ class YejiSearch extends CoreBackendModel{
         $query = $this->getUserList();
 
         $querytemp = clone $query;
+        $allUser = clone $query;
         $totalcount = $querytemp->count();
         $pages = new Pagination(['totalCount' => $totalcount]);
         $pages->pageSize = \Yii::$app->params['page_size'];
@@ -129,30 +130,35 @@ class YejiSearch extends CoreBackendModel{
             $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']])->andWhere(['!=', 'o_status', Orders::STATUS_NOT_COMPLETE]);
             $orderinfo->andFilterWhere(['>=', 'o_created_at', $this->start_time]);
             $orderinfo->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
-            $t_ordercount = $orderinfo->count();
+            $t_ordercount = $orderinfo->count();  //总提单
 
-            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id'], 'o_status'=>Orders::STATUS_PAYING]);
+            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']])
+            ->andWhere(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]]);
             $orderinfo->andFilterWhere(['>=', 'o_created_at', $this->start_time]);
             $orderinfo->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
-            $s_ordercount = $orderinfo->count();
-            $s_amount = $orderinfo->sum('o_total_price - o_total_deposit');
 
-            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id'], 'o_status'=>Orders::STATUS_PAYING]);
-            $orderinfo->andFilterWhere(['>=', 'o_created_at', $this->start_time]);
-            $orderinfo->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
-            $orderinfo->select('o_id');
+            $service = clone $orderinfo;
+            $pack = clone $orderinfo;
 
-            $overdue = $this->getOverdueNum($orderinfo->column());
 
-            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id'], 'o_status'=>Orders::STATUS_PAYING, 'o_is_add_service_fee'=>1]);
-            $orderinfo->andFilterWhere(['>=', 'o_created_at', $this->start_time]);
-            $orderinfo->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
-            $a_servicecount = $orderinfo->count();
+            $overdue = Orders::find()
+                ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
+                ->where(['o_user_id'=>$_v['id']])
+                ->andWhere(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
+                ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
+                ->andFilterWhere(['<=', 'o_created_at', $this->end_time])
+                ->andWhere(['>', 'r_overdue_day', 3])
+                ->andWhere(['r_repay_date'=>0])->select('r_orders_id')->groupBy('r_orders_id');
 
-            $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id'], 'o_status'=>Orders::STATUS_PAYING, 'o_is_free_pack_fee'=>1]);
-            $orderinfo->andFilterWhere(['>=', 'o_created_at', $this->start_time]);
-            $orderinfo->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
-            $f_packcount = $orderinfo->count();
+
+            $s_ordercount = $orderinfo->count();  //成功提单
+            $s_amount = $orderinfo->sum('o_total_price - o_total_deposit');  //放款金额
+            $a_servicecount = $service->andWhere(['o_is_add_service_fee'=>1])->count();  //个人保障计划
+            $f_packcount = $pack->andWhere(['o_is_free_pack_fee'=>1])->count(); //贵宾服务包
+
+
+            $overdue_num = clone  $overdue;
+            $overdue_money = clone $overdue;
 
             $userlist[$_k]['t_ordercount'] = $t_ordercount;
             $userlist[$_k]['s_amount'] = round($s_amount, 3);
@@ -160,15 +166,16 @@ class YejiSearch extends CoreBackendModel{
             $userlist[$_k]['a_services'] = $s_ordercount ? round($a_servicecount/$s_ordercount*100, 3).'%' : '0%';
             $userlist[$_k]['f_packcount'] = $s_ordercount ? round($f_packcount/$s_ordercount*100, 3).'%' : '0%';
 
-            //销售人员的客户逾期
-            $userlist[$_k]['overdue_cout'] = $overdue['count'];
-            $userlist[$_k]['overdue_num'] = $overdue['num'];
-            $userlist[$_k]['overdue_money'] = round($overdue['money'],3);
-            $userlist[$_k]['overdue_ratio'] = $overdue['num'] ? round($overdue['num']/$s_ordercount*100,3). "%":"0%";
-            //var_dump($overdue['serial_no']);die;
+            //销售人员的客户逾期数量
+            $userlist[$_k]['overdue_count'] = $overdue_num->count();
 
-            $userlist[$_k]['risk_num'] = $overdue['serial_no']? $this->getRisk($overdue['serial_no'], $s_ordercount). '%':'0%';
-            $all_list['serial_no'] = $this->getSerialId($overdue['serial_no'],$all_list['serial_no']);
+            $overdue_orders =   empty($overdue_money->asArray()->column())?'0':$overdue_money->asArray()->column();
+            //逾期金额
+            $userlist[$_k]['overdue_money'] = round(Repayment::find()->where(['in', 'r_orders_id', $overdue_orders])->andWhere(['r_repay_date'=>0])->sum('r_principal'),2);
+            //逾期率
+            $userlist[$_k]['overdue_ratio'] =  $userlist[$_k]['overdue_money']?round($userlist[$_k]['overdue_count']/$s_ordercount*100,3). "%":'0%';
+
+            $userlist[$_k]['risk_num'] = empty($userlist[$_k]['serial_no'])? '0%':'0%';
 
             $all_list['t_ordercount'] +=$userlist[$_k]['t_ordercount'];
             $all_list['s_amount']+= $userlist[$_k]['s_amount'];
@@ -177,17 +184,19 @@ class YejiSearch extends CoreBackendModel{
             $all_list['f_packcount'] += $f_packcount;
 
             //总逾期统计
-            $all_list['overdue_num'] += $overdue['num'];
-            $all_list['overdue_money'] += round($overdue['money'],3);
+            $all_list['overdue_num'] += $userlist[$_k]['overdue_count'];
+            $all_list['overdue_money'] += round($userlist[$_k]['overdue_money'],3);
 
             //var_dump($userlist[$_k]['a_services']);die;
         }
-
+        //分页数据统计
         $all_list['a_services'] = $all_list['s_ordercount'] ? round($all_list['a_servicecount']/$all_list['s_ordercount']*100, 3).'%':'0%';
         $all_list['f_packcount'] = $all_list['s_ordercount'] ? round($all_list['f_packcount']/$all_list['s_ordercount']*100, 3).'%':'0%';
         $all_list['overdue_ratio'] = $all_list['overdue_num'] ? round($all_list['overdue_num']/$all_list['s_ordercount']*100, 3). '%': '0%';
         $all_list['risk_num'] = $all_list['serial_no']? $this->getRisk($all_list['serial_no'],$all_list['s_ordercount']). '%':'0%';
 
+        //总数据
+        $total = $this->getTotal();
         //var_dump($all_list['risk_num']);die;
 
         return [
@@ -195,6 +204,7 @@ class YejiSearch extends CoreBackendModel{
             'sear' => $this->getAttributes(),
             'all'  =>$all_list,
             'totalcount' => $pages->pageCount,
+            'total' => $total,
             'pages'=>$pages
         ];
     }
@@ -209,11 +219,10 @@ class YejiSearch extends CoreBackendModel{
         $area = $this->getLower(); //获取用户等级
 
         $query =  $userlist = User::find()
-            ->select(['user.id', 'user.username', 'user.realname','user.leader','user.level'])
             ->where(['!=', 'username', 'admin'])
-            ->andwhere(['!=', 'status', \common\models\User::STATUS_DELETE])
-            ->andWhere(['department_id'=>26]) // 只要销售部
-            ->andWhere(['>','level',$area['level']])  //用户等级之下的销售
+            //->andwhere(['!=', 'status', \common\models\User::STATUS_DELETE])
+             // 只要销售部
+            ->andWhere(['>=','level',$area['level']])  //用户等级之下的销售
             ->filterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'realname', $this->realname])
             ->andFilterWhere(['user.province'=>$this->province])
@@ -221,108 +230,52 @@ class YejiSearch extends CoreBackendModel{
             ->andFilterWhere(['user.county'=>$this->county]);
 
         if($area['level']>1){   //如果不是销售总监,只能查看管理地区范围内的销售数据
-            $query->andWhere([$area['area']=>$area['area_value']]);
+            $query->andWhere([$area['area']=>$area['area_value']])
+            ->andWhere(['department_id'=>26]);
         }
 
         return $query;
     }
 
     /**
-     * 查看销售人员负责的客户逾期单数和金额
-     * 逾期单数: 逾期单数 / 总单数
-     * 逾期金额: 未还金额
-     * @param $o_id
+     * 获取总数据
      * @return mixed
      * @author OneStep
      */
-    /*
-    public function getOverdueNum($o_id)
+    public function getTotal()
     {
-        $orderinfo = Repayment::find()
-            ->where(['in','r_orders_id',$o_id])
-            ->andWhere(['>','r_overdue_money','0']);
+        $userQuery = $this->getUserList();
+        $userList = $userQuery->select('id')->column();
 
-        $overdun['count'] = $orderinfo->count();
-        $overdun['money'] = $orderinfo->sum('r_overdue_money');
-        return $overdun;
-    }*/
-    public function getOverdueNum($o_id)
-    {
-        $overdue['count']   = 0;    //总单数
-        $overdue['num']     = 0;    //逾期单数
-        $overdue['money']   = 0;    //逾期金额
-        //$o_id=[68];
-        $risk =array();
-//        /var_dump($o_id);die;
-        foreach ($o_id as $k => $o){
-            $orderinfo = Repayment::find()->where(['r_orders_id'=>$o]);
-            $orderinfo->andWhere(['>','r_overdue_money',$this->repay_day])->andWhere(['r_repay_date'=>'0']);
-            $overdue['num'] += $orderinfo->count()>0?1:0;
+        $orderQuery = Orders::find()
+            ->andWhere(['in', 'o_user_id', $userList])
+            ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
+            ->andFilterWhere(['<=', 'o_create_at', $this->end_time]);
 
-            if($overdue['num']>0){
-                $overdue['money'] += Repayment::find()->select('sum(r_principal)')->where(['r_orders_id'=>$o])->andWhere(['r_repay_date'=>'0'])->scalar();
-            }
-            $serial_no = $orderinfo->select('r_serial_no')->asArray()->column();
+        $a_orderQuery = clone $orderQuery;
+        $s_orderQuery = $orderQuery->andWhere(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]]);
+        $service = clone $s_orderQuery;
+        $pack = clone $s_orderQuery;
+        $overdue_num = clone $s_orderQuery;
+        $total['a_orderCount'] = $a_orderQuery->andWhere(['!=','o_status',Orders::STATUS_NOT_COMPLETE])->count('o_id'); //总提单
+        $total['s_orderCount'] = $s_orderQuery->count('o_id');    //成功提单数量
+        $total['s_orderMoney'] = $s_orderQuery->sum('o_total_price-o_total_deposit'); //提单金额
+        $total['service']   = $service->andWhere(['o_is_add_service_fee'=>1])->count(); //个人保障
+        $total['pack']      = $pack->andWhere(['o_is_free_pack_fee'=>1])->count();  //贵宾服务
+        $total['overdue_num'] = $overdue_num
+            ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
+            ->select('r_orders_id')->andWhere(['r_repay_date'=>0])
+            ->andWhere(['>', 'r_overdue_day', 3])
+            ->groupBy('r_orders_id')->count();
+        $overdue_order = $overdue_num->column();
+        $total['overdue_money'] = Repayment::find()->where(['in', 'r_orders_id', $overdue_order])->andWhere(['r_repay_date'=>0])->sum('r_principal');
 
-            //$overdue['serial_no']=$this->getSerialNo($serial_no);
-            $risk = $this->getSerialId($serial_no ,$risk);
+        $total['overdue_numRatio'] = empty($total['overdue_num'])?'0%':round($total['overdue_num']/$total['s_orderCount']*100, 2).'%';
+        $total['overdue_moneyRatio'] =empty($total['overdue_money'])?'0%':round($total['overdue_money']/$total['s_orderMoney']*100, 2). '%';
+        $total['service_ratio'] = empty($total['service'])?'0%':round($total['service']/$total['s_orderCount']*100, 2).'%';
+        $total['pack_ratio'] = empty($total['pack'])?'0%':round($total['pack']/$total['s_orderCount']*100,2).'%';
 
-
-
-        }
-        $overdue['serial_no'] = array_filter($risk);
-        //var_dump($risk);die;
-
-        //var_dump($overdue);die;
-        return $overdue;
+        return $total;
     }
 
-    /**
-     * 追加用户逾期期数
-     * @param $id
-     * @param $risk
-     * @return mixed
-     * @author OneStep
-     */
-    public function getSerialId($id,$array)
-    {
-        foreach ($id as $k => $i){
-            array_push($array,$i);
-        }
-       return $array;
-    }
-
-
-    /**
-     * 获取风控(单数)
-     * @param $serial_no
-     * @param $ratio
-     * @return float|int
-     * @author OneStep
-     */
-    public function getRisk($serial_no, $ratio)
-    {
-        $risk = 0.000;
-        $ratios = 1/$ratio;
-        foreach ($serial_no as $k => $r){
-            switch ((int)$r){
-                case 1:
-                    $risk += 0.31 * $ratios;
-                    break;
-                case  2:
-                    $risk += 0.2 * $ratios;
-                    break;
-                case  3:
-                    $risk += 0.15 * $ratios;
-                    break;
-                case  4:
-                    $risk += 0.1 * $ratios;
-                    break;
-                default:
-                    $risk += 0.1 * $ratios;
-            }
-        }
-
-        return round($risk * 100,3);
-    }
 }

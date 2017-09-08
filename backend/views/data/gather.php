@@ -76,7 +76,7 @@
                                 var city_id = $(this).val();
                                 $.get(url, {p_id:city_id}, function(data){
                                     var dom = "<option value=''>选择县</option>";
-                                    var t = "?<?= $sear['county'] ?>";
+                                    var t = "<?= $sear['county'] ?>";
                                     $.each(data, function (k, v) {
                                         dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
                                     })
