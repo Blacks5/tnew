@@ -160,6 +160,8 @@ class CustomerController extends CoreBackendController
                 $customer = new Customer();
                 $customer->updateBank($data);
 
+                $trans->commit();
+
                 /*$sql = "select * from ". Customer::tableName(). " where c_id=:c_id limit 1 for update";
                 $Customer = Customer::findBySql($sql, [':c_id'=>$data['customer_id']])->one();
                 if(false === !empty($Customer)){

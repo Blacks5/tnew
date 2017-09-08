@@ -13,6 +13,7 @@ use backend\core\CoreBackendModel;
 use common\components\Helper;
 use common\models\Orders;
 use common\models\Repayment;
+use common\models\User;
 use function GuzzleHttp\Promise\all;
 use yii;
 
@@ -103,9 +104,7 @@ class DataSearch extends CoreBackendModel
     public function getUserList()
     {
         $userList = User::find()
-            ->select(['user.id', 'user.realname'])
             ->where(['!=', 'username', 'admin'])
-            ->andWhere(['!=', 'status', \common\models\User::STATUS_DELETE])
             ->andWhere(['department_id'=> 26])
             ->filterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'realname' ,$this->realname])
@@ -119,9 +118,8 @@ class DataSearch extends CoreBackendModel
     /**
      * 获取平台信息
      * @return array
-     * @author OneStep
      */
-    public function getLoanTotal($param = NULL)
+    /*public function getLoanTotal($param = NULL)
     {
         $this->load($param);
         if(!$this->validate()){
@@ -170,6 +168,84 @@ class DataSearch extends CoreBackendModel
             'service'   => round($this->service, 0),
             'user'      => $userList,
             'sear'      => $this->getAttributes(),
+        ];
+
+    }*/
+    /**
+     * 获取平台信息(重构的)
+     * @param null $param
+     * @return array
+     * @author OneStep
+     */
+    public function getLoanTotal($param = null)
+    {
+        $this->load($param);
+        if(!$this->validate()){
+            return [];
+        }
+
+        if(!empty($this->start_time)){
+            $this->start_time = strtotime($this->start_time);
+        }
+        if(!empty($this->end_time)){
+            $this->end_time = strtotime($this->end_time);
+        }
+
+        $userQuery = $this->getUserList();
+        $userInOrder = $userQuery->select('id')->column();
+
+        $query = Orders::find()
+            ->leftJoin(User::tableName(),'id=o_user_id')
+            ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
+            ->where(['in', 'orders.o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER, ]])
+            ->andWhere(['in', 'orders.o_user_id', $userInOrder]);
+
+         $totalQuery = clone $query;
+         $listQuery = clone $query;
+         $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
+             ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
+         $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
+             ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
+
+        $total = $totalQuery->select(['sum(r_principal) as principal,sum(r_interest) as interest,sum(r_overdue_money) as overdue_total'])->asArray()->one();
+        //var_dump($tota);die;
+        $data['principal']  = round($total['principal'], 0);   //本金
+        $data['interest']   = round($total['interest'], 0);    //利息
+        $data['total'] = $data['principal'] + $data['interest']; //本息
+
+        $overdueQuery = clone $listQuery;
+        $repay = $listQuery->select([
+            'sum(r_add_service_fee) as service,
+            sum(r_free_pack_fee) as pack,
+            sum(r_overdue_money) as overdue_back,
+            sum(r_principal) as repay_principal,
+            sum(r_interest) as repay_interest'
+        ])->andWhere(['!=', 'repayment.r_repay_date', 0])->asArray()->one();
+
+        $data['service']    = round($repay['service'], 0);      //已回收个人服务包金额
+        $data['pack']    = round($repay['pack'], 0);       //已回收个人保障金额
+        $data['overdue_back']   =   round($repay['overdue_back'], 0);  //已回收滞纳金
+        $data['repay_principal']    = round($repay['repay_principal'], 0);    //已还本金
+        $data['repay_interest']     = round($repay['repay_interest'], 0);     //已还利息
+
+        $overdue = $overdueQuery->select(['
+            sum(r_principal) as overdue_principal,
+            sum(r_interest) as overdue_interest,
+            sum(r_overdue_money) as overdue_not'
+        ])->andWhere(['repayment.r_repay_date'=>0])->asArray()->one();
+
+        $data['repay_total']        = $data['repay_interest'] + $data['repay_principal'];       //已还本息
+        $data['overdue_principal']  = round($overdue['overdue_principal'], 0);        //未回收本金
+        //var_dump($listQuery->andWhere(['repayment.r_repay_date'=>0])->createCommand()->getRawSql());die;
+        $data['overdue_interest']   = round($overdue['overdue_interest'], 0);      //未还利息
+        $data['overdue_not'] = round($overdue['overdue_not']); //未回收滞纳金
+        $data['overdue_total'] = $data['overdue_not'] + $data['overdue_back']; //总滞纳金
+
+
+        return [
+          'data' => $data,
+          'user' => $userQuery->select('realname')->all(),
+          'sear' => $this->getAttributes(),
         ];
 
     }

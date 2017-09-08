@@ -315,7 +315,6 @@ class ReturnMoney extends AbstractYijifu
             'operateType'=>'MODIFY_SIGN',
         ];
 
-
         $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";
 
         $common = $this->getCommonParams();
@@ -330,7 +329,7 @@ class ReturnMoney extends AbstractYijifu
         $status = 3; // 接口调用失败
         $reuturn = false;
         if($response->getIsOk()){
-//            var_dump($response->getIsOk());
+
             $ret = $response->getData();
 
             /*ob_start();
@@ -345,7 +344,7 @@ class ReturnMoney extends AbstractYijifu
                 $status = 2; // 等待回掉
                 $reuturn = true;
 
-                $yijifu_sign =  YijifuSign::find()->where(['o_serial_id'=>$yijifu['o_serial_id']])->one();
+                $yijifu_sign =  YijifuSign::findOne(['o_serial_id'=>$yijifu['o_serial_id']]);
 
                 $logs['old_merchOrderNo'] = $yijifu_sign->merchOrderNo;
                 $logs['orderNo'] = $yijifu_sign->orderNo;
@@ -354,22 +353,18 @@ class ReturnMoney extends AbstractYijifu
                 $logs['bankCode'] = $yijifu_sign->bankCode;
                 $logs['bankCardType'] = $yijifu_sign->bankCardType;
 
-                $update = YijifuSign::updateAll(['merchOrderNo'=>$param_arr['merchOrderNo'], 'status'=>$status, 'orderNo'=>$ret['orderNo'] , 'logs'=>$logs],
-                    ['o_serial_id'=>$yijifu['o_serial_id']]);
-                /*$yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
+                $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
                 $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
                 $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
-                $yijifu_sign->logs = json_encode($logs);*/
-                if($update == 0){
-                    $reuturn = false;
+                $yijifu_sign->logs = json_encode($logs);
+                if(false === $yijifu_sign->save(false)){
+                    throw new CustomCommonException('修改签约失败!');
                 }
             }else{
                 throw new CustomCommonException($ret['resultMessage']);
             }
         }
 
-
-//        var_dump($reuturn);die;
         return $reuturn;
     }
 
