@@ -1088,7 +1088,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 $oSerialId = Orders::findBySql("select o_serial_id from orders where o_id = $order_id")->one();
                 $merchOrderNo = YijifuSign::findBySql("select merchOrderNo from yijifu_sign where o_serial_id=" . $oSerialId['o_serial_id'] . " and status=1")->one();
                 $handle = new ReturnMoney();
-                $handle->deduct($oSerialId['o_serial_id'], $refund_id,  $merchOrderNo['merchOrderNo'], $price, 'borrownew/deduct-callback');
+                $handle->deduct($oSerialId['o_serial_id'], $refund_id,  $merchOrderNo['merchOrderNo'], $price, '/borrownew/deduct-callback');
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '扣款请求发起成功，请等待注意查看通知！'];
