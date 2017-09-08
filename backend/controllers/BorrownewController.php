@@ -1107,14 +1107,15 @@ left join customer on customer.c_id=orders.o_customer_id
         }
     }
 
-    public function actionTa($orderId){
-        $handle = new ReturnMoney();
-        $data = $handle->queryDeduct($orderId);
-        $signed = $handle->querySignedCustomer($orderId);
-        echo '<pre>';
-        var_dump($data);
-        var_dump($signed);
-        echo '</pre>';
+    public function actionTa(){
+//        $handle = new ReturnMoney();
+//        $data = $handle->queryDeduct($orderId);
+//        $signed = $handle->querySignedCustomer($orderId);
+        $this->actionDeductCallback();
+//        echo '<pre>';
+//        var_dump($data);
+//        var_dump($signed);
+//        echo '</pre>';
     }
 
 
@@ -1124,7 +1125,7 @@ left join customer on customer.c_id=orders.o_customer_id
      */
     public function actionDeductCallback()
     {
-        $post = Yii::$app->getRequest()->post();
+        $post = Yii::$app->getRequest()->get();
 
         @file_put_contents('deduct_callback.log' , json_encode($post , JSON_UNESCAPED_UNICODE));
 
@@ -1153,6 +1154,7 @@ left join customer on customer.c_id=orders.o_customer_id
             if(($post['status'] == 'WITHHOLD_SUCCESS') || ($post['status'] == 'SETTLE_SUCCESS')){
                 $trans = Yii::$app->getDb()->beginTransaction();
                 try{
+
                     $status_str = [
                         'INIT' => '待处理', // 待处理
                         'WITHHOLD_DEALING' => '代扣处理中', // 代扣处理中
@@ -1165,37 +1167,53 @@ left join customer on customer.c_id=orders.o_customer_id
 
 
                     $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
-                    $yijifu_data['repayment_id'] = explode('-',$yijifu_data['repayment_id']);
 
 
+                    $yijifu_data['repayment_id'] = implode(',' , explode('-',$yijifu_data['repayment_id']));
 
 
-
+//                    $str = '';
+//                    for($i = 0;$i < count($yijifu_data['repayment_id']);$i++){
+//                        $str .= "'" . $yijifu_data['repayment_id'][$i] . "'," ;
+//                    }
+//                    $str = substr($str,0,-1);
                     $sql = "select * from ". Repayment::tableName()." where r_id in (:r_id) and r_status=:r_status limit 1 for update";
-                    if (!$repay_model = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_id'], ':r_status' => Repayment::STATUS_NOT_PAY])->all()) {
+//                    var_dump($yijifu_data['repayment_id']);exit;
+//                    echo Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_id'], ':r_status' => Repayment::STATUS_NOT_PAY])->createCommand()->getRawSql();exit;
+
+                    $repay_model_arr = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_id'], ':r_status' => Repayment::STATUS_NOT_PAY])->all();
+                    if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
                     }
 
-                    $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
-                    $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间
-                    $repay_model->r_operator_id = $yijifu_data['operator_id']; // 操作人ID
-                    $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 操作时间
-                    if (!$repay_model->save(false)) {
-                        throw new CustomBackendException('还款操作失败', 5);
-                    }
-                    // 如果是最后一期，再把order表的状态改了
-                    if($repay_model->r_is_last == 1){
-                        if(Orders::updateAll(['o_status'=>Orders::STATUS_PAY_OVER], ['o_id'=>$repay_model->r_orders_id]) != 1){
+                    foreach ($repay_model_arr as $repay_model){
+                        $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
+                        $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间
+                        $repay_model->r_operator_id = $yijifu_data['operator_id']; // 操作人ID
+                        $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 操作时间
+
+                        if (!$repay_model->save(false)) {
+                            $trans->rollBack();
                             throw new CustomBackendException('还款操作失败', 5);
                         }
-                    }
-                    //累积客户的 总支付利息
-                    $sql = "select * from customer where c_id=".$repay_model->r_customer_id. " limit 1 for update";
-                    $c = Customer::findBySql($sql)->one();
-                    $c->c_total_interest += $repay_model->r_total_repay+ $repay_model->r_overdue_money;
-                    $c->save(false);
 
-                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
+                        // 如果是最后一期，再把order表的状态改了
+                        if($repay_model->r_is_last == 1){
+                            if(Orders::updateAll(['o_status'=>Orders::STATUS_PAY_OVER], ['o_id'=>$repay_model->r_orders_id]) != 1){
+                                $trans->rollBack();
+                                throw new CustomBackendException('还款操作失败', 5);
+                            }
+                        }
+
+                        //累积客户的 总支付利息
+                        $sql = "select * from customer where c_id=".$repay_model->r_customer_id. " limit 1 for update";
+                        $c = Customer::findBySql($sql)->one();
+                        $c->c_total_interest += $repay_model->r_total_repay+ $repay_model->r_overdue_money;
+                        $c->save(false);
+
+                        $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
+                    }
+
                     $trans->commit();
                     echo "success";
                 }catch (CustomCommonException $e){
