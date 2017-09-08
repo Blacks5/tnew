@@ -1125,7 +1125,7 @@ left join customer on customer.c_id=orders.o_customer_id
      */
     public function actionDeductCallback()
     {
-        $post = Yii::$app->getRequest()->get();
+        $post = Yii::$app->getRequest()->post();
 
         @file_put_contents('deduct_callback.txt' , json_encode($post , JSON_UNESCAPED_UNICODE));
 
