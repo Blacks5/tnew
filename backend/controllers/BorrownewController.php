@@ -966,11 +966,10 @@ left join customer on customer.c_id=orders.o_customer_id
             $x = $this->day($data);
             if($x == null){
                 $totalPrice = $data[0]['r_total_repay'];
-                for($i = 1;$i < count($data);$i++){
-                    $totalPrice += $data[0]['r_principal'];
+                for($i = 1;$i < $expected;$i++){
+                    $totalPrice += $this->getFloat($data[0]['r_principal']);
                 }
-            }
-            if($x >= 0) {
+            }else if($x >= 0) {
                 if ($data[$x]['r_status'] == 10) {//当期已还的
                     $totalPrice = $this->already($data, $expected);
                 } else {//当期未还的
