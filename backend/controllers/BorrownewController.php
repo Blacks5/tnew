@@ -1216,7 +1216,12 @@ left join customer on customer.c_id=orders.o_customer_id
         $client->send($jsonData);
     }
 
-
+    /**
+     * ajax 修改商品串码
+     * @return array
+     * @throws CustomCommonException
+     * @author OneStep
+     */
     public function actionUpdateProductCode()
     {
         $post = Yii::$app->request->post();

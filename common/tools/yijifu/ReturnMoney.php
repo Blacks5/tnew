@@ -329,10 +329,7 @@ class ReturnMoney extends AbstractYijifu
         $status = 3; // 接口调用失败
         $reuturn = false;
         if($response->getIsOk()){
-<<<<<<< HEAD
-=======
-//            var_dump($response->getIsOk());
->>>>>>> 882c8eb9942ace0ed3753f5a6cd936932777f13b
+
             $ret = $response->getData();
 
             /*ob_start();
@@ -368,12 +365,6 @@ class ReturnMoney extends AbstractYijifu
             }
         }
 
-
-<<<<<<< HEAD
-        //var_dump($reuturn);die;
-=======
-//        var_dump($reuturn);die;
->>>>>>> 882c8eb9942ace0ed3753f5a6cd936932777f13b
         return $reuturn;
     }
 
