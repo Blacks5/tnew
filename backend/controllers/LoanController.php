@@ -229,7 +229,7 @@ class LoanController extends CoreBackendController
 //                Yii::getLogger()->log($post);
 
 
-                Yii::$app->log->info(json_encode($post , JSON_UNESCAPED_UNICODE));
+//                Yii::$app->log->info(json_encode($post , JSON_UNESCAPED_UNICODE));
 
                 if(!$post['outOrderNo']){
                     echo 'success';
