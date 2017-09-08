@@ -431,10 +431,35 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div>
                             <label class="col-sm-2 control-label">商品代码：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['o_product_code'] ? $model['o_product_code'] : '暂未填写'; ?></p>
+                                <p class="form-control-static" id="product_code"><?= $model['o_product_code'] ? $model['o_product_code'] : '暂未填写'; ?></p>
+                                <p class="form-control-static"><button class="btn btn-info btn-xs" id="update-product">修改</button> </p>
                             </div>
                         </div>
-
+                        <script>
+                            $('#update-product').click(function(){
+                                var value = $('#product_code').html();
+                                var html = "<input type='text' class='form-control' id='o_product_code' value='"+value+"' autofocus>";
+                                $(this).hide();
+                                $('#product_code').html(html);
+                            });
+                            $(document).on('blur','#o_product_code',function(){
+                                var url = "<?= \yii\helpers\Url::toRoute('/borrownew/update-product-code') ?>";
+                                var value = $('#o_product_code').val();
+                                var postData = {
+                                    'o_product_code': $('#o_product_code').val(),
+                                    'o_id':"<?= $model['o_id'] ?>"
+                                };
+                                $.post(url, postData, function(data){
+                                    if(data.status==1){
+                                        layer.msg('修改商品代码成功',{icon:1});
+                                        $('#product_code').html(value);
+                                        $('#update-product').show();
+                                    }else{
+                                        layer.msg('修改失败!',{icon:2});
+                                    }
+                                })
+                            })
+                        </script>
                     </div>
                 <?php } ?>
                 <?php if($loan_data){ ?>

@@ -1204,4 +1204,19 @@ left join customer on customer.c_id=orders.o_customer_id
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
         $client->send($jsonData);
     }
+
+
+    public function actionUpdateProductCode()
+    {
+        $post = Yii::$app->request->post();
+        Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
+        $order = Orders::findOne($post['o_id']);
+        $order->o_product_code = $post['o_product_code'];
+
+        if(false === $order->save(false)){
+            throw new CustomCommonException('修改商品编号失败!');
+        }
+
+        return ['status'=>1, 'message'=>'修改成功!'];
+    }
 }
