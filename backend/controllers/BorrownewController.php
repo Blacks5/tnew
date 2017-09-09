@@ -996,7 +996,6 @@ left join customer on customer.c_id=orders.o_customer_id
     }
 
     private function getNextMonthDays($date){
-        var_dump($date);exit;
         $timestamp=strtotime($date);
         $arr=getdate($timestamp);
         if($arr['mon'] == 12){
