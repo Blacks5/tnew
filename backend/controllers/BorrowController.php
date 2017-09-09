@@ -207,6 +207,7 @@ class BorrowController extends CoreBackendController
 //            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
             return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum, 'jzq_sign_log'=>$jzq_sign_log, 'not_yet_count'=>count($notYet), 'all_periods'=>$allPeriods]);
         }
+
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
 

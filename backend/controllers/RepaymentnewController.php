@@ -67,7 +67,8 @@ class RepaymentnewController extends CoreBackendController
         foreach ($data as $k => $v){
             $n = 2;
             $data[$k]['can_update_time'] = 0;
-            if($v['o_is_free_pack_fee']==1 && $v['r_overdue_day']<4 && $v['o_number_of_modify_date']<4 &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
+            $can = Repayment::find()->where(['r_orders_id'=>$v['r_orders_id']])->andWhere(['<', 'r_overdue_day', 4])->one();
+            if($v['o_is_free_pack_fee']==1 && $v['r_orders_id']== $can['r_orders_id'] &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
                 $data[$k]['can_update_time'] = 1;
             }
             $v['o_total_price'] = round($v['o_total_price'], $n);

@@ -150,6 +150,18 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <p class="form-control-static"><?= $model['p_customer_management']; ?></p>
                         </div>
                     </div>
+                    <div>
+                        <label class="col-sm-2 control-label">商户服务费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_service_fee']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">查询费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_inquiry_fee']; ?></p>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -554,13 +566,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 <button class="btn btn-danger failpic">照片不合格</button>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/edit-product-code']))) { ?>
-                                <button class="btn btn-danger" id="add_product_code">
-                                    <?php if($model['o_product_code']){ ?>
-                                        编辑商品代码
-                                    <?php }else{ ?>
-                                        添加商品代码
-                                    <?php } ?>
-                                </button>
+
                             <?php } ?>
                         </div>
                     </div>
