@@ -966,7 +966,7 @@ left join customer on customer.c_id=orders.o_customer_id
 
             for($i = 0;$i < count($data);$i++){
                 if(date('Y-m',$data[$i]['r_pre_repay_date']) == $this->getNextMonthDays(date('Y-m')) || date('Y-m',$data[$i]['r_pre_repay_date']) == date('Y-m')){
-                    $totalPrice += $data[$i]['r_total_repay'];
+                    $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
                 }else{
                     if($data[$i]['r_overdue_money'] > 0){
                         $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
