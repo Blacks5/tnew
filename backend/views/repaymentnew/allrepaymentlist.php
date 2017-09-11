@@ -95,7 +95,7 @@ use yii\helpers\Url;
                                                             <?php } ?>
 
                                                             <?php  if($_v['r_status'] !== '10') { /*未还款才显示*/ ?>
-                                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
+                                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repaymentnew/repay']))) { ?>
                                                                     <button data-value="<?= $_v['r_id'] ?>"
                                                                             class="btn btn-info btn-xs repay"><i
                                                                             class="fa fa-folder"></i>
@@ -139,7 +139,7 @@ use yii\helpers\Url;
         <?php
         $this->registerJs('
 $(".repay").click(function(env){
-    var url = "' . Url::toRoute(['repayment/repay']) . '";
+    var url = "' . Url::toRoute(['repaymentnew/repay']) . '";
     var r_id = $(env.target).attr("data-value");
     layer.confirm("确定要进行还款操作吗？", {title:"还款操作", icon:3}, function(index){
         var loading = layer.load(4);
