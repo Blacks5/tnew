@@ -62,10 +62,10 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_front_id">
+                                    <span class="weui-uploader__input" imgattr="oi_front_id"></span>
                                 </div>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_back_id">
+                                    <span class="weui-uploader__input" imgattr="oi_back_id"></span>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_customer">
+                                    <span class="weui-uploader__input" imgattr="oi_customer"></span>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_front_bank">
+                                    <span class="weui-uploader__input" imgattr="oi_front_bank"></span>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_proxy_prove">
+                                    <span class="weui-uploader__input" imgattr="oi_proxy_prove"></span>
                                 </div>
                             </div>
                         </div>
@@ -137,10 +137,10 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_family_card_one">
+                                    <span class="weui-uploader__input" imgattr="oi_family_card_one"></span>
                                 </div>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_family_card_two">
+                                    <span class="weui-uploader__input" imgattr="oi_family_card_two"></span>
                                 </div>
                             </div>
                         </div>
@@ -158,10 +158,10 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_driving_license_one">
+                                    <span class="weui-uploader__input" imgattr="oi_driving_license_one"></span>
                                 </div>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_driving_license_two">
+                                    <span class="weui-uploader__input" imgattr="oi_driving_license_two"></span>
                                 </div>
                             </div>
                         </div>
@@ -180,7 +180,7 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_after_contract">
+                                    <span class="weui-uploader__input" imgattr="oi_after_contract"></span>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +198,7 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_pick_goods">
+                                    <span class="weui-uploader__input" imgattr="oi_pick_goods"></span>
                                 </div>
                             </div>
                         </div>
@@ -216,7 +216,7 @@
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files"></ul>
                                 <div class="weui-uploader__input-box">
-                                    <input class="weui-uploader__input" type="file" accept="image/*" multiple="" imgattr="oi_serial_num">
+                                    <span class="weui-uploader__input" imgattr="oi_serial_num"></span>
                                 </div>
                             </div>
                         </div>
@@ -248,7 +248,14 @@
 $(function(){
     FastClick.attach(document.body);
 
-    wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+    wx.config(<?php echo $js->config(['hideMenuItems' , 'chooseImage' , 'previewImage' , 'uploadImage' , 'downloadImage']) ?>);
+
+    // 订单状态
+    const COMPLETE = <?=\common\models\Orders::STATUS_NOT_COMPLETE?>;
+    const UPLOAD_AGAIN = <?=\common\models\Orders::STATUS_WAIT_APP_UPLOAD_AGAIN?>;
+
+    // 提交保存接口
+    var modifyUrl = "<?=Yii::$app->getUrlManager()->createUrl(['order/modify-order'])?>";
 
     wx.ready(function(){
         wx.hideMenuItems({
@@ -266,18 +273,9 @@ $(function(){
                 'menuItem:share:email'
             ]
         });
-    });
 
-    function Page(){
-        // 订单状态
-        this.COMPLETE = <?=\common\models\Orders::STATUS_NOT_COMPLETE?>;
-        this.UPLOAD_AGAIN = <?=\common\models\Orders::STATUS_WAIT_APP_UPLOAD_AGAIN?>;
-        // 上传图片URL
-        this.uploadUrl = "<?=Yii::$app->getUrlManager()->createUrl(['order/upload-image'])?>";
-        // 提交保存
-        this.modifyUrl = "<?=Yii::$app->getUrlManager()->createUrl(['order/modify-order'])?>";
         // 上传照片数据
-        this.data = {
+        var post = {
             actionType : "upload",
             o_id : <?=$order['o_id']?>,
             o_status : <?=$order['o_status']?>,
@@ -293,40 +291,62 @@ $(function(){
             oi_serial_num : "<?=$order['oi_serial_num']?>",
             oi_after_contract : "<?=$order['oi_after_contract']?>",
             oi_proxy_prove : "<?=$order['oi_proxy_prove']?>",
-            o_product_code : ""
+            o_product_code : "<?=$order['o_product_code']?>"
         };
-    }
 
-    Page.prototype.init = function(){
-        var _this = this;
-        // 图片上传绑定
-        $('.weui-uploader__input').uploader({
-            url : _this.url,
-            allowTypes : ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'],
-            maxSize : 10*1024*1024,
-            maxCount : 6,
-            maxWidth : 320,
-            inputName: 'image',
-            data : { o_id : _this.data.o_id},
-            upToken : "<?=$uptoken ?>",
-            success : function(ele , res){
-                var name = ele.attr('imgattr');
-                _this.data[name] = res.key;
-            },
-            error : function(ele){
-                console.log(ele);
-            }
+        // 绑定上传图片
+        $('.weui-uploader__input').bind('click' , function(){
+            // 获取当前input
+            var _that = $(this);
+            // 获取uploader上传容器
+            var uploaderContainer = _that.parents('.weui-uploader');
+            // 获取图片显示容器
+            var filesContainer = uploaderContainer.find('.weui-uploader__files');
+            // 获取input容器
+            var inputContainer = _that.parents('.weui-uploader__input-box');
+            // 获取图片IDName
+            var idName = _that.attr('imgattr');
+            // 选取图片
+            wx.chooseImage({
+                count: 1,
+                sizeType: ['original', 'compressed'],
+                sourceType: ['album', 'camera'],
+                success: function (res) {
+                    // 隐藏当前input容器
+                    inputContainer.hide();
+                    // 插入到预览区  
+                    var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + res.localIds[0] + '" style="width:100%"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
+                    filesContainer.append(preview);
+                    // 上传照片
+                    wx.uploadImage({
+                        localId: '' + res.localIds,
+                        isShowProgressTips: 1,
+                        success: function(res) {
+                            $.toptip('上传成功', 'success');
+                            post[idName] = res.serverId;
+                            preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
+                        },
+                        fail : function(){
+                            $.toptip('上传失败，稍后重试', 'warning');
+                            preview.find('.weui-uploader__file-content').html('<i class="weui-icon-warn"></i>');
+                        }
+                    });
+                },
+                fail : function(){
+                    $.toptip('上传失败，稍后重试', 'warning');
+                }
+            });
         });
 
         // 失去焦点绑定
         $('input[name=o_product_code]').bind('blur' , function(){
-            _this.data.o_product_code = $(this).val();
+            post.o_product_code = $(this).val();
         });
 
         // 绑定提交
         $('#submitBtn').bind('click' , function(){
-            if(_this.data.o_status == _this.COMPLETE || _this.data.o_status == _this.UPLOAD_AGAIN){
-                $.ajaxPost(_this.modifyUrl , _this.data , function(res){
+            if(post.o_status == COMPLETE || post.o_status == UPLOAD_AGAIN){
+                $.ajaxPost(modifyUrl , post , function(res){
                     if(res.status){
                         $.toast(res.message, function(){
                             window.location = "<?= Yii::$app->getUrlManager()->createUrl(['order/wait-order-list'])?>"
@@ -339,11 +359,110 @@ $(function(){
                 $.toast('该订单不存在或已在审核', "text");
             }
         });
-    }
+    });
 
-    // 实例化当前页面
-    var page = new Page;
-    page.init();
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // function Page(){
+    //     // 订单状态
+    //     this.COMPLETE = <?=\common\models\Orders::STATUS_NOT_COMPLETE?>;
+    //     this.UPLOAD_AGAIN = <?=\common\models\Orders::STATUS_WAIT_APP_UPLOAD_AGAIN?>;
+    //     // 上传图片URL
+    //     this.uploadUrl = "<?=Yii::$app->getUrlManager()->createUrl(['order/upload-image'])?>";
+    //     // 提交保存
+    //     this.modifyUrl = "<?=Yii::$app->getUrlManager()->createUrl(['order/modify-order'])?>";
+    //     // 上传照片数据
+    //     this.data = {
+    //         actionType : "upload",
+    //         o_id : <?=$order['o_id']?>,
+    //         o_status : <?=$order['o_status']?>,
+    //         oi_front_id : "<?=$order['oi_front_id']?>",
+    //         oi_back_id : "<?=$order['oi_back_id']?>",
+    //         oi_customer : "<?=$order['oi_customer']?>",
+    //         oi_front_bank : "<?=$order['oi_front_bank']?>",
+    //         oi_family_card_one : "<?=$order['oi_family_card_one']?>",
+    //         oi_family_card_two : "<?=$order['oi_family_card_two']?>",
+    //         oi_driving_license_one : "<?=$order['oi_driving_license_one']?>",
+    //         oi_driving_license_two : "<?=$order['oi_driving_license_two']?>",
+    //         oi_pick_goods : "<?=$order['oi_pick_goods']?>",
+    //         oi_serial_num : "<?=$order['oi_serial_num']?>",
+    //         oi_after_contract : "<?=$order['oi_after_contract']?>",
+    //         oi_proxy_prove : "<?=$order['oi_proxy_prove']?>",
+    //         o_product_code : ""
+    //     };
+    // }
+
+    // Page.prototype.init = function(){
+    //     var _this = this;
+    //     // 图片上传绑定
+    //     $('.weui-uploader__input').uploader({
+    //         url : _this.url,
+    //         allowTypes : ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'],
+    //         maxSize : 10*1024*1024,
+    //         maxCount : 6,
+    //         maxWidth : 320,
+    //         inputName: 'image',
+    //         data : { o_id : _this.data.o_id},
+    //         upToken : "<?=$uptoken ?>",
+    //         success : function(ele , res){
+    //             var name = ele.attr('imgattr');
+    //             _this.data[name] = res.key;
+    //         },
+    //         error : function(ele){
+    //             console.log(ele);
+    //         }
+    //     });
+
+    //     // 失去焦点绑定
+    //     $('input[name=o_product_code]').bind('blur' , function(){
+    //         _this.data.o_product_code = $(this).val();
+    //     });
+
+    //     // 绑定提交
+    //     $('#submitBtn').bind('click' , function(){
+    //         if(_this.data.o_status == _this.COMPLETE || _this.data.o_status == _this.UPLOAD_AGAIN){
+    //             $.ajaxPost(_this.modifyUrl , _this.data , function(res){
+    //                 if(res.status){
+    //                     $.toast(res.message, function(){
+    //                         window.location = "<?= Yii::$app->getUrlManager()->createUrl(['order/wait-order-list'])?>"
+    //                     });
+    //                 }else{
+    //                     $.toast(res.message, "text");
+    //                 }
+    //             });
+    //         }else{
+    //             $.toast('该订单不存在或已在审核', "text");
+    //         }
+    //     });
+    // }
+
+    // // 实例化当前页面
+    // var page = new Page;
+    // page.init();
 });
 </script>
 </html>
