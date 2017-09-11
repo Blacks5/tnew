@@ -48,7 +48,7 @@
             逾期订单
         </p>
     </a>
-    <a href="form.html" class="weui-grid js_grid">
+    <a href="javascript:void(0);" class="weui-grid js_grid message-center">
         <div class="weui-grid__icon">
             <img src="/wechat/images/msg.png" alt="">
         </div>
@@ -56,7 +56,7 @@
             消息中心
         </p>
     </a>
-    <a href="dialog.html" class="weui-grid js_grid">
+    <a href="javascript:void(0);" class="weui-grid js_grid my-qrcode">
         <div class="weui-grid__icon">
             <img src="/wechat/images/icon_nav_dialog.png" alt="">
         </div>
@@ -81,7 +81,7 @@
     $(function() {
         FastClick.attach(document.body);
 
-        wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+        wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
         wx.ready(function(){
             wx.hideMenuItems({
@@ -98,6 +98,18 @@
                     'menuItem:openWithSafari',
                     'menuItem:share:email'
                 ]
+            });
+        });
+
+        $('.message-center').bind('click' , function(){
+            $.alert("暂未开放此功能，敬请期待！", "敬请期待！", function() {
+              //点击确认后的回调函数
+            });
+        });
+
+        $('.my-qrcode').bind('click' , function(){
+            $.alert("暂未开放此功能，敬请期待！", "敬请期待！", function() {
+              //点击确认后的回调函数
             });
         });
     });

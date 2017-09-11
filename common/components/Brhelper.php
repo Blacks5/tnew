@@ -26,6 +26,8 @@ class Brhelper {
 	private $retry = 1;
 	// retried times
 	private $retried = 0;
+	// error message
+	private $error = '';
 
 	/**
 	 * 登录操作
@@ -72,6 +74,8 @@ class Brhelper {
 	public function check($data = []) {
 		// 获取tokenid
 		if (!$tokenid = $this->getTokenId()) {
+			$this->setError('验证失败');
+
 			return false;
 		}
 
@@ -85,7 +89,7 @@ class Brhelper {
 			'id' => $data['idcard'],
 			'cell' => $data['mobile'],
 			'bank_id' => $data['creditcard'],
-			'name' => $data['realname']
+			'name' => $data['realname'],
 		]);
 
 		$postData = array(
@@ -102,13 +106,33 @@ class Brhelper {
 		$response = json_decode($response, true);
 
 		// 返回结果信息
-		if (isset($response['code']) && $response['code'] == '600000') {
-			if(isset($response['product']['result']) && $response['product']['result'] == 0){
-				return true;
+		if (isset($response['code'])) {
+			if ($response['code'] == '600000') {
+				if (isset($response['product']['result']) && $response['product']['result'] == 0) {
+					return true;
+				} else {
+					$this->setError('客户信息不匹配');
+					return false;
+				}
+			}
+
+			if ($response['code'] == '600002') {
+				$this->setError('今日验证机会已用完');
+				return false;
 			}
 		}
 
+		$this->setError('身份验证失败');
+
 		return false;
+	}
+
+	public function setError($error) {
+		$this->error = $error;
+	}
+
+	public function getError() {
+		return $this->error;
 	}
 
 	/**

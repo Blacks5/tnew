@@ -31,9 +31,9 @@ class Order {
 		$session = Yii::$app->session;
 
 		// 获取其他数据
-		$params['o_is_auto_pay'] = isset($params['o_is_auto_pay']) ? $params['o_is_auto_pay'] : 0;
-		$params['o_is_free_pack_fee'] = isset($params['o_is_free_pack_fee']) ? $params['o_is_free_pack_fee'] : 0;
-		$params['o_is_add_service_fee'] = isset($params['o_is_add_service_fee']) ? $params['o_is_add_service_fee'] : 0;
+		$params['o_is_auto_pay'] = isset($params['o_is_auto_pay']) && $params['o_is_auto_pay'] == 'on' ? 1 : 0;
+		$params['o_is_free_pack_fee'] = isset($params['o_is_free_pack_fee']) && $params['o_is_free_pack_fee'] == 'on' ? 1 : 0;
+		$params['o_is_add_service_fee'] = isset($params['o_is_add_service_fee']) && $params['o_is_add_service_fee'] == 'on' ? 1 : 0;
 		$params['c_customer_id_card_endtime'] = isset($params['c_customer_id_card_endtime']) ? strtotime($params['c_customer_id_card_endtime']) : 0;
 
 		$data['data'] = $params;
@@ -80,7 +80,7 @@ class Order {
 		}
 
 		// 四要素验证
-		$status = $this->checkCustomerInfo(
+		list($status, $error) = $this->checkCustomerInfo(
 			$params['c_customer_name'],
 			$params['c_customer_cellphone'],
 			$params['c_customer_id_card'],
@@ -89,7 +89,7 @@ class Order {
 
 		if (!$status) {
 			$trans->rollBack();
-			throw new CustomCommonException('身份验证失败');
+			throw new CustomCommonException($error);
 		}
 
 		$customerModel->c_created_at = $_SERVER['REQUEST_TIME'];
@@ -158,7 +158,8 @@ class Order {
 
 		// 提交数据
 		$trans->commit();
-		return true;
+
+		return $ordersModel->o_id;
 	}
 
 	/**
@@ -170,14 +171,20 @@ class Order {
 	 * @return [type]             [description]
 	 */
 	public function checkCustomerInfo($realname, $mobile, $idcard, $creditcard) {
-		$status = \Yii::$app->bair->check([
+		$bair = \Yii::$app->bair;
+
+		$status = $bair->check([
 			'idcard' => $idcard,
 			'mobile' => $mobile,
 			'creditcard' => $creditcard,
 			'realname' => $realname,
 		]);
 
-		return $status;
+		if ($status) {
+			return [true, ''];
+		} else {
+			return [false, $bair->getError()];
+		}
 	}
 
 	/**
@@ -370,30 +377,14 @@ class Order {
 				throw new CustomCommonException('该订单异常');
 			}
 
-			// 获取商品信息
-			$goodsModel = Goods::findOne([
-				'g_order_id' => $orderModel->o_id,
-			]);
-
-			if (!$goodsModel) {
-				$trans->rollBack();
-				throw new CustomCommonException('该订单异常');
-			}
-
-			$goodsModel->scenario = 'clientValidate2';
-			$goodsModel->load(['data' => [
-				'g_goods_serial_no' => $params['g_goods_serial_no'],
+			$orderModel->scenario = 'clientValidate2';
+			$orderModel->load(['data' => [
+				'o_product_code' => $params['o_product_code'],
 			]], 'data');
-			if (!$goodsModel->validate()) {
+			if (!$orderModel->validate()) {
 				$trans->rollBack();
-				$msg = $goodsModel->getFirstErrors();
+				$msg = $orderModel->getFirstErrors();
 				throw new CustomCommonException(reset($msg));
-			}
-
-			// 修改订单商品信息
-			if (!$goodsModel->save(false)) {
-				$trans->rollBack();
-				throw new CustomCommonException('保存失败');
 			}
 
 			$data = ['data' => [
@@ -476,9 +467,9 @@ class Order {
 		}
 
 		// 获取其他数据
-		$params['o_is_auto_pay'] = isset($params['o_is_auto_pay']) ? $params['o_is_auto_pay'] : 0;
-		$params['o_is_free_pack_fee'] = isset($params['o_is_free_pack_fee']) ? $params['o_is_free_pack_fee'] : 0;
-		$params['o_is_add_service_fee'] = isset($params['o_is_add_service_fee']) ? $params['o_is_add_service_fee'] : 0;
+		$params['o_is_auto_pay'] = isset($params['o_is_auto_pay']) && $params['o_is_auto_pay'] == 'on' ? 1 : 0;
+		$params['o_is_free_pack_fee'] = isset($params['o_is_free_pack_fee']) && $params['o_is_free_pack_fee'] == 'on' ? 1 : 0;
+		$params['o_is_add_service_fee'] = isset($params['o_is_add_service_fee']) && $params['o_is_add_service_fee'] == 'on' ? 1 : 0;
 
 		// 验证其他数据
 		$ordersModel = new Orders();
@@ -526,7 +517,7 @@ class Order {
 
 		// 四要素验证
 		if ($scenario == 'clientValidate1') {
-			$status = $this->checkCustomerInfo(
+			list($status, $error) = $this->checkCustomerInfo(
 				$params['c_customer_name'],
 				$params['c_customer_cellphone'],
 				$params['c_customer_id_card'],
@@ -534,7 +525,7 @@ class Order {
 			);
 
 			if (!$status) {
-				throw new CustomCommonException('身份验证失败');
+				throw new CustomCommonException($error);
 			}
 		}
 

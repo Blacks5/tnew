@@ -50,7 +50,7 @@
         $(function(){
             FastClick.attach(document.body);
 
-            wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+            wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
             wx.ready(function(){
                 wx.hideMenuItems({
@@ -217,9 +217,10 @@
                             var item = res.data.data[i];
                             html += '<div class="weui-form-preview"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div>';
 
+                            html += '<div class="weui-form-preview__item"><label class="weui-form-preview__label">状态描述</label><span class="weui-form-preview__value">' + (item.o_operator_remark ? item.o_operator_remark : '暂无') + '</span></div>';
+
                             switch(parseInt(item.o_status)){
                                 case _this.REFUSE:
-                                    html += '<div class="weui-form-preview__item"><label class="weui-form-preview__label">拒绝原因</label><span class="weui-form-preview__value">' + item.o_operator_remark + '</span></div>';
                                     status  = '已拒绝';
                                 break;
 

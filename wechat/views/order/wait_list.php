@@ -51,7 +51,7 @@
         $(function(){
             FastClick.attach(document.body);
 
-            wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+            wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
             wx.ready(function(){
                 wx.hideMenuItems({
@@ -224,7 +224,7 @@
 
                         for(var i in res.data.data){
                             var item = res.data.data[i];
-                            html += '<div class="weui-form-preview" data-o-id="' + item.o_id +'" data-o-status="' +item.o_status+ '"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div></div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">';
+                            html += '<div class="weui-form-preview" data-o-id="' + item.o_id +'" data-o-status="' +item.o_status+ '"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">状态描述</label><span class="weui-form-preview__value">' + (item.o_operator_remark ? item.o_operator_remark : '暂无') + '</span></div></div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">';
 
                             switch(parseInt(item.o_status)){
                                 case _this.WAIT_CHECK:
