@@ -248,7 +248,7 @@
 $(function(){
     FastClick.attach(document.body);
 
-    wx.config(<?php echo $js->config(['hideMenuItems' , 'chooseImage' , 'previewImage' , 'uploadImage' , 'downloadImage']) ?>);
+    wx.config(<?php echo $js->config(['hideMenuItems' , 'chooseImage' , 'previewImage' , 'uploadImage' , 'downloadImage' , 'getLocalImgData']) ?>);
 
     // 订单状态
     const COMPLETE = <?=\common\models\Orders::STATUS_NOT_COMPLETE?>;
@@ -312,11 +312,26 @@ $(function(){
                 sizeType: ['original', 'compressed'],
                 sourceType: ['album', 'camera'],
                 success: function (res) {
-                    // 隐藏当前input容器
-                    inputContainer.hide();
-                    // 插入到预览区  
-                    var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + res.localIds[0] + '" style="width:100%"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
-                    filesContainer.append(preview);
+                    if(wx.getLocalImgData){
+                        wx.getLocalImgData({
+                            localId: res.localIds[0], // 图片的localID
+                            success: function (res) {
+                                var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                                // 隐藏当前input容器
+                                inputContainer.hide();
+                                // 插入到预览区  
+                                var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + localData + '" style="width:100%"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
+                                filesContainer.append(preview);
+                            }
+                        });
+                    }else{
+                        // 隐藏当前input容器
+                        inputContainer.hide();
+                        // 插入到预览区  
+                        var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + res.localIds + '" style="width:100%"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
+                        filesContainer.append(preview);
+                    }
+                    
                     // 上传照片
                     wx.uploadImage({
                         localId: '' + res.localIds,
