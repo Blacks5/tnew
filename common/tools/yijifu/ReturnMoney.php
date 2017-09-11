@@ -223,6 +223,7 @@ class ReturnMoney extends AbstractYijifu
             'operator_id'=>$operator_id,
             'status'=>$status,
             'repayment_id'=>$repayment_id,
+            'repayment_ids'=>$repayment_id,
 //            'description'=>$ret['resultMessage'],
 //            'errorCode'=>$ret['errorCode']
         ];
