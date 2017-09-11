@@ -401,7 +401,6 @@ left join customer on customer.c_id=orders.o_customer_id
                     $purchasedProductName,
                     $model['o_serial_id'],
                     $responseJson->link, // 签约合同地址
-//                    round($repayment['r_total_repay'] , 3),
                     $loanAmount,
                     $loanAmount
                     );
@@ -1057,16 +1056,18 @@ left join customer on customer.c_id=orders.o_customer_id
 //        return $totalPrice;
 //    }
 //
-//    //获取未还期数数组
-//    private function notYet($arr){
-//        $newArr = array();
-//        foreach($arr as $k => $v){
-//            if($arr[$k]['r_status'] == 1){
-//                $newArr[$k] = $arr[$k];
-//            }
-//        }
-//        return $newArr;
-//    }
+    //获取未还期数数组
+    private function notYet($arr){
+        $newArr = array();
+        $j = 0;
+        foreach($arr as $k => $v){
+            if($arr[$k]['r_status'] == 1){
+                $newArr[$j] = $arr[$k];
+                $j++;
+            }
+        }
+        return $newArr;
+    }
 //
 //    //获取小数点后有多少位小数
 //    private function getFloatLength($num) {

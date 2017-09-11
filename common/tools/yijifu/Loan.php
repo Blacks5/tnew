@@ -102,8 +102,8 @@ class Loan extends AbstractYijifu
 
         //创建一部回调链接
         //$this->notifyUrl = \Yii::$app->urlManager->createAbsoluteUrl(['loan/asyncloan']);
-        $this->notifyUrl = 'http://119.23.15.90:8383/loan/async';
-//        $this->notifyUrl = \Yii::$app->params['domain'] .'/loan/async';
+//        $this->notifyUrl = 'http://119.23.15.90:8383/loan/async';
+        $this->notifyUrl = \Yii::$app->params['domain'] .'/loan/async';
         //$this->returnUrl = 'http://leemoo.ngrok.cc/loan/async';
 
         $common = $this->getCommonParams();
