@@ -494,10 +494,14 @@ class Order {
 		// 临时素材
 		$temporary = static::$app->material_temporary;
 
+		$content = $temporary->getStream($mediaid);
+
+		file_put_contents('../runtime/a.jpg' , $content);
+
 		// 获取内容
-		if ($content = $temporary->getStream($mediaid)) {
+		if ($content) {
 			$remote_server = 'http://up-z2.qiniu.com/putb64/-1';
-			file_put_contents('../runtime/a.jpg' , $content);
+			
 			$base64 = substr($content, strpos($content, ',') + 1);
 
 			// try {
