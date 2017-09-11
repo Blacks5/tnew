@@ -341,11 +341,11 @@ $(function(){
                         success: function(res) {
                             $.toptip('上传成功', 'success');
                             post[idName] = res.serverId;
-                            preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
+                            // preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
                         },
                         fail : function(){
                             $.toptip('上传失败，稍后重试', 'warning');
-                            preview.find('.weui-uploader__file-content').html('<i class="weui-icon-warn"></i>');
+                            // preview.find('.weui-uploader__file-content').html('<i class="weui-icon-warn"></i>');
                         }
                     });
                 },
