@@ -22,6 +22,11 @@ use Yii;
 use yii\db\Query;
 
 class Order {
+	// 微信应用app
+	public static $app = null;
+	// 七牛上传token
+	public static $uptoken = null;
+
 	/**
 	 * 创建订单服务
 	 * @param  [type] $params 数据参数
@@ -332,9 +337,53 @@ class Order {
 			],
 		]);
 
+		$oi = new OrderImages;
+
 		// 订单不存在
 		if (!$orderModel) {
 			throw new CustomCommonException('该订单不存在或已在审核');
+		}
+
+		$must_upload_1 = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_proxy_prove'];
+
+		$must_upload_2 = ['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'];
+
+		// 一审参数
+		if ($orderModel->o_status == Orders::STATUS_NOT_COMPLETE) {
+			// 开始上传
+			foreach ($params as $k => $v) {
+				if (in_array($k, $must_upload_1)) {
+					if ($v) {
+						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
+							$params[$k] = $hash;
+							continue;
+						} else {
+							throw new CustomCommonException($oi->attributeLabels()[$k] . '上传失败');
+						}
+					} else {
+						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
+					}
+				}
+			}
+		}
+
+		// 二审参数
+		if ($orderModel->o_status == Orders::STATUS_WAIT_APP_UPLOAD_AGAIN) {
+			// 开始上传
+			foreach ($params as $k => $v) {
+				if (in_array($k, $must_upload_2)) {
+					if ($v) {
+						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
+							$params[$k] = $hash;
+							continue;
+						} else {
+							throw new CustomCommonException($oi->attributeLabels()[$k] . '上传失败');
+						}
+					} else {
+						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
+					}
+				}
+			}
 		}
 
 		// 开启事务
@@ -424,6 +473,74 @@ class Order {
 		$trans->commit();
 
 		return true;
+	}
+
+	/**
+	 * 拉取微信服务器图片到七牛服务器
+	 * @param  [type] $mediaid [description]
+	 * @return [type]          [description]
+	 */
+	public function pullWxServerImagesToQiniu($mediaid) {
+		if (!static::$app) {
+			$config = \Yii::$app->params['wechat'];
+			static::$app = new \EasyWeChat\Foundation\Application($config);
+		}
+
+		// 获取uptoken
+		if (!static::$uptoken) {
+			static::$uptoken = (new \common\models\UploadFile)->genToken();
+		}
+
+		// 临时素材
+		$temporary = static::$app->material_temporary;
+
+		// 获取内容
+		if ($content = $temporary->getStream($mediaid)) {
+			$remote_server = 'http://up-z2.qiniu.com/putb64/-1';
+			
+			$base64 = chunk_split(base64_encode($content));
+
+			try {
+				$response = $this->postRequestQiniu($remote_server, static::$uptoken, $base64);
+
+				if ($response) {
+					if ($response = json_decode($response, true)) {
+						return isset($response['key']) ? $response['key'] : false;
+					}
+				}
+
+				return false;
+			} catch (\Exception $e) {
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * base64上传到七牛云
+	 * @param  [type] $remote_server [description]
+	 * @param  [type] $uptoken       [description]
+	 * @param  [type] $post          [description]
+	 * @return [type]                [description]
+	 */
+	private function postRequestQiniu($remote_server, $uptoken, $post) {
+		$headers[] = 'Content-Type:image/png';
+		$headers[] = 'Authorization:UpToken ' . $uptoken;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $remote_server);
+		//curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		//curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		$data = curl_exec($ch);
+		curl_close($ch);
+
+		return $data;
 	}
 
 	/**

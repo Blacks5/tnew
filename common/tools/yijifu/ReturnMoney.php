@@ -317,7 +317,6 @@ class ReturnMoney extends AbstractYijifu
         ];
 
         $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";
-
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
