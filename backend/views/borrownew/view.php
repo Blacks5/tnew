@@ -576,7 +576,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-                            <?php if($model['o_status'] == 10 && $periodNum == 1){ ?>
+                            <?php if($model['o_status'] == 10 && $periodNum == 1 && $isRepayment == 0){ ?>
                                 <div>
                                     <div class="col-md-2">提前还款期数：</div>
                                     <select class="col-md-2" id="period_num">
