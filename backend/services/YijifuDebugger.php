@@ -48,8 +48,10 @@ class YijifuDebugger extends \common\tools\yijifu\AbstractYijifu
             'loanAmount'            => 90, // 可以不填的，优先不填
             'totalRepayAmount'      => 80,
             'operateType'           => 'SIGN',
+            'service'   => 'fastSign',
+            // 'notifyUrl' => 'http://119.23.15.90:8383/tools/yijifunotify',
         ];
-        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/ta";
+        $this->notifyUrl = \Yii::$app->params['domain'] ."/tools/yijifunotify";
 
         $commonParams = $this->getCommonParams();
         $param_arr = array_merge($commonParams, $param_arr);

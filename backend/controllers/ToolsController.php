@@ -20,6 +20,17 @@ class ToolsController extends CoreBackendController
         $debugger = new YijifuDebugger();
         $r = $debugger->sign('wwj');
     }
+
+    public function actionYijifunotify()
+    {
+        $data = [
+            'post' => $_POST,
+            'get'  => $_GET,
+        ];
+        $data = date('Y-m-d H:i:s --') . json_encode($data) . PHP_EOL;
+        echo 
+        file_put_contents(Yii::$app->runtimePath . '/yijifu-debug.txt', $data, FILE_APPEND);
+    }
 }
 
 
