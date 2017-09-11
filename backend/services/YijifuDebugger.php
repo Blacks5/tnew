@@ -51,7 +51,8 @@ class YijifuDebugger extends \common\tools\yijifu\AbstractYijifu
             'service'   => 'fastSign',
             // 'notifyUrl' => 'http://119.23.15.90:8383/tools/yijifunotify',
         ];
-        $this->notifyUrl = \Yii::$app->params['domain'] ."/tools/yijifunotify";
+        // $this->notifyUrl = \Yii::$app->params['domain'] ."/tools/yijifunotify";
+        $this->notifyUrl = 'http://119.23.15.90:8383/tools/yijifunotify';
 
         $commonParams = $this->getCommonParams();
         $param_arr = array_merge($commonParams, $param_arr);

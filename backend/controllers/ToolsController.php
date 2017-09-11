@@ -11,7 +11,8 @@ namespace backend\controllers;
 use WebSocket\Client;
 use yii;
 use backend\core\CoreBackendController;
-use \backend\services\YijifuDebugger;
+use backend\services\YijifuDebugger;
+use common\tools\yijifu\Sign;
 
 class ToolsController extends CoreBackendController
 {
@@ -27,6 +28,13 @@ class ToolsController extends CoreBackendController
         $r = $debugger->deduct($order, $amount);
     }
 
+    public function actionYijifuQuerySigned($order)
+    {
+        $sign = new Sign();
+        $r = $sign->querySignedUser($order);
+        var_dump($r);
+    }
+
     public function actionYijifunotify()
     {
         $data = [
@@ -35,6 +43,7 @@ class ToolsController extends CoreBackendController
         ];
         $data = date('Y-m-d H:i:s --') . json_encode($data) . PHP_EOL;
         file_put_contents(Yii::$app->runtimePath . '/yijifu-debug.txt', $data, FILE_APPEND);
+        echo 'success';
     }
 }
 
