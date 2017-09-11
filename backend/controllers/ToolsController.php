@@ -15,10 +15,10 @@ use \backend\services\YijifuDebugger;
 
 class ToolsController extends CoreBackendController
 {
-    public function actionYijifuTest()
+    public function actionYijifuTest($c)
     {
         $debugger = new YijifuDebugger();
-        $r = $debugger->sign('wwj');
+        $r = $debugger->sign($c);
     }
 
     public function actionYijifunotify()
@@ -28,7 +28,6 @@ class ToolsController extends CoreBackendController
             'get'  => $_GET,
         ];
         $data = date('Y-m-d H:i:s --') . json_encode($data) . PHP_EOL;
-        echo 
         file_put_contents(Yii::$app->runtimePath . '/yijifu-debug.txt', $data, FILE_APPEND);
     }
 }
