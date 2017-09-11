@@ -500,7 +500,7 @@ class Order {
 
 			$base64 = substr($content, strpos($content, ',') + 1);
 
-			try {
+			// try {
 				$response = $this->postRequestQiniu($remote_server, static::$uptoken, $base64);
 
 				if ($response) {
@@ -510,9 +510,9 @@ class Order {
 				}
 
 				return false;
-			} catch (\Exception $e) {
-				return false;
-			}
+			// } catch (\Exception $e) {
+			// 	return false;
+			// }
 		}
 
 		return false;
