@@ -312,27 +312,27 @@ $(function(){
                 sizeType: ['original', 'compressed'],
                 sourceType: ['camera'],
                 success: function (res) {
-                    if(wx.getLocalImgData){
-                        wx.getLocalImgData({
-                            localId: res.localIds, // 图片的localID
-                            success: function (res) {
-                                var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-                                console.log();
-                                // 隐藏当前input容器
-                                inputContainer.hide();
-                                // 插入到预览区  
-                                var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + localData + '" style="width:100%;height:100%;"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
-                                filesContainer.append(preview);
-                            }
-                        });
-                    }else{
+                    // if(wx.getLocalImgData){
+                    //     wx.getLocalImgData({
+                    //         localId: res.localIds, // 图片的localID
+                    //         success: function (res) {
+                    //             var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                    //             console.log();
+                    //             // 隐藏当前input容器
+                    //             inputContainer.hide();
+                    //             // 插入到预览区  
+                    //             var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + localData + '" style="width:100%;height:100%;"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
+                    //             filesContainer.append(preview);
+                    //         }
+                    //     });
+                    // }else{
                         alert(res.localIds[0]);
                         // 隐藏当前input容器
                         inputContainer.hide();
                         // 插入到预览区  
                         var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + res.localIds[0] + '" style="width:100%;height:100%;"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
                         filesContainer.append(preview);
-                    }
+                    // }
                     
                     // 上传照片
                     wx.uploadImage({
