@@ -310,13 +310,14 @@ $(function(){
             wx.chooseImage({
                 count: 1,
                 sizeType: ['original', 'compressed'],
-                sourceType: ['album', 'camera'],
+                sourceType: ['camera'],
                 success: function (res) {
                     if(wx.getLocalImgData){
                         wx.getLocalImgData({
                             localId: res.localIds[0], // 图片的localID
                             success: function (res) {
                                 var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                                alert(localData);
                                 // 隐藏当前input容器
                                 inputContainer.hide();
                                 // 插入到预览区  

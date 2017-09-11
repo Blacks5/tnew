@@ -494,17 +494,13 @@ class Order {
 		// 临时素材
 		$temporary = static::$app->material_temporary;
 
-		$content = $temporary->getStream($mediaid);
-
-		file_put_contents('../runtime/a.jpg' , $content);
-
 		// 获取内容
-		if ($content) {
+		if ($content = $temporary->getStream($mediaid)) {
 			$remote_server = 'http://up-z2.qiniu.com/putb64/-1';
 			
 			$base64 = chunk_split(base64_encode($content));
 
-			// try {
+			try {
 				$response = $this->postRequestQiniu($remote_server, static::$uptoken, $base64);
 
 				if ($response) {
@@ -514,9 +510,9 @@ class Order {
 				}
 
 				return false;
-			// } catch (\Exception $e) {
-			// 	return false;
-			// }
+			} catch (\Exception $e) {
+				return false;
+			}
 		}
 
 		return false;
