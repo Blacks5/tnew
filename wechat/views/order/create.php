@@ -375,7 +375,7 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">详细地址</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_jobs_detail_addr" placeholder="请输入客户现居地详细地址">
+                            <input class="weui-input" type="text" name="c_customer_jobs_detail_addr" placeholder="请输入公司地详细地址">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">

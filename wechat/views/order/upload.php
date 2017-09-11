@@ -243,7 +243,7 @@
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script type="text/javascript">
 $(function(){
     FastClick.attach(document.body);
@@ -312,27 +312,13 @@ $(function(){
                 sizeType: ['original', 'compressed'],
                 sourceType: ['camera'],
                 success: function (res) {
-                    if(wx.getLocalImgData){
-                        wx.getLocalImgData({
-                            localId: res.localIds, // 图片的localID
-                            success: function (res) {
-                                var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-                                console.log();
-                                // 隐藏当前input容器
-                                inputContainer.hide();
-                                // 插入到预览区  
-                                var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + localData + '"><div class="weui-uploader__file-content">上传中</div></li>');
-                                filesContainer.append(preview);
-                            }
-                        });
-                    }else{
-                        alert(res.localIds[0]);
-                        // 隐藏当前input容器
-                        inputContainer.hide();
-                        // 插入到预览区  
-                        var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + res.localIds[0] + '"><div class="weui-uploader__file-content">上传中</div></li>');
-                        filesContainer.append(preview);
-                    }
+                    // 隐藏当前input容器
+                    inputContainer.hide();
+                    // 插入到预览区  
+                    var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + res.localIds[0] + '" style="width:100%;height:100%;"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
+                    filesContainer.append(preview);
+
+                    var currLocalIds = res.localIds[0];
                     
                     // 上传照片
                     wx.uploadImage({
@@ -341,11 +327,17 @@ $(function(){
                         success: function(res) {
                             $.toptip('上传成功', 'success');
                             post[idName] = res.serverId;
-                            // preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
+                            preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
+                            preview.bind('click' , function(){
+                                wx.previewImage({
+                                    current: currLocalIds, // 当前显示图片的http链接
+                                    urls: [currLocalIds] // 需要预览的图片http链接列表
+                                });
+                            });
                         },
                         fail : function(){
                             $.toptip('上传失败，稍后重试', 'warning');
-                            // preview.find('.weui-uploader__file-content').html('<i class="weui-icon-warn"></i>');
+                            preview.find('.weui-uploader__file-content').html('<i class="weui-icon-warn"></i>');
                         }
                     });
                 },
@@ -371,7 +363,7 @@ $(function(){
                     }else{
                         $.toast(res.message, "text");
                     }
-                });
+                } , 120000);
             }else{
                 $.toast('该订单不存在或已在审核', "text");
             }
