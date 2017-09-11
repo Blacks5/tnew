@@ -51,7 +51,7 @@
         $(function(){
             FastClick.attach(document.body);
 
-            wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+            wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
             wx.ready(function(){
                 wx.hideMenuItems({

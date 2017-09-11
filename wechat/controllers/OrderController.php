@@ -35,8 +35,8 @@ class OrderController extends BaseController {
 			try {
 				$params = $request->post();
 				$orderService = new Order();
-				$status = $orderService->createOrder($params);
-				return ['status' => 1, 'message' => '提交成功'];
+				$o_id = $orderService->createOrder($params);
+				return ['status' => 1, 'message' => '提交成功' , 'o_id' => $o_id];
 			} catch (CustomCommonException $e) {
 				return ['status' => 0, 'message' => $e->getMessage()];
 			} catch (\Exception $e) {
@@ -394,6 +394,7 @@ class OrderController extends BaseController {
 					'p_name' => $item['p_name'],
 					'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
 					'o_status' => $item['o_status'],
+					'o_operator_remark' => $item['o_operator_remark'],
 				];
 			}
 
@@ -653,7 +654,7 @@ class OrderController extends BaseController {
 						'oi_serial_num' => $request->post('oi_serial_num', ''),
 						'oi_after_contract' => $request->post('oi_after_contract', ''),
 						'oi_proxy_prove' => $request->post('oi_proxy_prove', ''),
-						'g_goods_serial_no' => $request->post('g_goods_serial_no', ''),
+						'o_product_code' => $request->post('o_product_code', ''),
 					]);
 				} else if ($actionType == 'modify') {
 

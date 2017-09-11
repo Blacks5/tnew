@@ -76,6 +76,7 @@ class Orders extends CoreCommonActiveRecord {
 
 			[['o_is_auto_pay', 'o_is_add_service_fee', 'o_is_free_pack_fee'], 'in', 'range' => [1, 0]],
 			[['o_remark'], 'string', 'max' => 255],
+			[['o_product_code'], 'string', 'max' => 30],
 		];
 	}
 
@@ -96,7 +97,8 @@ class Orders extends CoreCommonActiveRecord {
 			'o_is_auto_pay' => '自动代扣',
 			'o_is_add_service_fee' => '个人保障计划',
 			'o_is_free_pack_fee' => '贵宾服务包',
-			'o_status' => '订单状态 10还款中 0待审核 1拒绝',
+			'o_status' => '订单状态',
+			'o_product_code' => '商品串码',
 			'o_remark' => '备注信息',
 		];
 	}
@@ -105,6 +107,7 @@ class Orders extends CoreCommonActiveRecord {
 	public function scenarios() {
 		$scenarios = parent::scenarios();
 		$scenarios['clientValidate'] = ['o_store_id', 'o_product_id', 'o_is_auto_pay', 'o_is_add_service_fee', 'o_is_free_pack_fee', 'o_remark'];
+		$scenarios['clientValidate2'] = ['o_product_code'];
 		return $scenarios;
 	}
 
