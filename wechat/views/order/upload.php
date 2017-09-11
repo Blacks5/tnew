@@ -363,7 +363,7 @@ $(function(){
                     }else{
                         $.toast(res.message, "text");
                     }
-                });
+                } , 10000);
             }else{
                 $.toast('该订单不存在或已在审核', "text");
             }
