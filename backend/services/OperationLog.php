@@ -87,7 +87,7 @@ class OperationLog
 
         $d = [
             'type_tag' => $typeTag,
-            'operator_id' => $operator->id,
+            'operator_id' => $operator->id ?? 0,
             'ip' => Yii::$app->request->userIP,
             'order_id' => $orderId,
             'memo' => $memo,
