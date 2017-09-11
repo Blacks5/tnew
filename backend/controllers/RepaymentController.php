@@ -69,12 +69,12 @@ class RepaymentController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-
+        $can = Repayment::find()->select('r_orders_id')->where(['r_status'=>1])->andWhere(['>', 'r_overdue_day', 4])->groupBy('r_orders_id')->column();
         foreach ($data as $k => $v){
             $n = 2;
             $data[$k]['can_update_time'] = 0;
-            $can = Repayment::find()->where(['r_orders_id'=>$v['r_orders_id']])->andWhere(['<', 'r_overdue_day', 4])->one();
-            if($v['o_is_free_pack_fee']==1 && $v['r_orders_id']== $can['r_orders_id'] && $v['o_number_of_modify_date']<4 &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
+
+            if($v['o_is_free_pack_fee']==1 && !in_array($v['r_orders_id'],$can) && $v['o_number_of_modify_date']<4){
                 $data[$k]['can_update_time'] = 1;
             }
             $v['o_total_price'] = round($v['o_total_price'], $n);
@@ -469,9 +469,11 @@ class RepaymentController extends CoreBackendController
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
+        $can = Repayment::find()->where(['r_status'=>1, 'r_orders_id'=>$order_id])->andWhere(['>', 'r_overdue_day', 4])->count();
+
         foreach ($data as $k => $v){
             $data[$k]['can_update_time'] = 0;
-            if($v['o_is_free_pack_fee']==1 && $v['r_overdue_day']<4 && $v['o_number_of_modify_date']<4 &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
+            if($v['o_is_free_pack_fee']==1 && $can==0 && $v['o_number_of_modify_date']<4){
                 $data[$k]['can_update_time'] = 1;
             }
         }
@@ -504,13 +506,15 @@ class RepaymentController extends CoreBackendController
             $Month = Carbon::createFromTimestamp(strtotime($request->post('o_update_time')))->startOfMonth();
             $dt = Carbon::createFromTimestamp($repayment[0]['r_pre_repay_date'])->addDay(floor($Date));
             foreach ($repayment as $k => $v) {
-                $newDate = Repayment::find()->where(['r_id' => $v['r_id']])->one();
+                $newDate = Repayment::find()->where(['r_id' => $v['r_id']])->andWhere(['r_status'=>1])->one();
                 if ($dt->month != $Month->month) {
                     $dt->month = $Month->month;
-                    $newDate->r_pre_repay_date = strtotime($dt->endOfMonth()->toDateTimeString());
+                    $endDate = $dt;
+                    $newDate->r_pre_repay_date = strtotime($endDate->endOfMonth()->toDateTimeString());
                 } else {
                     $newDate->r_pre_repay_date = strtotime($dt->toDateTimeString());
                 }
+
                 $newDate->save(false);
                 $dt->addMonth(1);
                 $Month->addMonth(1);
