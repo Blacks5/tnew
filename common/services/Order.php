@@ -337,20 +337,51 @@ class Order {
 			],
 		]);
 
+		$oi = new OrderImages;
+
 		// 订单不存在
 		if (!$orderModel) {
 			throw new CustomCommonException('该订单不存在或已在审核');
 		}
 
-		$must_mediaid = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_proxy_prove', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_pick_goods', 'oi_serial_num', 'oi_after_contract'];
+		$must_upload_1 = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_proxy_prove'];
 
-		// 开始上传
-		foreach ($params as $k => $v) {
-			if (in_array($k, $must_mediaid) && $v) {
-				if ($hash = $this->pullWxServerImagesToQiniu($v)) {
-					$params[$k] = $hash;
-				} else {
-					$params[$k] = '';
+		$must_upload_2 = ['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'];
+
+		// 一审参数
+		if ($orderModel->o_status == Orders::STATUS_NOT_COMPLETE) {
+			// 开始上传
+			foreach ($params as $k => $v) {
+				if (in_array($k, $must_upload_1)) {
+					if ($v) {
+						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
+							$params[$k] = $hash;
+							continue;
+						} else {
+							throw new CustomCommonException($oi->attributeLabels()[$k] . '上传失败');
+						}
+					} else {
+						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
+					}
+				}
+			}
+		}
+
+		// 二审参数
+		if ($orderModel->o_status == Orders::STATUS_WAIT_APP_UPLOAD_AGAIN) {
+			// 开始上传
+			foreach ($params as $k => $v) {
+				if (in_array($k, $must_upload_2)) {
+					if ($v) {
+						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
+							$params[$k] = $hash;
+							continue;
+						} else {
+							throw new CustomCommonException($oi->attributeLabels()[$k] . '上传失败');
+						}
+					} else {
+						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
+					}
 				}
 			}
 		}
