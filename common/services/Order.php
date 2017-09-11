@@ -346,7 +346,7 @@ class Order {
 
 		// 开始上传
 		foreach ($params as $k => $v) {
-			if (in_array($k, $must_mediaid)) {
+			if (in_array($k, $must_mediaid) && $v) {
 				if ($hash = $this->pullWxServerImagesToQiniu($v)) {
 					$params[$k] = $hash;
 				} else {
@@ -469,12 +469,18 @@ class Order {
 
 			$base64 = substr($content, strpos($content, ',') + 1);
 
-			$response = $this->postRequestQiniu($remote_server, static::$uptoken, $base64);
+			try {
+				$response = $this->postRequestQiniu($remote_server, static::$uptoken, $base64);
 
-			if ($response) {
-				if ($response = json_decode($response, true)) {
-					return isset($response['key']) ? $response['key'] : false;
+				if ($response) {
+					if ($response = json_decode($response, true)) {
+						return isset($response['key']) ? $response['key'] : false;
+					}
 				}
+
+				return false;
+			} catch (\Exception $e) {
+				return false;
 			}
 		}
 
