@@ -279,19 +279,19 @@ $(function(){
             actionType : "upload",
             o_id : <?=$order['o_id']?>,
             o_status : <?=$order['o_status']?>,
-            oi_front_id : "<?=$order['oi_front_id']?>",
-            oi_back_id : "<?=$order['oi_back_id']?>",
-            oi_customer : "<?=$order['oi_customer']?>",
-            oi_front_bank : "<?=$order['oi_front_bank']?>",
-            oi_family_card_one : "<?=$order['oi_family_card_one']?>",
-            oi_family_card_two : "<?=$order['oi_family_card_two']?>",
-            oi_driving_license_one : "<?=$order['oi_driving_license_one']?>",
-            oi_driving_license_two : "<?=$order['oi_driving_license_two']?>",
-            oi_pick_goods : "<?=$order['oi_pick_goods']?>",
-            oi_serial_num : "<?=$order['oi_serial_num']?>",
-            oi_after_contract : "<?=$order['oi_after_contract']?>",
-            oi_proxy_prove : "<?=$order['oi_proxy_prove']?>",
-            o_product_code : "<?=$order['o_product_code']?>"
+            oi_front_id : "",
+            oi_back_id : "",
+            oi_customer : "",
+            oi_front_bank : "",
+            oi_family_card_one : "",
+            oi_family_card_two : "",
+            oi_driving_license_one : "",
+            oi_driving_license_two : "",
+            oi_pick_goods : "",
+            oi_serial_num : "",
+            oi_after_contract : "",
+            oi_proxy_prove : "",
+            o_product_code : ""
         };
 
         // 绑定上传图片
