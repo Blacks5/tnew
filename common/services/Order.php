@@ -350,6 +350,11 @@ class Order {
 				'oi_back_id' => $params['oi_back_id'],
 				'oi_customer' => $params['oi_customer'],
 				'oi_front_bank' => $params['oi_front_bank'],
+				'oi_proxy_prove' => $params['oi_proxy_prove'],
+				'oi_family_card_one' => $params['oi_family_card_one'],
+				'oi_family_card_two' => $params['oi_family_card_two'],
+				'oi_driving_license_one' => $params['oi_driving_license_one'],
+				'oi_driving_license_two' => $params['oi_driving_license_two'],
 			]];
 
 			$orderImagesModel->scenario = 'uploadFirst';
@@ -361,15 +366,38 @@ class Order {
 		// 二审参数
 		if ($orderModel->o_status == Orders::STATUS_WAIT_APP_UPLOAD_AGAIN) {
 			if (!$orderImagesModel) {
+				$trans->rollBack();
 				throw new CustomCommonException('该订单异常');
+			}
+
+			// 获取商品信息
+			$goodsModel = Goods::findOne([
+				'g_order_id' => $orderModel->o_id,
+			]);
+
+			if (!$goodsModel) {
+				$trans->rollBack();
+				throw new CustomCommonException('该订单异常');
+			}
+
+			$goodsModel->scenario = 'clientValidate2';
+			$goodsModel->load(['data' => [
+				'g_goods_serial_no' => $params['g_goods_serial_no'],
+			]], 'data');
+			if (!$goodsModel->validate()) {
+				$trans->rollBack();
+				$msg = $goodsModel->getFirstErrors();
+				throw new CustomCommonException(reset($msg));
+			}
+
+			// 修改订单商品信息
+			if (!$goodsModel->save(false)) {
+				$trans->rollBack();
+				throw new CustomCommonException('保存失败');
 			}
 
 			$data = ['data' => [
 				'o_id' => $params['o_id'],
-				'oi_family_card_one' => $params['oi_family_card_one'],
-				'oi_family_card_two' => $params['oi_family_card_two'],
-				'oi_driving_license_one' => $params['oi_driving_license_one'],
-				'oi_driving_license_two' => $params['oi_driving_license_two'],
 				'oi_pick_goods' => $params['oi_pick_goods'],
 				'oi_serial_num' => $params['oi_serial_num'],
 				'oi_after_contract' => $params['oi_after_contract'],
@@ -497,15 +525,17 @@ class Order {
 		}
 
 		// 四要素验证
-		$status = $this->checkCustomerInfo(
-			$params['c_customer_name'],
-			$params['c_customer_cellphone'],
-			$params['c_customer_id_card'],
-			$params['c_banknum']
-		);
+		if ($scenario == 'clientValidate1') {
+			$status = $this->checkCustomerInfo(
+				$params['c_customer_name'],
+				$params['c_customer_cellphone'],
+				$params['c_customer_id_card'],
+				$params['c_banknum']
+			);
 
-		if (!$status) {
-			throw new CustomCommonException('身份验证失败');
+			if (!$status) {
+				throw new CustomCommonException('身份验证失败');
+			}
 		}
 
 		return true;

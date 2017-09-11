@@ -9,31 +9,38 @@
 
 namespace wechat\Tools;
 
-
 use EasyWeChat\Foundation\Application;
 
-class Wechat
-{
-    /**
-     * 微信登录
-     * @param $callback_url 登陆后跳转的地址
-     * @param $scopes snsapi_base | snsapi_userinfo | snsapi_login(开放平台)
-     * @return bool
-     * @author too <hayto@foxmail.com>
-     */
-    public static function Login(Array $callback_url, $scopes='snsapi_userinfo')
-    {
-        $session = \Yii::$app->getSession();
-        $user = $session->get('wechat_user');
+class Wechat {
+	/**
+	 * 微信登录
+	 * @param $callback_url 登陆后跳转的地址
+	 * @param $scopes snsapi_base | snsapi_userinfo | snsapi_login(开放平台)
+	 * @return bool
+	 * @author too <hayto@foxmail.com>
+	 */
+	public static function Login(Array $callback_url, $scopes = 'snsapi_userinfo') {
+		$session = \Yii::$app->getSession();
+		$user = $session->get('wechat_user');
 
-        // 没登录
-        if(true === empty($user)){
-            $config = \Yii::$app->params['wechat'];
-            $app = new Application($config);
-            $target_url = \Yii::$app->getUrlManager()->createAbsoluteUrl($callback_url);
-            $session->set('target_url', $target_url);
-            return $app->oauth->scopes([$scopes])->redirect()->send();
-        }
-        return true;
-    }
+		// 没登录
+		if (true === empty($user)) {
+			$config = \Yii::$app->params['wechat'];
+			$app = new Application($config);
+			$target_url = \Yii::$app->getUrlManager()->createAbsoluteUrl($callback_url);
+			$session->set('target_url', $target_url);
+			return $app->oauth->scopes([$scopes])->redirect()->send();
+		}
+		return true;
+	}
+
+    /**
+     * 获取jssdk
+     * @return [type] [description]
+     */
+	public static function jssdk() {
+		$config = \Yii::$app->params['wechat'];
+		$app = new Application($config);
+		return $app->js;
+	}
 }

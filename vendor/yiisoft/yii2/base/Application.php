@@ -373,6 +373,7 @@ abstract class Application extends Module
 
             $this->state = self::STATE_HANDLING_REQUEST;
             $response = $this->handleRequest($this->getRequest());
+
             $this->state = self::STATE_AFTER_REQUEST;
             $this->trigger(self::EVENT_AFTER_REQUEST);
 
@@ -384,6 +385,7 @@ abstract class Application extends Module
             return $response->exitStatus;
 
         } catch (ExitException $e) {
+
             $this->end($e->statusCode, isset($response) ? $response : null);
             return $e->statusCode;
 

@@ -78,6 +78,7 @@ class ErrorAction extends Action
             // action has been invoked not from error handler, but by direct route, so we display '404 Not Found'
             $exception = new HttpException(404, Yii::t('yii', 'Page not found.'));
         }
+
         if ($exception instanceof HttpException) {
             $code = $exception->statusCode;
         } else {
@@ -101,14 +102,9 @@ class ErrorAction extends Action
         if (Yii::$app->getRequest()->getIsAjax()) {
             return "$name: $message";
         } else {
-            if($exception->getCode() == 55){
-                $name = '账户异常！';
-                $code = $exception->getCode();
-            }
             return $this->controller->render($this->view ?: $this->id, [
                 'name' => $name,
                 'message' => $message,
-                'code'=>$code,
                 'exception' => $exception,
             ]);
         }

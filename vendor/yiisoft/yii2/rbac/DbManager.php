@@ -114,15 +114,10 @@ class DbManager extends BaseManager
     }
 
     /**
-     * can()调用的就是此方法
      * @inheritdoc
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        // 特殊用户直接有权限
-        if(in_array($userId, Yii::$app->params['SuperDiao'])){
-            return true;
-        }
         $assignments = $this->getAssignments($userId);
         $this->loadFromCache();
         if ($this->items !== null) {
@@ -472,7 +467,6 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
-//        p($roles);
         return $roles;
     }
 
@@ -495,7 +489,6 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
-//        p($permissions);
         return $permissions;
     }
 

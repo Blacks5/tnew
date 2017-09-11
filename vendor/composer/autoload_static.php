@@ -4,17 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
+class ComposerStaticInit1d9d6f88e7d2129568e6fc8a98451425
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        '841780ea2e1d6545ea3a253239d59c05' => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu/functions.php',
+        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '9e090711773bfc38738f5dbaee5a7f14' => __DIR__ . '/..' . '/overtrue/wechat/src/Payment/helpers.php',
+        '841780ea2e1d6545ea3a253239d59c05' => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -59,6 +59,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\Translation\\' => 30,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
@@ -114,6 +115,7 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         array (
             'Codeception\\Extension\\' => 22,
             'Codeception\\' => 12,
+            'Carbon\\' => 7,
         ),
     );
 
@@ -191,6 +193,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Symfony\\Component\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation',
         ),
         'Symfony\\Component\\Process\\' => 
         array (
@@ -303,6 +309,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
         'Codeception\\' => 
         array (
             0 => __DIR__ . '/..' . '/codeception/codeception/src/Codeception',
+        ),
+        'Carbon\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
         ),
     );
 
@@ -844,10 +854,10 @@ class ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInite4343f3ad7d2ea8db509f2e66bb8db83::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1d9d6f88e7d2129568e6fc8a98451425::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1d9d6f88e7d2129568e6fc8a98451425::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit1d9d6f88e7d2129568e6fc8a98451425::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit1d9d6f88e7d2129568e6fc8a98451425::$classMap;
 
         }, null, ClassLoader::class);
     }

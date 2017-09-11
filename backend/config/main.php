@@ -39,6 +39,8 @@ return [
             'borrow/verify-pass-callback', // 易极付签约回调地址
             'repayment/deduct-callback', // 易极付代扣回调地址
             'repaymentnew/deduct-callback', // 易极付代扣回调地址(新API)
+            'borrow/deduct-callback', // 易极付代扣回调地址(新API)
+            'borrow/update-bank-call-bank', //修改银行卡易极付回调
             'loan/async', // 易极付回调地址
             'jun/callback', // 君子签回调
             /*'jun/a',

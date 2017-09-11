@@ -19,6 +19,7 @@ use common\models\Stores;
 use common\models\UploadFile;
 use common\models\User;
 use common\services\Order;
+use wechat\Tools\Wechat;
 use Yii;
 use yii\db\Query;
 use yii\web\Response;
@@ -82,6 +83,7 @@ class OrderController extends BaseController {
 					'company_kind' => Yii::$app->params['company_kind'],
 					'company_type' => Yii::$app->params['company_type'],
 				],
+				'js' => Wechat::jssdk(),
 			]);
 		}
 	}
@@ -288,6 +290,7 @@ class OrderController extends BaseController {
 					'p_name' => $item['p_name'],
 					'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
 					'o_status' => $item['o_status'],
+					'o_operator_remark' => $item['o_operator_remark'],
 				];
 			}
 
@@ -303,7 +306,9 @@ class OrderController extends BaseController {
 				]];
 			}
 		} else {
-			return $this->renderPartial('list');
+			return $this->renderPartial('list' , [
+				'js' => Wechat::jssdk(),
+			]);
 		}
 	}
 
@@ -404,7 +409,9 @@ class OrderController extends BaseController {
 				]];
 			}
 		} else {
-			return $this->renderPartial('wait_list');
+			return $this->renderPartial('wait_list' , [
+				'js' => Wechat::jssdk(),
+			]);
 		}
 	}
 
@@ -471,10 +478,10 @@ class OrderController extends BaseController {
 					'r_principal' => round($item['r_principal'], 2),
 					'r_interest' => round($item['r_interest'], 2),
 					'r_serial_no' => $item['r_serial_no'],
-					'r_add_service_fee' => round($item['r_add_service_fee'] , 2),
-					'r_free_pack_fee' => round($item['r_free_pack_fee'] , 2),
-					'r_finance_mangemant_fee' => round($item['r_finance_mangemant_fee'] , 2),
-					'r_customer_management' => round($item['r_customer_management'] , 2),
+					'r_add_service_fee' => round($item['r_add_service_fee'], 2),
+					'r_free_pack_fee' => round($item['r_free_pack_fee'], 2),
+					'r_finance_mangemant_fee' => round($item['r_finance_mangemant_fee'], 2),
+					'r_customer_management' => round($item['r_customer_management'], 2),
 					'o_status' => $item['o_status'],
 				];
 			}
@@ -491,7 +498,9 @@ class OrderController extends BaseController {
 				]];
 			}
 		} else {
-			return $this->renderPartial('overdue_list');
+			return $this->renderPartial('overdue_list' , [
+				'js' => Wechat::jssdk(),
+			]);
 		}
 	}
 
@@ -586,6 +595,7 @@ class OrderController extends BaseController {
 				return $this->renderPartial('upload', [
 					'order' => $order,
 					'uptoken' => (new UploadFile)->genToken(),
+					'js' => Wechat::jssdk(),
 				]);
 			} else {
 				return $this->randerError('订单不存在', '该订单不存在或已取消，不能上传照片');
@@ -643,6 +653,7 @@ class OrderController extends BaseController {
 						'oi_serial_num' => $request->post('oi_serial_num', ''),
 						'oi_after_contract' => $request->post('oi_after_contract', ''),
 						'oi_proxy_prove' => $request->post('oi_proxy_prove', ''),
+						'g_goods_serial_no' => $request->post('g_goods_serial_no', ''),
 					]);
 				} else if ($actionType == 'modify') {
 

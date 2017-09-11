@@ -61,7 +61,7 @@ class OrdersSearch extends CoreCommonModel
             ->leftJoin(YijifuLoan::tableName(). ' yijifu_loan', 'yijifu_loan.y_serial_id=orders.o_serial_id') // 查询是否已成功放款给商户
         ;
 
-        if($user = yii::$app->user->identity){
+        if(!yii::$app->session->get('sys_user')){
             if($userList = User::getLowerForId()){
                 $query->andWhere(['in', 'orders.o_user_id', $userList]);
             }

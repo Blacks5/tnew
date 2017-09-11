@@ -46,10 +46,31 @@
     <script src="/wechat/lib/fastclick.js"></script>
     <script src="/wechat/js/jquery-weui.js"></script>
     <script src="/wechat/js/jquery-weui-extend.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
         $(function(){
             FastClick.attach(document.body);
 
+            wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+
+            wx.ready(function(){
+                wx.hideMenuItems({
+                    menuList: [
+                        'menuItem:share:appMessage',
+                        'menuItem:share:timeline',
+                        'menuItem:share:qq',
+                        'menuItem:share:weiboApp',
+                        'menuItem:share:facebook',
+                        'menuItem:share:QZone',
+                        'menuItem:copyUrl',
+                        'menuItem:originPage',
+                        'menuItem:openWithQQBrowser',
+                        'menuItem:openWithSafari',
+                        'menuItem:share:email'
+                    ]
+                });
+            });
+            
             // 页面处理类
             function Page(){
                 // 订单状态

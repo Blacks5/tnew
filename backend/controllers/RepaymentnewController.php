@@ -64,8 +64,13 @@ class RepaymentnewController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        array_walk($data, function(&$v){
+        foreach ($data as $k => $v){
             $n = 2;
+            $data[$k]['can_update_time'] = 0;
+            $can = Repayment::find()->where(['r_orders_id'=>$v['r_orders_id']])->andWhere(['<', 'r_overdue_day', 4])->one();
+            if($v['o_is_free_pack_fee']==1 && $v['r_orders_id']== $can['r_orders_id'] &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
+                $data[$k]['can_update_time'] = 1;
+            }
             $v['o_total_price'] = round($v['o_total_price'], $n);
             $v['o_total_deposit'] = round($v['o_total_deposit'], $n);
             $v['o_total_interest'] = round($v['o_total_interest'], $n);
@@ -77,7 +82,7 @@ class RepaymentnewController extends CoreBackendController
             $v['r_free_pack_fee'] = round($v['r_free_pack_fee'], $n);
             $v['r_finance_mangemant_fee'] = round($v['r_finance_mangemant_fee'], $n);
             $v['r_customer_management'] = round($v['r_customer_management'], $n);
-        });
+        };
         return $this->render('waitrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -463,6 +468,12 @@ class RepaymentnewController extends CoreBackendController
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        foreach ($data as $k => $v){
+            $data[$k]['can_update_time'] = 0;
+            if($v['o_is_free_pack_fee']==1 && $v['r_overdue_day']<4 && $v['o_number_of_modify_date']<4 &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
+                $data[$k]['can_update_time'] = 1;
+            }
+        }
         return $this->render('allrepaymentlist', [
             'model' => $data,
             'totalpage' => $pages->pageCount,

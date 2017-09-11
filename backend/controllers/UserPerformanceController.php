@@ -41,7 +41,8 @@ class UserPerformanceController extends CoreBackendController
             'all'=>$list['all'],
             'sear'=>$list['sear'],
             'pages'=>$list['pages'],
-            'area'=>$area
+            'area'=>$area,
+            'total'=>$list['total'],
         ]);
     }
 }
