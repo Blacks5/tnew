@@ -497,7 +497,7 @@ class Order {
 		// 获取内容
 		if ($content = $temporary->getStream($mediaid)) {
 			$remote_server = 'http://up-z2.qiniu.com/putb64/-1';
-
+			file_put_contents('a.jpg' , $content);
 			$base64 = substr($content, strpos($content, ',') + 1);
 
 			// try {
