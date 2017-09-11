@@ -28,7 +28,7 @@ class YijifuDebugger extends \common\tools\yijifu\AbstractYijifu
      *
      * @return void
      */
-    public function sign($customerFlag)
+    public function sign($customerFlag, $amount)
     {
         $orderId = date('YmdHis') . mt_rand(1000, 9999);
         $customer = $this->getCustomer($customerFlag);
@@ -45,8 +45,8 @@ class YijifuDebugger extends \common\tools\yijifu\AbstractYijifu
             'bankCardNo'            => $customer['bankCardNo'],
             'mobileNo'              => $customer['mobileNo'],
             'productName'           => '测试产品-A',
-            'loanAmount'            => 90, // 可以不填的，优先不填
-            'totalRepayAmount'      => 80,
+            'loanAmount'            => (string)($amount + 10), // 可以不填的，优先不填
+            'totalRepayAmount'      => (string)$amount,
             'operateType'           => 'SIGN',
             'service'   => 'fastSign',
             // 'notifyUrl' => 'http://119.23.15.90:8383/tools/yijifunotify',
@@ -80,9 +80,30 @@ class YijifuDebugger extends \common\tools\yijifu\AbstractYijifu
      *
      * @return void
      */
-    public function deduct()
+    public function deduct($merchSignOrderNo, $deductAmount)
     {
-        //
+        $this->service = 'fastDeduct';
+        $randString = \Yii::$app->getSecurity()->generateRandomString(4);
+        $merchOrderNo = date('YmdHis'). '-'. $randString;
+        $param_arr = [
+            'merchOrderNo'=>date('YmdHis'), // 本次代扣操作的订单号
+            'merchSignOrderNo'=>$merchSignOrderNo, // 签约订单号
+            'deductAmount'=>$deductAmount // 代扣金额
+        ];
+//        $this->notifyUrl = "http://119.23.15.90:8383/borrownew/deduct-callback";
+        $this->notifyUrl = \Yii::$app->params['domain'] . '/tools/yijifunotify';
+        $common_param = $this->getCommonParams();
+        $param = array_merge($common_param, $param_arr);
+        $param = $this->prepQueryParams($param);
+        $client = new httpClient();
+        $response = $client->post($this->api, $param)->send();
+
+        if($response->getIsOk()){
+            echo '<b>http成功，返回数据：</b>';
+            $this->dd($response->getData());
+        } else {
+            echo '<b>-----http失败----，返回数据：</b>';
+        }
     }
 
     private function dd($var)

@@ -15,10 +15,16 @@ use \backend\services\YijifuDebugger;
 
 class ToolsController extends CoreBackendController
 {
-    public function actionYijifuTest($c)
+    public function actionYijifuTest($customer, $amount)
     {
         $debugger = new YijifuDebugger();
-        $r = $debugger->sign($c);
+        $r = $debugger->sign($customer, $amount);
+    }
+
+    public function actionYijifuDeduct(string $order,int $amount)
+    {
+        $debugger = new YijifuDebugger();
+        $r = $debugger->deduct($order, $amount);
     }
 
     public function actionYijifunotify()
