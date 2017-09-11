@@ -102,7 +102,8 @@
                     <div class="weui-cell weui-cell_switch">
                         <div class="weui-cell__bd">自动代扣</div>
                         <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_auto_pay" checked="checked" disabled="disabled">
+                            <input class="weui-switch" type="checkbox" id="o_is_auto_pay_show" checked="checked" disabled="disabled">
+                            <input type="hidden" name="o_is_auto_pay" value="on">
                         </div>
                     </div>
                     <div class="weui-cell weui-cell_switch">
@@ -447,7 +448,7 @@
     $(function() {
         FastClick.attach(document.body);
 
-        wx.config(<?php echo $js->config(['hideMenuItems'], true) ?>);
+        wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
         wx.ready(function(){
             wx.hideMenuItems({
@@ -503,6 +504,7 @@
                 'customerAddress',
                 'customerJobsAddress'
             ];
+            this.uploadUrl = "<?=Yii::$app->getUrlManager()->createUrl(['order/upload-image'])?>";
         }
 
         /**
@@ -676,9 +678,19 @@
                     $("select[name="+key+"]").find("option[value='"+data[key]+"']").attr("selected",true);
                 }else if(-1 !== $.inArray(key , this.checkboxs)){
                     if(data[key] == 1){
-                        $("input[name="+key+"]").attr('checked' , true);
+                        if(key == 'o_is_auto_pay'){
+                            $('#o_is_auto_pay_show').attr('checked' , true);
+                            $("input[name="+key+"]").val('on');
+                        }else{
+                            $("input[name="+key+"]").attr('checked' , true);
+                        }
                     }else{
-                        $("input[name="+key+"]").attr('checked' , false);
+                        if(key == 'o_is_auto_pay'){
+                            $('#o_is_auto_pay_show').attr('checked' , false);
+                            $("input[name="+key+"]").val('');
+                        }else{
+                            $("input[name="+key+"]").attr('checked' , false);
+                        }
                     }
                 }else if(-1 !== $.inArray(key , this.ids)){
                     $("#"+key).val(data[key]);
@@ -711,12 +723,12 @@
                 errormsg: "商品类型不合法"
             }, {
                 ele: "input[name=g_goods_name]",
-                datatype: 's2-20',
+                datatype: '*2-20',
                 nullmsg: "请输入商品品牌",
                 errormsg: "商品品牌长度为2~20之间"
             }, {
                 ele: "input[name=g_goods_models]",
-                datatype: "s2-20",
+                datatype: "*2-20",
                 nullmsg: "请输入商品型号",
                 errormsg: "商品型号长度为2~20之间"
             }, {
@@ -760,9 +772,9 @@
                 errormsg: "选择产品不合法"
             }, {
                 ele: "input[name=o_remark]",
-                datatype: "s2-200",
+                datatype: "*0-200",
                 ignore: "ignore",
-                errormsg: "备注信息长度为2~200之间"
+                errormsg: "备注信息长度为0~200之间"
             }]);
         }
 
@@ -946,13 +958,11 @@
                     $('#formStep4').serializeObject() ,
                     $('#formStep5').serializeObject()
                 );
-
-            console.log(data);
             $.ajaxPost(this.createOrderUrl , data , function(res){
                 if(res.status){
                     $.toast(res.message, function(){
                         _this.localDelAll();
-                        window.location = '/';
+                        window.location = _this.uploadUrl + '?o_id=' + res.o_id;
                     });
                 }else{
                     $.toast(res.message, "text");

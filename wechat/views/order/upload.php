@@ -225,7 +225,7 @@
                                 <p class="weui-uploader__title">商品串码<span class="color-danger">*</span></p>
                             </div>
                             <div class="weui-cell__bd">
-                                <input class="weui-input" type="text" name="g_goods_serial_no" placeholder="请输入商品串码">
+                                <input class="weui-input" type="text" name="o_product_code" placeholder="请输入商品串码">
                             </div>
                         </div>
                     <?php } ?>
@@ -293,7 +293,7 @@ $(function(){
             oi_serial_num : "<?=$order['oi_serial_num']?>",
             oi_after_contract : "<?=$order['oi_after_contract']?>",
             oi_proxy_prove : "<?=$order['oi_proxy_prove']?>",
-            g_goods_serial_no : ""
+            o_product_code : ""
         };
     }
 
@@ -319,8 +319,8 @@ $(function(){
         });
 
         // 失去焦点绑定
-        $('input[name=g_goods_serial_no]').bind('blur' , function(){
-            _this.data.g_goods_serial_no = $(this).val();
+        $('input[name=o_product_code]').bind('blur' , function(){
+            _this.data.o_product_code = $(this).val();
         });
 
         // 绑定提交
