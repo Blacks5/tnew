@@ -214,7 +214,7 @@ SIGN_SUCCESS：签约成功
      */
     public function actionLogin()
     {
-        return $this->redirect(Url::toRoute('login/login'));
+        return $this->redirect('/login/login');
     }
 
 }
