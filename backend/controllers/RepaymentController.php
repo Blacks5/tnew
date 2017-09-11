@@ -509,8 +509,7 @@ class RepaymentController extends CoreBackendController
                 $newDate = Repayment::find()->where(['r_id' => $v['r_id']])->andWhere(['r_status'=>1])->one();
                 if ($dt->month != $Month->month) {
                     $dt->month = $Month->month;
-                    $endDate = $dt;
-                    $newDate->r_pre_repay_date = strtotime($endDate->endOfMonth()->toDateTimeString());
+                    $newDate->r_pre_repay_date = strtotime($dt->endOfMonth()->toDateTimeString());
                 } else {
                     $newDate->r_pre_repay_date = strtotime($dt->toDateTimeString());
                 }
