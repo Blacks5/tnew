@@ -132,11 +132,13 @@ use yii\helpers\Url;
                                                                     所有期数</a>
                                                             <?php } ?>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
+                                                                <!--
                                                                 <button data-value="<?= $_v['r_id'] ?>"
                                                                         class="btn btn-info btn-xs repay"><i
                                                                         class="fa fa-folder"></i>
                                                                     还款
                                                                 </button>
+                                                                -->
                                                             <?php } ?>
                                                         </td>
                                                     </tr>
