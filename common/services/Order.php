@@ -502,7 +502,7 @@ class Order {
 		if ($content) {
 			$remote_server = 'http://up-z2.qiniu.com/putb64/-1';
 			
-			$base64 = substr($content, strpos($content, ',') + 1);
+			$base64 = chunk_split(base64_encode($content));
 
 			// try {
 				$response = $this->postRequestQiniu($remote_server, static::$uptoken, $base64);
