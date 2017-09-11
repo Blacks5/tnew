@@ -9,4 +9,7 @@ stores表增加新字段
 s_photo_nine varchar(50) not null default('') commit '授权书'    
 
 orders 表增加字段    
-`o_number_of_modify_date` tinyint(4) NOT NULL DEFAULT '0' COMMENT '还款时间选项被修改的次数'
+`o_number_of_modify_date` tinyint(4) NOT NULL DEFAULT '0' COMMENT '还款时间选项被修改的次数'    
+
+composer(composer install)    
+nesbot/carbon  //2017-9-9

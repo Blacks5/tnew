@@ -11,6 +11,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
+use Carbon\Carbon;
 use common\components\CustomCommonException;
 use common\components\Helper;
 use common\models\Customer;
@@ -72,7 +73,8 @@ class RepaymentController extends CoreBackendController
         foreach ($data as $k => $v){
             $n = 2;
             $data[$k]['can_update_time'] = 0;
-            if($v['o_is_free_pack_fee']==1 && $v['r_overdue_day']<4 && $v['o_number_of_modify_date']<4 &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
+            $can = Repayment::find()->where(['r_orders_id'=>$v['r_orders_id']])->andWhere(['<', 'r_overdue_day', 4])->one();
+            if($v['o_is_free_pack_fee']==1 && $v['r_orders_id']== $can['r_orders_id'] && $v['o_number_of_modify_date']<4 &&$v['r_pre_repay_date']>strtotime(date('Y-m-d'))){
                 $data[$k]['can_update_time'] = 1;
             }
             $v['o_total_price'] = round($v['o_total_price'], $n);
@@ -482,35 +484,48 @@ class RepaymentController extends CoreBackendController
 
     public function actionUpdateRepayTime($order_id)
     {
-        $data = Repayment::find()->leftJoin(Orders::tableName(),'orders.o_id = repayment.r_orders_id')
-            ->where(['r_orders_id'=> $order_id])
+        $data = Repayment::find()->leftJoin(Orders::tableName(), 'orders.o_id = repayment.r_orders_id')
+            ->where(['r_orders_id' => $order_id])
             ->andWhere(['<', 'r_overdue_day', 3])
-            ->andWhere(['r_repay_date'=> 0])
-            ->orderBy(['r_pre_repay_date'=>'SORT_DESC'])
+            ->andWhere(['r_repay_date' => 0])
+            ->orderBy(['r_pre_repay_date' => 'SORT_DESC'])
             ->asArray()->one();
 
-        if(yii::$app->request->getIsAjax()){
+        if (yii::$app->request->getIsAjax()) {
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             $request = yii::$app->request;
-            $repayment = Repayment::find()->where(['r_orders_id'=>$request->post('r_order_id')])
-                ->andWhere(['r_serial_no'=>$request->post('r_serial_no')])
-                ->one();
-            $repayment->r_pre_repay_date = strtotime($request->post('o_update_time'));
-            if($repayment->save()){
-                $order = Orders::find()->where(['o_id'=>$request->post('r_order_id')])->one();
-                $order->o_number_of_modify_date = $order->o_number_of_modify_date + 1;
-                if($order->save()){
-                    return ['status'=> 1, 'message' => '修改成功!'];
+            $repayment = Repayment::find()
+                ->where(['r_orders_id' => $request->post('r_order_id')])
+                ->andWhere(['r_status' => 1])
+                ->orderBy('r_pre_repay_date ASC')
+                ->asArray()->all();
+            $Date = (strtotime($request->post('o_update_time')) - $repayment[0]['r_pre_repay_date']) / (24 * 3600) + 1;
+
+            $Month = Carbon::createFromTimestamp(strtotime($request->post('o_update_time')))->startOfMonth();
+            $dt = Carbon::createFromTimestamp($repayment[0]['r_pre_repay_date'])->addDay(floor($Date));
+            foreach ($repayment as $k => $v) {
+                $newDate = Repayment::find()->where(['r_id' => $v['r_id']])->one();
+                if ($dt->month != $Month->month) {
+                    $dt->month = $Month->month;
+                    $newDate->r_pre_repay_date = strtotime($dt->endOfMonth()->toDateTimeString());
+                } else {
+                    $newDate->r_pre_repay_date = strtotime($dt->toDateTimeString());
                 }
-            }else{
-                throw new CustomBackendException('操作失败', 5);
+                $newDate->save(false);
+                $dt->addMonth(1);
+                $Month->addMonth(1);
+
             }
 
 
+            $order = Orders::find()->where(['o_id' => $request->post('r_order_id')])->one();  //修改orders 还款时间次数
+            $order->o_number_of_modify_date = $order->o_number_of_modify_date + 1;
+            if ($order->save()) {
+                return ['status' => 1, 'message' => '修改成功!'];
+            }
         }
-
         return $this->render('update_time', ['data' => $data]);
 
-
     }
+
 }
