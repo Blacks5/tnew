@@ -128,6 +128,26 @@ footer a {
   bottom: 0;
   left: 0;
 }
+.weui-uploader__file{
+  position: relative;
+}
+.weui-uploader__file img{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+}
+.weui-uploader__file-content{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  font-size:12px;
+}
 .weui-navbar-bar{
   display: -webkit-box;
   display: -webkit-flex;
