@@ -13,6 +13,7 @@ use common\models\User;
 use EasyWeChat\Foundation\Application;
 use Yii;
 use yii\web\Controller;
+use common\services\Order;
 
 /**
  * 需要授权的页面调用如下方法即可

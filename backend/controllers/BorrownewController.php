@@ -323,7 +323,6 @@ class BorrownewController extends CoreBackendController
             $trans  = Yii::$app->getDb()->beginTransaction();
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-
                 $o_operator_remark = trim($request->post('remark'));
                 $userinfo = Yii::$app->getUser()->getIdentity();
                 // 状态必须为6（初审通过）的才可以终审
@@ -331,7 +330,6 @@ class BorrownewController extends CoreBackendController
 left join customer on customer.c_id=orders.o_customer_id 
  LEFT join order_images on o_images_id=oi_id where o_id=:order_id and o_status=6 limit 1 for update";
                 $model = Yii::$app->getDb()->createCommand($sql, [':order_id' => $order_id])->queryOne();
-//                var_dump($model);die;
                 if (false === !empty($model)) {
                     throw new CustomBackendException('订单状态已经改变，不可审核。', 4);
                 }
@@ -342,41 +340,29 @@ left join customer on customer.c_id=orders.o_customer_id
                 if(YijifuSign::find()->where(['status'=>[1,2,7,8], 'orderNo'=>$order_id])->exists()){
                     throw new CustomBackendException('该订单状态已经签约!', 4);
                 }
-
                 //获取君子签记录
                 $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
-//                var_dump($jzq_sign_log->toArray());die;
                 //只有君子签签约过得用户才能终审
                 if($jzq_sign_log['signStatus'] != JzqSign::STATUS_SIGN_AND_BAOQUAN){
                     throw new CustomBackendException('客户尚未签约，不可审核。', 4);
                 }
-
-
                 $data = ['o_operator_id'=>$userinfo->id, 'o_operator_realname'=>$userinfo->realname, 'o_operator_date'=>$_SERVER['REQUEST_TIME'], 'o_operator_remark'=>$o_operator_remark];
                 $where = ['o_id'=>$order_id];
                 if(0 === Orders::updateAll($data, $where)){
                     throw new CustomBackendException('操作订单失败', 5);
                 }
-
                 // 生成还款计划，请求接口要用数据，所以必须在这一步生成
                 if (Repayment::find()->where(['r_orders_id' => $order_id])->exists()) {
                     throw new CustomBackendException('已存在还款计划', 5);
                 }
                 CalInterest::genRefundPlan($order_id);
-
-
                 $handle = new ReturnMoney();
                 // 请求签约接口，并写签约记录表
                 // 客户表  商品表 还款计划表
                 $repayment = Repayment::findBySql("select r_total_repay , r_serial_total from repayment where r_orders_id=:r_orders_id", [':r_orders_id'=>$order_id])->one();
-
                 $_goods = Goods::findBySql('select g_goods_name, g_goods_models from goods where g_order_id=:g_order_id', [':g_order_id'=>$order_id])->one();
                 $purchasedProductName = $_goods['g_goods_name']. $_goods['g_goods_models'];
-
-
                 $loanAmount = round($repayment['r_total_repay'] * $repayment['r_serial_total'], 3);
-
-
                 // 获取签约合同
                 $applyNo = JzqSign::find()->select(['applyNo'])->where(['o_serial_id'=>$model['o_serial_id'], 'signStatus'=>JzqSign::STATUS_SIGN_AND_BAOQUAN])->scalar();
                 if(false === !empty($applyNo)){
@@ -385,15 +371,13 @@ left join customer on customer.c_id=orders.o_customer_id
                 //组建请求参数
                 $requestObj=new FileLinkRequest();
                 $requestObj->applyNo=$applyNo; //签约编号
-//请求
+                //请求
                 $junziqian = \Yii::$app->params['junziqian'];
                 $response = RopUtils::doPostByObj($requestObj,$junziqian['appkey'],$junziqian['secret'],$junziqian['service_url']);
                 $responseJson=json_decode($response);
                 if($responseJson->success === false){
                     throw new CustomBackendException($responseJson->error->message, 5);
                 }
-
-
                 $handle->signContractWithCustomer($model['c_customer_name'],//'钟建蓉',
                     $model['c_customer_id_card'],//'510623197905114125',
                     $model['c_banknum'],
@@ -404,7 +388,6 @@ left join customer on customer.c_id=orders.o_customer_id
                     $loanAmount,
                     $loanAmount
                     );
-
                 $trans->commit();
                 return ['status' => 1, 'message' => '签约请求发起成功，请等待注意查看通知！'];
             } catch (CustomCommonException $e) {
@@ -446,7 +429,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 $order_data = Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->one();
                 $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
                 $customer_data = Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->one();
-
                 ob_start();
                 echo "eof\r\n";
                 var_dump($post);
@@ -460,9 +442,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 var_dump($order_data);
                 var_dump($customer_data);
                 file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
-//                die;
-
-
                 $status_arr = [
                     'SIGN_DEALING' => 7, // 审核中
                     'SIGN_FAIL' => 6, // 审核失败
@@ -478,14 +457,10 @@ left join customer on customer.c_id=orders.o_customer_id
                 $yijifu_data->bankCode = $post['bankCode'];
                 $yijifu_data->bankCardType = $post['bankCardType'];
                 $yijifu_data->status = $status_arr[$post['status']];
-
                 $order_data->o_status = Orders::STATUS_PAYING;
                 $order_data->o_operator_date = $_SERVER['REQUEST_TIME'];
-
-
                 $customer_data->c_total_money += $order_data->o_total_price - $order_data->o_total_deposit; // 累加总借款金额
 //                $customer_data->c_total_borrow_times += 1; // 借款次数加一
-
                 if (false === $customer_data->save(false)) {
                     throw new CustomBackendException('客户信息修改失败', 5);
                 }
@@ -495,7 +470,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 if (false === $order_data->save(false)) {
                     throw new CustomBackendException('订单信息修改失败', 5);
                 }
-
                 // 发送后台广播
                 $status_arr_string = [
                     'SIGN_DEALING' => '审核中', // 审核中
@@ -504,7 +478,6 @@ left join customer on customer.c_id=orders.o_customer_id
                     'CHECK_REJECT' => '审核拒绝', // 审核拒绝
                     'SIGN_SUCCESS' => '签约成功' // 签约成功
                 ];
-
                 // 发个通知
                 $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
                 $trans->commit();
@@ -545,10 +518,6 @@ left join customer on customer.c_id=orders.o_customer_id
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
         $client->send($jsonData);
     }
-
-
-
-
 
     /**
      * 拒绝
@@ -962,7 +931,6 @@ left join customer on customer.c_id=orders.o_customer_id
         if ($request->getIsAjax()) {
             $totalPrice = 0;
             $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id and r_status = 1 order by r_serial_no limit $expected")->queryall();
-
             for($i = 0;$i < count($data);$i++){
                 if(date('Y-m',$data[$i]['r_pre_repay_date']) == $this->getNextMonthDays(date('Y-m')) || date('Y-m',$data[$i]['r_pre_repay_date']) == date('Y-m')){
                     $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
@@ -974,26 +942,12 @@ left join customer on customer.c_id=orders.o_customer_id
                     }
                 }
             }
-
-//            $x = $this->day($data);
-//            if($x == null){
-//                $totalPrice = $data[0]['r_total_repay'];
-//                for($i = 1;$i < $expected;$i++){
-//                    $totalPrice += $this->getFloat($data[0]['r_principal']);
-//                }
-//            }else if($x >= 0) {
-//                if ($data[$x]['r_status'] == 10) {//当期已还的
-//                    $totalPrice = $this->already($data, $expected);
-//                } else {//当期未还的
-//                    $totalPrice = $this->calculation($data, $expected);
-//                }
-//                $totalPrice = $this->getFloat($totalPrice);
-//            }
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
             return ['status' => 1, 'totalPrice' => $totalPrice];
         }
     }
 
+    //获取基于当前月份时间的次月年月信息
     private function getNextMonthDays($date){
         $timestamp=strtotime($date);
         $arr=getdate($timestamp);
@@ -1006,56 +960,7 @@ left join customer on customer.c_id=orders.o_customer_id
         }
         return $firstday;
     }
-//
-//    //获取当前订单年月对应的期数下标
-//    private function day($arr){
-//        $x = null;
-//        for($i = 0;$i < count($arr);$i++){
-//            if(date('Y-m',$arr[$i]['r_pre_repay_date']) == date('Y-m')){
-//                $x = $i;
-//                break;
-//            }
-//        }
-//        return $x;
-//    }
-//
-//    //当前期数已还的
-//    private function already($arr,$expected = 1){
-//        $x = $this->day($arr);
-//        $totalPrice = $arr[$x+1]['r_total_repay'];//下期月供金额
-//
-//        if($expected > 1){
-//            for($i = ($x + 2);$i < ($expected + $x + 1);$i++){
-//                $totalPrice += $arr[$i]['r_principal'];
-//            }
-//        }
-//        return $totalPrice;
-//    }
-//
-//    //当前期数未还的
-//    private function calculation($arr,$expected = 1){
-//        $x = $this->day($arr);
-//        $notYet = $this->notYet($arr);
-//        if($arr[$x]['r_serial_no'] == $notYet[0]['r_serial_no']){//当前期数是未还期数的第一期，前面期数无未还期
-//            $totalPrice = $arr[$x]['r_total_repay'] + $arr[$x]['r_overdue_money'] + $arr[$x+1]['r_total_repay'];//当前期数月供加逾期金额加下月月供
-//            if($expected > 1){
-//                for($i = ($x + 2);$i < ($expected + $x + 1);$i++){
-//                    $totalPrice += $arr[$i]['r_principal'];
-//                }
-//            }
-//        }else if($arr[$x]['r_serial_no'] > $notYet[0]['r_serial_no']){//判断当前期数不是未还期数的第一期，当前期数之前有逾期未还的期数，要计算对应的逾期金额
-//            $totalPrice = $arr[$x]['r_total_repay'] + $arr[$x]['r_overdue_money'] + $arr[$x+1]['r_total_repay'];
-//            $y = count($arr) - count($this->notYet($arr));//未还款的第一期下标
-//            for($j = $y;$j < $x;$j++){
-//                $totalPrice += $arr[$j]['r_total_repay'] + $arr[$j]['r_overdue_money'];
-//            }
-//            for($k = ($x + 2);$k < count($arr);$k++){
-//                $totalPrice += $arr[$k]['r_principal'];
-//            }
-//        }
-//        return $totalPrice;
-//    }
-//
+
     //获取未还期数数组
     private function notYet($arr){
         $newArr = array();
@@ -1092,7 +997,6 @@ left join customer on customer.c_id=orders.o_customer_id
 //        }
 //        return $num;
 //    }
-
 
     /**
      * 提前还款操作
