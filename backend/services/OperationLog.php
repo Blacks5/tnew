@@ -47,9 +47,9 @@ class OperationLog
         }
         $operator = \Yii::$app->getUser()->getIdentity();
         $varTab = [
-            '{OPERATOR_ID}' => $operator->id,
-            '{OPERATOR_USERNAME}' => $operator->username,
-            '{OPERATOR_REALNAME}' => $operator->realname,
+            '{OPERATOR_ID}' => $operator->id ?? 0,
+            '{OPERATOR_USERNAME}' => $operator->username ?? '',
+            '{OPERATOR_REALNAME}' => $operator->realname ?? '',
         ];
         if (!$this->data['memo']) {
             $this->data['memo'] = str_replace(array_keys($varTab), array_values($varTab), $this->config['memo']);
