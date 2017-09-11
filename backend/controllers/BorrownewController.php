@@ -1059,9 +1059,11 @@ left join customer on customer.c_id=orders.o_customer_id
     //获取未还期数数组
     private function notYet($arr){
         $newArr = array();
+        $j = 0;
         foreach($arr as $k => $v){
             if($arr[$k]['r_status'] == 1){
-                $newArr[$k] = $arr[$k];
+                $newArr[$j] = $arr[$k];
+                $j++;
             }
         }
         return $newArr;
