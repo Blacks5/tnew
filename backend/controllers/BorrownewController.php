@@ -1109,10 +1109,9 @@ left join customer on customer.c_id=orders.o_customer_id
             $notYet = $this->notYet($data);
             $refund_id = '';
             for($i = 0;$i < $expected;$i++){
-                $refund_id .= $notYet[$i]['r_id'] . '-';
+                $refund_id .= $notYet[$i]['r_id'] . ',';
             }
             $refund_id = substr($refund_id,0,-1);
-
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
                 Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
@@ -1177,9 +1176,8 @@ left join customer on customer.c_id=orders.o_customer_id
                         'SETTLE_SUCCESS' => '结算成功', // 结算成功
                     ];
                     $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
-                    $yijifu_data['repayment_id'] = implode(',' , explode('-',$yijifu_data['repayment_id']));
                     $sql = "select * from ". Repayment::tableName()." where r_id in (:r_id) and r_status=:r_status limit 1 for update";
-                    $repay_model_arr = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_id'], ':r_status' => Repayment::STATUS_NOT_PAY])->all();
+                    $repay_model_arr = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_ids'], ':r_status' => Repayment::STATUS_NOT_PAY])->all();
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
                     }
