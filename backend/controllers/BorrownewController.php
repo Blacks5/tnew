@@ -197,16 +197,19 @@ class BorrownewController extends CoreBackendController
             }
             $notYet = Yii::$app->getDb()->createCommand("select * from repayment where r_status = 1 and r_orders_id = $order_id")->queryAll();
             $allPeriods = 0;
-            if(!empty($notYet)){
+            if(!empty($notYet)){//判断是否有逾期的金额存在 存在则只允许提前还所有未还款的期数
                 if($notYet[0]['r_overdue_money'] > 0){
                     $allPeriods = 1;
                 }
             }
-
+            $deductId = Yii::$app->db->createCommand("select yd.id from orders o left join yijifu_deduct yd on o.o_serial_id = yd.o_serial_id where yd.status in (0,1,2,3) and o.o_id = " . $order_id)->queryAll();//查询是否有正在还款的期数
+            $isRepayment = 0;
+            if(!empty($deductId)){
+                $isRepayment = 1;
+            }
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
-//            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'jzq_sign_log'=>$jzq_sign_log]);
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log, 'not_yet_count'=>count($notYet), 'all_periods'=>$allPeriods]);
+            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log, 'not_yet_count'=>count($notYet), 'all_periods'=>$allPeriods, 'isRepayment'=>$isRepayment]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -1043,7 +1046,7 @@ left join customer on customer.c_id=orders.o_customer_id
      */
     public function actionDeductCallback()
     {
-        $post = Yii::$app->getRequest()->post();
+        $post = Yii::$app->getRequest()->get();
 
         if('true' === $post['success']){
             $status_arr = [
@@ -1080,8 +1083,8 @@ left join customer on customer.c_id=orders.o_customer_id
                         'SETTLE_SUCCESS' => '结算成功', // 结算成功
                     ];
                     $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
-                    $sql = "select * from ". Repayment::tableName()." where r_id in (:r_id) and r_status=:r_status limit 1 for update";
-                    $repay_model_arr = Repayment::findBySql($sql, ['r_id' => $yijifu_data['repayment_ids'], ':r_status' => Repayment::STATUS_NOT_PAY])->all();
+                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $yijifu_data['repayment_ids'] . ") and r_status=:r_status for update";
+                    $repay_model_arr = Repayment::findBySql($sql,[':r_status' => Repayment::STATUS_NOT_PAY])->all();
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
                     }
