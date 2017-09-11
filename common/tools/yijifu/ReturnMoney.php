@@ -313,7 +313,7 @@ class ReturnMoney extends AbstractYijifu
             'productName'=>$customer['c_customer_name'].'的订单',
             'loanAmount'=>'', // 可以不填的，优先不填
             'totalRepayAmount'=>$yijifu['o_total_price'] - $yijifu['o_total_deposit'],
-            'operateType'=>'MODIFY_SIGN',
+            'operateType'=>'SIGN',
         ];
 
         //$this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";
