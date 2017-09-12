@@ -10,6 +10,7 @@ namespace backend\core;
 
 use yii;
 use common\core\CoreCommonController;
+use backend\services\OperationLog;
 
 class CoreBackendController extends CoreCommonController
 {
@@ -17,5 +18,12 @@ class CoreBackendController extends CoreCommonController
     {
         Yii::$app->getView()->title = '天牛金融--后台';
         return parent::beforeAction($action);
+    }
+
+    public function afterAction($action, $result)
+    {
+        $log = new OperationLog();
+        $log->active();
+        return parent::afterAction($action, $result);
     }
 }

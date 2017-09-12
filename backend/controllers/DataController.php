@@ -33,9 +33,8 @@ class DataController extends CoreBackendController
         $list = $data->getLoanTotal(\yii::$app->request->getQueryParams());
         $province = Helper::getAllProvince();
 
-
         return $this->render('gather',[
-            'data'=>$list,
+            'data'=>$list['data'],
             'users'=>$list['user'],
             'area' => $province,
             'sear' => $list['sear'],

@@ -128,3 +128,41 @@ footer a {
   bottom: 0;
   left: 0;
 }
+.weui-uploader__file{
+  position: relative;
+}
+.weui-uploader__file img{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+}
+.weui-uploader__file-content{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  font-size:12px;
+}
+.weui-navbar-bar{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  position: absolute;
+  z-index: 500;
+  bottom: 0;
+  width: 100%;
+  background-color: #fafafa;
+  border-top: 1px solid #ddd;
+}
+.weui-navbar-bar .weui-navbar__item{
+  color: #666;
+} 
+.weui-navbar-bar .weui-navbar__item:last-child{
+  background-color: #1aad19;
+  color: #fff;
+}

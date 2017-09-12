@@ -19,6 +19,7 @@ use yii\db\Query;
 use common\models\Orders;
 use common\components\CustomCommonException;
 use common\components\Helper;
+use yii\helpers\Url;
 
 /**
  * Site controller
@@ -204,6 +205,16 @@ SIGN_SUCCESS：签约成功
         ];
         $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
         $client->send($jsonData);
+    }
+
+    /**
+     * site/login to login/login
+     * @return string
+     * @author OneStep
+     */
+    public function actionLogin()
+    {
+        return $this->redirect('/login/login');
     }
 
 }

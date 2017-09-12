@@ -64,7 +64,8 @@ class LoginController extends Controller {
 
 			return $this->renderPartial('login', [
 				'openid' => $wechat_user->id,
-				'avatar' => $wechat_user->avatar
+				'avatar' => $wechat_user->avatar,
+				'js' => Wechat::jssdk()
 			]);
 		}
 	}

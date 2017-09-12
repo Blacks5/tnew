@@ -150,6 +150,18 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <p class="form-control-static"><?= $model['p_customer_management']; ?></p>
                         </div>
                     </div>
+                    <div>
+                        <label class="col-sm-2 control-label">服务费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_service_fee']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">查询费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_inquiry_fee']; ?></p>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -416,7 +428,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div>
                             <label class="col-sm-2 control-label">商品类型：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= Yii::$app->params['goods_type'][$v['g_goods_type'] - 1]['t_name']; ?></p>
+                                <p class="form-control-static"><?= Yii::$app->params['goods_type'][$v['g_goods_type']]['t_name']; ?></p>
                             </div>
                         </div>
                         <div>
@@ -526,17 +538,23 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 <button class="btn btn-danger failpic">照片不合格</button>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/edit-product-code']))) { ?>
-                                <button class="btn btn-danger" id="add_product_code">
-                                    <?php if($model['o_product_code']){ ?>
-                                        编辑商品代码
-                                    <?php }else{ ?>
-                                        添加商品代码
-                                    <?php } ?>
-                                </button>
+
                             <?php } ?>
                         </div>
                     </div>
 
+                <?php } ?>
+                <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-3">
+                        <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                        <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
+                        <?php }?>
+                        <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                        <button class="btn btn-danger col-md-offset-1" id="cancel_vip_pack">取消贵宾服务包</button>
+                        <?php }?>
+                    </div>
+                </div>
                 <?php } ?>
         </div>
     </div>
@@ -742,6 +760,58 @@ $(".failpic").click(function(){
             layer.close(index);
         },
     }) 
+});
+
+// 取消贵宾包服务
+$("#cancel_vip_pack").click(function(){
+    layer.confirm("确定要取消贵宾包服务吗？", {title:"取消贵宾包服务", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrow/cancel-vip-pack', 'order_id' => $model['o_id']]) . '",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            }
+            ,
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
+});
+
+// 取消个人保障服务
+$("#cancel_personal_protection").click(function(){
+    layer.confirm("确定要取消个人保障服务吗？", {title:"取消个人保障服务", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrow/cancel-personal-protection', 'order_id' => $model['o_id']]) . '",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            }
+            ,
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
 });
 ');
 ?>

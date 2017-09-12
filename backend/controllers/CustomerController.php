@@ -13,9 +13,12 @@ use common\components\Helper;
 use common\models\Customer;
 use common\models\CustomerSearch;
 use common\models\OrderImages;
+use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\UploadFile;
 use common\models\User;
+use common\models\YijifuSign;
+use common\tools\yijifu\ReturnMoney;
 use yii;
 use backend\core\CoreBackendController;
 
@@ -37,6 +40,7 @@ class CustomerController extends CoreBackendController
      */
     public function actionIndex()
     {
+        $users = yii::$app->user->identity;
         $this->getView()->title = '客户列表';
         $model = new CustomerSearch();
         $params = Yii::$app->getRequest()->getQueryParams();
@@ -153,8 +157,12 @@ class CustomerController extends CoreBackendController
                 if(false === !empty($data['oi_front_bank'])){
                     throw new CustomBackendException('参数异常');
                 }
+                $customer = new Customer();
+                $customer->updateBank($data);
 
-                $sql = "select * from ". Customer::tableName(). " where c_id=:c_id limit 1 for update";
+                $trans->commit();
+
+                /*$sql = "select * from ". Customer::tableName(). " where c_id=:c_id limit 1 for update";
                 $Customer = Customer::findBySql($sql, [':c_id'=>$data['customer_id']])->one();
                 if(false === !empty($Customer)){
                     throw new CustomBackendException('客户不存在');
@@ -173,7 +181,7 @@ class CustomerController extends CoreBackendController
                 if(false === $OrderImages->update()){
                     throw new CustomBackendException('更新银行卡图片失败');
                 }
-                $trans->commit();
+                $trans->commit();*/
                 return ['status'=>1, 'message'=>'更新银行卡信息成功'];
             }catch (CustomBackendException $e){
                 $trans->rollBack();
@@ -202,5 +210,9 @@ class CustomerController extends CoreBackendController
             $key = reset($ret)['key'];
         }
         return $key;
+    }
+
+    public function actionUpdates(){
+
     }
 }

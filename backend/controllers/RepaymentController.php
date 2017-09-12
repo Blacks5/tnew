@@ -11,6 +11,7 @@ namespace backend\controllers;
 
 use backend\components\CustomBackendException;
 use backend\core\CoreBackendController;
+use Carbon\Carbon;
 use common\components\CustomCommonException;
 use common\components\Helper;
 use common\models\Customer;
@@ -22,6 +23,7 @@ use common\models\User;
 use common\models\YijifuDeduct;
 use common\models\YijifuSign;
 use common\tools\yijifu\ReturnMoney;
+use function GuzzleHttp\Promise\all;
 use WebSocket\Client;
 use yii\data\Pagination;
 use yii;
@@ -67,8 +69,14 @@ class RepaymentController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        array_walk($data, function(&$v){
+        $can = Repayment::find()->select('r_orders_id')->where(['r_status'=>1])->andWhere(['>', 'r_overdue_day', 4])->groupBy('r_orders_id')->column();
+        foreach ($data as $k => $v){
             $n = 2;
+            $data[$k]['can_update_time'] = 0;
+
+            if($v['o_is_free_pack_fee']==1 && !in_array($v['r_orders_id'],$can) && $v['o_number_of_modify_date']<4){
+                $data[$k]['can_update_time'] = 1;
+            }
             $v['o_total_price'] = round($v['o_total_price'], $n);
             $v['o_total_deposit'] = round($v['o_total_deposit'], $n);
             $v['o_total_interest'] = round($v['o_total_interest'], $n);
@@ -80,7 +88,9 @@ class RepaymentController extends CoreBackendController
             $v['r_free_pack_fee'] = round($v['r_free_pack_fee'], $n);
             $v['r_finance_mangemant_fee'] = round($v['r_finance_mangemant_fee'], $n);
             $v['r_customer_management'] = round($v['r_customer_management'], $n);
-        });
+        };
+
+
         return $this->render('waitrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,
@@ -458,10 +468,67 @@ class RepaymentController extends CoreBackendController
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
+        $can = Repayment::find()->where(['r_status'=>1, 'r_orders_id'=>$order_id])->andWhere(['>', 'r_overdue_day', 4])->count();
+
+        foreach ($data as $k => $v){
+            $data[$k]['can_update_time'] = 0;
+            if($v['o_is_free_pack_fee']==1 && $can==0 && $v['o_number_of_modify_date']<4){
+                $data[$k]['can_update_time'] = 1;
+            }
+        }
         return $this->render('allrepaymentlist', [
             'model' => $data,
             'totalpage' => $pages->pageCount,
             'pages' => $pages
         ]);
     }
+
+    public function actionUpdateRepayTime($order_id)
+    {
+        $data = Repayment::find()->leftJoin(Orders::tableName(), 'orders.o_id = repayment.r_orders_id')
+            ->where(['r_orders_id' => $order_id])
+            ->andWhere(['<', 'r_overdue_day', 3])
+            ->andWhere(['r_repay_date' => 0])
+            ->orderBy(['r_pre_repay_date' => 'SORT_DESC'])
+            ->asArray()->one();
+
+        if (yii::$app->request->getIsAjax()) {
+            Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+            $request = yii::$app->request;
+            $repayment = Repayment::find()
+                ->where(['r_orders_id' => $request->post('r_order_id')])
+                ->andWhere(['r_status' => 1])
+                ->orderBy('r_pre_repay_date ASC')
+                ->asArray()->all();
+            $Date = (strtotime($request->post('o_update_time')) - $repayment[0]['r_pre_repay_date']) / (24 * 3600) + 1;
+
+            $Month = Carbon::createFromTimestamp(strtotime($request->post('o_update_time')))->startOfMonth();
+            $dt = Carbon::createFromTimestamp($repayment[0]['r_pre_repay_date'])->addDay(floor($Date));
+            foreach ($repayment as $k => $v) {
+                $newDate = Repayment::find()->where(['r_id' => $v['r_id']])->andWhere(['r_status'=>1])->one();
+                if ($dt->month != $Month->month) {
+                    $dt->month = $Month->month;
+                    $newDate->r_pre_repay_date = strtotime($dt->endOfMonth()->toDateTimeString());
+                } else {
+                    $newDate->r_pre_repay_date = strtotime($dt->toDateTimeString());
+                }
+
+                $newDate->save(false);
+                $dt->addMonth(1);
+                $Month->addMonth(1);
+
+            }
+
+
+            $order = Orders::find()->where(['o_id' => $request->post('r_order_id')])->one();  //修改orders 还款时间次数
+            $order->o_number_of_modify_date = $order->o_number_of_modify_date + 1;
+            if ($order->save()) {
+                return ['status' => 1, 'message' => '修改成功!'];
+            }
+        }
+        return $this->render('update_time', ['data' => $data]);
+
+    }
+
 }

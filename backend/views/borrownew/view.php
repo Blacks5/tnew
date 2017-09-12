@@ -150,6 +150,18 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                             <p class="form-control-static"><?= $model['p_customer_management']; ?></p>
                         </div>
                     </div>
+                    <div>
+                        <label class="col-sm-2 control-label">商户服务费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_service_fee']; ?></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="col-sm-2 control-label">查询费：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= $model['o_inquiry_fee']; ?></p>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -411,12 +423,15 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <div class="hr-line-dashed"></div>
 
                 <!--商品信息-->
+                <?php 
+                $goods_types = array_combine(array_column(\Yii::$app->params['goods_type'], 't_id') , array_column(\Yii::$app->params['goods_type'], 't_name'));
+                ?>
                 <?php foreach ($goods_data as $v) { ?>
                     <div class="form-group">
                         <div>
                             <label class="col-sm-2 control-label">商品类型：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= Yii::$app->params['goods_type'][$v['g_goods_type'] - 1]['t_name']; ?></p>
+                                <p class="form-control-static"><?= $goods_types[$v['g_goods_type']]; ?></p>
                             </div>
                         </div>
                         <div>
@@ -428,10 +443,35 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                         <div>
                             <label class="col-sm-2 control-label">商品代码：</label>
                             <div class="col-sm-2">
-                                <p class="form-control-static"><?= $model['o_product_code'] ? $model['o_product_code'] : '暂未填写'; ?></p>
+                                <p class="form-control-static" id="product_code"><?= $model['o_product_code'] ? $model['o_product_code'] : '暂未填写'; ?></p>
+                                <p class="form-control-static"><button class="btn btn-info btn-xs" id="update-product">修改</button> </p>
                             </div>
                         </div>
-
+                        <script>
+                            $('#update-product').click(function(){
+                                var value = $('#product_code').html();
+                                var html = "<input type='text' class='form-control' id='o_product_code' value='"+value+"' autofocus>";
+                                $(this).hide();
+                                $('#product_code').html(html);
+                            });
+                            $(document).on('blur','#o_product_code',function(){
+                                var url = "<?= \yii\helpers\Url::toRoute('/borrownew/update-product-code') ?>";
+                                var value = $('#o_product_code').val();
+                                var postData = {
+                                    'o_product_code': $('#o_product_code').val(),
+                                    'o_id':"<?= $model['o_id'] ?>"
+                                };
+                                $.post(url, postData, function(data){
+                                    if(data.status==1){
+                                        layer.msg('修改商品代码成功',{icon:1});
+                                        $('#product_code').html(value);
+                                        $('#update-product').show();
+                                    }else{
+                                        layer.msg('修改失败!',{icon:2});
+                                    }
+                                })
+                            })
+                        </script>
                     </div>
                 <?php } ?>
                 <?php if($loan_data){ ?>
@@ -526,17 +566,42 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 <button class="btn btn-danger failpic">照片不合格</button>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/edit-product-code']))) { ?>
-                                <button class="btn btn-danger" id="add_product_code">
-                                    <?php if($model['o_product_code']){ ?>
-                                        编辑商品代码
-                                    <?php }else{ ?>
-                                        添加商品代码
-                                    <?php } ?>
-                                </button>
+
                             <?php } ?>
                         </div>
                     </div>
 
+                <?php } ?>
+
+                <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-3">
+                            <?php if($model['o_status'] == 10 && $periodNum == 1 && $isRepayment == 0){ ?>
+                                <div>
+                                    <div class="col-md-2">提前还款期数：</div>
+                                    <select class="col-md-2" id="period_num">
+                                        <?php if($all_periods == 0){ ?>
+                                            <?php for($i = 0;$i < $not_yet_count;$i++) { ?>
+                                                <option value="<?php echo $i+1; ?>">未还款的前<?php echo $i+1; ?>期</option>
+                                            <?php } ?>
+                                        <?php }else{ ?>
+                                            <option value="<?php echo $not_yet_count; ?>">未还款的期数共<?php echo $not_yet_count; ?>期</option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price"></span></div>
+                                <input type="hidden" value="0" id="calculation_residual_loan_val"/>
+                                <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
+                                <button class="btn btn-danger col-md-offset-1" id="prepayment">提前还款</button>
+                            <?php }?>
+                            <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                                <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
+                            <?php }?>
+                            <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                                <button class="btn btn-danger col-md-offset-1" id="cancel_vip_pack">取消贵宾服务包</button>
+                            <?php }?>
+                        </div>
+                    </div>
                 <?php } ?>
         </div>
     </div>
@@ -606,7 +671,7 @@ $(".verify-end").click(function(){
             var loading = layer.load(4);
             var remark = $("#xx").val();
             $.ajax({
-                url: "' . \yii\helpers\Url::toRoute(['borrow/verify-pass', 'order_id' => $model['o_id']]) . '",
+                url: "' . \yii\helpers\Url::toRoute(['borrownew/verify-pass', 'order_id' => $model['o_id']]) . '",
                 type: "post",
                 dataType: "json",
                 data: {remark: remark, "' . Yii::$app->getRequest()->csrfParam . '": "' . Yii::$app->getRequest()->getCsrfToken() . '"},
@@ -742,6 +807,103 @@ $(".failpic").click(function(){
             layer.close(index);
         },
     }) 
+});
+
+
+
+// 计算剩余应还款额
+$("#calculation_residual_loan").click(function(){
+    var period_num = $("#period_num").val();
+    $.ajax({
+        url: "' . \yii\helpers\Url::toRoute(['borrownew/calculation-residual-loan', 'order_id' => $model['o_id']]) . '&expected=" + period_num,
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            if (data.status === 1) {
+                $("#calculation_residual_loan_price").html(data.totalPrice);
+                $("#calculation_residual_loan_val").val(data.totalPrice);
+            }
+        }
+    });
+});
+
+// 提前还款操作
+$("#prepayment").click(function(){
+    $("#calculation_residual_loan").trigger("click");
+    var period_num = $("#period_num").val();
+    var price = $("#calculation_residual_loan_val").val();
+    layer.confirm("确定要提前还款" + period_num + "期,总计还款金额：" + price + "元吗？", {title:"确定提前还款", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/prepayment', 'order_id' => $model['o_id']]) . '&expected=" + period_num + "&price=" + price,
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            },
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
+});
+
+// 取消贵宾包服务
+$("#cancel_vip_pack").click(function(){
+    layer.confirm("确定要取消贵宾包服务吗？", {title:"取消贵宾包服务", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/cancel-vip-pack', 'order_id' => $model['o_id']]) . '",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            },
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
+});
+
+// 取消个人保障服务
+$("#cancel_personal_protection").click(function(){
+    layer.confirm("确定要取消个人保障服务吗？", {title:"取消个人保障服务", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/cancel-personal-protection', 'order_id' => $model['o_id']]) . '",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            }
+            ,
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
 });
 ');
 ?>

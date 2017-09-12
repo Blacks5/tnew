@@ -40,7 +40,7 @@
             历史订单
         </p>
     </a>
-    <a href="toast.html" class="weui-grid js_grid">
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/overdue-order-list'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
             <img src="/wechat/images/overdue_order.png" alt="">
         </div>
@@ -48,7 +48,7 @@
             逾期订单
         </p>
     </a>
-    <a href="form.html" class="weui-grid js_grid">
+    <a href="javascript:void(0);" class="weui-grid js_grid message-center">
         <div class="weui-grid__icon">
             <img src="/wechat/images/msg.png" alt="">
         </div>
@@ -56,7 +56,7 @@
             消息中心
         </p>
     </a>
-    <a href="dialog.html" class="weui-grid js_grid">
+    <a href="javascript:void(0);" class="weui-grid js_grid my-qrcode">
         <div class="weui-grid__icon">
             <img src="/wechat/images/icon_nav_dialog.png" alt="">
         </div>
@@ -76,9 +76,42 @@
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
     $(function() {
         FastClick.attach(document.body);
+
+        wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
+
+        wx.ready(function(){
+            wx.hideMenuItems({
+                menuList: [
+                    'menuItem:share:appMessage',
+                    'menuItem:share:timeline',
+                    'menuItem:share:qq',
+                    'menuItem:share:weiboApp',
+                    'menuItem:share:facebook',
+                    'menuItem:share:QZone',
+                    'menuItem:copyUrl',
+                    'menuItem:originPage',
+                    'menuItem:openWithQQBrowser',
+                    'menuItem:openWithSafari',
+                    'menuItem:share:email'
+                ]
+            });
+        });
+
+        $('.message-center').bind('click' , function(){
+            $.alert("暂未开放此功能，敬请期待！", "敬请期待！", function() {
+              //点击确认后的回调函数
+            });
+        });
+
+        $('.my-qrcode').bind('click' , function(){
+            $.alert("暂未开放此功能，敬请期待！", "敬请期待！", function() {
+              //点击确认后的回调函数
+            });
+        });
     });
 </script>
 </body>

@@ -45,9 +45,30 @@
     <script src="/wechat/lib/jquery-2.1.4.js"></script>
     <script src="/wechat/lib/fastclick.js"></script>
     <script src="/wechat/js/jquery-weui.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
         $(function(){
             FastClick.attach(document.body);
+
+            wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
+
+            wx.ready(function(){
+                wx.hideMenuItems({
+                    menuList: [
+                        'menuItem:share:appMessage',
+                        'menuItem:share:timeline',
+                        'menuItem:share:qq',
+                        'menuItem:share:weiboApp',
+                        'menuItem:share:facebook',
+                        'menuItem:share:QZone',
+                        'menuItem:copyUrl',
+                        'menuItem:originPage',
+                        'menuItem:openWithQQBrowser',
+                        'menuItem:openWithSafari',
+                        'menuItem:share:email'
+                    ]
+                });
+            });
 
             // 页面处理类
             function Pages(url){
@@ -113,7 +134,6 @@
                     items: [{title: "全部",value: "all"},
                         {title: "近一月",value: "near"},
                         {title: "还款中",value: "paying"},
-                        {title: "已逾期",value: "003"},
                         {title: "已取消",value: "cancel"},
                         {title: "已拒绝",value: "refuse"},
                         {title: "已还清",value: "payover"}]
@@ -195,30 +215,32 @@
 
                         for(var i in res.data.data){
                             var item = res.data.data[i];
-                            html += '<div class="weui-form-preview"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div></div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">';
+                            html += '<div class="weui-form-preview"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div>';
+
+                            html += '<div class="weui-form-preview__item"><label class="weui-form-preview__label">状态描述</label><span class="weui-form-preview__value">' + (item.o_operator_remark ? item.o_operator_remark : '暂无') + '</span></div>';
 
                             switch(parseInt(item.o_status)){
                                 case _this.REFUSE:
-                                    html  += '已拒绝';
+                                    status  = '已拒绝';
                                 break;
 
                                 case _this.REVOKE:
-                                    html  += '已撤销';
+                                    status  = '已撤销';
                                 break;
 
                                 case _this.CANCEL:
-                                    html  += '已取消';
+                                    status  = '已取消';
                                 break;
 
                                 case _this.PAYING:
-                                    html  += '还款中';
+                                    status  = '还款中';
                                 break;
 
                                 case _this.PAY_OVER:
-                                    html  += '已还清';
+                                    status  = '已还清';
                                 break;
                             }
-                            html += '</a><button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">操作</button></div></div><br />';
+                            html += '</div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">'+ status + '</a><button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">操作</button></div></div><br />';
                         }
 
                         callback(html , res.data.page);

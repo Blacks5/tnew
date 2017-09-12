@@ -16,5 +16,12 @@ return [
             // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
+        // 百融API
+		'bair' => [
+			'class' => 'common\components\Brhelper',
+			'username' => 'tianniuAPI',
+			'password' => 'tianniuAPI',
+			'apicode' => '3000820',
+		],
     ],
 ];

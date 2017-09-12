@@ -45,6 +45,7 @@ class YijifuSign extends \yii\db\ActiveRecord
             [['merchOrderNo', 'orderNo', 'bankCode'], 'string', 'max' => 40],
             [['merchContractNo', 'sign', 'bankName'], 'string', 'max' => 64],
             [['bankCardType'], 'string', 'max' => 50],
+            [['logs'], 'text'],
         ];
     }
 
@@ -68,6 +69,7 @@ class YijifuSign extends \yii\db\ActiveRecord
             'bankName' => 'Bank Name',
             'bankCardType' => 'Bank Card Type',
             'bankCode' => 'Bank Code',
+            'logs' => '日志文件',
         ];
     }
 }

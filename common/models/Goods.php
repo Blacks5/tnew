@@ -30,6 +30,7 @@ class Goods extends CoreCommonActiveRecord {
 		return [
 			[['g_order_id'], 'required'],
 			[['g_goods_name', 'g_goods_models', 'g_goods_price', 'g_goods_type', 'g_goods_deposit'], 'required'],
+			[['g_goods_serial_no'], 'required' , 'on' => 'clientValidate2'],
 			[['g_order_id'], 'integer'],
 			[['g_goods_type'], 'integer'],
 			[['g_goods_price', 'g_goods_deposit'], 'number'],
@@ -51,6 +52,7 @@ class Goods extends CoreCommonActiveRecord {
 			'g_goods_price' => '商品价格',
 			'g_goods_type' => '商品类型',
 			'g_goods_deposit' => '预付订金',
+			'g_goods_serial_no' => '商品串号',
 		];
 	}
 
@@ -58,6 +60,7 @@ class Goods extends CoreCommonActiveRecord {
 	public function scenarios() {
 		$scenarios = parent::scenarios();
 		$scenarios['clientValidate'] = ['g_goods_type', 'g_goods_name', 'g_goods_models', 'g_goods_price', 'g_goods_deposit'];
+		$scenarios['clientValidate2'] = ['g_goods_serial_no'];
 		return $scenarios;
 	}
 }

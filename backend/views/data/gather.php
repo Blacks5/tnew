@@ -76,7 +76,7 @@
                                 var city_id = $(this).val();
                                 $.get(url, {p_id:city_id}, function(data){
                                     var dom = "<option value=''>选择县</option>";
-                                    var t = "?<?= $sear['county'] ?>";
+                                    var t = "<?= $sear['county'] ?>";
                                     $.each(data, function (k, v) {
                                         dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
                                     })
@@ -106,26 +106,14 @@
                         </div>
                     </form>
                     <!-- 下级销售数据汇总 by OneStep -->
-                    <div class="row" style="margin-top: 20px;font-size:20px;">
+                    <div class="row" style="margin-top: 20px;">
                         <div class="col-sm-4">
                             <div class="panel panel-success">
                                 <header class="panel-heading">总放款</header>
                                 <div class="panel-body">
                                     <div class="list-group">
-                                        <a class="list-group-item">总放款本息<span style="display: block;float: right;"><?= $data['principal']+$data['interest'] ?></span></a>
+                                        <a class="list-group-item">总放款本息<span style="display: block;float: right;"><?= $data['total'] ?></span></a>
                                         <a class="list-group-item">总放款本金<span style="display: block;float: right;"><?= $data['principal'] ?></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="panel panel-success">
-                                <header class="panel-heading">总回收</header>
-                                <div class="panel-body">
-                                    <div class="list-group">
-                                        <a class="list-group-item">总回收本息<span style="display: block;float: right;"><?= $data['repay_pri'] + $data['repay_int'] ?></span></a>
-                                        <a class="list-group-item">总回收本金<span style="display: block;float: right;"><?= $data['repay_pri'] ?></span></a>
-                                        <a class="list-group-item">总回收利息<span style="display: block;float: right;"><?= $data['repay_int'] ?></span></a>
                                     </div>
                                 </div>
                             </div>
@@ -135,8 +123,19 @@
                                 <header class="panel-heading">未回收</header>
                                 <div class="panel-body">
                                     <div class="list-group">
-                                        <a class="list-group-item">未回收本金<span style="display: block;float: right;"><?= $data['principal'] - $data['repay_pri'] ?></span></a>
-                                        <a class="list-group-item">未回收利息<span style="display: block;float: right;"><?= $data['interest'] - $data['repay_int'] ?></span></a>
+                                        <a class="list-group-item">未回收本金<span style="display: block;float: right;"><?= $data['overdue_principal']?></span></a>
+                                        <a class="list-group-item">未回收利息<span style="display: block;float: right;"><?= $data['overdue_interest']?></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <header class="panel-heading">额外</header>
+                                <div class="panel-body">
+                                    <div class="list-group">
+                                        <a class="list-group-item">个人保障计划收入<span style="display: block;float: right;"><?= $data['pack'] ?></span></a>
+                                        <a class="list-group-item">贵宾额外收入<span style="display: block;float: right;"><?= $data['service'] ?></span></a>
                                     </div>
                                 </div>
                             </div>
@@ -145,11 +144,12 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="panel panel-success">
-                                <header class="panel-heading">额外</header>
+                                <header class="panel-heading">总回收</header>
                                 <div class="panel-body">
                                     <div class="list-group">
-                                        <a class="list-group-item">个人保障计划收入<span style="display: block;float: right;"><?= $data['freePack'] ?></span></a>
-                                        <a class="list-group-item">贵宾额外收入<span style="display: block;float: right;"><?= $data['service'] ?></span></a>
+                                        <a class="list-group-item">总回收本息<span style="display: block;float: right;"><?= $data['repay_total'] ?></span></a>
+                                        <a class="list-group-item">总回收本金<span style="display: block;float: right;"><?= $data['repay_principal'] ?></span></a>
+                                        <a class="list-group-item">总回收利息<span style="display: block;float: right;"><?= $data['repay_interest'] ?></span></a>
                                     </div>
                                 </div>
                             </div>
@@ -159,9 +159,9 @@
                                 <header class="panel-heading">滞纳金</header>
                                 <div class="panel-body">
                                     <div class="list-group">
-                                        <a class="list-group-item">总滞纳金<span style="display: block;float: right;"><?= $data['overdue'] ?></span></a>
-                                        <a class="list-group-item">未回收滞纳金<span style="display: block;float: right;"><?= $data['overdue']-$data['repay_ove'] ?></span></a>
-                                        <a class="list-group-item">已回收滞纳金<span style="display: block;float: right;"><?= $data['repay_ove'] ?></span></a>
+                                        <a class="list-group-item">总滞纳金<span style="display: block;float: right;"><?= $data['overdue_total'] ?></span></a>
+                                        <a class="list-group-item">未回收滞纳金<span style="display: block;float: right;"><?= $data['overdue_not'] ?></span></a>
+                                        <a class="list-group-item">已回收滞纳金<span style="display: block;float: right;"><?= $data['overdue_back'] ?></span></a>
                                     </div>
                                 </div>
                             </div>

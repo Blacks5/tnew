@@ -87,20 +87,25 @@ use yii\helpers\Url;
                                                         <td class="client-status"><?= $_v['r_overdue_day']; ?>天</td>
                                                         <td class="client-status"><?= round($_v['r_overdue_money'], 2); ?>元</td>
                                                         <td>
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrow/view']))) { ?>
-                                                                <a href="<?= Url::toRoute(['borrow/view', 'order_id' => $_v['o_id']]); ?>"
+                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['borrownew/view']))) { ?>
+                                                                <a href="<?= Url::toRoute(['borrownew/view', 'order_id' => $_v['o_id']]); ?>"
                                                                    class="btn btn-primary btn-xs"><i
                                                                         class="fa fa-folder"></i>
                                                                     详情</a>
                                                             <?php } ?>
 
                                                             <?php  if($_v['r_status'] !== '10') { /*未还款才显示*/ ?>
-                                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/repay']))) { ?>
+                                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repaymentnew/repay']))) { ?>
                                                                     <button data-value="<?= $_v['r_id'] ?>"
                                                                             class="btn btn-info btn-xs repay"><i
                                                                             class="fa fa-folder"></i>
                                                                         还款
                                                                     </button>
+                                                                <?php } ?>
+                                                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/update-repay-time']))) { ?>
+                                                                    <a  class="btn btn-danger btn-xs" <?= $_v['can_update_time']==1?'href="'.Url::toRoute(["/repayment/update-repay-time","order_id"=>$_v["o_id"]]).'"':"disabled"?>>
+                                                                        <i class="fa fa-folder"></i>修改还款日期
+                                                                    </a>
                                                                 <?php } ?>
                                                             <?php } ?>
                                                         </td>
@@ -134,7 +139,7 @@ use yii\helpers\Url;
         <?php
         $this->registerJs('
 $(".repay").click(function(env){
-    var url = "' . Url::toRoute(['repayment/repay']) . '";
+    var url = "' . Url::toRoute(['repaymentnew/repay']) . '";
     var r_id = $(env.target).attr("data-value");
     layer.confirm("确定要进行还款操作吗？", {title:"还款操作", icon:3}, function(index){
         var loading = layer.load(4);
