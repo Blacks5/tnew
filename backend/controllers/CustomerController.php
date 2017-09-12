@@ -188,7 +188,7 @@ class CustomerController extends CoreBackendController
                 return ['status'=>0, 'message'=>$e->getMessage()];
             }catch (\Exception $e){
                 $trans->rollBack();
-                return ['status'=>0, 'message'=>'网络错误'];
+                return ['status'=>0, 'message'=>'错误：' . $e->getMessage()];
             }
         }
     }
