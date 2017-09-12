@@ -513,8 +513,10 @@
          */
         Page.prototype.init = function(){
             var _this = this;
+            // 设置窗口高度
+            $(document.body).height(window.innerHeight + 'px');
             // 初始化高度
-            $('.commit-order-container').height($(document.body).height() - 70);
+            $('.commit-order-container').height((window.innerHeight - 70) + 'px');
             // 实例化swiper
             this.swiper = new Swiper('.swiper-container' , {
                 onSlideChangeEnd : function(swiper){
