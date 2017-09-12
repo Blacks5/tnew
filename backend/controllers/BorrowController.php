@@ -443,99 +443,99 @@ left join customer on customer.c_id=orders.o_customer_id
                 echo "success";
                 return;
             }
-
             if('MODIFY_SIGN'===$post['operateType']){
-                $sign = YijifuSign::find()->where(['orderNo'=>$post('orderNo')])->one();
 
-                $sign->bankName = $post('bankName');
-                $sign->bankCardType = $post('bankCardType');
-                $sign->bankCode = $post('bankCode');
+                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo  order by created_at desc  limit 1 for update";
+                $sign = YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
+                $sign->bankName = $post['bankName'];
+                $sign->bankCardType = $post['bankCardType'];
+                $sign->bankCode = $post['bankCode'];
                 $sign->status = $status_arr[$post['status']];
 
                 if($sign->save(false)){
                     echo 'success';
                     return;
                 }
-            }
-            // 事务内
-            // 修改签约表，修改订单表，修改客户表，生成还款计划，发ws通知
-            $trans = Yii::$app->getDb()->beginTransaction();
-            try {
-                // 只有待回调的才能处理【因为会回调两次，第二次来时状态已经不为2了】
+            }else {
+                // 事务内
+                // 修改签约表，修改订单表，修改客户表，生成还款计划，发ws通知
+                $trans = Yii::$app->getDb()->beginTransaction();
+                try {
+                    // 只有待回调的才能处理【因为会回调两次，第二次来时状态已经不为2了】
 //                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
-                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo  order by created_at desc  limit 1 for update";
-                $yijifu_data = YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
-                $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
-                $order_data = Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->one();
-                $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
-                $customer_data = Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->one();
+                    $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo  order by created_at desc  limit 1 for update";
+                    $yijifu_data = YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
+                    $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
+                    $order_data = Orders::findBySql($sql, [':o_serial_id' => $yijifu_data['o_serial_id']])->one();
+                    $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
+                    $customer_data = Customer::findBySql($sql, [':c_id' => $order_data['o_customer_id']])->one();
 
-                ob_start();
-                echo "eof\r\n";
-                var_dump($post);
-                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
-                echo YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->createCommand()->getRawSql();
-                $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
-                echo Orders::findBySql($sql, [':o_serial_id'=>$yijifu_data['o_serial_id']])->createCommand()->getRawSql();
-                $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
-                echo Customer::findBySql($sql, [':c_id'=>$order_data['o_customer_id']])->createCommand()->getRawSql();
-                var_dump($yijifu_data);
-                var_dump($order_data);
-                var_dump($customer_data);
-                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+                    ob_start();
+                    echo "eof\r\n";
+                    var_dump($post);
+                    $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo and status=2 order by created_at desc  limit 1 for update";
+                    echo YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->createCommand()->getRawSql();
+                    $sql = "select * from " . Orders::tableName() . " where o_serial_id=:o_serial_id limit 1 for update";
+                    echo Orders::findBySql($sql, [':o_serial_id' => $yijifu_data['o_serial_id']])->createCommand()->getRawSql();
+                    $sql = "select * from " . Customer::tableName() . " where c_id=:c_id limit 1 for update";
+                    echo Customer::findBySql($sql, [':c_id' => $order_data['o_customer_id']])->createCommand()->getRawSql();
+                    var_dump($yijifu_data);
+                    var_dump($order_data);
+                    var_dump($customer_data);
+                    file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
 //                die;
 
-               /* ob_start();
-                var_dump(111, $yijifu_data->toArray(), $order_data->toArray(), $customer_data->toArray());
-                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
-                die;*/
-                $yijifu_data->bankName = $post['bankName'];
-                $yijifu_data->bankCode = $post['bankCode'];
-                $yijifu_data->bankCardType = $post['bankCardType'];
-                $yijifu_data->status = $status_arr[$post['status']];
+                    /* ob_start();
+                     var_dump(111, $yijifu_data->toArray(), $order_data->toArray(), $customer_data->toArray());
+                     file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
+                     die;*/
+                    $yijifu_data->bankName = $post['bankName'];
+                    $yijifu_data->bankCode = $post['bankCode'];
+                    $yijifu_data->bankCardType = $post['bankCardType'];
+                    $yijifu_data->status = $status_arr[$post['status']];
 
-                $order_data->o_status = Orders::STATUS_PAYING;
-                $order_data->o_operator_date = $_SERVER['REQUEST_TIME'];
+                    $order_data->o_status = Orders::STATUS_PAYING;
+                    $order_data->o_operator_date = $_SERVER['REQUEST_TIME'];
 
 
-                $customer_data->c_total_money += $order_data->o_total_price - $order_data->o_total_deposit; // 累加总借款金额
+                    $customer_data->c_total_money += $order_data->o_total_price - $order_data->o_total_deposit; // 累加总借款金额
 //                $customer_data->c_total_borrow_times += 1; // 借款次数加一 客户端提交订单时已经+1了
 
-                if (false === $customer_data->save(false)) {
-                    throw new CustomBackendException('客户信息修改失败', 5);
-                }
-                if (false === $yijifu_data->save(false)) {
-                    throw new CustomBackendException('签约信息修改失败', 5);
-                }
-                if (false === $order_data->save(false)) {
-                    throw new CustomBackendException('订单信息修改失败', 5);
-                }
+                    if (false === $customer_data->save(false)) {
+                        throw new CustomBackendException('客户信息修改失败', 5);
+                    }
+                    if (false === $yijifu_data->save(false)) {
+                        throw new CustomBackendException('签约信息修改失败', 5);
+                    }
+                    if (false === $order_data->save(false)) {
+                        throw new CustomBackendException('订单信息修改失败', 5);
+                    }
 
-                // 发送后台广播
-                $status_arr_string = [
-                    'SIGN_DEALING' => '审核中', // 审核中
-                    'SIGN_FAIL' => '审核失败', // 审核失败
-                    'CHECK_NEEDED' => '待审核', // 待审核
-                    'CHECK_REJECT' => '审核拒绝', // 审核拒绝
-                    'SIGN_SUCCESS' => '签约成功' // 签约成功
-                ];
+                    // 发送后台广播
+                    $status_arr_string = [
+                        'SIGN_DEALING' => '审核中', // 审核中
+                        'SIGN_FAIL' => '审核失败', // 审核失败
+                        'CHECK_NEEDED' => '待审核', // 待审核
+                        'CHECK_REJECT' => '审核拒绝', // 审核拒绝
+                        'SIGN_SUCCESS' => '签约成功' // 签约成功
+                    ];
 
-                // 发个通知
-                $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
-                $trans->commit();
-                echo "success";
-            }catch (CustomBackendException $e){
-                file_put_contents('/dev.txt', $e->getMessage(), FILE_APPEND);
-                $trans->rollBack();// 发送给后台通知
-                $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
-            }catch (\Exception $e)
-            {
-                /*ob_start();
-                var_dump($e);
-                file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);*/
+                    // 发个通知
+                    $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $status_arr_string[$post['status']]);
+                    $trans->commit();
+                    echo "success";
+                } catch (CustomBackendException $e) {
+                    file_put_contents('/dev.txt', $e->getMessage(), FILE_APPEND);
+                    $trans->rollBack();// 发送给后台通知
+                    $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], $e->getMessage());
+                } catch (\Exception $e) {
+                    /*ob_start();
+                    var_dump($e);
+                    file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);*/
 //                file_put_contents('/dev.txt', $e->getMessage(), FILE_APPEND);
-                $trans->rollBack();
-                $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], '系统错误');
+                    $trans->rollBack();
+                    $this->sendToWsBySign($order_data['o_serial_id'], $order_data['o_id'], '系统错误');
+                }
             }
         }else{
             // 接口调用失败
