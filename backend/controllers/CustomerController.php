@@ -58,6 +58,7 @@ class CustomerController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->orderBy(['c_created_at' => SORT_DESC])->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
         array_walk($data, function(&$v){
             $v['c_status'] = Customer::getAllStatus()[$v['c_status']];
             $v['c_created_at'] = date('Y-m-d H:i:s', $v['c_created_at']);
