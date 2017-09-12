@@ -78,7 +78,7 @@ class LoanController extends CoreBackendController
                     $Loan_model = new Loan();
                     $t = new UploadFile();
                     //构造公私共有的请求参数
-                    $amount = $_data['o_total_price'] - $_data['o_total_deposit'];
+                    $amount = $_data['o_total_price'] - $_data['o_total_deposit'] + $_data['o_service_fee'];  //放款金额 订单总金额-首付金额 + 商家服务费
                     $outOrderNo = $_data['o_serial_id'] . time();
                     $contractUrl = $t->getUrl($_data['s_photo_seven']);
                     $realName = ($_data['s_bank_is_private'] == 1) ? $_data['s_bank_people_name'] : $_data['s_gov_name'];//$realName如果对私为结算账户的账户所有人姓名.对公则为商铺工商局注册名称
