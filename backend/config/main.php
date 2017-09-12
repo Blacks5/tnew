@@ -110,6 +110,13 @@ return [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
+                    'categories' => [
+                        'yii\db\*',
+                        'yii\web\HttpException:*',
+                    ],
+                    'except' => [
+                        'yii\web\HttpException:40*',
+                    ],
                 ],
             ],
         ],
