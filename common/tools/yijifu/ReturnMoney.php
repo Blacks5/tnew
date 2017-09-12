@@ -315,12 +315,10 @@ class ReturnMoney extends AbstractYijifu
             'totalRepayAmount'=>$yijifu['o_total_price'] - $yijifu['o_total_deposit'],
             'operateType'=>'MODIFY_SIGN',
         ];
-
-        $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";
+        //$this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/update-bank-call-back";  //修改签约 异步回调使用的是签约时的异步地址
         $common = $this->getCommonParams();
         $param_arr = array_merge($common, $param_arr);
         $param_arr = $this->prepQueryParams($param_arr);
-
 
 
         $http_client = new httpClient();
@@ -346,14 +344,13 @@ class ReturnMoney extends AbstractYijifu
 
                 $yijifu_sign =  YijifuSign::findOne(['o_serial_id'=>$yijifu['o_serial_id']]);
 
-                $logs['old_merchOrderNo'] = $yijifu_sign->merchOrderNo;
                 $logs['orderNo'] = $yijifu_sign->orderNo;
                 $logs['status'] = $yijifu_sign->status;
                 $logs['bankName'] = $yijifu_sign->bankName;
                 $logs['bankCode'] = $yijifu_sign->bankCode;
                 $logs['bankCardType'] = $yijifu_sign->bankCardType;
 
-                $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
+
                 $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
                 $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
                 $yijifu_sign->logs = json_encode($logs);

@@ -428,12 +428,34 @@ left join customer on customer.c_id=orders.o_customer_id
         // 签约成功+更新签约记录表(状态为已完成)
         // 修改订单状态+生成还款计划
         // 发通知
+        $status_arr = [
+            'SIGN_DEALING' => 7, // 审核中
+            'SIGN_FAIL' => 6, // 审核失败
+            'CHECK_NEEDED' => 8, // 待审核
+            'CHECK_REJECT' => 5, // 审核拒绝
+            'SIGN_SUCCESS' => 1 // 签约成功
+        ];
+
         $post = Yii::$app->getRequest()->post();
         if('true' === $post['success']){
             // 已经签约成功了[因为接口奇葩的要访问两次，所以加这个过滤]
             if(YijifuSign::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){
                 echo "success";
                 return;
+            }
+
+            if('MODIFY_SIGN'===$post['operateType']){
+                $sign = YijifuSign::find()->where(['orderNo'=>$post('orderNo')])->one();
+
+                $sign->bankName = $post('bankName');
+                $sign->bankCardType = $post('bankCardType');
+                $sign->bankCode = $post('bankCode');
+                $sign->status = $status_arr[$post['status']];
+
+                if($sign->save(false)){
+                    echo 'success';
+                    return;
+                }
             }
             // 事务内
             // 修改签约表，修改订单表，修改客户表，生成还款计划，发ws通知
@@ -463,14 +485,6 @@ left join customer on customer.c_id=orders.o_customer_id
                 file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
 //                die;
 
-
-                $status_arr = [
-                    'SIGN_DEALING' => 7, // 审核中
-                    'SIGN_FAIL' => 6, // 审核失败
-                    'CHECK_NEEDED' => 8, // 待审核
-                    'CHECK_REJECT' => 5, // 审核拒绝
-                    'SIGN_SUCCESS' => 1 // 签约成功
-                ];
                /* ob_start();
                 var_dump(111, $yijifu_data->toArray(), $order_data->toArray(), $customer_data->toArray());
                 file_put_contents('/dev.txt', ob_get_clean(), FILE_APPEND);
