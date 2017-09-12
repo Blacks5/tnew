@@ -11,429 +11,414 @@
     <link rel="stylesheet" href="/wechat/css/core.css">
 </head>
 <body ontouchstart>
-    <div class="swiper-container commit-order-container">
-        <div class="swiper-wrapper">
-            <!--商品信息begin-->
-            <div class="swiper-slide swiper-no-swiping">
-                <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
-                    <header class='demos-header'>
-                        <h1 class="demos-title">提交订单</h1>
-                    </header>
-                    <input type="hidden" name="actionStep" value="1">
-                    <div class="weui-cells__title">商品信息</div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">商品类型</label>
+    <div class="main-box">
+        <div class="swiper-container commit-order-container">
+            <div class="swiper-wrapper">
+                <!--商品信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">提交订单</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="1">
+                        <div class="weui-cells__title">商品信息</div>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">商品类型</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="g_goods_type">
+                                    <option value="">请选择商品类型</option>
+                                    <?php foreach ($data['goods_type'] as $k => $v) {?>
+                                        <option value="<?=$v['t_id'];?>"><?=$v['t_name'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="g_goods_type">
-                                <option value="">请选择商品类型</option>
-                                <?php foreach ($data['goods_type'] as $k => $v) {?>
-                                    <option value="<?=$v['t_id'];?>"><?=$v['t_name'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">商品品牌</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="g_goods_name" placeholder="请输入商品品牌">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">商品品牌</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="g_goods_name" placeholder="请输入商品品牌">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">商品型号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="g_goods_models" placeholder="请输入商品型号">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">商品型号</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="g_goods_models" placeholder="请输入商品型号">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">商品价格</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="g_goods_price" placeholder="请输入商品价格">
+                            </div>
                         </div>
-                    </div>
-                    <!-- <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">商品序列号</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="g_goods_serial_no" placeholder="请输入商品序列号">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">首付金额</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="g_goods_deposit" placeholder="请输入首付金额">
+                            </div>
                         </div>
-                    </div> -->
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">商品价格</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="g_goods_price" placeholder="请输入商品价格">
-                        </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">首付金额</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="g_goods_deposit" placeholder="请输入首付金额">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <!--商品信息end-->
+                    </form>
+                </div>
+                <!--商品信息end-->
 
-            <!--订单信息begin-->
-            <div class="swiper-slide swiper-no-swiping">
-                <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
-                    <header class='demos-header'>
-                        <h1 class="demos-title">提交订单</h1>
-                    </header>
-                    <input type="hidden" name="actionStep" value="2">
-                    <input type="hidden" name="g_goods_type" value="">
-                    <div class="weui-cells__title">订单信息</div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">商铺</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="o_store_id">
-                                <option value="">请选择商铺</option>
-                                <?php foreach ($data['stores'] as $k => $v) {?>
-                                    <option value="<?=$v['s_id'];?>"><?=$v['s_name'];?></option>
-                                <?php }?>
-                            </select>
+                <!--订单信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">提交订单</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="2">
+                        <input type="hidden" name="g_goods_type" value="">
+                        <div class="weui-cells__title">订单信息</div>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">商铺</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="o_store_id">
+                                    <option value="">请选择商铺</option>
+                                    <?php foreach ($data['stores'] as $k => $v) {?>
+                                        <option value="<?=$v['s_id'];?>"><?=$v['s_name'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">产品</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="o_product_id">
-                                <option value="">请选择产品</option>
-                                <?php foreach ($data['products'] as $k => $v) {?>
-                                    <option value="<?=$v['p_id'];?>"><?=$v['p_name'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">产品</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="o_product_id">
+                                    <option value="">请选择产品</option>
+                                    <?php foreach ($data['products'] as $k => $v) {?>
+                                        <option value="<?=$v['p_id'];?>"><?=$v['p_name'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">自动代扣</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" id="o_is_auto_pay_show" checked="checked" disabled="disabled">
-                            <input type="hidden" name="o_is_auto_pay" value="on">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">自动代扣</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-switch" type="checkbox" id="o_is_auto_pay_show" checked="checked" disabled="disabled">
+                                <input type="hidden" name="o_is_auto_pay" value="on">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">贵宾服务包</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_free_pack_fee" checked="checked">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">贵宾服务包</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-switch" type="checkbox" name="o_is_free_pack_fee" checked="checked">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">个人保障服务</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="o_is_add_service_fee" checked="checked">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">个人保障服务</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-switch" type="checkbox" name="o_is_add_service_fee" checked="checked">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">备注</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="o_remark" placeholder="请输入备注">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">备注</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="o_remark" placeholder="请输入备注">
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            <!--订单信息end-->
+                    </form>
+                </div>
+                <!--订单信息end-->
 
-            <!--客户基本信息begin-->
-            <div class="swiper-slide swiper-no-swiping">
-                <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
-                    <header class='demos-header'>
-                        <h1 class="demos-title">提交订单</h1>
-                    </header>
-                    <input type="hidden" name="actionStep" value="3">
-                    <div class="weui-cells__title">客户基本信息</div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">开户银行</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_bank">
-                                <option value="">请选择开户银行</option>
-                                <?php foreach ($data['bank_list'] as $k => $v) {?>
-                                    <option value="<?=$v['bank_id'];?>"><?=$v['bank_name'];?></option>
-                                <?php }?>
-                            </select>
+                <!--客户基本信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">提交订单</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="3">
+                        <div class="weui-cells__title">客户基本信息</div>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">开户银行</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_bank">
+                                    <option value="">请选择开户银行</option>
+                                    <?php foreach ($data['bank_list'] as $k => $v) {?>
+                                        <option value="<?=$v['bank_id'];?>"><?=$v['bank_name'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">银行卡号</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="c_banknum" placeholder="请输入银行卡号">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">银行卡号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="c_banknum" placeholder="请输入银行卡号">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">客户姓名</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="c_customer_name" placeholder="请输入客户姓名">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">客户姓名</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="c_customer_name" placeholder="请输入客户姓名">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">客户手机号</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="c_customer_cellphone" placeholder="请输入客户手机号">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">客户手机号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="c_customer_cellphone" placeholder="请输入客户手机号">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">客户身份证号</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="c_customer_id_card" placeholder="请输入身份证号">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">客户身份证号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="c_customer_id_card" placeholder="请输入身份证号">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd"><label class="weui-label">身份证过期时间</label></div>
-                        <div class="weui-cell__bd">
-                            <input class="weui-input" type="text" name="c_customer_id_card_endtime" placeholder="请输入身份证号">
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">身份证过期时间</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="c_customer_id_card_endtime" placeholder="请输入身份证号">
+                            </div>
                         </div>
-                    </div>
-<!--                     <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">身份证过期时间是否永久</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-switch" type="checkbox" name="c_customer_id_card_endtime_status">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">身份证地址</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" id="idcardAddress" readonly="readonly" placeholder="请选择省市区">
+                                <input type="hidden" class="province_id" name="c_customer_province" value="" />
+                                <input type="hidden" class="city_id" name="c_customer_city" value="" />
+                                <input type="hidden" class="county_id" name="c_customer_county" value="" />
+                            </div>
                         </div>
-                    </div> -->
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">身份证地址</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="idcardAddress" readonly="readonly" placeholder="请选择省市区">
-                            <input type="hidden" class="province_id" name="c_customer_province" value="" />
-                            <input type="hidden" class="city_id" name="c_customer_city" value="" />
-                            <input type="hidden" class="county_id" name="c_customer_county" value="" />
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">身份证详细地址</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_idcard_detail_addr" placeholder="请输入身份证详细地址">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">身份证详细地址</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_idcard_detail_addr" placeholder="请输入身份证详细地址">
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">客户性别</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_customer_gender">
+                                    <option value="">请选择客户性别</option>
+                                    <option value="1">男</option>
+                                    <option value="0">女</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">客户性别</label>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">QQ</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_qq" placeholder="请输入QQ号码">
+                            </div>
                         </div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_customer_gender">
-                                <option value="">请选择客户性别</option>
-                                <option value="1">男</option>
-                                <option value="0">女</option>
-                            </select>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">微信</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_wechat" placeholder="请输入微信号">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">QQ</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_qq" placeholder="请输入QQ号码">
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">婚姻状况</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_family_marital_status">
+                                    <option value="">请选择婚姻状况</option>
+                                    <?php foreach ($data['marital_status'] as $k => $v) {?>
+                                        <option value="<?=$v['marital_id'];?>"><?=$v['marital_str'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">微信</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_wechat" placeholder="请输入微信号">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">配偶姓名</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_family_marital_partner_name" placeholder="请输入配偶姓名">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">婚姻状况</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_family_marital_status">
-                                <option value="">请选择婚姻状况</option>
-                                <?php foreach ($data['marital_status'] as $k => $v) {?>
-                                    <option value="<?=$v['marital_id'];?>"><?=$v['marital_str'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">配偶电话</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_family_marital_partner_cellphone" placeholder="请输入配偶电话">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">配偶姓名</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_family_marital_partner_name" placeholder="请输入配偶姓名">
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">住房情况</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_family_house_info">
+                                    <option value="">请选择住房状况</option>
+                                    <?php foreach ($data['house_info'] as $k => $v) {?>
+                                        <option value="<?=$v['house_info_id'];?>"><?=$v['house_info_str'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">配偶电话</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_family_marital_partner_cellphone" placeholder="请输入配偶电话">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">个人月收入</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_family_income" placeholder="请输入个人月收入">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">住房情况</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_family_house_info">
-                                <option value="">请选择住房状况</option>
-                                <?php foreach ($data['house_info'] as $k => $v) {?>
-                                    <option value="<?=$v['house_info_id'];?>"><?=$v['house_info_str'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">亲属姓名</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_kinship_name" placeholder="请输入亲属姓名">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">个人月收入</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_family_income" placeholder="请输入个人月收入">
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">亲属关系</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_kinship_relation">
+                                    <option value="">请选择亲属关系</option>
+                                    <?php foreach ($data['kinship'] as $k => $v) {?>
+                                        <option value="<?=$v['kinship_id'];?>"><?=$v['kinship_str'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">亲属姓名</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_kinship_name" placeholder="请输入亲属姓名">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">亲属电话</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_kinship_cellphone" placeholder="请输入亲属电话">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">亲属关系</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_kinship_relation">
-                                <option value="">请选择亲属关系</option>
-                                <?php foreach ($data['kinship'] as $k => $v) {?>
-                                    <option value="<?=$v['kinship_id'];?>"><?=$v['kinship_str'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">客户现居地</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" id="customerAddress" readonly="readonly" placeholder="请选择省市区">
+                                <input type="hidden" class="province_id" name="c_customer_addr_province" value="" />
+                                <input type="hidden" class="city_id" name="c_customer_addr_city" value="" />
+                                <input type="hidden" class="county_id" name="c_customer_addr_county" value="" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">亲属电话</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_kinship_cellphone" placeholder="请输入亲属电话">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">详细地址</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_addr_detail" placeholder="请输入客户现居地详细地址">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">客户现居地</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="customerAddress" readonly="readonly" placeholder="请选择省市区">
-                            <input type="hidden" class="province_id" name="c_customer_addr_province" value="" />
-                            <input type="hidden" class="city_id" name="c_customer_addr_city" value="" />
-                            <input type="hidden" class="county_id" name="c_customer_addr_county" value="" />
-                        </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">详细地址</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_addr_detail" placeholder="请输入客户现居地详细地址">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <!--客户基本信息end-->
+                    </form>
+                </div>
+                <!--客户基本信息end-->
 
-            <!--客户单位信息begin-->
-            <div class="swiper-slide swiper-no-swiping">
-                <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
-                    <header class='demos-header'>
-                        <h1 class="demos-title">提交订单</h1>
-                    </header>
-                    <input type="hidden" name="actionStep" value="4">
-                    <input type="hidden" name="c_customer_id_card" value="">
-                    <div class="weui-cells__title">客户单位信息</div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">单位名称</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_jobs_company" placeholder="请输入单位名称">
+                <!--客户单位信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">提交订单</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="4">
+                        <input type="hidden" name="c_customer_id_card" value="">
+                        <div class="weui-cells__title">客户单位信息</div>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">单位名称</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_jobs_company" placeholder="请输入单位名称">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">所属行业</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_customer_jobs_industry">
-                                <option value="">请选择所属行业</option>
-                                <?php foreach ($data['company_kind'] as $k => $v) {?>
-                                    <option value="<?=$v['company_kind_id'];?>"><?=$v['company_kind_name'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">所属行业</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_customer_jobs_industry">
+                                    <option value="">请选择所属行业</option>
+                                    <?php foreach ($data['company_kind'] as $k => $v) {?>
+                                        <option value="<?=$v['company_kind_id'];?>"><?=$v['company_kind_name'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">公司性质</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_customer_jobs_type">
-                                <option value="">请选择公司性质</option>
-                                <?php foreach ($data['company_type'] as $k => $v) {?>
-                                    <option value="<?=$v['company_type_id'];?>"><?=$v['company_type_name'];?></option>
-                                <?php }?>
-                            </select>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">公司性质</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_customer_jobs_type">
+                                    <option value="">请选择公司性质</option>
+                                    <?php foreach ($data['company_type'] as $k => $v) {?>
+                                        <option value="<?=$v['company_type_id'];?>"><?=$v['company_type_name'];?></option>
+                                    <?php }?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">所属部门</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_jobs_section" placeholder="请输入所属部门">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">所属部门</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_jobs_section" placeholder="请输入所属部门">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">所属职位</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_jobs_title" placeholder="请输入职位">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">所属职位</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_jobs_title" placeholder="请输入职位">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">是否购买社保</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_customer_jobs_is_shebao">
-                                <option value="">请选择是否购买社保</option>
-                                <option value="1">是</option>
-                                <option value="0">否</option>
-                            </select>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">是否购买社保</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_customer_jobs_is_shebao">
+                                    <option value="">请选择是否购买社保</option>
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">公司地址</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" id="customerJobsAddress" placeholder="请选择省市区">
-                            <input type="hidden" class="province_id" name="c_customer_jobs_province" value="" />
-                            <input type="hidden" class="city_id" name="c_customer_jobs_city" value="" />
-                            <input type="hidden" class="county_id" name="c_customer_jobs_county" value="" />
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">公司地址</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" id="customerJobsAddress" placeholder="请选择省市区">
+                                <input type="hidden" class="province_id" name="c_customer_jobs_province" value="" />
+                                <input type="hidden" class="city_id" name="c_customer_jobs_city" value="" />
+                                <input type="hidden" class="county_id" name="c_customer_jobs_county" value="" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">详细地址</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_jobs_detail_addr" placeholder="请输入公司地详细地址">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">详细地址</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_jobs_detail_addr" placeholder="请输入公司地详细地址">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell weui-cell_switch">
-                        <div class="weui-cell__bd">公司座机</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_customer_jobs_phone" placeholder="请输入公司座机">
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">公司座机</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_customer_jobs_phone" placeholder="请输入公司座机">
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            <!--客户单位信息end-->
+                    </form>
+                </div>
+                <!--客户单位信息end-->
 
-            <!--客户其他联系人信息begin-->
-            <div class="swiper-slide swiper-no-swiping">
-                <form id="formStep5" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
-                    <header class='demos-header'>
-                        <h1 class="demos-title">提交订单</h1>
-                    </header>
-                    <input type="hidden" name="actionStep" value="5">
-                    <input type="hidden" name="c_customer_id_card" value="">
-                    <div class="weui-cells__title">客户其他联系人信息</div>
-                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                        <div class="weui-cell__hd"><label class="weui-label">联系人关系</label></div>
-                        <div class="weui-cell__bd">
-                            <select class="weui-select" name="c_other_people_relation">
-                                <option value="">请选择联系人关系</option>
-                                <option value="1">同事</option>
-                                <option value="2">朋友</option>
-                                <option value="3">同学</option>
-                            </select>
+                <!--客户其他联系人信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep5" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">提交订单</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="5">
+                        <input type="hidden" name="c_customer_id_card" value="">
+                        <div class="weui-cells__title">客户其他联系人信息</div>
+                        <div class="weui-cell weui-cell_select weui-cell_select-after">
+                            <div class="weui-cell__hd"><label class="weui-label">联系人关系</label></div>
+                            <div class="weui-cell__bd">
+                                <select class="weui-select" name="c_other_people_relation">
+                                    <option value="">请选择联系人关系</option>
+                                    <option value="1">同事</option>
+                                    <option value="2">朋友</option>
+                                    <option value="3">同学</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__bd">联系人姓名</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_other_people_name" placeholder="请输入联系人姓名">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">联系人姓名</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_other_people_name" placeholder="请输入联系人姓名">
+                            </div>
                         </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__bd">联系人电话</div>
-                        <div class="weui-cell__ft">
-                            <input class="weui-input" type="text" name="c_other_people_cellphone" placeholder="请输入联系人电话">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">联系人电话</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-input" type="text" name="c_other_people_cellphone" placeholder="请输入联系人电话">
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <!--客户其他联系人信息end-->
             </div>
-            <!--客户其他联系人信息end-->
         </div>
-    </div>
 
-<!--     <div class="weui-btn-next">
-        <div class="weui-btn-area">
-            <a class="weui-btn weui-btn_primary" href="javascript:" id="nextStep">下一步（<span id="currStep">1</span>/<span id="totalStep">1</span>）</a>
+        <div class="weui-navbar-bar">
+            <div class="weui-navbar__item weui_bar__item_on" id="prevStep">上一步</div>
+            <div class="weui-navbar__item" id="nextStep">下一步（<span id="currStep">1</span>/<span id="totalStep">1</span>）</div>
         </div>
-    </div> -->
-    <div class="weui-navbar-bar">
-        <div class="weui-navbar__item weui_bar__item_on" id="prevStep">上一步</div>
-        <div class="weui-navbar__item" id="nextStep">下一步（<span id="currStep">1</span>/<span id="totalStep">1</span>）</div>
     </div>
 </body>
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
@@ -514,7 +499,7 @@
         Page.prototype.init = function(){
             var _this = this;
             // 设置窗口高度
-            $(document.body).height(window.innerHeight + 'px');
+            $('main-box').height(window.innerHeight + 'px');
             // 初始化高度
             $('.commit-order-container').height((window.innerHeight - 70) + 'px');
             // 实例化swiper
