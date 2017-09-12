@@ -445,8 +445,8 @@ left join customer on customer.c_id=orders.o_customer_id
             }
             if('MODIFY_SIGN'===$post['operateType']){
 
-                $sql = "select *  from " . YijifuSign::tableName() . " where orderNo=:orderNo  order by created_at desc  limit 1 for update";
-                $sign = YijifuSign::findBySql($sql, [':orderNo' => $post['orderNo']])->one();
+                $sql = "select *  from " . YijifuSign::tableName() . " where merchOrderNo=:merchOrderNo  order by created_at desc  limit 1 for update";
+                $sign = YijifuSign::findBySql($sql, [':merchOrderNo' => $post['merchOrderNo']])->one();
                 $sign->bankName = $post['bankName'];
                 $sign->bankCardType = $post['bankCardType'];
                 $sign->bankCode = $post['bankCode'];
