@@ -351,7 +351,6 @@ class ReturnMoney extends AbstractYijifu
                 $logs['bankCardType'] = $yijifu_sign->bankCardType;
 
 
-                $yijifu_sign->merchOrderNo = $param_arr['merchOrderNo'];  //修改后的商户订单号
                 $yijifu_sign->status = $status;                           //修改后的状态  2 等待回调
                 $yijifu_sign->orderNo = $ret['orderNo'];                  //本次修改的流水号, 异步回调会用
                 $yijifu_sign->logs = json_encode($logs);
