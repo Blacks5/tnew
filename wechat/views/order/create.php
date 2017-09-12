@@ -499,7 +499,7 @@
         Page.prototype.init = function(){
             var _this = this;
             // 设置窗口高度
-            $('main-box').height(window.innerHeight + 'px');
+            $('.main-box').height(window.innerHeight + 'px');
             // 初始化高度
             $('.commit-order-container').height((window.innerHeight - 70) + 'px');
             // 实例化swiper
