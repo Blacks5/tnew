@@ -152,15 +152,17 @@
                 <tr>
                     <td class="td_title">产品系列代码：<?=$data['p_name']?></td>
                     <td></td>
+                    <td class="td_title">客户服务费:<?= $data['o_service_fee'] ?></td>
                 </tr>
                 <tr>
-                    <td class="td_title">商品总价：<?= $data['o_total_price'] ?></td>
+                    <td class="td_title">商品总价：<?= $data['o_total_price'] ?>元</td>
                     <td></td>
+                    <td class="td_title">查询服务费:<?= $data['o_inquiry_fee'] ?>元</td>
                 </tr>
                 <tr>
                     <td class="td_title">首付金额：<?=$data['o_total_deposit']?> 元</td>
                     <td></td>
-                    <td class="td_title">借款金额：<?= $data['o_total_price'] - $data['o_total_deposit']?> 元</td>
+                    <td class="td_title">借款金额：<?= $data['total_all']?> 元</td>
                     <td></td>
                 </tr>
                 <tr>
