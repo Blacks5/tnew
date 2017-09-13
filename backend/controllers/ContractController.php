@@ -111,6 +111,11 @@ class ContractController extends Controller
         return $this->renderPartial('paymentdesc');
     }
 
+    /**
+     * 获取贷款总金额 (商品总金额 - 预付金额 + 查询服务费 + 商家服务费)
+     * @param $orderInfo
+     * @return int
+     */
     public function getFee($orderInfo)
     {
         $service = 0; //返还给商家的服务费
@@ -131,7 +136,7 @@ class ContractController extends Controller
             }
         }
 
-        $allTotal = $total + $service + Yii::$app->params['service_fee'];
+        $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
         return $allTotal;
     }
 }

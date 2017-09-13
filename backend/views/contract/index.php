@@ -152,7 +152,7 @@
                 <tr>
                     <td class="td_title">产品系列代码：<?=$data['p_name']?></td>
                     <td></td>
-                    <td class="td_title">客户服务费:<?= $data['o_service_fee'] ?></td>
+                    <td class="td_title">客户服务费:<?= $data['o_service_fee'] ?>元</td>
                 </tr>
                 <tr>
                     <td class="td_title">商品总价：<?= $data['o_total_price'] ?>元</td>
@@ -184,7 +184,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td class="td_title">分期期数：<?=$data['p_period']?></td>
+                    <td class="td_title">分期期数：<?=$data['p_period']?>期</td>
                     <td></td>
                     <td class="td_title">还款方式：</td>
                     <td>等额本息</td>
