@@ -183,7 +183,7 @@ class BorrownewController extends CoreBackendController
     {
         if ($model = Orders::getOne($order_id)) {
             $model['month_repayment'] = CalInterest::calRepayment(
-                $model['o_total_price']- $model['o_total_deposit'],
+                $model['o_total_price']- $model['o_total_deposit'] + $model['o_service_fee'] + $model['o_inquiry_fee'],
                 $model['p_id'],
                 $model['o_is_add_service_fee'],
                 $model['o_is_free_pack_fee']
