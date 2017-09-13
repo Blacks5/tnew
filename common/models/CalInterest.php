@@ -195,7 +195,7 @@ class CalInterest
 
         $this->updateOrders($orderInfo, $service);
 
-        $allTotal = $total + $service + $this->inquiry;
+        $allTotal = $total + $service + Yii::$app->params['service_fee'];
         return $allTotal;
     }
 
@@ -209,7 +209,7 @@ class CalInterest
     {
         $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();
         $order->o_service_fee = $service;
-        $order->o_inquiry_fee = $this->inquiry;
+        $order->o_inquiry_fee = Yii::$app->params['service_fee'];
         if($order->save()){
             return true;
         }else{
