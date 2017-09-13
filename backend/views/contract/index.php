@@ -51,11 +51,13 @@
     <div class="w_div">
         <dl class="info_box">
             <dt class="info_box_dt">还款信息：</dt>
-            <dd>贷款金额：<span class="info_box_span"> <?= $data['o_total_price'] - $data['o_total_deposit']?> 元</span></dd>
+            <dd>贷款金额：<span class="info_box_span"> <?= $data['total_all']?> 元</span></dd>
             <dd>首付金额：<span class="info_box_span"> <?=$data['o_total_deposit']?> 元</span></dd>
             <dd>是否参与个人保障计划：<span class="info_box_span"> <?=$data['o_is_add_service_fee'] ?></span></dd>
             <dd>是否选择贵宾服务包：<span class="info_box_span"> <?=$data['o_is_free_pack_fee']?></span></dd>
-            <dd>分期月数：<span class="info_box_span"> <?=$data['p_period']?></span></dd>
+            <dd>客户服务费：<span class="info_box_span"> <?=$data['o_service_fee']?>元</span></dd>
+            <dd>查询费：<span class="info_box_span"> <?=$data['o_inquiry_fee']?>元</span></dd>
+            <dd>分期月数：<span class="info_box_span"> <?=$data['p_period']?>月</span></dd>
             <dd>每月还款：<span class="info_box_span"><?=round($every_month_repay, 2)?> 元</span></dd>
             <dd>首次还款日：<span class="info_box_span"><?=date('Y-m-d', $data['first_repay_time'])?></span></dd>
             <dd>每月还款日期：<span class="info_box_span"> <?=date('d', $data['first_repay_time'])?>日</span></dd>
@@ -361,7 +363,7 @@
 
         <h4>亲爱的天牛金融客户：</h4>
 
-        <dd>您好！在您（姓名：<span><?=$data['c_customer_name']?></span>，身份证号：<span><?=$data['c_customer_id_card']?></span>)向深圳天牛互联网金融服务有限公司（以下简称“天牛金融”）或与天牛金融进行合作的第三方机构（以下简称“第三方”）申请分期付款或融资借款业务时，需要您同意并授权如下内容：
+        <dd>您好！在您（姓名：<span><?=$data['c_customer_name']?></span>，身份证号：<span><?=$data['c_customer_id_card']?></span>)向深圳天牛互联网金融服务有限公司（以下简称“天牛金融”）或与天牛金融进行合作的第三方机构[包括但不仅限于:百融金服,前海征信等第三方服务公司]（以下简称“第三方”）申请分期付款或融资借款业务时，需要您同意并授权如下内容：
         </dd>
         <dd>1、您同意并授权天牛金融、出借人或第三方按照相关法律、法规和监管要求，向中国人民银行金融信用信息基础数据库、其他依法设立的征信机构和获取您的个人信息、个人征信相关信息及其他反应您信用状况的信息。</dd>
         <dd>2、您同意并授权天牛金融、出借人或第三方通过公安部公民身份信息数据库、电信运营以及其他合法渠道核实您在申请分期付款或融资借款时提交的身份证件、联系电话、联系地址等信息的真实性。</dd>

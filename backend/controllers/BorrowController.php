@@ -362,7 +362,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 if (Repayment::find()->where(['r_orders_id' => $order_id])->exists()) {
                     throw new CustomBackendException('已存在还款计划', 5);
                 }
-                CalInterest::genRefundPlan($order_id);
+                CalInterest::genRefundPlan($order_id);   //生成还款计划
 
 
                 $handle = new ReturnMoney();
