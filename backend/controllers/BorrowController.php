@@ -183,7 +183,7 @@ class BorrowController extends CoreBackendController
     {
         if ($model = Orders::getOne($order_id)) {
             $model['month_repayment'] = CalInterest::calRepayment(
-                $model['o_total_price']- $model['o_total_deposit'],
+                $model['o_total_price']- $model['o_total_deposit'] + $model['o_service_fee'] + $model['o_inquiry_fee'],
                 $model['p_id'],
                 $model['o_is_add_service_fee'],
                 $model['o_is_free_pack_fee']
@@ -362,7 +362,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 if (Repayment::find()->where(['r_orders_id' => $order_id])->exists()) {
                     throw new CustomBackendException('已存在还款计划', 5);
                 }
-                CalInterest::genRefundPlan($order_id);
+                CalInterest::genRefundPlan($order_id);   //生成还款计划
 
 
                 $handle = new ReturnMoney();

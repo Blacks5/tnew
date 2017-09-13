@@ -183,7 +183,7 @@ class BorrownewController extends CoreBackendController
     {
         if ($model = Orders::getOne($order_id)) {
             $model['month_repayment'] = CalInterest::calRepayment(
-                $model['o_total_price']- $model['o_total_deposit'],
+                $model['o_total_price']- $model['o_total_deposit'] + $model['o_service_fee'] + $model['o_inquiry_fee'],
                 $model['p_id'],
                 $model['o_is_add_service_fee'],
                 $model['o_is_free_pack_fee']
@@ -1062,7 +1062,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 'realName'=>$post['realName'],
                 'bankCardNo'=>$post['bankCardNo'],
                 'bankCode'=>$post['bankCode'],
-                'realRepayTime'=>isset($post['realRepayTime'])?$post['realRepayTime']:0,
+                'realRepayTime'=>isset($post['realRepayTime'])?strtotime($post['realRepayTime']):0,
                 'errorCode'=>isset($post['errorCode'])? $post['errorCode']: '',
                 'description'=>isset($post['description']) ? $post['description']: '',
                 'status'=>isset($status_arr[$post['status']])? $status_arr[$post['status']]: '未知状态'

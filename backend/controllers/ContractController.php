@@ -58,8 +58,10 @@ class ContractController extends Controller
         $data['o_user_id'] = User::find()->select('realname')->where(['id'=>$data['o_user_id']])->scalar();
 
         // 计算月供
-        $total_money = $data['o_total_price'] - $data['o_total_deposit'];
+        $total_money = $this->getFee($data);
         $every_month_repay = CalInterest::calEveryMonth($total_money, $data['p_period'], $data['p_month_rate']);
+        //月供总额
+        $data['total_all'] = $total_money;
         // 个人保障计划
         if ($data['o_is_add_service_fee'] == 1) {
             $every_month_repay += round($total_money * $data['p_add_service_fee']/100, 4);
@@ -107,5 +109,34 @@ class ContractController extends Controller
     public function actionPaymentdesc()
     {
         return $this->renderPartial('paymentdesc');
+    }
+
+    /**
+     * 获取贷款总金额 (商品总金额 - 预付金额 + 查询服务费 + 商家服务费)
+     * @param $orderInfo
+     * @return int
+     */
+    public function getFee($orderInfo)
+    {
+        $service = 0; //返还给商家的服务费
+        $total = $orderInfo['o_total_price'] - $orderInfo['o_total_deposit'];  //借出去的本金
+
+        //常规商品返还给商家的费用
+        if($orderInfo['p_is_promotional']==0){
+            if($orderInfo['p_period']>11 && $orderInfo['p_period'] < 15){
+                $service = $total * 0.01;
+            }elseif($orderInfo['p_period'] >= 15){
+                $service = $total * 0.035;
+            }
+        }elseif($orderInfo['p_is_promotional']==1){  //促销商品返回给商家的费用
+            if($orderInfo['p_period'] > 11 && $orderInfo['p_period'] < 15){
+                $service = $total * 0.03;
+            }elseif ($orderInfo['p_period'] >= 15){
+                $service = $total *0.05;
+            }
+        }
+
+        $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
+        return $allTotal;
     }
 }

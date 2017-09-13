@@ -39,8 +39,9 @@ return [
 //            'site/sendws', // ws测试页
             'borrow/verify-pass-callback', // 易极付签约回调地址
             'repayment/deduct-callback', // 易极付代扣回调地址
-            'repaymentnew/deduct-callback', // 易极付代扣回调地址(新API)
-            'borrow/deduct-callback', // 易极付代扣回调地址(新API)
+            'repaymentnew/deduct-callback', // 易极付单期代扣回调地址(新API)
+            'borrownew/deduct-callback',//易极付提前还款代扣回调地址(新API)
+//            'borrow/deduct-callback', // 易极付代扣回调地址(旧方法中已被注释掉)
             'borrow/update-bank-call-back', //修改银行卡易极付回调
             'loan/async', // 易极付回调地址
             'jun/callback', // 君子签回调

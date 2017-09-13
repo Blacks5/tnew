@@ -372,7 +372,7 @@ class RepaymentnewController extends CoreBackendController
                 'realName'=>$post['realName'],
                 'bankCardNo'=>$post['bankCardNo'],
                 'bankCode'=>$post['bankCode'],
-                'realRepayTime'=>isset($post['realRepayTime'])?$post['realRepayTime']:0,
+                'realRepayTime'=>isset($post['realRepayTime'])?strtotime($post['realRepayTime']):0,
                 'errorCode'=>isset($post['errorCode'])? $post['errorCode']: '',
                 'description'=>isset($post['description']) ? $post['description']: '',
                 'status'=>isset($status_arr[$post['status']])? $status_arr[$post['status']]: '未知状态'
