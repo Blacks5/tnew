@@ -55,6 +55,7 @@ $deduct_stauts = [
                                                     <th>状态</th>
                                                     <th>操作人</th>
                                                     <th>创建时间</th>
+                                                    <th>实际还款时间</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -73,6 +74,7 @@ $deduct_stauts = [
                                                         </td>
                                                         <td class="client-status"><?= $_v['realname']; ?></td>
                                                         <td class="client-status"><?= date("Y-m-d H:i:s", $_v['created_at']) ?></td>
+                                                        <td class="client-status"><?php if($_v['realRepayTime'] != 0){echo date("Y-m-d H:i:s", $_v['realRepayTime']);}else{echo '-';} ?></td>
                                                         <td>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['sign-return/deductview']))) { ?>
                                                                 <a href="<?= Yii::$app->getUrlManager()->createUrl(['sign-return/deductview', 'o_serial_id' => $_v['o_serial_id']]); ?>"
