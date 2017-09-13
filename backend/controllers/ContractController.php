@@ -58,10 +58,10 @@ class ContractController extends Controller
         $data['o_user_id'] = User::find()->select('realname')->where(['id'=>$data['o_user_id']])->scalar();
 
         // 计算月供
-        $total_money = $data['o_total_price'] - $data['o_total_deposit'];
+        $total_money = $this->getFee($data);
         $every_month_repay = CalInterest::calEveryMonth($total_money, $data['p_period'], $data['p_month_rate']);
         //月供总额
-        $data['total_all'] = $this->getFee($data);
+        $data['total_all'] = $total_money;
         // 个人保障计划
         if ($data['o_is_add_service_fee'] == 1) {
             $every_month_repay += round($total_money * $data['p_add_service_fee']/100, 4);
