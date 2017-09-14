@@ -15,7 +15,7 @@
         <div class="swiper-container commit-order-container">
             <div class="swiper-wrapper">
                 <!--商品信息begin-->
-                <div class="swiper-slide swiper-no-swiping">
+                <!-- <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -60,11 +60,11 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
                 <!--商品信息end-->
 
                 <!--订单信息begin-->
-                <div class="swiper-slide swiper-no-swiping">
+                <!-- <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -89,7 +89,7 @@
                                 <select class="weui-select" name="o_product_id">
                                     <option value="">请选择产品</option>
                                     <?php foreach ($data['products'] as $k => $v) {?>
-                                        <option value="<?=$v['p_id'];?>"><?=$v['p_name'];?></option>
+                                        <option value="<?=$v['p_id'];?>" ><?=$v['p_name'];?></option>
                                     <?php }?>
                                 </select>
                             </div>
@@ -120,11 +120,11 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
                 <!--订单信息end-->
 
                 <!--客户基本信息begin-->
-                <div class="swiper-slide swiper-no-swiping">
+                <!-- <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -290,11 +290,11 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
                 <!--客户基本信息end-->
 
                 <!--客户单位信息begin-->
-                <div class="swiper-slide swiper-no-swiping">
+                <!-- <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -374,11 +374,11 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
                 <!--客户单位信息end-->
 
                 <!--客户其他联系人信息begin-->
-                <div class="swiper-slide swiper-no-swiping">
+                <!-- <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep5" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -410,8 +410,76 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
                 <!--客户其他联系人信息end-->
+                
+                <!--客户信息确认begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <header class='demos-header'>
+                        <h1 class="demos-title">确认订单</h1>
+                    </header>
+                    <div class="weui-cells">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>商户名称</p>
+                            </div>
+                            <div class="weui-cell__ft" id="sellerName">中江县凯江镇大洋通讯</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>选购商品</p>
+                            </div>
+                            <div class="weui-cell__ft" id="goodsName">苹果7 x 1</div>
+                        </div>
+                    </div>
+                    <div class="weui-cells">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>商品总额</p>
+                            </div>
+                            <div class="weui-cell__ft" id="goodsAmount">￥5380.00</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>支付金额</p>
+                            </div>
+                            <div class="weui-cell__ft" id="paidAmount">￥1380.00</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>所分期数</p>
+                            </div>
+                            <div class="weui-cell__ft" id="totalPeriod">15期</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>每月还款</p>
+                            </div>
+                            <div class="weui-cell__ft" id="everyMonthPay">￥380.30<br />含可选服务费￥145.00</div>
+                        </div>
+                    </div>
+                    <div class="weui-cells">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>自动代扣</p>
+                            </div>
+                            <div class="weui-cell__ft">已加入</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>贵宾服务包</p>
+                            </div>
+                            <div class="weui-cell__ft" id="vipServiceAmount">￥5380.00</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>个人保障服务</p>
+                            </div>
+                            <div class="weui-cell__ft" id="securityServiceAmount">￥1380.00</div>
+                        </div>
+                    </div>
+                </div>
+                <!--客户信息确认end-->
             </div>
         </div>
 
@@ -432,6 +500,15 @@
 <script>
     $(function() {
         FastClick.attach(document.body);
+
+        // 商家服务费率
+        var serverFeeRate = <?=\Yii::$app->params['seller_serverfee_rate']?>;
+        // 查询费
+        var queryFee = <?=\Yii::$app->params['inquiryFee']?>;
+        // 产品信息列表
+        var products = eval('(' + '<?=json_encode($data['products'] , JSON_UNESCAPED_UNICODE)?>' + ')');
+        
+        console.log(products);
 
         wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
@@ -956,6 +1033,86 @@
                 }
             });
         }
+
+
+        /**
+         * 确认订单
+         * @return {[type]} [description]
+         */
+        Page.prototype.checkStep6 = function(){
+            // 获取表单1数据
+            var form1 = $('#formStep1').serializeArray();
+            // 获取表单2数据
+            var form2 = $('#formStep2').serializeArray();
+            // 获取商品总价
+            var goodsAmount = parseFloat(form1['g_goods_price']);
+            // 获取首付金额
+            var paidAmount = parseFloat(form1['g_goods_deposit']);  
+            // 当前选中的产品
+            var productId = parseInt(form2['o_product_id']);
+            // 获取是否选中了贵宾服务包
+            var vipServiceStatus = form2['o_is_free_pack_fee'] == 'on' ? 1 : 0;
+            // 获取是否选中了个人保障计划
+            var securityServiceStatus = form2['o_is_add_service_fee'] == 'on' ? 1 : 0;
+            // 计算贷款总金额
+            var loanAmount = ((goodsAmount - paidAmount) * (1 + serverFeeRate)) + queryFee;
+            // 获取个人保障计划服务包金额
+            var securityServiceAmount = 0;
+            // 获取贵宾服务包金额
+            var vipServiceAmount = 0;
+            // 财务管理费
+            var financialAmount = 0;
+            // 客户管理费
+            var customerAmount = 0;
+            // 总期数
+            var totalPeriod = 0;
+            // 每月利率
+            var everyMonthRate = 0;
+
+            // 获取相关费用
+            for(var i in products){
+                if(products[i].p_id == productId){
+                    // 获取个人保障计划服务包金额
+                    if(securityServiceStatus){
+                        securityServiceAmount = (loanAmount * parseFloat(products[i].p_add_service_fee) / 100).toFixed(4);
+                    }
+                    // 获取贵宾服务包金额
+                    if(vipServiceStatus){
+                        vipServiceAmount = (parseFloat(products[i].p_free_pack_fee)).toFixed(4);
+                    }
+                    // 财务管理费
+                    financialAmount = (loanAmount * parseFloat(products[i].p_finance_mangemant_fee) / 100).toFixed(4);
+                    // 客户管理费
+                    customerAmount = (loanAmount * parseFloat(products[i].p_customer_management) / 100).toFixed(4);
+                    // 获取总期数
+                    totalPeriod = parseInt(products[i].p_period);
+                    // 每月利率
+                    everyMonthRate = parseFloat(products[i].p_month_rate);
+
+                    break;
+                }
+            }
+
+            // 真实利率
+            var realEveryMonthRate = (everyMonthRate/100);
+
+            // 计算每月还款本金
+            var everyPrincipal = realEveryMonthRate <= 0 ? (loanAmount / totalPeriod).toFixed(2) : (loanAmount * realEveryMonthRate * Math.pow(1 + realEveryMonthRate , totalPeriod)) / (Math.pow(1 + realEveryMonthRate , totalPeriod) - 1);
+
+            // 每月还款总金额
+            var everyMonthPay = (everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount).toFixed(2);
+
+            // 填充数据和信息
+            $('#sellerName').html($('input[name=o_store_id] option:selected').text());
+            $('#goodsName').html(form1.g_goods_name + ' ' + form1.g_goods_models + ' x 1');
+            $('#goodsAmount').html('￥' + parseFloat(form1.g_goods_price).toFixed(2));
+            $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2));
+            $('#totalPeriod').html(totalPeriod + '期');
+            $('#everyMonthPay').html(everyMonthPay);
+            $('#vipServiceAmount').html(vipServiceAmount);
+            $('#securityServiceAmount').html(securityServiceAmount);
+        }
+
 
         Page.prototype.localSet = function(key , val){
             var storage = window.localStorage || window.sessionStorage;

@@ -193,7 +193,7 @@ class CalInterest
             }
         }*/
 
-        $service = $total * 0.02;
+        $service = $total * Yii::$app->params['seller_serverfee_rate'];
 
         $this->updateOrders($orderInfo, $service);
 
