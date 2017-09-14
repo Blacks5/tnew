@@ -14,6 +14,8 @@ class Brhelper {
 	const HAINA_API_PRODUCE = 'https://api.100credit.cn/HainaApi/data/getData.action';
 	// 海纳开发测试API
 	const HAINA_API_DEVELOP = 'https://sandbox-api.100credit.cn/HainaApi/data/getData.action';
+	// 海纳生产环境API（新）
+	const HAINA_API_PRODUCE_NEW = 'https://api.100credit.cn/trinity_force/v1/get_data';
 	// username
 	public $username;
 	// password
@@ -81,7 +83,9 @@ class Brhelper {
 
 		// url
 		// $url = YII_ENV === 'prod' ? self::HAINA_API_PRODUCE : self::HAINA_API_DEVELOP;
-		$url = self::HAINA_API_PRODUCE;
+		// $url = self::HAINA_API_PRODUCE;
+
+		$url = self::HAINA_API_PRODUCE_NEW;
 
 		// 数据
 		$data = json_encode([
