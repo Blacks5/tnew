@@ -36,10 +36,11 @@ class OrderImages extends CoreCommonActiveRecord {
 	public function rules() {
 		return [
 			[['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank'], 'required'],
-			[['oi_proxy_prove'], 'required' , 'on' => 'uploadFirst'],
-			[['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'], 'required' , 'on' => 'uploadAgain'],
+			[['oi_proxy_prove'], 'required', 'on' => 'uploadFirst'],
+			[['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'], 'required', 'on' => 'uploadAgain'],
 			[['oi_pick_goods', 'oi_serial_num'], 'safe'],
-			[['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract' , 'oi_proxy_prove' , 'oi_video'], 'string', 'max' => 60],
+			[['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_proxy_prove', 'oi_video'], 'string', 'max' => 60],
+			[['oi_other_1' , 'oi_other_2'] , 'string' , 'max' => 200]
 		];
 	}
 
@@ -61,8 +62,10 @@ class OrderImages extends CoreCommonActiveRecord {
 			'oi_signature' => '手写签名',
 			'oi_video' => '录制视频',
 			'oi_pick_goods' => '提货照',
-			'oi_serial_num' => '串码照',
+			'oi_serial_num' => '商品识别码',
 			'oi_proxy_prove' => '授权书',
+			'oi_other_1' => '其它图片',
+			'oi_other_2' => '其它图片',
 		];
 	}
 
@@ -75,6 +78,7 @@ class OrderImages extends CoreCommonActiveRecord {
 			'oi_customer',
 			'oi_front_bank',
 			'oi_proxy_prove',
+			'oi_other_1',
 		];
 		$scenarios['uploadAgain'] = [
 			'oi_after_contract',
@@ -84,6 +88,7 @@ class OrderImages extends CoreCommonActiveRecord {
 			'oi_family_card_two',
 			'oi_driving_license_one',
 			'oi_driving_license_two',
+			'oi_other_2',
 		];
 		return $scenarios;
 	}
