@@ -98,9 +98,9 @@ class ProductController extends CoreBackendController
     }
 
     /*
-     * 产品不能修改 20160928 涂鸿
+     * 编辑产品
      * */
-    /*public function actionUpdate($id)
+    public function actionUpdate($id)
     {
         $model = Product::findOne($id);
         $request = Yii::$app->getRequest();
@@ -109,11 +109,16 @@ class ProductController extends CoreBackendController
                 return \Yii::$app->getResponse()->redirect(['product/view', 'id'=>$model->p_id]);
             }
         }
-
+        //代发银行
+        $goods_type = Yii::$app->params['goods_type'];
+        $goods_types = [];
+        foreach ($goods_type as $k=>$v){
+            $goods_types[$k+1] = $goods_type[$k]['t_name'];
+        }
         $this->getView()->title='编辑产品';
         $all_status = Product::getAllStatus();
-        return $this->render('update', ['model'=>$model, 'all_status'=>$all_status]);
-    }*/
+        return $this->render('update', ['model'=>$model, 'all_status'=>$all_status, 'goods_types'=>$goods_types]);
+    }
 
 
     /**
