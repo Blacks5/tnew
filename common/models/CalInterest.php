@@ -179,7 +179,7 @@ class CalInterest
         $total = $orderInfo['o_total_price'] - $orderInfo['o_total_deposit'];  //借出去的本金
 
         //常规商品返还给商家的费用
-        if($orderInfo['p_is_promotional']==0){
+        /*if($orderInfo['p_is_promotional']==0){
             if($orderInfo['p_period']>11 && $orderInfo['p_period'] < 15){
                 $service = $total * 0.01;
             }elseif($orderInfo['p_period'] >= 15){
@@ -191,11 +191,13 @@ class CalInterest
             }elseif ($orderInfo['p_period'] >= 15){
                 $service = $total *0.05;
             }
-        }
+        }*/
+
+        $service = $total * 0.02;
 
         $this->updateOrders($orderInfo, $service);
 
-        $allTotal = $total + $service + $this->inquiry;
+        $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
         return $allTotal;
     }
 
@@ -209,7 +211,7 @@ class CalInterest
     {
         $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();
         $order->o_service_fee = $service;
-        $order->o_inquiry_fee = $this->inquiry;
+        $order->o_inquiry_fee = Yii::$app->params['inquiryFee'];
         if($order->save()){
             return true;
         }else{

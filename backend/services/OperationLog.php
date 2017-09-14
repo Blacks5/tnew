@@ -91,7 +91,7 @@ class OperationLog
             'ip' => Yii::$app->request->userIP,
             'order_id' => $orderId,
             'memo' => $memo,
-            'data' => json_encode($data),
+            'data' => json_encode($data, JSON_UNESCAPED_UNICODE),
             'created_at' => date('Y-m-d H:i:s'),
         ];
         // var_dump($d);die();

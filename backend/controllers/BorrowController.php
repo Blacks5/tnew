@@ -29,6 +29,7 @@ use WebSocket\Client;
 use yii;
 use backend\core\CoreBackendController;
 use common\models\OrdersSearch;
+use yii\log\FileTarget;
 
 class BorrowController extends CoreBackendController
 {
@@ -183,7 +184,7 @@ class BorrowController extends CoreBackendController
     {
         if ($model = Orders::getOne($order_id)) {
             $model['month_repayment'] = CalInterest::calRepayment(
-                $model['o_total_price']- $model['o_total_deposit'],
+                $model['o_total_price']- $model['o_total_deposit'] + $model['o_service_fee'] + $model['o_inquiry_fee'],
                 $model['p_id'],
                 $model['o_is_add_service_fee'],
                 $model['o_is_free_pack_fee']
@@ -362,7 +363,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 if (Repayment::find()->where(['r_orders_id' => $order_id])->exists()) {
                     throw new CustomBackendException('已存在还款计划', 5);
                 }
-                CalInterest::genRefundPlan($order_id);
+                CalInterest::genRefundPlan($order_id);   //生成还款计划
 
 
                 $handle = new ReturnMoney();
@@ -437,14 +438,20 @@ left join customer on customer.c_id=orders.o_customer_id
         ];
 
         $post = Yii::$app->getRequest()->post();
+        
+        $log = new FileTarget();
+        $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-qianyue.log';
+        $log->messages[] = ['收到易极付签约回调,post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
+        $log->export();
+
+
         if('true' === $post['success']){
             // 已经签约成功了[因为接口奇葩的要访问两次，所以加这个过滤]
             if(YijifuSign::find()->where(['status'=>1, 'orderNo'=>$post['orderNo']])->exists()){
                 echo "success";
                 return;
             }
-            if('MODIFY_SIGN'===$post['operateType']){
-
+            if(isset($post['operateType']) and 'MODIFY_SIGN'===$post['operateType']){
                 $sql = "select *  from " . YijifuSign::tableName() . " where merchOrderNo=:merchOrderNo  order by created_at desc  limit 1 for update";
                 $sign = YijifuSign::findBySql($sql, [':merchOrderNo' => $post['merchOrderNo']])->one();
                 $sign->bankName = $post['bankName'];
