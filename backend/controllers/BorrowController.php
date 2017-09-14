@@ -852,7 +852,7 @@ left join customer on customer.c_id=orders.o_customer_id
             ->where(['o_id' => $oid])
             ->asArray()->one();
         $other_1 = json_decode($more['oi_other_1'],true);
-        $other_2 = json_decode($more['oi_other_2'],true) == null?'':json_decode($more['oi_other_2'],true);
+        $other_2 = json_decode($more['oi_other_2'],true);
 
 
         return $this->render('pics', [
