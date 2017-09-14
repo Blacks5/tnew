@@ -884,7 +884,9 @@ left join customer on customer.c_id=orders.o_customer_id
     public function actionCancelPersonalProtection($order_id)
     {
         $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
         $x = $this->day($data);
+
         $rSerialNo = $data[$x]['r_serial_no'];
         if($data[$x]['r_status'] == 10){
             $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
@@ -892,7 +894,7 @@ left join customer on customer.c_id=orders.o_customer_id
             $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
         }
         $trans = Yii::$app->getDb()->beginTransaction();
-        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+
         try{
             $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
             $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
