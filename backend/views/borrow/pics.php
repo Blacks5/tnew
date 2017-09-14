@@ -35,6 +35,39 @@ $this->title = '借款详情';
                             }
                         }
                         ?>
+                        <?php
+                        if($other1!=null) {
+                            foreach ($other1 as $k => $v) {
+                                if (!empty($v)) {
+                                    ?>
+                                    <strong>其他</strong>
+                                    <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
+                                       data-gallery="">
+                                        <img height="200" width="200"
+                                             src="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>">
+                                    </a>
+                                    <?php
+                                }
+                            }
+                        }
+                        ?>
+                        <?php
+                        if($other2!=null) {
+                            foreach ($other2 as $k => $v) {
+                                if (!empty($v)) {
+                                    ?>
+                                    <strong>其他</strong>
+                                    <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
+                                       data-gallery="">
+                                        <img height="200" width="200"
+                                             src="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>">
+                                    </a>
+                                    <?php
+                                }
+                            }
+                        }
+
+                        ?>
 
 
                         <div id="blueimp-gallery" class="blueimp-gallery">

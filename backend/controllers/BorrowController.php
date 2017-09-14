@@ -846,8 +846,20 @@ left join customer on customer.c_id=orders.o_customer_id
             ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
             ->where(['o_id' => $oid])
             ->asArray()->one();
-//        p($data);
-        return $this->render('pics', ['data' => $data]);
+
+        $more = Orders::find()->select(['oi_other_1', 'oi_other_2'])
+            ->leftJoin(OrderImages::tableName(), 'o_images_id=oi_id')
+            ->where(['o_id' => $oid])
+            ->asArray()->one();
+        $other_1 = json_decode($more['oi_other_1'],true);
+        $other_2 = json_decode($more['oi_other_2'],true) == null?'':json_decode($more['oi_other_2'],true);
+
+
+        return $this->render('pics', [
+            'data' => $data,
+            'other1' => $other_1,
+            'other2' => $other_2,
+        ]);
     }
 
 
