@@ -26,7 +26,8 @@ class LoanController extends CoreBackendController
         if('async' === $action->id){
             $this->enableCsrfValidation = false;
         }
-        return true;
+        return parent::beforeAction($action);
+        // return true;
     }
     /**
      * @inheritdoc
@@ -228,7 +229,6 @@ class LoanController extends CoreBackendController
     {
         /*异步回调开始*/
                 $post = Yii::$app->getRequest()->post();
-
                 $log = new FileTarget();
                 $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-fangkuan.log';
                 $log->messages[] = ['收到易极付放款回调,post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
