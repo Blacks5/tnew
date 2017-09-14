@@ -376,8 +376,6 @@ class Order {
 						}
 					}
 					unset($params[$k]);
-				} else {
-					unset($params[$k]);
 				}
 			}
 			// 拼装其它图片
@@ -403,14 +401,12 @@ class Order {
 					} else {
 						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
 					}
-				} else if (in_array($k, $other_upload_1)) {
+				} else if (in_array($k, $other_upload_2)) {
 					if ($v) {
 						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
 							$other_2[] = $hash;
 						}
 					}
-					unset($params[$k]);
-				} else {
 					unset($params[$k]);
 				}
 			}
