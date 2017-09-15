@@ -441,7 +441,7 @@
                         </div>
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
-                                <p>支付金额</p>
+                                <p>首付金额</p>
                             </div>
                             <div class="weui-cell__ft" id="paidAmount"></div>
                         </div>
