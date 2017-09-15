@@ -189,7 +189,7 @@
                         </div>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">串码照上传<span class="color-danger">*</span></p>
+                                <p class="weui-uploader__title">商品识别码上传<span class="color-danger">*</span></p>
                                 <div class="weui-uploader__info">0/1</div>
                             </div>
                             <div class="weui-progress">
