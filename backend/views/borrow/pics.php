@@ -34,13 +34,13 @@ $this->title = '借款详情';
                                 <?php
                             }
                         }
-                        ?>
-                        <?php
+                        echo "</br><hr/>";
                         if($other1!=null) {
+                            echo "<strong>一审其他资质文件</strong>";
                             foreach ($other1 as $k => $v) {
                                 if (!empty($v)) {
                                     ?>
-                                    <strong>其他</strong>
+
                                     <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
                                        data-gallery="">
                                         <img height="200" width="200"
@@ -50,13 +50,12 @@ $this->title = '借款详情';
                                 }
                             }
                         }
-                        ?>
-                        <?php
+                        echo "</br><hr/>";
                         if($other2!=null) {
+                            echo "<strong>二审其他资质文件</strong>";
                             foreach ($other2 as $k => $v) {
                                 if (!empty($v)) {
                                     ?>
-                                    <strong>其他</strong>
                                     <a href="<?php echo (new \common\models\UploadFile())->getUrl($v); ?>" title="图片"
                                        data-gallery="">
                                         <img height="200" width="200"
