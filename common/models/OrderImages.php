@@ -94,13 +94,16 @@ class OrderImages extends CoreCommonActiveRecord {
 	}
 
 	public function beforeSave($insert) {
-		parent::beforeSave($insert);
-		if ($insert) {
-			$this->oi_other_1 = '';
-			$this->oi_other_2 = '';
-			return true;
-		}else{
-			return true;
+		if (parent::beforeSave($insert)) {
+			if ($this->isNewRecord) {
+				$this->oi_other_1 = '';
+				$this->oi_other_2 = '';
+				return true;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
 		}
 	}
 }
