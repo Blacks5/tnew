@@ -15,7 +15,7 @@
         <div class="swiper-container commit-order-container">
             <div class="swiper-wrapper">
                 <!--商品信息begin-->
-                <!-- <div class="swiper-slide swiper-no-swiping">
+                <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -60,11 +60,11 @@
                             </div>
                         </div>
                     </form>
-                </div> -->
+                </div>
                 <!--商品信息end-->
 
                 <!--订单信息begin-->
-                <!-- <div class="swiper-slide swiper-no-swiping">
+                <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -120,11 +120,11 @@
                             </div>
                         </div>
                     </form>
-                </div> -->
+                </div>
                 <!--订单信息end-->
 
                 <!--客户基本信息begin-->
-                <!-- <div class="swiper-slide swiper-no-swiping">
+                <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -290,11 +290,11 @@
                             </div>
                         </div>
                     </form>
-                </div> -->
+                </div>
                 <!--客户基本信息end-->
 
                 <!--客户单位信息begin-->
-                <!-- <div class="swiper-slide swiper-no-swiping">
+                <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -374,11 +374,11 @@
                             </div>
                         </div>
                     </form>
-                </div> -->
+                </div>
                 <!--客户单位信息end-->
 
                 <!--客户其他联系人信息begin-->
-                <!-- <div class="swiper-slide swiper-no-swiping">
+                <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep5" action="<?=Yii::$app->getUrlManager()->createUrl(['order/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">提交订单</h1>
@@ -410,7 +410,7 @@
                             </div>
                         </div>
                     </form>
-                </div> -->
+                </div>
                 <!--客户其他联系人信息end-->
                 
                 <!--客户信息确认begin-->
@@ -602,6 +602,10 @@
 
                         case 4:     // 第5步
                             _this.checkStep5(currStep);
+                        break;
+
+                        case 5:     // 第5步
+                            _this.checkStep6(currStep);
                         break;
                     }
                 },
@@ -959,9 +963,9 @@
                 ajaxPost: true,
                 callback : function(res){
                     if(res.status){
-                        _this.ajaxCommit();
-                        console.log('验证成功');
-                        // _this.swiper.slideNext();
+                        // _this.ajaxCommit();
+                        // console.log('验证成功');
+                        _this.swiper.slideNext();
                     }else{
                         $.toast(res.message, "text");
                     }
@@ -1004,7 +1008,7 @@
         Page.prototype.initStep = function(currStep){
             $('#currStep').html(currStep + 1);
             var removeClass = new Array;
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 1; i <= 6; i++) {
                 $('.nextStep' + i).unbind('click');
                 removeClass.push('nextStep' + i);
             }
@@ -1039,11 +1043,11 @@
          * 确认订单
          * @return {[type]} [description]
          */
-        Page.prototype.checkStep6 = function(){
+        Page.prototype.checkStep6 = function(currStep){
             // 获取表单1数据
-            var form1 = $('#formStep1').serializeArray();
+            var form1 = $('#formStep1').serializeObject();
             // 获取表单2数据
-            var form2 = $('#formStep2').serializeArray();
+            var form2 = $('#formStep2').serializeObject();
             // 获取商品总价
             var goodsAmount = parseFloat(form1['g_goods_price']);
             // 获取首付金额
@@ -1055,7 +1059,7 @@
             // 获取是否选中了个人保障计划
             var securityServiceStatus = form2['o_is_add_service_fee'] == 'on' ? 1 : 0;
             // 计算贷款总金额
-            var loanAmount = ((goodsAmount - paidAmount) * (1 + serverFeeRate)) + queryFee;
+            var loanAmount = ((goodsAmount - paidAmount) * (1 + parseFloat(serverFeeRate))) + queryFee;
             // 获取个人保障计划服务包金额
             var securityServiceAmount = 0;
             // 获取贵宾服务包金额
@@ -1068,22 +1072,24 @@
             var totalPeriod = 0;
             // 每月利率
             var everyMonthRate = 0;
-
+            console.log('1号表单数据');
+            console.log(form1);
+            console.log(goodsAmount , paidAmount , serverFeeRate , queryFee);
             // 获取相关费用
             for(var i in products){
                 if(products[i].p_id == productId){
                     // 获取个人保障计划服务包金额
                     if(securityServiceStatus){
-                        securityServiceAmount = (loanAmount * parseFloat(products[i].p_add_service_fee) / 100).toFixed(4);
+                        securityServiceAmount = parseFloat((loanAmount * parseFloat(products[i].p_add_service_fee) / 100).toFixed(4));
                     }
                     // 获取贵宾服务包金额
                     if(vipServiceStatus){
-                        vipServiceAmount = (parseFloat(products[i].p_free_pack_fee)).toFixed(4);
+                        vipServiceAmount = parseFloat((parseFloat(products[i].p_free_pack_fee)).toFixed(4));
                     }
                     // 财务管理费
-                    financialAmount = (loanAmount * parseFloat(products[i].p_finance_mangemant_fee) / 100).toFixed(4);
+                    financialAmount = parseFloat((loanAmount * parseFloat(products[i].p_finance_mangemant_fee) / 100).toFixed(4));
                     // 客户管理费
-                    customerAmount = (loanAmount * parseFloat(products[i].p_customer_management) / 100).toFixed(4);
+                    customerAmount = parseFloat((loanAmount * parseFloat(products[i].p_customer_management) / 100).toFixed(4));
                     // 获取总期数
                     totalPeriod = parseInt(products[i].p_period);
                     // 每月利率
@@ -1093,12 +1099,17 @@
                 }
             }
 
+            console.log(securityServiceAmount);
+
             // 真实利率
             var realEveryMonthRate = (everyMonthRate/100);
 
+            console.log(realEveryMonthRate , totalPeriod , loanAmount , realEveryMonthRate);
+
             // 计算每月还款本金
             var everyPrincipal = realEveryMonthRate <= 0 ? (loanAmount / totalPeriod).toFixed(2) : (loanAmount * realEveryMonthRate * Math.pow(1 + realEveryMonthRate , totalPeriod)) / (Math.pow(1 + realEveryMonthRate , totalPeriod) - 1);
-
+            console.log((everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount));
+            console.log(everyPrincipal , securityServiceAmount , vipServiceAmount , customerAmount , financialAmount);
             // 每月还款总金额
             var everyMonthPay = (everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount).toFixed(2);
 
@@ -1108,9 +1119,17 @@
             $('#goodsAmount').html('￥' + parseFloat(form1.g_goods_price).toFixed(2));
             $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2));
             $('#totalPeriod').html(totalPeriod + '期');
-            $('#everyMonthPay').html(everyMonthPay);
-            $('#vipServiceAmount').html(vipServiceAmount);
-            $('#securityServiceAmount').html(securityServiceAmount);
+            $('#everyMonthPay').html('￥' + parseFloat(everyMonthPay).toFixed(2));
+            $('#vipServiceAmount').html('￥' + parseFloat(vipServiceAmount).toFixed(2));
+            $('#securityServiceAmount').html('￥' + parseFloat(securityServiceAmount).toFixed(2));
+
+            var _this = this;
+            // 修改
+            _this.initStep(currStep);
+            // 绑定提交订单
+            $('.nextStep6').bind('click' , function(){
+                _this.ajaxCommit();
+            });
         }
 
 

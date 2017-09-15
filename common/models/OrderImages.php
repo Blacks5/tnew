@@ -40,7 +40,7 @@ class OrderImages extends CoreCommonActiveRecord {
 			[['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'], 'required', 'on' => 'uploadAgain'],
 			[['oi_pick_goods', 'oi_serial_num'], 'safe'],
 			[['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_family_card_one', 'oi_family_card_two', 'oi_driving_license_one', 'oi_driving_license_two', 'oi_after_contract', 'oi_proxy_prove', 'oi_video'], 'string', 'max' => 60],
-			[['oi_other_1' , 'oi_other_2'] , 'string' , 'max' => 200]
+			[['oi_other_1', 'oi_other_2'], 'string', 'max' => 200],
 		];
 	}
 
@@ -91,5 +91,16 @@ class OrderImages extends CoreCommonActiveRecord {
 			'oi_other_2',
 		];
 		return $scenarios;
+	}
+
+	public function beforeSave($insert) {
+		parent::beforeSave($insert);
+		if ($insert) {
+			$this->oi_other_1 = '';
+			$this->oi_other_2 = '';
+			return true;
+		}else{
+			return true;
+		}
 	}
 }
