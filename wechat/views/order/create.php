@@ -423,13 +423,13 @@
                             <div class="weui-cell__bd">
                                 <p>商户名称</p>
                             </div>
-                            <div class="weui-cell__ft" id="sellerName">中江县凯江镇大洋通讯</div>
+                            <div class="weui-cell__ft" id="sellerName"></div>
                         </div>
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>选购商品</p>
                             </div>
-                            <div class="weui-cell__ft" id="goodsName">苹果7 x 1</div>
+                            <div class="weui-cell__ft" id="goodsName"></div>
                         </div>
                     </div>
                     <div class="weui-cells">
@@ -437,25 +437,25 @@
                             <div class="weui-cell__bd">
                                 <p>商品总额</p>
                             </div>
-                            <div class="weui-cell__ft" id="goodsAmount">￥5380.00</div>
+                            <div class="weui-cell__ft" id="goodsAmount"></div>
                         </div>
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>支付金额</p>
                             </div>
-                            <div class="weui-cell__ft" id="paidAmount">￥1380.00</div>
+                            <div class="weui-cell__ft" id="paidAmount"></div>
                         </div>
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>所分期数</p>
                             </div>
-                            <div class="weui-cell__ft" id="totalPeriod">15期</div>
+                            <div class="weui-cell__ft" id="totalPeriod"></div>
                         </div>
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>每月还款</p>
                             </div>
-                            <div class="weui-cell__ft" id="everyMonthPay">￥380.30<br />含可选服务费￥145.00</div>
+                            <div class="weui-cell__ft" id="everyMonthPay"></div>
                         </div>
                     </div>
                     <div class="weui-cells">
@@ -469,15 +469,16 @@
                             <div class="weui-cell__bd">
                                 <p>贵宾服务包</p>
                             </div>
-                            <div class="weui-cell__ft" id="vipServiceAmount">￥5380.00</div>
+                            <div class="weui-cell__ft" id="vipServiceAmount"></div>
                         </div>
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>个人保障服务</p>
                             </div>
-                            <div class="weui-cell__ft" id="securityServiceAmount">￥1380.00</div>
+                            <div class="weui-cell__ft" id="securityServiceAmount"></div>
                         </div>
                     </div>
+                    <div class="weui-cells__title">备注：以上计算分期数据仅作参考，最终贷款分期金额以签约金额为准。</div>
                 </div>
                 <!--客户信息确认end-->
             </div>
