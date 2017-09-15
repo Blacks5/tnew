@@ -36,6 +36,13 @@
     </div>
 
     <div class="weui-order-preview">
+        <div class="weui-pull-to-refresh__layer">
+            <div class='weui-pull-to-refresh__arrow'></div>
+            <div class='weui-pull-to-refresh__preloader'></div>
+            <div class="down">下拉刷新</div>
+            <div class="up">释放刷新</div>
+            <div class="refresh">正在刷新</div>
+        </div>
         <div class="content-padded"></div>
         <div class="weui-loadmore">
             <i class="weui-loading"></i>
@@ -171,6 +178,20 @@
                         _this.isLoading = false;
                     });
                 });
+
+                // 绑定下拉刷新
+                $(document.body).pullToRefresh();
+                $(document.body).on("pull-to-refresh", function() {
+                    _this.currPage = 1;
+                    // 请求数据
+                    _this.doRequest({
+                        page : _this.currPage,
+                        keywords : $('#searchInput').val(),
+                        screen_type : $('#picker').attr('data-values')
+                    } , function(){
+                        $(document.body).pullToRefreshDone();
+                    });
+                });
             }
 
             /**
@@ -188,7 +209,7 @@
              * @param  {[type]} request 请求参数
              * @return {[type]}         null
              */
-            Page.prototype.doRequest = function(request){
+            Page.prototype.doRequest = function(request , callback){
                 var _this = this;
                 this.isLoaded = false;
                 $.showLoading();
@@ -196,7 +217,8 @@
                     setTimeout(function() {
                       $.hideLoading();
                       $(".weui-loadmore").hide();
-
+                      // 回调
+                      callback && callback();
                       // 是否有数据
                       if(html){
                         $(".content-padded").html(html);

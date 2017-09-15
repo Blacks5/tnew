@@ -27,15 +27,16 @@
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
         </div>
-        <!--搜索栏结束-->
-<!--         <div class="weui-cell weui-select-bar">
-            <div class="weui-cell__bd">
-                <input class="weui-input" id="picker" type="text" value="全部" readonly="">
-            </div>
-        </div> -->
     </div>
 
     <div class="weui-order-preview" style="padding-top: 44px">
+        <div class="weui-pull-to-refresh__layer">
+            <div class='weui-pull-to-refresh__arrow'></div>
+            <div class='weui-pull-to-refresh__preloader'></div>
+            <div class="down">下拉刷新</div>
+            <div class="up">释放刷新</div>
+            <div class="refresh">正在刷新</div>
+        </div>
         <div class="content-padded"></div>
         <div class="weui-loadmore">
             <i class="weui-loading"></i>
@@ -171,6 +172,20 @@
                         _this.isLoading = false;
                     });
                 });
+
+                // 绑定下拉刷新
+                $(document.body).pullToRefresh();
+                $(document.body).on("pull-to-refresh", function() {
+                    _this.currPage = 1;
+                    // 请求数据
+                    _this.doRequest({
+                        page : _this.currPage,
+                        keywords : $('#searchInput').val(),
+                        screen_type : $('#picker').attr('data-values')
+                    } , function(){
+                        $(document.body).pullToRefreshDone();
+                    });
+                });
             }
 
             /**
@@ -188,7 +203,7 @@
              * @param  {[type]} request 请求参数
              * @return {[type]}         null
              */
-            Page.prototype.doRequest = function(request){
+            Page.prototype.doRequest = function(request , callback){
                 var _this = this;
                 this.isLoaded = false;
                 $.showLoading();
@@ -196,7 +211,8 @@
                     setTimeout(function() {
                       $.hideLoading();
                       $(".weui-loadmore").hide();
-
+                      // 回调
+                      callback && callback();
                       // 是否有数据
                       if(html){
                         $(".content-padded").html(html);
@@ -224,7 +240,7 @@
 
                         for(var i in res.data.data){
                             var item = res.data.data[i];
-                            html += '<div class="weui-form-preview" data-o-id="' + item.o_id +'" data-o-status="' +item.o_status+ '"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.r_serial_no + '/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">逾期天数</label><span class="weui-form-preview__value">' + item.r_overdue_day + '天</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">逾期滞纳金</label><span class="weui-form-preview__value">' + item.r_overdue_money + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">本金</label><span class="weui-form-preview__value">' + item.r_principal + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">利息</label><span class="weui-form-preview__value">' + item.r_interest + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">贵宾服务包</label><span class="weui-form-preview__value">' + item.r_add_service_fee + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">随心包服务费</label><span class="weui-form-preview__value">' + item.r_free_pack_fee + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">财务管理费</label><span class="weui-form-preview__value">' + item.r_finance_mangemant_fee + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户管理费</label><span class="weui-form-preview__value">' + item.r_customer_management + '元</span></div></div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">本月应还:' + item.r_total_repay + '元</a><button type="button" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">操作</button></div></div><br />';
+                            html += '<div class="weui-form-preview" data-o-id="' + item.o_id +'" data-o-status="' +item.o_status+ '"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.r_serial_no + '/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">首付金额</label><span class="weui-form-preview__value">' + item.o_total_deposit + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">逾期天数</label><span class="weui-form-preview__value">' + item.r_overdue_day + '天</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">逾期滞纳金</label><span class="weui-form-preview__value">' + item.r_overdue_money + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">本金</label><span class="weui-form-preview__value">' + item.r_principal + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">利息</label><span class="weui-form-preview__value">' + item.r_interest + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">贵宾服务包</label><span class="weui-form-preview__value">' + item.r_add_service_fee + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">随心包服务费</label><span class="weui-form-preview__value">' + item.r_free_pack_fee + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">财务管理费</label><span class="weui-form-preview__value">' + item.r_finance_mangemant_fee + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户管理费</label><span class="weui-form-preview__value">' + item.r_customer_management + '元</span></div></div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">本月应还:' + item.r_total_repay + '元</a><button type="button" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">操作</button></div></div><br />';
                         }
 
                         callback(html , res.data.page);

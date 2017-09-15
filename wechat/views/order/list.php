@@ -34,8 +34,15 @@
             </div>
         </div>
     </div>
-
+    
     <div class="weui-order-preview">
+        <div class="weui-pull-to-refresh__layer">
+            <div class='weui-pull-to-refresh__arrow'></div>
+            <div class='weui-pull-to-refresh__preloader'></div>
+            <div class="down">下拉刷新</div>
+            <div class="up">释放刷新</div>
+            <div class="refresh">正在刷新</div>
+        </div>
         <div class="content-padded"></div>
         <div class="weui-loadmore">
             <i class="weui-loading"></i>
@@ -164,6 +171,20 @@
                         _this.isLoading = false;
                     });
                 });
+
+                // 绑定下拉刷新
+                $(document.body).pullToRefresh();
+                $(document.body).on("pull-to-refresh", function() {
+                    _this.currPage = 1;
+                    // 请求数据
+                    _this.doRequest({
+                        page : _this.currPage,
+                        keywords : $('#searchInput').val(),
+                        screen_type : $('#picker').attr('data-values')
+                    } , function(){
+                        $(document.body).pullToRefreshDone();
+                    });
+                });
             }
 
             /**
@@ -181,7 +202,7 @@
              * @param  {[type]} request 请求参数
              * @return {[type]}         null
              */
-            Pages.prototype.doRequest = function(request){
+            Pages.prototype.doRequest = function(request , callback){
                 var _this = this;
                 this.isLoaded = false;
                 $.showLoading();
@@ -189,7 +210,8 @@
                     setTimeout(function() {
                       $.hideLoading();
                       $(".weui-loadmore").hide();
-
+                      // 回调
+                      callback && callback();
                       // 是否有数据
                       if(html){
                         $(".content-padded").html(html);
@@ -215,7 +237,7 @@
 
                         for(var i in res.data.data){
                             var item = res.data.data[i];
-                            html += '<div class="weui-form-preview"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div>';
+                            html += '<div class="weui-form-preview"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.c_customer_name + '</label><em class="weui-form-preview__value">' + item.o_total_price + '元/' + item.p_period + '期</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.o_serial_id + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">总金额</label><span class="weui-form-preview__value">' + item.o_total_price + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">首付金额</label><span class="weui-form-preview__value">' + item.o_total_deposit + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.c_customer_cellphone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">商品类型</label><span class="weui-form-preview__value">' + item.p_name + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">提交时间</label><span class="weui-form-preview__value">' + item.o_created_at + '</span></div>';
 
                             html += '<div class="weui-form-preview__item"><label class="weui-form-preview__label">状态描述</label><span class="weui-form-preview__value">' + (item.o_operator_remark ? item.o_operator_remark : '暂无') + '</span></div>';
 
