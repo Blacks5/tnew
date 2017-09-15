@@ -104,10 +104,7 @@ class CalInterest
             'r_pre_repay_date', 'r_is_last', 'r_serial_no', 'r_serial_total', 'r_operator_id', 'r_operator_date'
         ];
 
-        //增加服务费和查询费
-        $fee = new CalInterest();
-
-        $total_borrow_money = $fee->getFee($order_info); // 一共借了多少钱(包含服务费和查询费和借出去的本金)
+        $total_borrow_money = $order_info['o_total_price'] - $order_info['o_total_deposit'] + $order_info['o_inquiry_fee'] + $order_info['o_service_fee']; // 一共借了多少钱(包含服务费和查询费和借出去的本金)
 
         $month_benjinTotal = self::calEveryMonth($total_borrow_money, $order_info['p_period'], $order_info['p_month_rate']); //每月还款金额（每月应还本金+每月应还利息）
         $Total_interest = 0; //总利息
@@ -166,6 +163,7 @@ class CalInterest
             throw $e;
         }
     }
+
 
     /**
      * 获取中费用(总金额-首付+服务费+查询费)
