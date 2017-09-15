@@ -129,13 +129,13 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                     <div>
                         <label class="col-sm-2 control-label">个人保障计划(元/每月)：</label>
                         <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['p_add_service_fee']; ?></p>
+                            <p class="form-control-static"><?= $model['o_is_add_service_fee']==1?$model['p_add_service_fee']:0; ?></p>
                         </div>
                     </div>
                     <div>
                         <label class="col-sm-2 control-label">贵宾服务包(%)：</label>
                         <div class="col-sm-2">
-                            <p class="form-control-static"><?= $model['p_free_pack_fee']; ?></p>
+                            <p class="form-control-static"><?= $model['o_is_free_pack_fee']==1?$model['p_free_pack_fee']:0; ?></p>
                         </div>
                     </div>
                     <div>

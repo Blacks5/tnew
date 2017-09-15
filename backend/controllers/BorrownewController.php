@@ -834,44 +834,36 @@ left join customer on customer.c_id=orders.o_customer_id
      * 取消贵宾服务包
      * @param $order_id 订单id
      * @return array
-     * @author 皮潇世 <p304363979@163.com>
+     * @author OneStep
      */
     public function actionCancelVipPack($order_id)
     {
-        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
-        $x = $this->day($data);
-        $rSerialNo = $data[$x]['r_serial_no'];
-        if($data[$x]['r_status'] == 10){
-            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
-        }else{
-            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
-        }
-        $trans = Yii::$app->getDb()->beginTransaction();
         Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        $trans = Yii::$app->getDb()->beginTransaction();
         try{
-            $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
-            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            $sql = "select * from ". Repayment::tableName() ." where r_orders_id=:r_orders_id and r_status = 1 for update";
+            Repayment::findBySql($sql, ['r_orders_id'=>$order_id]);
+
+            $update = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee), r_free_pack_fee = 0 where r_orders_id=:r_orders_id and r_status = 1";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($update, ['r_orders_id'=>$order_id])->execute();
             if($c1 <= 0){
                 throw new CustomBackendException('处理月供金额失败' , 0);
             }
-            $sql1 = "update repayment set r_free_pack_fee = 0 where $where";//再处理贵宾服务包金额
-            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
-            if($c2 <= 0){
-                throw new CustomBackendException('处理贵宾服务包金额失败' , 0);
-            }
+
             $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
-            if($count > 0){
-                $trans->commit();
-                return ['status' => 1, 'message' => '取消成功'];
-            }else{
-                throw new CustomBackendException('取消失败' , 0);
+            if($count <= 0){
+                throw new CustomBackendException('处理订单表失败', 0);
             }
+
+            $trans->commit();
+            return ['status' => 1, 'message' => '取消成功'];
+
         } catch (CustomBackendException $e) {
             $trans->rollBack();
             return ['status' => $e->getCode(), 'message' => $e->getMessage()];
         } catch (yii\base\Exception $e) {
             $trans->rollBack();
-            return ['status' => 2, 'message' => '系统错误'];
+            return ['status' => 2, 'message' => $e->getMessage()];
         }
     }
 
@@ -879,40 +871,34 @@ left join customer on customer.c_id=orders.o_customer_id
      * 取消个人保障计划
      * @param $order_id 订单id
      * @return array
-     * @author 皮潇世 <p304363979@163.com>
+     * @author OneStep
      */
     public function actionCancelPersonalProtection($order_id)
     {
-        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
         Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-        $x = $this->day($data);
-
-        $rSerialNo = $data[$x]['r_serial_no'];
-        if($data[$x]['r_status'] == 10){
-            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
-        }else{
-            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
-        }
         $trans = Yii::$app->getDb()->beginTransaction();
-
         try{
-            $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
-            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
-            if($c1 <= 0){
-                throw new CustomBackendException('处理月供金额失败' , 0);
+            //锁表
+            $sql = "select * from ". Repayment::tableName() . " where r_orders_id=:r_orders_id and r_status=1 for update";
+            Repayment::findBySql($sql,['r_orders_id'=>$order_id])->all();
+            //改月供和个人保障计划
+            $update = "update ". Repayment::tableName() ." set r_total_repay = r_total_repay - r_add_service_fee, r_add_service_fee = 0 where r_orders_id=:r_orders_id and r_status = 1";
+            $repayment = Yii::$app->getDb()->createCommand($update, ['r_orders_id'=>$order_id])->execute();
+
+            if($repayment <= 0){
+                throw new CustomBackendException('处理月供失败!', 0);
             }
-            $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
-            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
-            if($c2 <= 0){
-                throw new CustomBackendException('处理个人保障服务金额失败' , 0);
+            //改订单表个人保障计划
+            $update = "update ". Orders::tableName() ." set o_is_add_service_fee=0 where o_id=:o_id";
+            $orders = Yii::$app->getDb()->createCommand($update, ['o_id'=>$order_id])->execute();
+
+            if($orders <= 0){
+                throw new CustomBackendException('处理订单表失败', 0);
             }
-            $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
-            if($count > 0){
-                $trans->commit();
-                return ['status' => 1, 'message' => '取消成功'];
-            }else{
-                throw new CustomBackendException('取消失败' , 0);
-            }
+
+            $trans->commit();
+            return ['status' => 1, 'message' => '取消成功'];
+
         } catch (CustomBackendException $e) {
             $trans->rollBack();
             return ['status' => $e->getCode(), 'message' => $e->getMessage()];
@@ -928,7 +914,7 @@ left join customer on customer.c_id=orders.o_customer_id
      * @param $order_id 订单id
      * @param $expected 预计还款期数
      * @return array
-     * @author 皮潇世 <p304363979@163.com>
+     * @author OneStep
      */
     public function actionCalculationResidualLoan($order_id,$expected)
     {
