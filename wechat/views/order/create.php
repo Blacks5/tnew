@@ -1114,7 +1114,7 @@
             var everyMonthPay = (everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount).toFixed(2);
 
             // 填充数据和信息
-            $('#sellerName').html($('input[name=o_store_id] option:selected').text());
+            $('#sellerName').html($('select[name=o_store_id] option:selected').text());
             $('#goodsName').html(form1.g_goods_name + ' ' + form1.g_goods_models + ' x 1');
             $('#goodsAmount').html('￥' + parseFloat(form1.g_goods_price).toFixed(2));
             $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2));

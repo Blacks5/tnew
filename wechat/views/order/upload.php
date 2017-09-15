@@ -379,6 +379,11 @@ $(function(){
         // 绑定提交
         $('#submitBtn').bind('click' , function(){
             if(post.o_status == COMPLETE || post.o_status == UPLOAD_AGAIN){
+                if(!post.o_product_code){
+                    $.toast('请输入商品识别码', "text");
+                    return;
+                }
+
                 $.ajaxPost(modifyUrl , post , function(res){
                     if(res.status){
                         $.toast(res.message, function(){
