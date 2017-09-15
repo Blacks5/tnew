@@ -34,9 +34,8 @@ $this->title = '借款详情';
                                 <?php
                             }
                         }
-                        echo "</br><hr/>";
                         if($other1!=null) {
-                            echo "<strong>一审其他资质文件</strong>";
+                            echo "</br><hr/><strong>一审其他资质文件</strong>";
                             foreach ($other1 as $k => $v) {
                                 if (!empty($v)) {
                                     ?>
@@ -50,9 +49,8 @@ $this->title = '借款详情';
                                 }
                             }
                         }
-                        echo "</br><hr/>";
                         if($other2!=null) {
-                            echo "<strong>二审其他资质文件</strong>";
+                            echo "</br><hr/><strong>二审其他资质文件</strong>";
                             foreach ($other2 as $k => $v) {
                                 if (!empty($v)) {
                                     ?>
