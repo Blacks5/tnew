@@ -655,6 +655,14 @@ class OrderController extends BaseController {
 						'oi_after_contract' => $request->post('oi_after_contract', ''),
 						'oi_proxy_prove' => $request->post('oi_proxy_prove', ''),
 						'o_product_code' => $request->post('o_product_code', ''),
+						'oi_other_1_1' => $request->post('oi_other_1_1', ''),
+						'oi_other_1_2' => $request->post('oi_other_1_2', ''),
+						'oi_other_1_3' => $request->post('oi_other_1_3', ''),
+						'oi_other_1_4' => $request->post('oi_other_1_4', ''),
+						'oi_other_2_1' => $request->post('oi_other_2_1', ''),
+						'oi_other_2_2' => $request->post('oi_other_2_2', ''),
+						'oi_other_2_3' => $request->post('oi_other_2_3', ''),
+						'oi_other_2_4' => $request->post('oi_other_2_4', ''),
 					]);
 				} else if ($actionType == 'modify') {
 

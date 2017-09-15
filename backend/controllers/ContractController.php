@@ -58,7 +58,10 @@ class ContractController extends Controller
         $data['o_user_id'] = User::find()->select('realname')->where(['id'=>$data['o_user_id']])->scalar();
 
         // 计算月供
-        $total_money = $this->getFee($data);
+        $all_total = $this->getFee($data);
+        $total_money = $all_total['allTotal'];
+        $data['o_inquiry_fee'] = $all_total['inquiryFee'];
+        $data['o_service_fee'] = $all_total['service'];
         $every_month_repay = CalInterest::calEveryMonth($total_money, $data['p_period'], $data['p_month_rate']);
         //月供总额
         $data['total_all'] = $total_money;
@@ -139,6 +142,29 @@ class ContractController extends Controller
         $service = $total * 0.02;
 
         $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
-        return $allTotal;
+        $this->updateOrders($orderInfo, $service);
+        return [
+            'inquiryFee' => Yii::$app->params['inquiryFee'],
+            'service' => $service,
+            'allTotal' => $allTotal,
+        ];
+    }
+
+    /**
+     * 修改Orders 服务费和查询费
+     * @param $orderInfo
+     * @param $service
+     * @return bool
+     */
+    protected function updateOrders($orderInfo, $service)
+    {
+        $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();
+        $order->o_service_fee = $service;
+        $order->o_inquiry_fee = Yii::$app->params['inquiryFee'];
+        if($order->save()){
+            return true;
+        }else{
+            throw new CustomBackendException('修改服务费和查询费失败', 5);
+        }
     }
 }

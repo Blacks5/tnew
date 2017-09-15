@@ -104,10 +104,7 @@ class CalInterest
             'r_pre_repay_date', 'r_is_last', 'r_serial_no', 'r_serial_total', 'r_operator_id', 'r_operator_date'
         ];
 
-        //增加服务费和查询费
-        $fee = new CalInterest();
-
-        $total_borrow_money = $fee->getFee($order_info); // 一共借了多少钱(包含服务费和查询费和借出去的本金)
+        $total_borrow_money = $order_info['o_total_price'] - $order_info['o_total_deposit'] + $order_info['o_inquiry_fee'] + $order_info['o_service_fee']; // 一共借了多少钱(包含服务费和查询费和借出去的本金)
 
         $month_benjinTotal = self::calEveryMonth($total_borrow_money, $order_info['p_period'], $order_info['p_month_rate']); //每月还款金额（每月应还本金+每月应还利息）
         $Total_interest = 0; //总利息
@@ -135,7 +132,7 @@ class CalInterest
 
             $_temp['r_total_repay'] = round($month_benjinTotal + $p_add_service_fee + $p_free_pack_fee + $p_finance_mangemant_fee + $p_customer_management, 4); // 每月需还款的总额
 
-            $_temp['r_interest'] = round($total_borrow_money * $order_info['p_month_rate'] / 100, 4); // 每月利息
+            $_temp['r_interest'] = round(($total_borrow_money-Yii::$app->params['inquiryFee']) * $order_info['p_month_rate'] / 100, 4); // 每月利息 总金额里面包含贷款金额,商家服务费,查询费 , 需要把查询费减去
             $_temp['r_principal'] = round($month_benjinTotal - $_temp['r_interest'], 4); // 每月还的本金
             $_temp['r_balance'] = abs(round($total_borrow_money - $_temp['r_principal'], 4)); // 期末余额，误差会导致负数所以abs
             $_temp['r_add_service_fee'] = $p_add_service_fee; // 个人保证计划
@@ -167,55 +164,4 @@ class CalInterest
         }
     }
 
-    /**
-     * 获取中费用(总金额-首付+服务费+查询费)
-     * @param $orderInfo
-     * @return float|int
-     * @author OneStep
-     */
-    private function getFee($orderInfo)
-    {
-        $service = 0; //返还给商家的服务费
-        $total = $orderInfo['o_total_price'] - $orderInfo['o_total_deposit'];  //借出去的本金
-
-        //常规商品返还给商家的费用
-        /*if($orderInfo['p_is_promotional']==0){
-            if($orderInfo['p_period']>11 && $orderInfo['p_period'] < 15){
-                $service = $total * 0.01;
-            }elseif($orderInfo['p_period'] >= 15){
-                $service = $total * 0.035;
-            }
-        }elseif($orderInfo['p_is_promotional']==1){  //促销商品返回给商家的费用
-            if($orderInfo['p_period'] > 11 && $orderInfo['p_period'] < 15){
-                $service = $total * 0.03;
-            }elseif ($orderInfo['p_period'] >= 15){
-                $service = $total *0.05;
-            }
-        }*/
-
-        $service = $total * 0.02;
-
-        $this->updateOrders($orderInfo, $service);
-
-        $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
-        return $allTotal;
-    }
-
-    /**
-     * 修改Orders 服务费和查询费
-     * @param $orderInfo
-     * @param $service
-     * @return bool
-     */
-    protected function updateOrders($orderInfo, $service)
-    {
-        $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();
-        $order->o_service_fee = $service;
-        $order->o_inquiry_fee = Yii::$app->params['inquiryFee'];
-        if($order->save()){
-            return true;
-        }else{
-            throw new CustomBackendException('修改服务费和查询费失败', 5);
-        }
-    }
 }

@@ -346,10 +346,16 @@ class Order {
 
 		$must_upload_1 = ['oi_front_id', 'oi_back_id', 'oi_customer', 'oi_front_bank', 'oi_proxy_prove'];
 
+		$other_upload_1 = ['oi_other_1_1', 'oi_other_1_2', 'oi_other_1_3', 'oi_other_1_4'];
+
 		$must_upload_2 = ['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'];
+
+		$other_upload_2 = ['oi_other_1_1', 'oi_other_1_2', 'oi_other_1_3', 'oi_other_1_4'];
 
 		// 一审参数
 		if ($orderModel->o_status == Orders::STATUS_NOT_COMPLETE) {
+			// 其它图片
+			$other_1 = [];
 			// 开始上传
 			foreach ($params as $k => $v) {
 				if (in_array($k, $must_upload_1)) {
@@ -363,12 +369,25 @@ class Order {
 					} else {
 						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
 					}
+				} else if (in_array($k, $other_upload_1)) {
+					if ($v) {
+						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
+							$other_1[] = $hash;
+						}
+					}
+					unset($params[$k]);
 				}
+			}
+			// 拼装其它图片
+			if ($other_1) {
+				$params['oi_other_1'] = json_encode($other_1);
 			}
 		}
 
 		// 二审参数
 		if ($orderModel->o_status == Orders::STATUS_WAIT_APP_UPLOAD_AGAIN) {
+			// 其它图片
+			$other_2 = [];
 			// 开始上传
 			foreach ($params as $k => $v) {
 				if (in_array($k, $must_upload_2)) {
@@ -382,7 +401,19 @@ class Order {
 					} else {
 						throw new CustomCommonException('请上传' . $oi->attributeLabels()[$k]);
 					}
+				} else if (in_array($k, $other_upload_2)) {
+					if ($v) {
+						if ($hash = $this->pullWxServerImagesToQiniu($v)) {
+							$other_2[] = $hash;
+						}
+					}
+					unset($params[$k]);
 				}
+			}
+
+			// 拼装其它图片
+			if ($other_2) {
+				$params['oi_other_2'] = json_encode($other_2);
 			}
 		}
 
@@ -407,11 +438,9 @@ class Order {
 				'oi_customer' => $params['oi_customer'],
 				'oi_front_bank' => $params['oi_front_bank'],
 				'oi_proxy_prove' => $params['oi_proxy_prove'],
-				'oi_family_card_one' => $params['oi_family_card_one'],
-				'oi_family_card_two' => $params['oi_family_card_two'],
-				'oi_driving_license_one' => $params['oi_driving_license_one'],
-				'oi_driving_license_two' => $params['oi_driving_license_two'],
 			]];
+
+			isset($params['oi_other_1']) && $data['data']['oi_other_1'] = $params['oi_other_1'];
 
 			$orderImagesModel->scenario = 'uploadFirst';
 
@@ -442,6 +471,8 @@ class Order {
 				'oi_serial_num' => $params['oi_serial_num'],
 				'oi_after_contract' => $params['oi_after_contract'],
 			]];
+
+			isset($params['oi_other_2']) && $data['data']['oi_other_2'] = $params['oi_other_2'];
 
 			$orderImagesModel->scenario = 'uploadAgain';
 
@@ -497,7 +528,7 @@ class Order {
 		// 获取内容
 		if ($content = $temporary->getStream($mediaid)) {
 			$remote_server = 'http://up-z2.qiniu.com/putb64/-1';
-			
+
 			$base64 = chunk_split(base64_encode($content));
 
 			try {
@@ -510,7 +541,7 @@ class Order {
 				}
 
 				return false;
-			} catch (\Exception $e) {
+			} catch (\EasyWeChat\Core\Exceptions\HttpException $e) {
 				return false;
 			}
 		}
