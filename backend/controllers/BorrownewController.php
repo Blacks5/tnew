@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 use backend\components\CustomBackendException;
+use Carbon\Carbon;
 use com\jzq\api\model\sign\FileLinkRequest;
 use common\components\CustomCommonException;
 use common\models\CalInterest;
@@ -23,6 +24,7 @@ use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
 use common\models\YijifuSignReturnmoney;
+use common\services\Order;
 use common\tools\yijifu\ReturnMoney;
 use org\ebq\api\tool\RopUtils;
 use WebSocket\Client;
@@ -1064,7 +1066,15 @@ left join customer on customer.c_id=orders.o_customer_id
                         'SETTLE_SUCCESS' => '结算成功', // 结算成功
                     ];
                     $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
-                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $yijifu_data['repayment_ids'] . ") and r_status=:r_status for update";
+                    $id = json_decode($yijifu_data['repayment_ids'], true);
+
+                    $repayCount = Repayment::find()
+                        ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+                        ->where(['o_serial_id'=>$yijifu_data['o_serial_id']])
+                        ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
+                        ->count();
+
+                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $id . ") and r_status=:r_status for update";
                     $repay_model_arr = Repayment::findBySql($sql,[':r_status' => Repayment::STATUS_NOT_PAY])->all();
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
@@ -1074,6 +1084,18 @@ left join customer on customer.c_id=orders.o_customer_id
                         $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间
                         $repay_model->r_operator_id = $yijifu_data['operator_id']; // 操作人ID
                         $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 操作时间
+
+                        if($repayCount==count($id)){ //全部提前还款 需要将各种费用清空,月供=本金
+                            $date = Carbon::createFromTimestamp($repay_model->r_pre_repay_date);
+                            if($date->month > Carbon::now()->month){
+                                $repay_model->r_total_repay = $repay_model->r_principal;  //月供=本金
+                                $repay_model->r_interest = 0;
+                                $repay_model->r_add_service_fee = 0;
+                                $repay_model->r_free_pack_fee = 0;
+                                $repay_model->r_finance_mangemant_fee = 0;
+                                $repay_model->r_customer_management = 0;
+                            }
+                        }
 
                         if (!$repay_model->save(false)) {
                             $trans->rollBack();

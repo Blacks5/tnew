@@ -81,11 +81,16 @@ class RepaymentSearch extends CoreBackendModel
 
     /**
      * 获取还款金额
-     * 规则:
+     * 第一版规则:
      * 还款小于3期 + 200; 大于三期不过没买贵宾包 +200
      * 有逾期的需加上逾期期间的利息和滞纳金
      * 属于本期应还的+本期利息
      * 需还本金+各种服务(除利息外)
+     * 第二版规则:
+     * 还款小于3期 + 200; 大于三期不过没买贵宾包 +200
+     * 有逾期的+ 月供和滞纳金
+     * 本期+月供 (本期算法:应还款日-当日<4)
+     * 全部还完只收之后本金,不然算月供
      * @param $order_id 订单Id $num 还款期数
      * @return mixed
      * @author OneStep
@@ -94,18 +99,28 @@ class RepaymentSearch extends CoreBackendModel
     {
         $total['total'] = 0;    //总金额
         $total['num'] = [];    //期数
-        $data = Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1])->orderBy('r_pre_repay_date')->limit($num)->all();
-        foreach ($data as $k => $d){
-            $date = Carbon::createFromTimestamp($d['r_pre_repay_date']);
-            $total['total'] += $d['r_total_repay'] - $d['r_interest']; //获取所有的 本金 + 各种服务费用(除利息,都得还)
-            if($d['r_overdue_day']>3){    //如果逾期,加上逾期的利息和滞纳金
-                $total['total'] += $d['r_interest'] + $d['r_overdue_money'];
+        $sql = Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1])->orderBy('r_pre_repay_date');
+        $repayCount = $sql->count();
+        $data = $sql->limit($num)->all();
+        if($num == $repayCount){    //判断是否全部还完
+            foreach ($data as $k => $d){
+                $date = Carbon::createFromTimestamp($d['r_pre_repay_date']);
+                $total['total'] += $d['r_principal']; //获取所有的 本金
+                if($d['r_overdue_day']>3){    //如果逾期,加上除本金外的费用和滞纳金
+                    $total['total'] += $d['r_total_repay']-$d['r_principal'] + $d['r_overdue_money'];
+                }
+                if($date->day - Carbon::now()->day > 3 && $date->month = Carbon::now()->month){ //如果是属于当期金额 需要还利息
+                    $total['total'] += $d['r_total_repay']-$d['r_principal'];
+                }
+                array_push($total['num'], $d['r_id']);
             }
-            if($date < Carbon::now()->addMonth()){ //如果是属于当期金额 需要还利息
-                $total['total'] += $d['r_interest'];
+        }else{  // 没有还完所有期, 还款金额为月供 和 滞纳金
+            foreach ($data as $k => $d){
+                $total['total'] += $d['r_total_repay'] + $d['r_overdue_money'];
+                array_push($total['num'], $d['r_id']);
             }
-            array_push($total['num'], $d['r_id']);
         }
+
         $sql = Repayment::find()
             ->select('o_is_free_pack_fee')
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
