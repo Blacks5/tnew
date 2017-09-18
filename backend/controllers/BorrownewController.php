@@ -29,6 +29,7 @@ use WebSocket\Client;
 use yii;
 use backend\core\CoreBackendController;
 use common\models\OrdersSearch;
+use yii\log\FileTarget;
 
 class BorrownewController extends CoreBackendController
 {
@@ -1028,6 +1029,11 @@ left join customer on customer.c_id=orders.o_customer_id
     public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
+
+        $log = new FileTarget();
+        $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou.log';
+        $log->messages[] = ['收到易极付代扣回调,post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
+        $log->export();
 
         if('true' === $post['success']){
             $status_arr = [
