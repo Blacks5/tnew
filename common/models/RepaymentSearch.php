@@ -9,6 +9,7 @@
 namespace common\models;
 
 use backend\models\YejiSearch;
+use Carbon\Carbon;
 use yii;
 use backend\core\CoreBackendModel;
 use common\models\User;
@@ -76,6 +77,45 @@ class RepaymentSearch extends CoreBackendModel
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Customer::tableName(), 'r_customer_id=c_id');
         return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
+    }
+
+    /**
+     * 获取还款金额
+     * 规则:
+     * 还款小于3期 + 200; 大于三期不过没买贵宾包 +200
+     * 有逾期的需加上逾期期间的利息和滞纳金
+     * 属于本期应还的+本期利息
+     * 需还本金+各种服务(除利息外)
+     * @param $order_id 订单Id $num 还款期数
+     * @return mixed
+     * @author OneStep
+     */
+    public function getAdvanceMoney($order_id, $num)
+    {
+        $total['total'] = 0;    //总金额
+        $total['num'] = [];    //期数
+        $data = Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1])->orderBy('r_pre_repay_date')->limit($num)->all();
+        foreach ($data as $k => $d){
+            $date = Carbon::createFromTimestamp($d['r_pre_repay_date']);
+            $total['total'] += $d['r_total_repay'] - $d['r_interest']; //获取所有的 本金 + 各种服务费用(除利息,都得还)
+            if($d['r_overdue_day']>3){    //如果逾期,加上逾期的利息和滞纳金
+                $total['total'] += $d['r_interest'] + $d['r_overdue_money'];
+            }
+            if($date < Carbon::now()->addMonth()){ //如果是属于当期金额 需要还利息
+                $total['total'] += $d['r_interest'];
+            }
+            array_push($total['num'], $d['r_id']);
+        }
+        $sql = Repayment::find()
+            ->select('o_is_free_pack_fee')
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->where(['r_orders_id'=>$order_id, 'r_status'=>10]);
+        $repayCount = $sql->count();
+        $isPack = $sql->asArray()->one();
+        if($repayCount<3 || $isPack['o_is_free_pack_fee'] == 0){  //如果还款小于3期 或者 未购买贵宾包 +200
+            $total['total'] += 200;
+        }
+        return $total;
     }
 
 }

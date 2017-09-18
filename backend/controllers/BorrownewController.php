@@ -191,17 +191,10 @@ class BorrownewController extends CoreBackendController
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 
-            $periodNum = 0;
-            if(RepaymentSearch::repaymenlistbyorderid($order_id)->andwhere(['r_status'=>10])->count() >= 3){//判断已还期数是否已满3期
-                $periodNum = 1;//已满三期
-            }
-            $notYet = Yii::$app->getDb()->createCommand("select * from repayment where r_status = 1 and r_orders_id = $order_id")->queryAll();
-            $allPeriods = 0;
-            if(!empty($notYet)){//判断是否有逾期的金额存在 存在则只允许提前还所有未还款的期数
-                if($notYet[0]['r_overdue_money'] > 0){
-                    $allPeriods = 1;
-                }
-            }
+            $query =Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1]);
+            $repayCount = $query->count(); //未还期数
+            $isOverdue = $query->andWhere(['>', 'r_overdue_day', 3])->count() >0 ?1:0; //是否有逾期 1逾期 0未逾期
+
             $deductId = Yii::$app->db->createCommand("select yd.id from orders o left join yijifu_deduct yd on o.o_serial_id = yd.o_serial_id where yd.status in (0,1,2,3) and o.o_id = " . $order_id)->queryAll();//查询是否有正在还款的期数
             $isRepayment = 0;
             if(!empty($deductId)){
@@ -209,7 +202,15 @@ class BorrownewController extends CoreBackendController
             }
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log, 'not_yet_count'=>count($notYet), 'all_periods'=>$allPeriods, 'isRepayment'=>$isRepayment]);
+            return $this->render('view', [
+                'model' => $model,
+                'goods_data'=>$goods_data,
+                'loan_data'=>$loan_data,
+                'repayCount'=>$repayCount,
+                'jzq_sign_log'=>$jzq_sign_log,
+                'isOverdue'=>$isOverdue,
+                'isRepayment'=>$isRepayment
+            ]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -916,25 +917,15 @@ left join customer on customer.c_id=orders.o_customer_id
      * @return array
      * @author OneStep
      */
-    public function actionCalculationResidualLoan($order_id,$expected)
+    public function actionCalculationResidualLoan()
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
-            $totalPrice = 0;
-            $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id and r_status = 1 order by r_serial_no limit $expected")->queryall();
-            for($i = 0;$i < count($data);$i++){
-                if(date('Y-m',$data[$i]['r_pre_repay_date']) == $this->getNextMonthDays(date('Y-m')) || date('Y-m',$data[$i]['r_pre_repay_date']) == date('Y-m')){
-                    $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
-                }else{
-                    if($data[$i]['r_overdue_money'] > 0){
-                        $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
-                    }else{
-                        $totalPrice += $data[$i]['r_principal'];
-                    }
-                }
-            }
+            $repayment = new RepaymentSearch();
+            $data = $repayment->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
+
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-            return ['status' => 1, 'totalPrice' => $totalPrice];
+            return ['status' => 1, 'totalPrice' => $data['total']];
         }
     }
 
@@ -996,24 +987,26 @@ left join customer on customer.c_id=orders.o_customer_id
      * @return array
      * @author 皮潇世 <p304363979@163.com>
      */
-    public function actionPrepayment($order_id,$expected,$price)
+    public function actionPrepayment()
     {
         $request = Yii::$app->getRequest();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
         if ($request->getIsAjax()) {
-            $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id order by r_serial_no")->queryall();
-            $notYet = $this->notYet($data);
-            $refund_id = '';
-            for($i = 0;$i < $expected;$i++){
-                $refund_id .= $notYet[$i]['r_id'] . ',';
-            }
-            $refund_id = substr($refund_id,0,-1);
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
-                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-                $oSerialId = Orders::findBySql("select o_serial_id from orders where o_id = $order_id")->one();
-                $merchOrderNo = YijifuSign::findBySql("select merchOrderNo from yijifu_sign where o_serial_id=" . $oSerialId['o_serial_id'] . " and status=1")->one();
+                $repayment = new RepaymentSearch();
+                $data = $repayment->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
+                $refund_id = json_encode($data['num']);
+                if($data['total']!=$request->post('price')){
+                    throw new CustomBackendException('金额有误,请重试!');
+                }
+
+                $param = YijifuSign::find()
+                    ->leftJoin(Orders::tableName(), 'orders.o_serial_id=yijifu_sign.o_serial_id')
+                    ->where(['orders.o_id'=>$request->post('order_id'), 'yijifu_sign.status'=>1])
+                    ->asArray()->one();
                 $handle = new ReturnMoney();
-                $handle->deduct($oSerialId['o_serial_id'], $refund_id,  $merchOrderNo['merchOrderNo'], $price, '/borrownew/deduct-callback');
+                $handle->deduct($param['o_serial_id'], $refund_id,  $param['merchOrderNo'], $data['total'], '/borrownew/deduct-callback');
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '扣款请求发起成功，请等待注意查看通知！'];

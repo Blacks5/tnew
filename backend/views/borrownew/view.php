@@ -576,30 +576,37 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-                            <?php if($model['o_status'] == 10 && $periodNum == 1 && $isRepayment == 0){ ?>
-                                <div>
-                                    <div class="col-md-2">提前还款期数：</div>
-                                    <select class="col-md-2" id="period_num">
-                                        <?php if($all_periods == 0){ ?>
-                                            <?php for($i = 0;$i < $not_yet_count;$i++) { ?>
-                                                <option value="<?php echo $i+1; ?>">未还款的前<?php echo $i+1; ?>期</option>
+                            <?php if($model['o_status'] == 10 && $isRepayment == 0){ ?>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <select class="col-md-8 form-control" id="period_num">
+                                            <?php if($isOverdue == 0){ ?>
+                                                <?php for($i = 0;$i < $repayCount;$i++) { ?>
+                                                    <option value="<?php echo $i+1; ?>">未还款的前<?php echo $i+1; ?>期</option>
+                                                <?php } ?>
+                                            <?php }else{ ?>
+                                                <option value="<?php echo $repayCount; ?>">有逾期,共<?php echo $repayCount; ?>期需还</option>
                                             <?php } ?>
-                                        <?php }else{ ?>
-                                            <option value="<?php echo $not_yet_count; ?>">未还款的期数共<?php echo $not_yet_count; ?>期</option>
-                                        <?php } ?>
-                                    </select>
+                                        </select>
+                                        <span class="btn btn-info input-group-addon" id="calculation_residual_loan">计算金额</span>
+                                    </div>
                                 </div>
-                                <div class="col-md-offset-3">提前还款剩余金额：<span id="calculation_residual_loan_price"></span></div>
-                                <input type="hidden" value="0" id="calculation_residual_loan_val"/>
-                                <button class="btn btn-danger" id="calculation_residual_loan">提前还款余额计算</button>
-                                <button class="btn btn-danger col-md-offset-1" id="prepayment">提前还款</button>
-                            <?php }?>
-                            <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
-                                <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
-                            <?php }?>
-                            <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
-                                <button class="btn btn-danger col-md-offset-1" id="cancel_vip_pack">取消贵宾服务包</button>
-                            <?php }?>
+                                <div class="col-md-2">
+                                    <div class="col-md-12 input-group">
+                                        <input type="text" value="0" id="calculation_residual_loan_val" class="form-control" disabled/>
+                                        <span class="input-group-addon" id="sizing-addon1">元</span>
+                                    </div>
+                                </div>
+                                <div class="com-md-8">
+                                    <button class="btn btn-danger" id="prepayment">提前还款</button>
+                                    <?php }?>
+                                    <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                                        <button class="btn btn-danger" id="cancel_personal_protection">取消个人保障计划</button>
+                                    <?php }?>
+                                    <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                                        <button class="btn btn-danger" id="cancel_vip_pack">取消贵宾服务包</button>
+                                    <?php }?>
+                                </div>
                         </div>
                     </div>
                 <?php } ?>
@@ -814,13 +821,17 @@ $(".failpic").click(function(){
 // 计算剩余应还款额
 $("#calculation_residual_loan").click(function(){
     var period_num = $("#period_num").val();
+    var postData = {
+        "order_id":"'.$model["o_id"] .'",
+        "expected":period_num,
+    }
     $.ajax({
-        url: "' . \yii\helpers\Url::toRoute(['borrownew/calculation-residual-loan', 'order_id' => $model['o_id']]) . '&expected=" + period_num,
+        url: "' . \yii\helpers\Url::toRoute('borrownew/calculation-residual-loan').'",
         type: "post",
         dataType: "json",
+        data:postData,
         success: function (data) {
             if (data.status === 1) {
-                $("#calculation_residual_loan_price").html(data.totalPrice);
                 $("#calculation_residual_loan_val").val(data.totalPrice);
             }
         }
@@ -832,12 +843,18 @@ $("#prepayment").click(function(){
     $("#calculation_residual_loan").trigger("click");
     var period_num = $("#period_num").val();
     var price = $("#calculation_residual_loan_val").val();
-    layer.confirm("确定要提前还款" + period_num + "期,总计还款金额：" + price + "元吗？", {title:"确定提前还款", icon:3}, function(index){
+    var postData = {
+        "order_id":"'. $model['o_id'].'",
+        "expected":period_num,
+        "price":price
+    };
+    layer.confirm("确定要提前还款" + period_num + "期吗？", {title:"确定提前还款", icon:3}, function(index){
         var loading = layer.load(4);
         $.ajax({
-            url: "' . \yii\helpers\Url::toRoute(['borrownew/prepayment', 'order_id' => $model['o_id']]) . '&expected=" + period_num + "&price=" + price,
-            type: "get",
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/prepayment']) . '",
+            type: "POST",
             dataType: "json",
+            data:postData,
             success: function (data) {
                 if (data.status === 1) {
                     return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
