@@ -85,17 +85,17 @@ class Order {
 		}
 
 		// 四要素验证
-		// list($status, $error) = $this->checkCustomerInfo(
-		// 	$params['c_customer_name'],
-		// 	$params['c_customer_cellphone'],
-		// 	$params['c_customer_id_card'],
-		// 	$params['c_banknum']
-		// );
+		list($status, $error) = $this->checkCustomerInfo(
+			$params['c_customer_name'],
+			$params['c_customer_cellphone'],
+			$params['c_customer_id_card'],
+			$params['c_banknum']
+		);
 
-		// if (!$status) {
-		// 	$trans->rollBack();
-		// 	throw new CustomCommonException($error);
-		// }
+		if (!$status) {
+			$trans->rollBack();
+			throw new CustomCommonException($error);
+		}
 
 		$customerModel->c_created_at = $_SERVER['REQUEST_TIME'];
 		if (!$customerModel->save(false)) {
@@ -664,18 +664,18 @@ class Order {
 		}
 
 		// 四要素验证
-		// if ($scenario == 'clientValidate1') {
-		// 	list($status, $error) = $this->checkCustomerInfo(
-		// 		$params['c_customer_name'],
-		// 		$params['c_customer_cellphone'],
-		// 		$params['c_customer_id_card'],
-		// 		$params['c_banknum']
-		// 	);
+		if ($scenario == 'clientValidate1') {
+			list($status, $error) = $this->checkCustomerInfo(
+				$params['c_customer_name'],
+				$params['c_customer_cellphone'],
+				$params['c_customer_id_card'],
+				$params['c_banknum']
+			);
 
-		// 	if (!$status) {
-		// 		throw new CustomCommonException($error);
-		// 	}
-		// }
+			if (!$status) {
+				throw new CustomCommonException($error);
+			}
+		}
 
 		return true;
 	}
