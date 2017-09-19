@@ -196,9 +196,9 @@ class RepaymentController extends CoreBackendController
     {
         $this->getView()->title = '已逾期还款列表';
         $model = new RepaymentSearch();
-        $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
+        $query = $model->repaymentListByOrders(Yii::$app->getRequest()->getQueryParams());
         $query = $query
-            ->andWhere(['>', 'r_overdue_day', 0])->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]);
+            ->andWhere(['>', 'r_overdue_day', 3])->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]);
         $query = $query->andWhere(['<','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
@@ -484,6 +484,13 @@ class RepaymentController extends CoreBackendController
         ]);
     }
 
+
+    /**
+     * 修改还款时间
+     * @param $order_id
+     * @return array|string
+     * @author OneStep
+     */
     public function actionUpdateRepayTime($order_id)
     {
         $data = Repayment::find()->leftJoin(Orders::tableName(), 'orders.o_id = repayment.r_orders_id')

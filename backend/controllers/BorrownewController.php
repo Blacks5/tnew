@@ -197,6 +197,8 @@ class BorrownewController extends CoreBackendController
             $query =Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1]);
             $repayCount = $query->count(); //未还期数
             $isOverdue = $query->andWhere(['>', 'r_overdue_day', 3])->count() >0 ?1:0; //是否有逾期 1逾期 0未逾期
+            $operator = Carbon::createFromTimestamp($model['o_operator_date'])->addDay(120);
+            $canCancel = $operator < Carbon::now()?1:0;  //审核时间是否大于120天 1是 0否
 
             $deductId = Yii::$app->db->createCommand("select yd.id from orders o left join yijifu_deduct yd on o.o_serial_id = yd.o_serial_id where yd.status in (0,1,2,3) and o.o_id = " . $order_id)->queryAll();//查询是否有正在还款的期数
             $isRepayment = 0;
@@ -212,7 +214,8 @@ class BorrownewController extends CoreBackendController
                 'repayCount'=>$repayCount,
                 'jzq_sign_log'=>$jzq_sign_log,
                 'isOverdue'=>$isOverdue,
-                'isRepayment'=>$isRepayment
+                'isRepayment'=>$isRepayment,
+                'canCancel'=>$canCancel,
             ]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);

@@ -600,10 +600,10 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 <div class="com-md-8">
                                     <button class="btn btn-danger" id="prepayment">提前还款</button>
                                     <?php }?>
-                                    <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                                    <?php if($model['o_is_add_service_fee'] == 1 && $canCancel == 1){ ?>
                                         <button class="btn btn-danger" id="cancel_personal_protection">取消个人保障计划</button>
                                     <?php }?>
-                                    <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
+                                    <?php if($model['o_is_free_pack_fee'] == 1 && $canCancel == 1){ ?>
                                         <button class="btn btn-danger" id="cancel_vip_pack">取消贵宾服务包</button>
                                     <?php }?>
                                 </div>
