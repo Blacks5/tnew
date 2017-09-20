@@ -358,6 +358,12 @@ class RepaymentnewController extends CoreBackendController
     public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
+
+        $log = new FileTarget();
+        $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou.log';
+        $log->messages[] = ['收到易极付代扣回调(Repaymentnew),post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
+        $log->export();
+
         if('true' === $post['success']){
             $status_arr = [
                 'INIT' => 1, // 待处理
