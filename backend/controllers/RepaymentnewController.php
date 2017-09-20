@@ -332,18 +332,14 @@ class RepaymentnewController extends CoreBackendController
 // select o_serial_id
                 $sql = "select o.o_serial_id, (r_total_repay+ r_overdue_money) as deductAmount  from  repayment as r LEFT JOIN orders as o on r.r_orders_id=o.o_id and r_status=". Repayment::STATUS_NOT_PAY." where r_id=:r_id limit 1 for update";
 //                $r_data = Repayment::findBySql($sql, [':r_id'=>$refund_id])->one();
-                $isRepay = YijifuDeduct::find()
-                    ->leftJoin(Orders::tableName() ,'orders.o_serial_id=yijifu_deduct.o_serial_id')
-                    ->where(['o_id'=>$refund_id])
-                    ->andWhere(['in', 'status', [0,1,2,3]])
-                    ->count();
-                if($isRepay>0){
-                    throw new CustomBackendException('已经发起签约,请等待结果!');
-                }
                 $r_data = Yii::$app->getDb()->createCommand($sql, [':r_id'=>$refund_id])->queryOne();
                 $sql = "select merchOrderNo from yijifu_sign where o_serial_id=:o_serial_id and status=1 limit 1 for update";
                 $yi_data = YijifuSign::findBySql($sql, [':o_serial_id'=>$r_data['o_serial_id']])->one();
 
+                $isRepay = YijifuDeduct::find()->where(['o_serial_id'=>$r_data['o_serial_id']])->andWhere(['in', 'status', [0,1,2,3]])->count(); //是否存在代扣还没有回调的情况
+                if($isRepay>0){
+                    throw new CustomBackendException('已经发起签约,请等待结果!');
+                }
                 $handle = new ReturnMoney();
                 $handle->deduct($r_data['o_serial_id'], $refund_id, $yi_data['merchOrderNo'], $r_data['deductAmount']);
 
