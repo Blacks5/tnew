@@ -84,7 +84,7 @@ class Order {
 			throw new CustomCommonException(reset($msg));
 		}
 
-		// 四要素验证
+		// // 四要素验证
 		list($status, $error) = $this->checkCustomerInfo(
 			$params['c_customer_name'],
 			$params['c_customer_cellphone'],
