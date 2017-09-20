@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 use backend\components\CustomBackendException;
+use Carbon\Carbon;
 use com\jzq\api\model\sign\FileLinkRequest;
 use common\components\CustomCommonException;
 use common\models\CalInterest;
@@ -23,6 +24,7 @@ use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
 use common\models\YijifuSignReturnmoney;
+use common\services\Order;
 use common\tools\yijifu\ReturnMoney;
 use org\ebq\api\tool\RopUtils;
 use WebSocket\Client;
@@ -192,17 +194,12 @@ class BorrownewController extends CoreBackendController
             $goods_data = Goods::find()->where(['g_order_id'=>$order_id])->asArray()->all();
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 
-            $periodNum = 0;
-            if(RepaymentSearch::repaymenlistbyorderid($order_id)->andwhere(['r_status'=>10])->count() >= 3){//判断已还期数是否已满3期
-                $periodNum = 1;//已满三期
-            }
-            $notYet = Yii::$app->getDb()->createCommand("select * from repayment where r_status = 1 and r_orders_id = $order_id")->queryAll();
-            $allPeriods = 0;
-            if(!empty($notYet)){//判断是否有逾期的金额存在 存在则只允许提前还所有未还款的期数
-                if($notYet[0]['r_overdue_money'] > 0){
-                    $allPeriods = 1;
-                }
-            }
+            $query =Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1]);
+            $repayCount = $query->count(); //未还期数
+            $isOverdue = $query->andWhere(['>', 'r_overdue_day', 3])->count() >0 ?1:0; //是否有逾期 1逾期 0未逾期
+            $operator = Carbon::createFromTimestamp($model['o_operator_date'])->addDay(120);
+            $canCancel = $operator < Carbon::now()?1:0;  //审核时间是否大于120天 1是 0否
+
             $deductId = Yii::$app->db->createCommand("select yd.id from orders o left join yijifu_deduct yd on o.o_serial_id = yd.o_serial_id where yd.status in (0,1,2,3) and o.o_id = " . $order_id)->queryAll();//查询是否有正在还款的期数
             $isRepayment = 0;
             if(!empty($deductId)){
@@ -210,7 +207,16 @@ class BorrownewController extends CoreBackendController
             }
             //获取君子签记录
             $jzq_sign_log = JzqSign::find()->where(['o_serial_id'=>$model['o_serial_id']])->asArray()->one();
-            return $this->render('view', ['model' => $model, 'goods_data'=>$goods_data, 'loan_data'=>$loan_data, 'periodNum'=>$periodNum,  'jzq_sign_log'=>$jzq_sign_log, 'not_yet_count'=>count($notYet), 'all_periods'=>$allPeriods, 'isRepayment'=>$isRepayment]);
+            return $this->render('view', [
+                'model' => $model,
+                'goods_data'=>$goods_data,
+                'loan_data'=>$loan_data,
+                'repayCount'=>$repayCount,
+                'jzq_sign_log'=>$jzq_sign_log,
+                'isOverdue'=>$isOverdue,
+                'isRepayment'=>$isRepayment,
+                'canCancel'=>$canCancel,
+            ]);
         }
         return $this->error('数据不存在！'/*, yii\helpers\Url::toRoute(['borrow'])*/);
     }
@@ -835,44 +841,36 @@ left join customer on customer.c_id=orders.o_customer_id
      * 取消贵宾服务包
      * @param $order_id 订单id
      * @return array
-     * @author 皮潇世 <p304363979@163.com>
+     * @author OneStep
      */
     public function actionCancelVipPack($order_id)
     {
-        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
-        $x = $this->day($data);
-        $rSerialNo = $data[$x]['r_serial_no'];
-        if($data[$x]['r_status'] == 10){
-            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
-        }else{
-            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
-        }
-        $trans = Yii::$app->getDb()->beginTransaction();
         Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        $trans = Yii::$app->getDb()->beginTransaction();
         try{
-            $sql = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee) where $where";//先处理月供金额
-            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
+            $sql = "select * from ". Repayment::tableName() ." where r_orders_id=:r_orders_id and r_status = 1 for update";
+            Repayment::findBySql($sql, ['r_orders_id'=>$order_id]);
+
+            $update = "update repayment set r_total_repay = (r_total_repay - r_free_pack_fee), r_free_pack_fee = 0 where r_orders_id=:r_orders_id and r_status = 1";//先处理月供金额
+            $c1 = Yii::$app->getDb()->createCommand($update, ['r_orders_id'=>$order_id])->execute();
             if($c1 <= 0){
                 throw new CustomBackendException('处理月供金额失败' , 0);
             }
-            $sql1 = "update repayment set r_free_pack_fee = 0 where $where";//再处理贵宾服务包金额
-            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
-            if($c2 <= 0){
-                throw new CustomBackendException('处理贵宾服务包金额失败' , 0);
-            }
+
             $count = Yii::$app->getDb()->createCommand("update orders set o_is_free_pack_fee = 0 where o_id = $order_id")->execute();//变更订单表贵宾包服务状态
-            if($count > 0){
-                $trans->commit();
-                return ['status' => 1, 'message' => '取消成功'];
-            }else{
-                throw new CustomBackendException('取消失败' , 0);
+            if($count <= 0){
+                throw new CustomBackendException('处理订单表失败', 0);
             }
+
+            $trans->commit();
+            return ['status' => 1, 'message' => '取消成功'];
+
         } catch (CustomBackendException $e) {
             $trans->rollBack();
             return ['status' => $e->getCode(), 'message' => $e->getMessage()];
         } catch (yii\base\Exception $e) {
             $trans->rollBack();
-            return ['status' => 2, 'message' => '系统错误'];
+            return ['status' => 2, 'message' => $e->getMessage()];
         }
     }
 
@@ -880,40 +878,34 @@ left join customer on customer.c_id=orders.o_customer_id
      * 取消个人保障计划
      * @param $order_id 订单id
      * @return array
-     * @author 皮潇世 <p304363979@163.com>
+     * @author OneStep
      */
     public function actionCancelPersonalProtection($order_id)
     {
-        $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id")->queryall();
         Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-        $x = $this->day($data);
-
-        $rSerialNo = $data[$x]['r_serial_no'];
-        if($data[$x]['r_status'] == 10){
-            $where = "r_serial_no > $rSerialNo and r_orders_id = $order_id";
-        }else{
-            $where = "r_serial_no >= $rSerialNo and r_orders_id = $order_id";
-        }
         $trans = Yii::$app->getDb()->beginTransaction();
-
         try{
-            $sql = "update repayment set r_total_repay = (r_total_repay - r_add_service_fee) where $where";//先处理月供金额
-            $c1 = Yii::$app->getDb()->createCommand($sql)->execute();
-            if($c1 <= 0){
-                throw new CustomBackendException('处理月供金额失败' , 0);
+            //锁表
+            $sql = "select * from ". Repayment::tableName() . " where r_orders_id=:r_orders_id and r_status=1 for update";
+            Repayment::findBySql($sql,['r_orders_id'=>$order_id])->all();
+            //改月供和个人保障计划
+            $update = "update ". Repayment::tableName() ." set r_total_repay = r_total_repay - r_add_service_fee, r_add_service_fee = 0 where r_orders_id=:r_orders_id and r_status = 1";
+            $repayment = Yii::$app->getDb()->createCommand($update, ['r_orders_id'=>$order_id])->execute();
+
+            if($repayment <= 0){
+                throw new CustomBackendException('处理月供失败!', 0);
             }
-            $sql1 = "update repayment set r_add_service_fee = 0 where $where";//再处理个人保障服务金额
-            $c2 = Yii::$app->getDb()->createCommand($sql1)->execute();
-            if($c2 <= 0){
-                throw new CustomBackendException('处理个人保障服务金额失败' , 0);
+            //改订单表个人保障计划
+            $update = "update ". Orders::tableName() ." set o_is_add_service_fee=0 where o_id=:o_id";
+            $orders = Yii::$app->getDb()->createCommand($update, ['o_id'=>$order_id])->execute();
+
+            if($orders <= 0){
+                throw new CustomBackendException('处理订单表失败', 0);
             }
-            $count = Yii::$app->getDb()->createCommand("update orders set o_is_add_service_fee = 0 where o_id = $order_id")->execute();//变更订单表个人保障服务状态
-            if($count > 0){
-                $trans->commit();
-                return ['status' => 1, 'message' => '取消成功'];
-            }else{
-                throw new CustomBackendException('取消失败' , 0);
-            }
+
+            $trans->commit();
+            return ['status' => 1, 'message' => '取消成功'];
+
         } catch (CustomBackendException $e) {
             $trans->rollBack();
             return ['status' => $e->getCode(), 'message' => $e->getMessage()];
@@ -929,27 +921,17 @@ left join customer on customer.c_id=orders.o_customer_id
      * @param $order_id 订单id
      * @param $expected 预计还款期数
      * @return array
-     * @author 皮潇世 <p304363979@163.com>
+     * @author OneStep
      */
-    public function actionCalculationResidualLoan($order_id,$expected)
+    public function actionCalculationResidualLoan()
     {
         $request = Yii::$app->getRequest();
         if ($request->getIsAjax()) {
-            $totalPrice = 0;
-            $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id and r_status = 1 order by r_serial_no limit $expected")->queryall();
-            for($i = 0;$i < count($data);$i++){
-                if(date('Y-m',$data[$i]['r_pre_repay_date']) == $this->getNextMonthDays(date('Y-m')) || date('Y-m',$data[$i]['r_pre_repay_date']) == date('Y-m')){
-                    $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
-                }else{
-                    if($data[$i]['r_overdue_money'] > 0){
-                        $totalPrice += $data[$i]['r_total_repay'] + $data[$i]['r_overdue_money'];
-                    }else{
-                        $totalPrice += $data[$i]['r_principal'];
-                    }
-                }
-            }
+            $repayment = new RepaymentSearch();
+            $data = $repayment->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
+
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-            return ['status' => 1, 'totalPrice' => $totalPrice];
+            return ['status' => 1, 'totalPrice' => $data['total']];
         }
     }
 
@@ -1011,24 +993,26 @@ left join customer on customer.c_id=orders.o_customer_id
      * @return array
      * @author 皮潇世 <p304363979@163.com>
      */
-    public function actionPrepayment($order_id,$expected,$price)
+    public function actionPrepayment()
     {
         $request = Yii::$app->getRequest();
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
         if ($request->getIsAjax()) {
-            $data = Yii::$app->getDb()->createCommand("select * from repayment where r_orders_id = $order_id order by r_serial_no")->queryall();
-            $notYet = $this->notYet($data);
-            $refund_id = '';
-            for($i = 0;$i < $expected;$i++){
-                $refund_id .= $notYet[$i]['r_id'] . ',';
-            }
-            $refund_id = substr($refund_id,0,-1);
             $trans = Yii::$app->getDb()->beginTransaction();
             try {
-                Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-                $oSerialId = Orders::findBySql("select o_serial_id from orders where o_id = $order_id")->one();
-                $merchOrderNo = YijifuSign::findBySql("select merchOrderNo from yijifu_sign where o_serial_id=" . $oSerialId['o_serial_id'] . " and status=1")->one();
+                $repayment = new RepaymentSearch();
+                $data = $repayment->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
+                $refund_id = json_encode($data['num']);
+                if($data['total']!=$request->post('price')){
+                    throw new CustomBackendException('金额有误,请重试!');
+                }
+
+                $param = YijifuSign::find()
+                    ->leftJoin(Orders::tableName(), 'orders.o_serial_id=yijifu_sign.o_serial_id')
+                    ->where(['orders.o_id'=>$request->post('order_id'), 'yijifu_sign.status'=>1])
+                    ->asArray()->one();
                 $handle = new ReturnMoney();
-                $handle->deduct($oSerialId['o_serial_id'], $refund_id,  $merchOrderNo['merchOrderNo'], $price, '/borrownew/deduct-callback');
+                $handle->deduct($param['o_serial_id'], $refund_id,  $param['merchOrderNo'], $data['total'], '/borrownew/deduct-callback');
 
                 $trans->commit();
                 return ['status' => 1, 'message' => '扣款请求发起成功，请等待注意查看通知！'];
@@ -1091,7 +1075,15 @@ left join customer on customer.c_id=orders.o_customer_id
                         'SETTLE_SUCCESS' => '结算成功', // 结算成功
                     ];
                     $yijifu_data = YijifuDeduct::find()->where(['merchOrderNo'=>$post['merchOrderNo']])->one();
-                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $yijifu_data['repayment_ids'] . ") and r_status=:r_status for update";
+                    $id = json_decode($yijifu_data['repayment_ids'], true);
+
+                    $repayCount = Repayment::find()
+                        ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+                        ->where(['o_serial_id'=>$yijifu_data['o_serial_id']])
+                        ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
+                        ->count();
+
+                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $id . ") and r_status=:r_status for update";
                     $repay_model_arr = Repayment::findBySql($sql,[':r_status' => Repayment::STATUS_NOT_PAY])->all();
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
@@ -1101,6 +1093,18 @@ left join customer on customer.c_id=orders.o_customer_id
                         $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间
                         $repay_model->r_operator_id = $yijifu_data['operator_id']; // 操作人ID
                         $repay_model->r_operator_date = $_SERVER['REQUEST_TIME']; // 操作时间
+
+                        if($repayCount==count($id)){ //全部提前还款 需要将各种费用清空,月供=本金
+                            $date = Carbon::createFromTimestamp($repay_model->r_pre_repay_date);
+                            if($date->month > Carbon::now()->month){
+                                $repay_model->r_total_repay = $repay_model->r_principal;  //月供=本金
+                                $repay_model->r_interest = 0;
+                                $repay_model->r_add_service_fee = 0;
+                                $repay_model->r_free_pack_fee = 0;
+                                $repay_model->r_finance_mangemant_fee = 0;
+                                $repay_model->r_customer_management = 0;
+                            }
+                        }
 
                         if (!$repay_model->save(false)) {
                             $trans->rollBack();

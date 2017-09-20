@@ -176,19 +176,33 @@ class Order {
 	 * @return [type]             [description]
 	 */
 	public function checkCustomerInfo($realname, $mobile, $idcard, $creditcard) {
-		$bair = \Yii::$app->bair;
+		// 生成唯一key
+		$key = md5($realname . ':' . $idcard . ':' . $mobile . ':' . $creditcard);
 
-		$status = $bair->check([
-			'idcard' => $idcard,
-			'mobile' => $mobile,
-			'creditcard' => $creditcard,
-			'realname' => $realname,
-		]);
-
-		if ($status) {
-			return [true, ''];
+		// 读取缓存中的查询结果
+		if ($result = \Yii::$app->cache->get($key)) {
+			if ($result == 'success') {
+				return [true, ''];
+			} else {
+				return [false, $result];
+			}
 		} else {
-			return [false, $bair->getError()];
+			$bair = \Yii::$app->bair;
+
+			$status = $bair->check([
+				'idcard' => $idcard,
+				'mobile' => $mobile,
+				'creditcard' => $creditcard,
+				'realname' => $realname,
+			]);
+
+			if ($status) {
+				\Yii::$app->cache->set($key, 'success', 3600);
+				return [true, ''];
+			} else {
+				\Yii::$app->cache->set($key, $bair->getError(), 3600);
+				return [false, $bair->getError()];
+			}
 		}
 	}
 
@@ -350,7 +364,7 @@ class Order {
 
 		$must_upload_2 = ['oi_pick_goods', 'oi_serial_num', 'oi_after_contract'];
 
-		$other_upload_2 = ['oi_other_1_1', 'oi_other_1_2', 'oi_other_1_3', 'oi_other_1_4'];
+		$other_upload_2 = ['oi_other_2_1', 'oi_other_2_2', 'oi_other_2_3', 'oi_other_2_4'];
 
 		// 一审参数
 		if ($orderModel->o_status == Orders::STATUS_NOT_COMPLETE) {
@@ -679,117 +693,4 @@ class Order {
 
 		return true;
 	}
-
-	/*array(54) {
-		  ["g_goods_type"]=>
-		  string(1) "6"
-		  ["g_goods_models"]=>
-		  string(7) "6s plus"
-		  ["g_goods_price"]=>
-		  string(4) "6000"
-		  ["g_goods_name"]=>
-		  string(12) "apple6手机"
-		  ["g_goods_deposit"]=>
-		  string(3) "600"
-		  ["c_customer_name"]=>
-		  string(9) "李连杰"
-		  ["c_customer_id_card"]=>
-		  string(4) "5555"
-		  ["c_customer_cellphone"]=>
-		  string(11) "18890232122"
-		  ["c_customer_id_card_endtime"]=>
-		  string(10) "1111111111"
-		  ["c_customer_county"]=>
-		  string(3) "245"
-		  ["c_customer_city"]=>
-		  string(3) "343"
-		  ["c_customer_province"]=>
-		  string(2) "27"
-		  ["c_customer_gender"]=>
-		  string(1) "1"
-		  ["c_customer_idcard_provider"]=>
-		  string(18) "中江县公安局"
-		  ["c_customer_qq"]=>
-		  string(9) "466594257"
-		  ["c_customer_wechat"]=>
-		  string(6) "haytoo"
-		  ["c_family_marital_status"]=>
-		  string(1) "1"
-		  ["c_family_marital_partner_name"]=>
-		  string(6) "白云"
-		  ["c_family_marital_partner_cellphone"]=>
-		  string(11) "15888888888"
-		  ["c_family_house_info"]=>
-		  string(1) "1"
-		  ["c_family_expenses"]=>
-		  string(4) "1500"
-		  ["c_family_income"]=>
-		  string(5) "25000"
-		  ["c_kinship_name"]=>
-		  string(9) "张大爷"
-		  ["c_kinship_relation"]=>
-		  string(1) "7"
-		  ["c_kinship_cellphone"]=>
-		  string(11) "18999999999"
-		  ["c_kinship_addr"]=>
-		  string(18) "金牛区酷炫路"
-		  ["c_customer_addr_province"]=>
-		  string(2) "12"
-		  ["c_customer_addr_city"]=>
-		  string(2) "33"
-		  ["c_customer_addr_county"]=>
-		  string(2) "34"
-		  ["c_customer_addr_detail"]=>
-		  string(21) "金牛区来聊聊路"
-		  ["c_customer_jobs_company"]=>
-		  string(6) "腾讯"
-		  ["c_customer_jobs_industry"]=>
-		  string(1) "5"
-		  ["c_customer_jobs_type"]=>
-		  string(1) "1"
-		  ["c_customer_jobs_section"]=>
-		  string(9) "研发部"
-		  ["c_customer_jobs_title"]=>
-		  string(3) "CTO"
-		  ["c_customer_jobs_is_shebao"]=>
-		  string(1) "1"
-		  ["c_customer_jobs_province"]=>
-		  string(3) "123"
-		  ["c_customer_jobs_city"]=>
-		  string(3) "345"
-		  ["c_customer_jobs_county"]=>
-		  string(3) "234"
-		  ["c_customer_jobs_detail_addr"]=>
-		  string(21) "高新区有点酷路"
-		  ["c_customer_jobs_phone"]=>
-		  string(11) "02888888888"
-		  ["c_other_people_relation"]=>
-		  string(1) "2"
-		  ["c_other_people_name"]=>
-		  string(9) "周杰伦"
-		  ["c_other_people_cellphone"]=>
-		  string(11) "15999999999"
-		  ["c_banknum"]=>
-		  string(11) "62222222222"
-		  ["c_bank"]=>
-		  string(1) "1"
-		  ["c_banknum_owner"]=>
-		  string(6) "李逵"
-		  ["o_is_auto_pay"]=>
-		  string(1) "1"
-		  ["o_store_id"]=>
-		  string(2) "25"
-		  ["o_remark"]=>
-		  string(14) "我是sa注释"
-		  ["o_product_id"]=>
-		  string(2) "28"
-		  ["o_user_id"]=>
-		  string(2) "11"
-		  ["verify_code"]=>
-		  string(4) "1234"
-		  ["c_customer_idcard_detail_addr"]=>
-		  string(12) "的说法分"
-		}
-	*/
-
 }

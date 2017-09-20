@@ -153,5 +153,7 @@ return [
         'service_url' => 'http://api.junziqian.com/services'
     ],
     'ws'=>'ws://119.23.15.90:8081',
-    'customernew_date'=>'2017-08-02 00:00:00'//新用户创建时间,用于筛选
+    'customernew_date'=>'2017-08-02 00:00:00',//新用户创建时间,用于筛选
+    // 商家服务费率
+    'seller_serverfee_rate' => 0.02, 
 ];

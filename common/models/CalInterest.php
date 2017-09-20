@@ -164,4 +164,56 @@ class CalInterest
         }
     }
 
+
+    /**
+     * 获取中费用(总金额-首付+服务费+查询费)
+     * @param $orderInfo
+     * @return float|int
+     * @author OneStep
+     */
+    private function getFee($orderInfo)
+    {
+        $service = 0; //返还给商家的服务费
+        $total = $orderInfo['o_total_price'] - $orderInfo['o_total_deposit'];  //借出去的本金
+
+        //常规商品返还给商家的费用
+        /*if($orderInfo['p_is_promotional']==0){
+            if($orderInfo['p_period']>11 && $orderInfo['p_period'] < 15){
+                $service = $total * 0.01;
+            }elseif($orderInfo['p_period'] >= 15){
+                $service = $total * 0.035;
+            }
+        }elseif($orderInfo['p_is_promotional']==1){  //促销商品返回给商家的费用
+            if($orderInfo['p_period'] > 11 && $orderInfo['p_period'] < 15){
+                $service = $total * 0.03;
+            }elseif ($orderInfo['p_period'] >= 15){
+                $service = $total *0.05;
+            }
+        }*/
+
+        $service = $total * Yii::$app->params['seller_serverfee_rate'];
+
+        $this->updateOrders($orderInfo, $service);
+
+        $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
+        return $allTotal;
+    }
+
+    /**
+     * 修改Orders 服务费和查询费
+     * @param $orderInfo
+     * @param $service
+     * @return bool
+     */
+    protected function updateOrders($orderInfo, $service)
+    {
+        $order = Orders::find()->where(['o_id'=>$orderInfo['o_id']])->one();
+        $order->o_service_fee = $service;
+        $order->o_inquiry_fee = Yii::$app->params['inquiryFee'];
+        if($order->save()){
+            return true;
+        }else{
+            throw new CustomBackendException('修改服务费和查询费失败', 5);
+        }
+    }
 }

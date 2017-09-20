@@ -189,7 +189,7 @@
                         </div>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">串码照上传<span class="color-danger">*</span></p>
+                                <p class="weui-uploader__title">商品识别码上传<span class="color-danger">*</span></p>
                                 <div class="weui-uploader__info">0/1</div>
                             </div>
                             <div class="weui-progress">
@@ -379,6 +379,13 @@ $(function(){
         // 绑定提交
         $('#submitBtn').bind('click' , function(){
             if(post.o_status == COMPLETE || post.o_status == UPLOAD_AGAIN){
+                if(post.o_status == UPLOAD_AGAIN){
+                    if(!post.o_product_code){
+                        $.toast('请输入商品识别码', "text");
+                        return;
+                    }
+                }
+
                 $.ajaxPost(modifyUrl , post , function(res){
                     if(res.status){
                         $.toast(res.message, function(){

@@ -545,16 +545,41 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 
                 <?php } ?>
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
-                <div class="form-group">
-                    <div class="col-sm-8 col-sm-offset-3">
-                        <?php if($model['o_is_add_service_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
-                        <button class="btn btn-danger col-md-offset-1" id="cancel_personal_protection">取消个人保障计划</button>
-                        <?php }?>
-                        <?php if($model['o_is_free_pack_fee'] == 1 && $model['o_status'] == 10 && (time() - $model['o_operator_date']) > 3600*24*120){ ?>
-                        <button class="btn btn-danger col-md-offset-1" id="cancel_vip_pack">取消贵宾服务包</button>
-                        <?php }?>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-3">
+                            <?php if($model['o_status'] == 10){ ?>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <select class="col-md-8 form-control" id="period_num">
+                                        <?php if($isOverdue == 0){ ?>
+                                            <?php for($i = 0;$i < $repayCount;$i++) { ?>
+                                                <option value="<?php echo $i+1; ?>">未还款的前<?php echo $i+1; ?>期</option>
+                                            <?php } ?>
+                                        <?php }else{ ?>
+                                            <option value="<?php echo $repayCount; ?>">有逾期,共<?php echo $repayCount; ?>期需还</option>
+                                        <?php } ?>
+                                    </select>
+                                    <span class="btn btn-info input-group-addon" id="calculation_residual_loan">计算金额</span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="col-md-12 input-group">
+                                    <input type="text" value="0" id="calculation_residual_loan_val" class="form-control" disabled/>
+                                    <span class="input-group-addon" id="sizing-addon1">元</span>
+                                </div>
+                            </div>
+                            <div class="com-md-8">
+                                <button class="btn btn-danger" id="prepayment">提前还款</button>
+                                <?php }?>
+                                <?php if($model['o_is_add_service_fee'] == 1 && $canCancel ==1){ ?>
+                                    <button class="btn btn-danger" id="cancel_personal_protection">取消个人保障计划</button>
+                                <?php }?>
+                                <?php if($model['o_is_free_pack_fee'] == 1 && $canCancel ==1){ ?>
+                                    <button class="btn btn-danger" id="cancel_vip_pack">取消贵宾服务包</button>
+                                <?php }?>
+                            </div>
+                        </div>
                     </div>
-                </div>
                 <?php } ?>
         </div>
     </div>
@@ -767,7 +792,7 @@ $("#cancel_vip_pack").click(function(){
     layer.confirm("确定要取消贵宾包服务吗？", {title:"取消贵宾包服务", icon:3}, function(index){
         var loading = layer.load(4);
         $.ajax({
-            url: "' . \yii\helpers\Url::toRoute(['borrow/cancel-vip-pack', 'order_id' => $model['o_id']]) . '",
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/cancel-vip-pack', 'order_id' => $model['o_id']]) . '",
             type: "post",
             dataType: "json",
             success: function (data) {
@@ -776,8 +801,7 @@ $("#cancel_vip_pack").click(function(){
                 }else{
                     return layer.alert(data.message, {icon: data.status});
                 }
-            }
-            ,
+            },
             error: function () {
                 layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
             },
@@ -793,7 +817,7 @@ $("#cancel_personal_protection").click(function(){
     layer.confirm("确定要取消个人保障服务吗？", {title:"取消个人保障服务", icon:3}, function(index){
         var loading = layer.load(4);
         $.ajax({
-            url: "' . \yii\helpers\Url::toRoute(['borrow/cancel-personal-protection', 'order_id' => $model['o_id']]) . '",
+            url: "' . \yii\helpers\Url::toRoute(['borrownew/cancel-personal-protection', 'order_id' => $model['o_id']]) . '",
             type: "post",
             dataType: "json",
             success: function (data) {
@@ -813,6 +837,59 @@ $("#cancel_personal_protection").click(function(){
         });
     });
 });
+// 计算剩余应还款额
+$("#calculation_residual_loan").click(function(){
+    var period_num = $("#period_num").val();
+    var postData = {
+        "order_id":"'.$model["o_id"] .'",
+        "expected":period_num,
+    }
+    $.ajax({
+        url: "' . \yii\helpers\Url::toRoute('borrownew/calculation-residual-loan').'",
+        type: "post",
+        dataType: "json",
+        data:postData,
+        success: function (data) {
+            if (data.status === 1) {
+                $("#calculation_residual_loan_val").val(data.totalPrice);
+            }
+        }
+    });
+});
+// 提前还款操作
+$("#prepayment").click(function(){
+    $("#calculation_residual_loan").trigger("click");
+    var period_num = $("#period_num").val();
+    var price = $("#calculation_residual_loan_val").val();
+    var postData = {
+        "order_id":"'. $model['o_id'].'",
+        "expected":period_num,
+        "price":price
+    };
+    layer.confirm("确定要提前还款" + period_num + "期吗？", {title:"确定提前还款", icon:3}, function(index){
+        var loading = layer.load(4);
+        $.ajax({
+            url: "' . \yii\helpers\Url::toRoute(['borrow/prepayment']) . '",
+            type: "POST",
+            dataType: "json",
+            data:postData,
+            success: function (data) {
+                if (data.status === 1) {
+                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message, {icon: data.status});
+                }
+            },
+            error: function () {
+                layer.alert("噢，我崩溃啦", {title: "系统错误", icon: 5});
+            },
+            complete: function () {
+                layer.close(loading);
+            }
+        });
+    });
+});
+
 ');
 ?>
 

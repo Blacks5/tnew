@@ -89,7 +89,7 @@
                                 <select class="weui-select" name="o_product_id">
                                     <option value="">请选择产品</option>
                                     <?php foreach ($data['products'] as $k => $v) {?>
-                                        <option value="<?=$v['p_id'];?>"><?=$v['p_name'];?></option>
+                                        <option value="<?=$v['p_id'];?>" ><?=$v['p_name'];?></option>
                                     <?php }?>
                                 </select>
                             </div>
@@ -412,6 +412,75 @@
                     </form>
                 </div>
                 <!--客户其他联系人信息end-->
+                
+                <!--客户信息确认begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <header class='demos-header'>
+                        <h1 class="demos-title">确认订单</h1>
+                    </header>
+                    <div class="weui-cells">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>商户名称</p>
+                            </div>
+                            <div class="weui-cell__ft" id="sellerName"></div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>选购商品</p>
+                            </div>
+                            <div class="weui-cell__ft" id="goodsName"></div>
+                        </div>
+                    </div>
+                    <div class="weui-cells">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>商品总额</p>
+                            </div>
+                            <div class="weui-cell__ft" id="goodsAmount"></div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>首付金额</p>
+                            </div>
+                            <div class="weui-cell__ft" id="paidAmount"></div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>所分期数</p>
+                            </div>
+                            <div class="weui-cell__ft" id="totalPeriod"></div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>每月还款</p>
+                            </div>
+                            <div class="weui-cell__ft" id="everyMonthPay"></div>
+                        </div>
+                    </div>
+                    <div class="weui-cells">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>自动代扣</p>
+                            </div>
+                            <div class="weui-cell__ft">已加入</div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>贵宾服务包</p>
+                            </div>
+                            <div class="weui-cell__ft" id="vipServiceAmount"></div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <p>个人保障服务</p>
+                            </div>
+                            <div class="weui-cell__ft" id="securityServiceAmount"></div>
+                        </div>
+                    </div>
+                    <div class="weui-cells__title">备注：以上计算分期数据仅作参考，最终贷款分期金额以签约金额为准。</div>
+                </div>
+                <!--客户信息确认end-->
             </div>
         </div>
 
@@ -432,6 +501,13 @@
 <script>
     $(function() {
         FastClick.attach(document.body);
+
+        // 商家服务费率
+        var serverFeeRate = <?=\Yii::$app->params['seller_serverfee_rate']?>;
+        // 查询费
+        var queryFee = <?=\Yii::$app->params['inquiryFee']?>;
+        // 产品信息列表
+        var products = eval('(' + '<?=json_encode($data['products'] , JSON_UNESCAPED_UNICODE)?>' + ')');
 
         wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
@@ -525,6 +601,10 @@
 
                         case 4:     // 第5步
                             _this.checkStep5(currStep);
+                        break;
+
+                        case 5:     // 第5步
+                            _this.checkStep6(currStep);
                         break;
                     }
                 },
@@ -882,9 +962,9 @@
                 ajaxPost: true,
                 callback : function(res){
                     if(res.status){
-                        _this.ajaxCommit();
-                        console.log('验证成功');
-                        // _this.swiper.slideNext();
+                        // _this.ajaxCommit();
+                        // console.log('验证成功');
+                        _this.swiper.slideNext();
                     }else{
                         $.toast(res.message, "text");
                     }
@@ -927,7 +1007,7 @@
         Page.prototype.initStep = function(currStep){
             $('#currStep').html(currStep + 1);
             var removeClass = new Array;
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 1; i <= 6; i++) {
                 $('.nextStep' + i).unbind('click');
                 removeClass.push('nextStep' + i);
             }
@@ -956,6 +1036,103 @@
                 }
             });
         }
+
+
+        /**
+         * 确认订单
+         * @return {[type]} [description]
+         */
+        Page.prototype.checkStep6 = function(currStep){
+            // 获取表单1数据
+            var form1 = $('#formStep1').serializeObject();
+            // 获取表单2数据
+            var form2 = $('#formStep2').serializeObject();
+            // 获取商品总价
+            var goodsAmount = parseFloat(form1['g_goods_price']);
+            // 获取首付金额
+            var paidAmount = parseFloat(form1['g_goods_deposit']);  
+            // 当前选中的产品
+            var productId = parseInt(form2['o_product_id']);
+            // 获取是否选中了贵宾服务包
+            var vipServiceStatus = form2['o_is_free_pack_fee'] == 'on' ? 1 : 0;
+            // 获取是否选中了个人保障计划
+            var securityServiceStatus = form2['o_is_add_service_fee'] == 'on' ? 1 : 0;
+            // 计算贷款总金额
+            var loanAmount = ((goodsAmount - paidAmount) * (1 + parseFloat(serverFeeRate))) + queryFee;
+            // 计算商家服务费
+            var serverFee = ((goodsAmount - paidAmount) * parseFloat(serverFeeRate)).toFixed(2);
+            // 获取个人保障计划服务包金额
+            var securityServiceAmount = 0;
+            // 获取贵宾服务包金额
+            var vipServiceAmount = 0;
+            // 财务管理费
+            var financialAmount = 0;
+            // 客户管理费
+            var customerAmount = 0;
+            // 总期数
+            var totalPeriod = 0;
+            // 每月利率
+            var everyMonthRate = 0;
+            console.log('1号表单数据');
+            console.log(form1);
+            console.log(goodsAmount , paidAmount , serverFeeRate , queryFee);
+            // 获取相关费用
+            for(var i in products){
+                if(products[i].p_id == productId){
+                    // 获取个人保障计划服务包金额
+                    if(securityServiceStatus){
+                        securityServiceAmount = parseFloat((loanAmount * parseFloat(products[i].p_add_service_fee) / 100).toFixed(4));
+                    }
+                    // 获取贵宾服务包金额
+                    if(vipServiceStatus){
+                        vipServiceAmount = parseFloat((parseFloat(products[i].p_free_pack_fee)).toFixed(4));
+                    }
+                    // 财务管理费
+                    financialAmount = parseFloat((loanAmount * parseFloat(products[i].p_finance_mangemant_fee) / 100).toFixed(4));
+                    // 客户管理费
+                    customerAmount = parseFloat((loanAmount * parseFloat(products[i].p_customer_management) / 100).toFixed(4));
+                    // 获取总期数
+                    totalPeriod = parseInt(products[i].p_period);
+                    // 每月利率
+                    everyMonthRate = parseFloat(products[i].p_month_rate);
+
+                    break;
+                }
+            }
+
+            console.log(securityServiceAmount);
+
+            // 真实利率
+            var realEveryMonthRate = (everyMonthRate/100);
+
+            console.log(realEveryMonthRate , totalPeriod , loanAmount , realEveryMonthRate);
+
+            // 计算每月还款本金
+            var everyPrincipal = realEveryMonthRate <= 0 ? (loanAmount / totalPeriod).toFixed(2) : (loanAmount * realEveryMonthRate * Math.pow(1 + realEveryMonthRate , totalPeriod)) / (Math.pow(1 + realEveryMonthRate , totalPeriod) - 1);
+            console.log((everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount));
+            console.log(everyPrincipal , securityServiceAmount , vipServiceAmount , customerAmount , financialAmount);
+            // 每月还款总金额
+            var everyMonthPay = (everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount).toFixed(2);
+
+            // 填充数据和信息
+            $('#sellerName').html($('select[name=o_store_id] option:selected').text());
+            $('#goodsName').html(form1.g_goods_name + ' ' + form1.g_goods_models + ' x 1');
+            $('#goodsAmount').html('￥' + parseFloat(form1.g_goods_price).toFixed(2));
+            $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2) + '(含服务费￥' + serverFee + ')');
+            $('#totalPeriod').html(totalPeriod + '期');
+            $('#everyMonthPay').html('￥' + parseFloat(everyMonthPay).toFixed(2));
+            $('#vipServiceAmount').html('￥' + parseFloat(vipServiceAmount).toFixed(2));
+            $('#securityServiceAmount').html('￥' + parseFloat(securityServiceAmount).toFixed(2));
+
+            var _this = this;
+            // 修改
+            _this.initStep(currStep);
+            // 绑定提交订单
+            $('.nextStep6').bind('click' , function(){
+                _this.ajaxCommit();
+            });
+        }
+
 
         Page.prototype.localSet = function(key , val){
             var storage = window.localStorage || window.sessionStorage;
