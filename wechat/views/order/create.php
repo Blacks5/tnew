@@ -508,8 +508,6 @@
         var queryFee = <?=\Yii::$app->params['inquiryFee']?>;
         // 产品信息列表
         var products = eval('(' + '<?=json_encode($data['products'] , JSON_UNESCAPED_UNICODE)?>' + ')');
-        
-        console.log(products);
 
         wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
 
@@ -1061,6 +1059,8 @@
             var securityServiceStatus = form2['o_is_add_service_fee'] == 'on' ? 1 : 0;
             // 计算贷款总金额
             var loanAmount = ((goodsAmount - paidAmount) * (1 + parseFloat(serverFeeRate))) + queryFee;
+            // 计算商家服务费
+            var serverFee = ((goodsAmount - paidAmount) * parseFloat(serverFeeRate)).toFixed(2);
             // 获取个人保障计划服务包金额
             var securityServiceAmount = 0;
             // 获取贵宾服务包金额
@@ -1118,7 +1118,7 @@
             $('#sellerName').html($('select[name=o_store_id] option:selected').text());
             $('#goodsName').html(form1.g_goods_name + ' ' + form1.g_goods_models + ' x 1');
             $('#goodsAmount').html('￥' + parseFloat(form1.g_goods_price).toFixed(2));
-            $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2));
+            $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2) + '(含服务费￥' + serverFee + ')');
             $('#totalPeriod').html(totalPeriod + '期');
             $('#everyMonthPay').html('￥' + parseFloat(everyMonthPay).toFixed(2));
             $('#vipServiceAmount').html('￥' + parseFloat(vipServiceAmount).toFixed(2));

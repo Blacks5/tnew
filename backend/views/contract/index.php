@@ -52,7 +52,6 @@
         <dl class="info_box">
             <dt class="info_box_dt">还款信息：</dt>
             <dd>贷款金额：<span class="info_box_span"> <?= $data['total_all']?> 元</span></dd>
-            <dd>首付金额：<span class="info_box_span"> <?=$data['o_total_deposit']?> 元</span></dd>
             <dd>是否参与个人保障计划：<span class="info_box_span"> <?=$data['o_is_add_service_fee'] ?></span></dd>
             <dd>是否选择贵宾服务包：<span class="info_box_span"> <?=$data['o_is_free_pack_fee']?></span></dd>
             <dd>客户服务费：<span class="info_box_span"> <?=$data['o_service_fee']?>元</span></dd>

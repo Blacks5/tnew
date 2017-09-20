@@ -25,7 +25,6 @@ use common\tools\yijifu\ReturnMoney;
 use WebSocket\Client;
 use yii\data\Pagination;
 use yii;
-use yii\log\FileTarget;
 
 class RepaymentnewController extends CoreBackendController
 {
@@ -191,7 +190,7 @@ class RepaymentnewController extends CoreBackendController
     {
         $this->getView()->title = '已逾期还款列表';
         $model = new RepaymentSearch();
-        $query = $model->repaymenlist(Yii::$app->getRequest()->getQueryParams());
+        $query = $model->repaymentListByOrders(Yii::$app->getRequest()->getQueryParams());
         $query = $query
             ->andWhere(['>', 'r_overdue_day', 0])->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]);
         $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
@@ -337,6 +336,10 @@ class RepaymentnewController extends CoreBackendController
                 $sql = "select merchOrderNo from yijifu_sign where o_serial_id=:o_serial_id and status=1 limit 1 for update";
                 $yi_data = YijifuSign::findBySql($sql, [':o_serial_id'=>$r_data['o_serial_id']])->one();
 
+                $isRepay = YijifuDeduct::find()->where(['o_serial_id'=>$r_data['o_serial_id']])->andWhere(['in', 'status', [0,1,2,3]])->count(); //是否存在代扣还没有回调的情况
+                if($isRepay>0){
+                    throw new CustomBackendException('已经发起签约,请等待结果!');
+                }
                 $handle = new ReturnMoney();
                 $handle->deduct($r_data['o_serial_id'], $refund_id, $yi_data['merchOrderNo'], $r_data['deductAmount']);
 
@@ -359,12 +362,6 @@ class RepaymentnewController extends CoreBackendController
     public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
-
-        $log = new FileTarget();
-        $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou.log';
-        $log->messages[] = ['收到易极付代扣回调(Repaymentnew),post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
-        $log->export();
-
         if('true' === $post['success']){
             $status_arr = [
                 'INIT' => 1, // 待处理
