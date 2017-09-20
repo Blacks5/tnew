@@ -199,29 +199,32 @@ class DataSearch extends CoreBackendModel
             ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
             ->where(['in', 'orders.o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER, ]])
             ->andWhere(['in', 'orders.o_user_id', $userInOrder])
-            ->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
-            ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
-
+            ->select(['
+                sum(r_total_repay) as total,
+                sum(r_finance_mangemant_fee) as finance,
+                sum(r_customer_management) as customer,
+                sum(r_add_service_fee) as service,
+                sum(r_free_pack_fee) as pack,
+                sum(r_principal) as principal,
+                sum(r_interest) as interest,
+                sum(r_overdue_money) as overdue'
+            ]);
          $totalQuery = clone $query;
          $listQuery = clone $query;
+         $listQuery = $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
+             ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
 
-         $fee = $listQuery->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])->asArray()->one();
-         $data['serviceFee'] = round($fee['service'], 0);    //商家服务费
-         $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
+        $totalQuery = $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
+            ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
 
-        $totalQuery = $totalQuery->select(['
-            sum(r_total_repay) as total,
-            sum(r_finance_mangemant_fee) as finance,
-            sum(r_customer_management) as customer,
-            sum(r_add_service_fee) as service,
-            sum(r_free_pack_fee) as pack,
-            sum(r_principal) as principal,
-            sum(r_interest) as interest,
-            sum(r_overdue_money) as overdue'
-        ]);
-        $overdueQuery = clone $totalQuery;
-        $repayQuery = clone $totalQuery;
-        $total = $totalQuery->asArray()->one();
+        $feeQuery = clone $totalQuery;
+        $fee = $feeQuery->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])->asArray()->one();
+        $data['serviceFee'] = round($fee['service'], 0);    //商家服务费
+        $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
+
+        $total= $totalQuery->asArray()->one();
+        $overdueQuery = clone $listQuery;
+        $repayQuery = clone $listQuery;
         $data['repayTotal']      = round($total['total'], 0);        //所有月供
         $data['principal']  = round($total['principal'], 0);   //本金
         $data['interest']   = round($total['interest'], 0);    //利息
