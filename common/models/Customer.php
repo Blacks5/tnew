@@ -294,13 +294,10 @@ class Customer extends CoreCommonActiveRecord {
           'new_banknum'=>$data['c_banknum'],
         ];
         $customer = Customer::find()->where(['c_id'=>$data['customer_id']])->asArray()->one();
+        if($logs['new_bank'] === $logs['old_bank']){  //如果银行卡号没有变化,不用重新签约
+            return true;
+        }
         $returnMoney->modifySign($yifid, $customer, $logs);//修改易极付签约
-    }
-
-    public function checkBank()
-    {
-        $returnMoney = new ReturnMoney();
-
     }
 
 }
