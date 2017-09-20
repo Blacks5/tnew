@@ -50,7 +50,7 @@ class IndexController extends CoreBackendController
     private function getTotalMoney()
     {
         // select (sum(o_total_price)-sum(o_total_deposit))as total from orders where o_status=10
-        $total_money = (new Query())->select(['total_money'=>new Expression('sum(o_total_price)-sum(o_total_deposit)')])->from(Orders::tableName())
+        $total_money = (new Query())->select(['total_money'=>new Expression('sum(o_total_price)-sum(o_total_deposit)+sum(o_inquiry_fee)+sum(o_service_fee)')])->from(Orders::tableName())
             ->where(['in', 'o_status',[Orders::STATUS_PAYING,Orders::STATUS_PAY_OVER]])->scalar();
         return round($total_money, 2);
     }

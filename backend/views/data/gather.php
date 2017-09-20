@@ -112,8 +112,33 @@
                                 <header class="panel-heading">总放款</header>
                                 <div class="panel-body">
                                     <div class="list-group">
-                                        <a class="list-group-item">总放款本息<span style="display: block;float: right;"><?= $data['total'] ?></span></a>
-                                        <a class="list-group-item">总放款本金<span style="display: block;float: right;"><?= $data['principal'] ?></span></a>
+                                        <a class="list-group-item">月供<span class="badge"><?= $data['repayTotal'] ?></span></a>
+                                        <a class="list-group-item">本息(包含本金+利息+客户管理费+财务管理费)<span class="badge"><?= $data['total'] ?></span></a>
+                                        <a class="list-group-item">客户管理费<span class="badge"><?= $data['customer'] ?></span></a>
+                                        <a class="list-group-item">财务管理费<span class="badge"><?= $data['finance'] ?></span></a>
+                                        <a class="list-group-item">利息<span class="badge"><?= $data['interest'] ?></span></a>
+                                        <a class="list-group-item">本金<span class="badge"><?= $data['principal'] ?></span></a>
+                                        <a class="list-group-item">滞纳金<span class="badge"><?= $data['overdue'] ?></span></a>
+                                        <a class="list-group-item">个人保障计划<span class="badge"><?= $data['service'] ?></span></a>
+                                        <a class="list-group-item">贵宾服务包<span class="badge"><?= $data['pack'] ?></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <header class="panel-heading">总回收</header>
+                                <div class="panel-body">
+                                    <div class="list-group">
+                                        <a class="list-group-item">月供<span class="badge"><?= $data['repay_repayTotal'] ?></span></a>
+                                        <a class="list-group-item">本息(包含本金+利息+客户管理费+财务管理费)<span class="badge"><?= $data['repay_total'] ?></span></a>
+                                        <a class="list-group-item">客户管理费<span class="badge"><?= $data['repay_customer'] ?></span></a>
+                                        <a class="list-group-item">财务管理费<span class="badge"><?= $data['repay_finance'] ?></span></a>
+                                        <a class="list-group-item">利息<span class="badge"><?= $data['repay_interest'] ?></span></a>
+                                        <a class="list-group-item">本金<span class="badge"><?= $data['repay_principal'] ?></span></a>
+                                        <a class="list-group-item">滞纳金<span class="badge"><?= $data['repay_overdue'] ?></span></a>
+                                        <a class="list-group-item">个人保障计划<span class="badge"><?= $data['repay_service'] ?></span></a>
+                                        <a class="list-group-item">贵宾服务包<span class="badge"><?= $data['repay_pack'] ?></span></a>
                                     </div>
                                 </div>
                             </div>
@@ -123,50 +148,21 @@
                                 <header class="panel-heading">未回收</header>
                                 <div class="panel-body">
                                     <div class="list-group">
-                                        <a class="list-group-item">未回收本金<span style="display: block;float: right;"><?= $data['overdue_principal']?></span></a>
-                                        <a class="list-group-item">未回收利息<span style="display: block;float: right;"><?= $data['overdue_interest']?></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="panel panel-success">
-                                <header class="panel-heading">额外</header>
-                                <div class="panel-body">
-                                    <div class="list-group">
-                                        <a class="list-group-item">个人保障计划收入<span style="display: block;float: right;"><?= $data['pack'] ?></span></a>
-                                        <a class="list-group-item">贵宾额外收入<span style="display: block;float: right;"><?= $data['service'] ?></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="panel panel-success">
-                                <header class="panel-heading">总回收</header>
-                                <div class="panel-body">
-                                    <div class="list-group">
-                                        <a class="list-group-item">总回收本息<span style="display: block;float: right;"><?= $data['repay_total'] ?></span></a>
-                                        <a class="list-group-item">总回收本金<span style="display: block;float: right;"><?= $data['repay_principal'] ?></span></a>
-                                        <a class="list-group-item">总回收利息<span style="display: block;float: right;"><?= $data['repay_interest'] ?></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="panel panel-info">
-                                <header class="panel-heading">滞纳金</header>
-                                <div class="panel-body">
-                                    <div class="list-group">
-                                        <a class="list-group-item">总滞纳金<span style="display: block;float: right;"><?= $data['overdue_total'] ?></span></a>
-                                        <a class="list-group-item">未回收滞纳金<span style="display: block;float: right;"><?= $data['overdue_not'] ?></span></a>
-                                        <a class="list-group-item">已回收滞纳金<span style="display: block;float: right;"><?= $data['overdue_back'] ?></span></a>
+                                        <a class="list-group-item">月供<span class="badge"><?= $data['overdue_repayTotal'] ?></span></a>
+                                        <a class="list-group-item">本息(包含本金+利息+客户管理费+财务管理费)<span class="badge"><?= $data['overdue_total'] ?></span></a>
+                                        <a class="list-group-item">客户管理费<span class="badge"><?= $data['overdue_customer'] ?></span></a>
+                                        <a class="list-group-item">财务管理费<span class="badge"><?= $data['overdue_finance'] ?></span></a>
+                                        <a class="list-group-item">利息<span class="badge"><?= $data['overdue_interest'] ?></span></a>
+                                        <a class="list-group-item">本金<span class="badge"><?= $data['overdue_principal'] ?></span></a>
+                                        <a class="list-group-item">滞纳金<span class="badge"><?= $data['overdue_overdue'] ?></span></a>
+                                        <a class="list-group-item">个人保障计划<span class="badge"><?= $data['overdue_service'] ?></span></a>
+                                        <a class="list-group-item">贵宾服务包<span class="badge"><?= $data['overdue_pack'] ?></span></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -259,7 +259,7 @@ class YejiSearch extends CoreBackendModel{
         $overdue_num = clone $s_orderQuery;
         $total['a_orderCount'] = $a_orderQuery->andWhere(['!=','o_status',Orders::STATUS_NOT_COMPLETE])->count('o_id'); //总提单
         $total['s_orderCount'] = $s_orderQuery->count('o_id');    //成功提单数量
-        $total['s_orderMoney'] = $s_orderQuery->sum('o_total_price-o_total_deposit'); //提单金额
+        $total['s_orderMoney'] = $s_orderQuery->sum('o_total_price-o_total_deposit+o_service_fee+o_inquiry_fee'); //提单金额
         $total['service']   = $service->andWhere(['o_is_add_service_fee'=>1])->count(); //个人保障
         $total['pack']      = $pack->andWhere(['o_is_free_pack_fee'=>1])->count();  //贵宾服务
         $total['overdue_num'] = $overdue_num
