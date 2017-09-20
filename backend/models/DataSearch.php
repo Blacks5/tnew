@@ -205,6 +205,10 @@ class DataSearch extends CoreBackendModel
          $totalQuery = clone $query;
          $listQuery = clone $query;
 
+         $fee = $listQuery->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])->asArray()->one();
+         $data['serviceFee'] = round($fee['service'], 0);    //商家服务费
+         $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
+
         $totalQuery = $totalQuery->select(['
             sum(r_total_repay) as total,
             sum(r_finance_mangemant_fee) as finance,

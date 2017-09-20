@@ -162,7 +162,19 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <header class="panel-heading">其他</header>
+                                <div class="panel-body">
+                                    <div class="list-group">
+                                        <a class="list-group-item">商家服务费<span class="badge"><?= $data['serviceFee'] ?></span></a>
+                                        <a class="list-group-item">查询费<span class="badge"><?= $data['inquiryFee'] ?></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
