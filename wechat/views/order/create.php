@@ -391,9 +391,9 @@
                             <div class="weui-cell__bd">
                                 <select class="weui-select" name="c_other_people_relation">
                                     <option value="">请选择联系人关系</option>
-                                    <option value="1">同事</option>
-                                    <option value="2">朋友</option>
-                                    <option value="3">同学</option>
+                                    <?php foreach ($data['other_kinship'] as $k => $v) {?>
+                                        <option value="<?=$v['kinship_id'];?>"><?=$v['kinship_str'];?></option>
+                                    <?php }?>
                                 </select>
                             </div>
                         </div>
@@ -1057,10 +1057,10 @@
             var vipServiceStatus = form2['o_is_free_pack_fee'] == 'on' ? 1 : 0;
             // 获取是否选中了个人保障计划
             var securityServiceStatus = form2['o_is_add_service_fee'] == 'on' ? 1 : 0;
-            // 计算贷款总金额
-            var loanAmount = ((goodsAmount - paidAmount) * (1 + parseFloat(serverFeeRate))) + queryFee;
             // 计算商家服务费
-            var serverFee = ((goodsAmount - paidAmount) * parseFloat(serverFeeRate)).toFixed(2);
+            var serverFee = parseFloat(((goodsAmount - paidAmount) * parseFloat(serverFeeRate)).toFixed(2));
+            // 计算贷款总金额
+            var loanAmount = goodsAmount - paidAmount + serverFee + queryFee;
             // 获取个人保障计划服务包金额
             var securityServiceAmount = 0;
             // 获取贵宾服务包金额
@@ -1073,9 +1073,7 @@
             var totalPeriod = 0;
             // 每月利率
             var everyMonthRate = 0;
-            console.log('1号表单数据');
-            console.log(form1);
-            console.log(goodsAmount , paidAmount , serverFeeRate , queryFee);
+
             // 获取相关费用
             for(var i in products){
                 if(products[i].p_id == productId){
@@ -1100,15 +1098,15 @@
                 }
             }
 
-            console.log(securityServiceAmount);
-
+            console.log(serverFee);
+            console.log(loanAmount);
+            
             // 真实利率
             var realEveryMonthRate = (everyMonthRate/100);
-
-            console.log(realEveryMonthRate , totalPeriod , loanAmount , realEveryMonthRate);
-
+            
             // 计算每月还款本金
             var everyPrincipal = realEveryMonthRate <= 0 ? (loanAmount / totalPeriod).toFixed(2) : (loanAmount * realEveryMonthRate * Math.pow(1 + realEveryMonthRate , totalPeriod)) / (Math.pow(1 + realEveryMonthRate , totalPeriod) - 1);
+            console.log(everyPrincipal);
             console.log((everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount));
             console.log(everyPrincipal , securityServiceAmount , vipServiceAmount , customerAmount , financialAmount);
             // 每月还款总金额

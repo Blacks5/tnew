@@ -114,7 +114,7 @@ class Helper
      */
     public static function getKindShipString($id)
     {
-        return array_column(\Yii::$app->params['kinship'], 'kinship_str', 'kinship_id')[$id];
+        return array_column(\Yii::$app->params['other_kinship'], 'kinship_str', 'kinship_id')[$id];
     }
 
 
