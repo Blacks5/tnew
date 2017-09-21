@@ -82,6 +82,7 @@ class OrderController extends BaseController {
 					'kinship' => Yii::$app->params['kinship'],
 					'company_kind' => Yii::$app->params['company_kind'],
 					'company_type' => Yii::$app->params['company_type'],
+					'other_kinship' => Yii::$app->params['other_kinship'],
 				],
 				'js' => Wechat::jssdk(),
 			]);

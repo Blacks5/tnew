@@ -117,6 +117,16 @@ class Helper
         return array_column(\Yii::$app->params['kinship'], 'kinship_str', 'kinship_id')[$id];
     }
 
+    /**
+     * 其他关系
+     * @param $id
+     * @return mixed
+     * @author 涂鸿 <hayto@foxmail.com>
+     */
+    public static function getOtherKindShipString($id)
+    {
+        return array_column(\Yii::$app->params['other_kinship'], 'kinship_str', 'kinship_id')[$id];
+    }
 
     /**
      * 公司所在行业

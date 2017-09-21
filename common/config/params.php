@@ -60,6 +60,13 @@ return [
 //        ['kinship_id'=>7, 'kinship_str'=>'表姐妹'],
     ], // 亲属关系
 
+    // 其他关系
+    'other_kinship' => [
+        ['kinship_id'=>1, 'kinship_str'=>'同事'],
+        ['kinship_id'=>2, 'kinship_str'=>'朋友'],
+        ['kinship_id'=>3, 'kinship_str'=>'同学'],
+    ],
+
     // app银行列表
     'bank_list'=>[
         ['bank_id'=>1, 'bank_name'=>'中国银行股份有限公司'],
