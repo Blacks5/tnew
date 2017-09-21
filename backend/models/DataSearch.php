@@ -217,8 +217,14 @@ class DataSearch extends CoreBackendModel
         $totalQuery = $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
             ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
 
-        $feeQuery = clone $totalQuery;
-        $fee = $feeQuery->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])->groupBy('r_orders_id')->asArray()->one();
+
+        $fee = Orders::find()
+            ->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])
+            ->where(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
+            ->andWhere(['in', 'o_user_id', $userInOrder])
+            ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
+            ->andFilterWhere(['<=', 'o_created_at', $this->end_time])
+            ->asArray()->one();
         $data['serviceFee'] = round($fee['service'], 0);    //商家服务费
         $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
 
