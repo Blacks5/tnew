@@ -964,6 +964,7 @@ left join customer on customer.c_id=orders.o_customer_id
         if($request->getIsAjax()){
             $repay = new RepaymentSearch();
             $price = $repay->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
+            var_dump($price);die;
             $trans = Yii::$app->getDb()->beginTransaction();
             try{
                 if($price['total']!=$request->post('price')){

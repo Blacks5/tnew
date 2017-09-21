@@ -142,17 +142,19 @@ class RepaymentSearch extends CoreBackendModel
         $repayCount = $sql->count();
         $data = $sql->limit($num)->all();
         if($num == $repayCount){    //判断是否全部还完
+            $interest = $data[0]['r_total_repay']-$data[0]['r_principal']; //本期的所有利息
             foreach ($data as $k => $d){
                 $date = Carbon::createFromTimestamp($d['r_pre_repay_date']);
                 $total['total'] += $d['r_principal']; //获取所有的 本金
                 if($d['r_overdue_day']>3){    //如果逾期,加上除本金外的费用和滞纳金
                     $total['total'] += $d['r_total_repay']-$d['r_principal'] + $d['r_overdue_money'];
                 }
-                if($date->day - Carbon::now()->day > 3 && $date->month = Carbon::now()->month){ //如果是属于当期金额 需要还利息
-                    $total['total'] += $d['r_total_repay']-$d['r_principal'];
+                if($date->day - Carbon::now()->day <4 && $date->day - Carbon::now()->day > 0){ //如果是属于当期时间3天内,不用还利息
+                    $total['total'] -= $interest;
                 }
                 array_push($total['num'], $d['r_id']);
             }
+            $total['total'] += $interest;
         }else{  // 没有还完所有期, 还款金额为月供 和 滞纳金
             foreach ($data as $k => $d){
                 $total['total'] += $d['r_total_repay'] + $d['r_overdue_money'];
