@@ -198,48 +198,67 @@ class DataSearch extends CoreBackendModel
             ->leftJoin(User::tableName(),'id=o_user_id')
             ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
             ->where(['in', 'orders.o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER, ]])
-            ->andWhere(['in', 'orders.o_user_id', $userInOrder]);
-
+            ->andWhere(['in', 'orders.o_user_id', $userInOrder])
+            ->select(['
+                sum(r_total_repay) as total,
+                sum(r_finance_mangemant_fee) as finance,
+                sum(r_customer_management) as customer,
+                sum(r_add_service_fee) as service,
+                sum(r_free_pack_fee) as pack,
+                sum(r_principal) as principal,
+                sum(r_interest) as interest,
+                sum(r_overdue_money) as overdue'
+            ]);
          $totalQuery = clone $query;
          $listQuery = clone $query;
-         $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
-             ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
-         $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
+         $listQuery = $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
              ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
 
-        $total = $totalQuery->select(['sum(r_principal) as principal,sum(r_interest) as interest'])->asArray()->one();
-        //var_dump($tota);die;
+        $totalQuery = $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
+            ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
+
+        $feeQuery = clone $totalQuery;
+        $fee = $feeQuery->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])->asArray()->one();
+        $data['serviceFee'] = round($fee['service'], 0);    //商家服务费
+        $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
+
+        $total= $totalQuery->asArray()->one();
+        $overdueQuery = clone $listQuery;
+        $repayQuery = clone $listQuery;
+        $data['repayTotal']      = round($total['total'], 0);        //所有月供
         $data['principal']  = round($total['principal'], 0);   //本金
         $data['interest']   = round($total['interest'], 0);    //利息
-        $data['total'] = $data['principal'] + $data['interest']; //本息
+        $data['finance']    = round($total['finance'], 0);      //财务管理费
+        $data['customer']   = round($total['customer'], 0);     //客户管理费
+        $data['service']    = round($total['service'], 0 );     //贵宾服务包
+        $data['pack']       = round($total['pack'], 0);         //个人保障计划
+        $data['overdue']    = round($total['overdue'], 0);      //滞纳金
+        $data['total'] = $data['principal'] + $data['interest'] + $data['finance'] + $data['customer']; //本息
 
-        $overdueQuery = clone $listQuery;
-        $repay = $listQuery->select([
-            'sum(r_add_service_fee) as service,
-            sum(r_free_pack_fee) as pack,
-            sum(r_overdue_money) as overdue_back,
-            sum(r_principal) as repay_principal,
-            sum(r_interest) as repay_interest'
-        ])->andWhere(['!=', 'repayment.r_repay_date', 0])->asArray()->one();
 
-        $data['service']    = round($repay['service'], 0);      //已回收个人服务包金额
-        $data['pack']    = round($repay['pack'], 0);       //已回收个人保障金额
-        $data['overdue_back']   =   round($repay['overdue_back'], 0);  //已回收滞纳金
-        $data['repay_principal']    = round($repay['repay_principal'], 0);    //已还本金
-        $data['repay_interest']     = round($repay['repay_interest'], 0);     //已还利息
+        $repay = $repayQuery->andWhere(['repayment.r_status'=> 10])->asArray()->one();
 
-        $overdue = $overdueQuery->select(['
-            sum(r_principal) as overdue_principal,
-            sum(r_interest) as overdue_interest,
-            sum(r_overdue_money) as overdue_not'
-        ])->andWhere(['repayment.r_repay_date'=>0])->asArray()->one();
+        $data['repay_repayTotal'] = round($repay['total'], 0);       //已回收月供
+        $data['repay_service']    = round($repay['service'], 0);      //已回收个人服务包金额
+        $data['repay_pack']    = round($repay['pack'], 0);            //已回收个人保障金额
+        $data['repay_overdue']   =   round($repay['overdue'], 0);  //已回收滞纳金
+        $data['repay_principal']    = round($repay['principal'], 0);    //已还本金
+        $data['repay_interest']     = round($repay['interest'], 0);     //已还利息
+        $data['repay_finance'] = round($repay['finance'],0);        //已回收财务管理费
+        $data['repay_customer'] = round($repay['customer'],0);      //已回收客户管理费
+        $data['repay_total'] = $data['repay_principal'] + $data['repay_interest'] + $data['repay_finance'] + $data['repay_customer'];  //已回收本息
 
-        $data['repay_total']        = $data['repay_interest'] + $data['repay_principal'];       //已还本息
-        $data['overdue_principal']  = round($overdue['overdue_principal'], 0);        //未回收本金
-        //var_dump($listQuery->andWhere(['repayment.r_repay_date'=>0])->createCommand()->getRawSql());die;
-        $data['overdue_interest']   = round($overdue['overdue_interest'], 0);      //未还利息
-        $data['overdue_not'] = round($overdue['overdue_not']); //未回收滞纳金
-        $data['overdue_total'] = $data['overdue_not'] + $data['overdue_back']; //总滞纳金
+        $overdue = $overdueQuery->andWhere(['repayment.r_status'=>1])->asArray()->one();
+
+        $data['overdue_repayTotal']        = round($overdue['total'], 0);       //未还月供
+        $data['overdue_principal']  = round($overdue['principal'], 0);        //未回收本金
+        $data['overdue_interest']   = round($overdue['interest'], 0);           //  未还利息
+        $data['overdue_service']    = round($overdue['service'], 0);        //未还服务包
+        $data['overdue_pack']       = round($overdue['pack'], 0);           //未还保障计划
+        $data['overdue_overdue']    = round($overdue['overdue'], 0);        //滞纳金
+        $data['overdue_finance']    = round($overdue['finance'], 0);        //未回收财务管理费
+        $data['overdue_customer']   = round($overdue['customer'], 0);       //未回收客户管理费
+        $data['overdue_total'] = $data['overdue_principal'] + $data['overdue_interest'] + $data['overdue_finance'] + $data['overdue_customer']; //未还本息
 
 
         return [
