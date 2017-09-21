@@ -201,7 +201,7 @@ class BorrowController extends CoreBackendController
             $notYet = Yii::$app->getDb()->createCommand("select * from repayment where r_status = 1 and r_orders_id = $order_id")->queryAll();
             $overdue = Repayment::find()->where(['r_status'=>1, 'r_orders_id'=>$order_id])->andWhere(['>', 'r_overdue_day', 3])->count(); //未还款期数
             $isOverdue = $overdue==0?0:1;  //是否逾期 0未逾期 1逾期
-            $operator = Carbon::createFromTimestamp($model['o_operator_date'])->addDay(120);
+            $operator = Carbon::createFromTimestamp($model['o_operator_date'])->addDay(90);
             $canCancel = $operator < Carbon::now()?1:0;  //审核时间是否大于120天 1是 0否
             $allPeriods = 0;
             if(!empty($notYet)){
