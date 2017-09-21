@@ -289,7 +289,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                     <div>
                         <label class="col-sm-2 control-label">其他联系人：</label>
                         <div class="col-sm-2">
-                            <p class="form-control-static"><?= Helper::getKindShipString($model['c_other_people_relation']) . '-' . $model['c_other_people_name'] . '-' . $model['c_other_people_cellphone']; ?></p>
+                            <p class="form-control-static"><?= Helper::getOtherKindShipString($model['c_other_people_relation']) . '-' . $model['c_other_people_name'] . '-' . $model['c_other_people_cellphone']; ?></p>
                         </div>
                     </div>
                     <div>
