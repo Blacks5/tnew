@@ -195,6 +195,7 @@ class BorrownewController extends CoreBackendController
             $loan_data = YijifuLoan::find()->where(['y_serial_id'=>$model['o_serial_id']])->asArray()->one();
 
             $query =Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1]);
+            $reCount = Repayment::find()->where(['r_status'=>10, 'r_orders_id'=>$order_id])->count()>=3 ?1:0;
             $repayCount = $query->count(); //未还期数
             $isOverdue = $query->andWhere(['>', 'r_overdue_day', 3])->count() >0 ?1:0; //是否有逾期 1逾期 0未逾期
             $operator = Carbon::createFromTimestamp($model['o_operator_date'])->addDay(90);
@@ -212,6 +213,7 @@ class BorrownewController extends CoreBackendController
                 'goods_data'=>$goods_data,
                 'loan_data'=>$loan_data,
                 'repayCount'=>$repayCount,
+                'reCount'=>$reCount,
                 'jzq_sign_log'=>$jzq_sign_log,
                 'isOverdue'=>$isOverdue,
                 'isRepayment'=>$isRepayment,

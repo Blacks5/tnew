@@ -124,7 +124,6 @@ class CalInterest
         // 客户管理费
         $p_customer_management = round($total_borrow_money * $order_info['p_customer_management']/100, 4);
 
-
         for ($i = 0; $i < $order_info['p_period']; $i++) {
             $_temp['r_customer_id'] = $order_info['o_customer_id']; // 客户id
             $_temp['r_orders_id'] = $order_info['o_id']; // 订单id
@@ -132,7 +131,7 @@ class CalInterest
 
             $_temp['r_total_repay'] = round($month_benjinTotal + $p_add_service_fee + $p_free_pack_fee + $p_finance_mangemant_fee + $p_customer_management, 4); // 每月需还款的总额
 
-            $_temp['r_interest'] = round(($total_borrow_money-Yii::$app->params['inquiryFee']) * $order_info['p_month_rate'] / 100, 4); // 每月利息 总金额里面包含贷款金额,商家服务费,查询费 , 需要把查询费减去
+            $_temp['r_interest'] = round($total_borrow_money * $order_info['p_month_rate'] / 100, 4); // 每月利息
             $_temp['r_principal'] = round($month_benjinTotal - $_temp['r_interest'], 4); // 每月还的本金
             $_temp['r_balance'] = abs(round($total_borrow_money - $_temp['r_principal'], 4)); // 期末余额，误差会导致负数所以abs
             $_temp['r_add_service_fee'] = $p_add_service_fee; // 个人保证计划

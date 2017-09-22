@@ -547,7 +547,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-                            <?php if($model['o_status'] == 10){ ?>
+                            <?php if($model['o_status'] == 10 && $periodNum == 1){ ?>
                             <div class="col-md-3">
                                 <div class="input-group">
                                     <select class="col-md-8 form-control" id="period_num">
@@ -563,20 +563,30 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="col-md-12 input-group">
+                                <div class="col-md-8 input-group">
                                     <input type="text" value="0" id="calculation_residual_loan_val" class="form-control" disabled/>
                                     <span class="input-group-addon" id="sizing-addon1">元</span>
                                 </div>
+
+
                             </div>
-                            <div class="com-md-8">
+                            <div class="col-md-2">
                                 <button class="btn btn-danger" id="prepayment">提前还款</button>
-                                <?php }?>
+                            </div>
+                            <?php }?>
+                            <div class="com-md-6">
+
                                 <?php if($model['o_is_add_service_fee'] == 1 && $canCancel ==1){ ?>
                                     <button class="btn btn-danger" id="cancel_personal_protection">取消个人保障计划</button>
                                 <?php }?>
                                 <?php if($model['o_is_free_pack_fee'] == 1 && $canCancel ==1){ ?>
                                     <button class="btn btn-danger" id="cancel_vip_pack">取消贵宾服务包</button>
                                 <?php }?>
+                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/update-repay-time'])) && $model['o_is_free_pack_fee']==1) { ?>
+                                    <a  class="btn btn-danger" href="<?= yii\helpers\Url::toRoute(["/repayment/update-repay-time","order_id"=>$model["o_id"]]) ?>">
+                                        <i class="fa fa-folder"></i>修改还款日期
+                                    </a>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
