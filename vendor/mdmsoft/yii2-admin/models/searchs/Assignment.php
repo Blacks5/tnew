@@ -57,7 +57,8 @@ class Assignment extends Model
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', $usernameField, $this->username]);
+        $query->andFilterWhere(['like', $usernameField, $this->username])
+        ->andWhere(['status'=>10]);
 
         return $dataProvider;
     }

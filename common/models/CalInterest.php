@@ -191,9 +191,6 @@ class CalInterest
         }*/
 
         $service = $total * Yii::$app->params['seller_serverfee_rate'];
-
-        $this->updateOrders($orderInfo, $service);
-
         $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
         return $allTotal;
     }
