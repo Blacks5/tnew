@@ -48,7 +48,7 @@ class Assignment extends Model
      */
     public function search($params, $class, $usernameField)
     {
-        $query = $class::find();
+        $query = $class::find()->where(['status'=>10]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -57,8 +57,7 @@ class Assignment extends Model
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', $usernameField, $this->username])
-        ->andWhere(['status'=>10]);
+        $query->andFilterWhere(['like', $usernameField, $this->username]);
 
         return $dataProvider;
     }
