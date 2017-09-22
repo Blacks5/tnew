@@ -64,13 +64,8 @@ class RepaymentnewController extends CoreBackendController
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        $can = Repayment::find()->select('r_orders_id')->where(['r_status'=>1])->andWhere(['>', 'r_overdue_day', 4])->groupBy('r_orders_id')->column();
         foreach ($data as $k => $v){
             $n = 2;
-            $data[$k]['can_update_time'] = 0;
-            if($v['o_is_free_pack_fee']==1 && !in_array($v['r_orders_id'],$can) && $v['o_number_of_modify_date']<4){
-                $data[$k]['can_update_time'] = 1;
-            }
             $v['o_total_price'] = round($v['o_total_price'], $n);
             $v['o_total_deposit'] = round($v['o_total_deposit'], $n);
             $v['o_total_interest'] = round($v['o_total_interest'], $n);
@@ -472,13 +467,7 @@ class RepaymentnewController extends CoreBackendController
         $pages->pageSize = 20;//Yii::$app->params['page_size'];
         $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
         ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
-        $can = Repayment::find()->where(['r_status'=>1, 'r_orders_id'=>$order_id])->andWhere(['>', 'r_overdue_day', 4])->count();
-        foreach ($data as $k => $v){
-            $data[$k]['can_update_time'] = 0;
-            if($v['o_is_free_pack_fee']==1 && $can ==0 && $v['o_number_of_modify_date']<4){
-                $data[$k]['can_update_time'] = 1;
-            }
-        }
+
         return $this->render('allrepaymentlist', [
             'model' => $data,
             'totalpage' => $pages->pageCount,

@@ -576,7 +576,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                     <div class="form-group">
                         <div class="col-sm-8 col-sm-offset-3">
-                            <?php if($model['o_status'] == 10 && $isRepayment == 0){ ?>
+                            <?php if($model['o_status'] == 10 && $isRepayment == 0 && $reCount==1){ ?>
                                 <div class="col-md-3">
                                     <div class="input-group">
                                         <select class="col-md-8 form-control" id="period_num">
@@ -606,6 +606,11 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                     <?php if($model['o_is_free_pack_fee'] == 1 && $canCancel == 1){ ?>
                                         <button class="btn btn-danger" id="cancel_vip_pack">取消贵宾服务包</button>
                                     <?php }?>
+                                    <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/update-repay-time'])) && $model['o_is_free_pack_fee']==1) { ?>
+                                        <a  class="btn btn-danger" href="<?= yii\helpers\Url::toRoute(["/repayment/update-repay-time","order_id"=>$model["o_id"]]) ?>">
+                                            <i class="fa fa-folder"></i>修改还款日期
+                                        </a>
+                                    <?php } ?>
                                 </div>
                         </div>
                     </div>
