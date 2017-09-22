@@ -147,7 +147,7 @@ class RepaymentSearch extends CoreBackendModel
                 $date = Carbon::createFromTimestamp($d['r_pre_repay_date']);
                 $total['total'] += $d['r_principal']; //获取所有的 本金
                 if($d['r_overdue_day']>3){    //如果逾期,加上除本金外的费用和滞纳金
-                    $total['total'] += $d['r_total_repay']-$d['r_principal'] + $d['r_overdue_money'];
+                    $total['total'] += $interest + $d['r_overdue_money'];
                 }
                 if($date->day - Carbon::now()->day <4 && $date->day - Carbon::now()->day > 0){ //如果是属于当期时间3天内,不用还利息
                     $total['total'] -= $interest;
