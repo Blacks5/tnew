@@ -169,7 +169,14 @@
                         <div class="weui-cell">
                             <div class="weui-cell__hd"><label class="weui-label">身份证过期时间</label></div>
                             <div class="weui-cell__bd">
-                                <input class="weui-input" type="text" name="c_customer_id_card_endtime" placeholder="请输入身份证号">
+                                <input type="hidden" name="c_customer_id_card_endtime">
+                                <input class="weui-input" type="text" name="c_customer_id_card_endtime_show" placeholder="请输入身份证号">
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_switch">
+                            <div class="weui-cell__bd">是否永久不过期</div>
+                            <div class="weui-cell__ft">
+                                <input class="weui-switch" type="checkbox" name="c_customer_id_card_endtime_status">
                             </div>
                         </div>
                         <div class="weui-cell weui-cell_switch">
@@ -675,23 +682,30 @@
 
             // 身份证过期时间为永久,自动清除过期时间
             $('input[name=c_customer_id_card_endtime_status]').bind('click' , function(){
-                var _this = $(this);
-                if(_this.is(':checked')){
-                    $('input[name=c_customer_id_card_endtime]').val('9999999999').attr('disabled','disabled');
-                    _this.localSet('c_customer_id_card_endtime' , '9999999999');
+                if($(this).is(':checked')){
+                    $('input[name=c_customer_id_card_endtime]').val('2038-01-01');
+                    $('input[name=c_customer_id_card_endtime_show]').val('2038-01-01').attr('disabled','disabled');
+                    _this.localSet('c_customer_id_card_endtime' , '2038-01-01');
                 }else{
-                    $('input[name=c_customer_id_card_endtime]').val('').removeAttr('disabled');
+                    $('input[name=c_customer_id_card_endtime]').val('');
+                    $('input[name=c_customer_id_card_endtime_show]').val('').removeAttr('disabled');
                     _this.localSet('c_customer_id_card_endtime' , '');
                 }
             });
 
             // 时间选择器
             var endtime = _this.localGet('c_customer_id_card_endtime');
-                endtime =  endtime ? endtime : '2020-01-01';
-            $('input[name=c_customer_id_card_endtime]').calendar({
+            if(endtime){
+                $('input[name=c_customer_id_card_endtime]').val(endtime);
+                $('input[name=c_customer_id_card_endtime_show]').val(endtime).removeAttr('disabled');
+            }
+            endtime =  endtime ? endtime : '2020-01-01';
+            $('input[name=c_customer_id_card_endtime_show]').calendar({
                 value : [endtime],
+                maxDate : '2038-01-01',
                 onChange : function(p, values, displayValues){
                     $(this).val(values[0]);
+                    $('input[name=c_customer_id_card_endtime]').val(values[0]);
                     _this.localSet('c_customer_id_card_endtime' , values[0]);
                 }
             });
