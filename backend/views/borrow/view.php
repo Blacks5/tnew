@@ -271,18 +271,18 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 ; ?></p>
                         </div>
                     </div>
-                    <div>
-                        <label class="col-sm-2 control-label">现居住地址：</label>
-                        <div class="col-sm-2">
-                            <p class="form-control-static"><?= Helper::getAddrName($model['c_customer_addr_province']) . Helper::getAddrName($model['c_customer_addr_city']) . '-' . Helper::getAddrName($model['c_customer_addr_county']) . '-' . $model['c_customer_addr_detail']; ?></p>
-                        </div>
-                    </div>
-
 
                     <div>
                         <label class="col-sm-2 control-label">单位地址：</label>
                         <div class="col-sm-2">
                             <p class="form-control-static"><?= Helper::getAddrName($model['c_customer_jobs_province']) . '-' . Helper::getAddrName($model['c_customer_jobs_city']) . '-' . Helper::getAddrName($model['c_customer_jobs_county']) . '-' . $model['c_customer_jobs_detail_addr']; ?></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="col-sm-2 control-label">现居住地址：</label>
+                        <div class="col-sm-2">
+                            <p class="form-control-static"><?= Helper::getAddrName($model['c_customer_addr_province']) . Helper::getAddrName($model['c_customer_addr_city']) . '-' . Helper::getAddrName($model['c_customer_addr_county']) . '-' . $model['c_customer_addr_detail']; ?></p>
                         </div>
                     </div>
 
