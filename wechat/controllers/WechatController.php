@@ -48,23 +48,27 @@ class WechatController extends Controller {
 		$config = Yii::$app->params['wechat'];
 
 		// 获取微信用户相关信息
-		if ($wechat_user = (new Application($config))->oauth->user()) {
-			// 保存微信登录信息
-			$session->set('wechat_user', $wechat_user);
+		try{
+			if ($wechat_user = (new Application($config))->oauth->user()) {
+				// 保存微信登录信息
+				$session->set('wechat_user', $wechat_user);
 
-			// 检测是否绑定用户信息
-            $sys_user = User::findByWechatOpenid($wechat_user->id);
+				// 检测是否绑定用户信息
+	            $sys_user = User::findByWechatOpenid($wechat_user->id);
 
-			if ($sys_user) {
-				// 保存系统相关信息
-				$session->set('sys_user', $sys_user);
+				if ($sys_user) {
+					// 保存系统相关信息
+					$session->set('sys_user', $sys_user);
 
-				$targetUrl = empty($session->get('target_url')) ? '/' : $session->get('target_url');
+					$targetUrl = empty($session->get('target_url')) ? '/' : $session->get('target_url');
 
-				return $this->redirect($targetUrl);
-			} else {
-				return $this->redirect(['login/bind']);
+					return $this->redirect($targetUrl);
+				} else {
+					return $this->redirect(['login/bind']);
+				}
 			}
+		}catch(\Overtrue\Socialite\AuthorizeFailedException $e){
+			return $this->redirect(['site/index']);
 		}
 	}
 }
