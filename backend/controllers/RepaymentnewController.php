@@ -99,6 +99,7 @@ class RepaymentnewController extends CoreBackendController
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
         $query = $query->andWhere(['r_status' => Repayment::STATUS_ALREADY_PAY])/*->andWhere(['<=', 'r_pre_repay_date', $time])*/;
         $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
+        $query = $query->orderBy('r_repay_date DESC');
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
