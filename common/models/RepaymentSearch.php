@@ -150,7 +150,8 @@ class RepaymentSearch extends CoreBackendModel
                 if($d['r_overdue_day']>3){    //如果逾期,加上除本金外的费用和滞纳金
                     $total['total'] += $interest + $d['r_overdue_money'];
                 }
-                if($d['r_serial_no'] == $serialNo && $date->day - Carbon::now()->day >3){ //如果是属于当期时间3天内,不用还利息
+                if($d['r_serial_no'] == $serialNo && $date->gt(Carbon::now()->addDay(3))){ //如果是属于当期时间3天内,不用还利息
+
                     $total['total'] += $interest;
                 }
                 array_push($total['num'], $d['r_id']);
