@@ -381,13 +381,6 @@ class DataSearch extends CoreBackendModel
         if(!$this->validate()){
             return [];
         }
-        if(!empty($this->start_time)){
-            $this->start_time = strtotime($this->start_time);
-        }
-
-        if(!empty($this->end_time)){
-            $this->end_time = strtotime($this->end_time);
-        }
         $type = $this->logsType();
         $query = OperationLog::find()
             ->leftJoin(User::tableName(), 'user.id=operation_logs.operator_id')

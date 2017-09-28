@@ -19,10 +19,10 @@
                 <div class="col-sm-3">
                     <div class="input-daterange input-group" id="datepicker">
                         <input type="text" class="form-control" name="DataSearch[start_time]"
-                               value="<?= $sear['start_time']? date('Y-m-d', $sear['start_time']): ''; ?>" placeholder="开始时间">
+                               value="<?= $sear['start_time']?  $sear['start_time']: ''; ?>" placeholder="开始时间">
                         <span class="input-group-addon ">到</span>
                         <input type="text" class="form-control" name="DataSearch[end_time]"
-                               value="<?= $sear['end_time'] ? date('Y-m-d', $sear['end_time']):''; ?>" placeholder="结束时间">
+                               value="<?= $sear['end_time'] ?  $sear['end_time']:''; ?>" placeholder="结束时间">
                     </div>
                 </div>
                 <div class="col-sm-2">
