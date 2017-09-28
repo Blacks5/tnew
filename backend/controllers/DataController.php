@@ -56,4 +56,15 @@ class DataController extends CoreBackendController
           'sear'=> $list['sear'],
         ]);
     }
+
+    public function actionLogs()
+    {
+        $data = new DataSearch();
+        $list = $data->getLogs(\yii::$app->request->getQueryParams());
+        return $this->render('logs',[
+                'data' => $list['data'],
+                'sear' => $list['sear'],
+                'type' => $list['type'],
+            ]);
+    }
 }
