@@ -65,6 +65,7 @@ class DataController extends CoreBackendController
                 'data' => $list['data'],
                 'sear' => $list['sear'],
                 'type' => $list['type'],
+                'pages'=> $list['pages'],
             ]);
     }
 }

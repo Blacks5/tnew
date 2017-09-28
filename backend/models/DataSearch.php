@@ -389,20 +389,26 @@ class DataSearch extends CoreBackendModel
             $this->end_time = strtotime($this->end_time);
         }
         $type = $this->logsType();
-        $data = OperationLog::find()
+        $query = OperationLog::find()
             ->leftJoin(User::tableName(), 'user.id=operation_logs.operator_id')
             ->andFilterWhere(['like', 'realname', $this->realname])
             ->andFilterWhere(['like', 'type_tag', $this->typeTag])
             ->andFilterWhere(['>=', 'operation_logs.created_at', $this->start_time])
             ->andFilterWhere(['<=', 'operation_logs.created_at', $this->end_time])
             ->orderBy('operation_logs.created_at DESC')
-            ->select('operation_logs.* , user.realname')
-            ->asArray()->all();
+            ->select('operation_logs.* , user.realname');
+
+        $pageQuery = clone $query;
+        $pages = new yii\data\Pagination(['totalCount' => $pageQuery->count()]);
+        $pages->pageSize = '10';
+        $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+
 
         return [
             'data' => $data,
             'type' => $type,
             'sear' => $this->getAttributes(),
+            'pages'=>$pages,
         ];
 
     }
@@ -414,12 +420,18 @@ class DataSearch extends CoreBackendModel
     public function logsType()
     {
         $type = [
-          ['customer/view', '查看客户'],
-            ['borrownew/deduct-callback', '易极付扣款回调(新)'],
-            ['borrow/deduct-callback', '易极付-扣款回调'],
-            ['borrownew/deduct-callback', '易极付-提前还款扣款'],
-            ['loan/async', '易极付-给商家放款'],
-            ['jun/callback', '君子签-签约']
+          ['yijifu.deduct', '易极付扣款回调'],
+            ['yijifu.sign', '易极付签约回调'],
+            ['yijifu.borrownew-deduct', '易极付提前还款'],
+            ['yijifu.loan-pay', '易极付商家放款'],
+            ['junziqian.sign', '君子签签约'],
+            ['borrow.view', '查看订单详情'],
+            ['auditing', '审核订单'],
+            ['borrownew.prepayment', '提前还款'],
+            ['borrownew.cancel-vip-pack', '取消贵宾包'],
+            ['borrownew.cancel-personal-protection', '取消个人保障'],
+            ['loan.loan', '商家放款'],
+            ['repaymentnew.repay', '发起扣款']
         ];
 
         return $type;
