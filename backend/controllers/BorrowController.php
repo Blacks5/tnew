@@ -46,6 +46,7 @@ class BorrowController extends CoreBackendController
         if(in_array($action->id, $free_actions)){
             $this->enableCsrfValidation = false;
         }
+        parent::beforeAction($action);
         return true;
     }
 
