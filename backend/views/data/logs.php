@@ -49,17 +49,26 @@
             <a class="list-group-item">
                 <h4 class="list-group-item-heading"><?= $v['memo'] ?></h4>
                 <p>操作员:<?=$v['realname']?> 操作时间:<?= $v['created_at']?> &nbsp;&nbsp;操作IP:<?= $v['ip']?> &nbsp;&nbsp; 关联订单ID:<?= $v['order_id']?></p>
-                <p id="info" style="display:none;"><code><?= $v['data'] ?></code></p>
+                <pre style="display: none;"><?= $v['data'] ?></pre>
             </a>
             <?php }?>
+        </div>
+        <div class="f-r">
+            <?= \yii\widgets\LinkPager::widget([
+                'pagination' => $pages,
+                'firstPageLabel' => '首页',
+                'nextPageLabel' => '下一页',
+                'prevPageLabel' => '上一页',
+                'lastPageLabel' => '末页',
+            ]) ?>
         </div>
     </div>
 </div>
 <script>
     $('.list-group-item').mousemove(function(){
-        $(this).find('#info').show();
+        $(this).find('pre').show();
     })
     $('.list-group-item').mouseout(function(){
-        $(this).find('#info').hide();
+        $(this).find('pre').hide();
     })
 </script>
