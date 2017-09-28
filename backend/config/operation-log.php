@@ -15,11 +15,11 @@ return [
         // 订单、审核相关:
         'borrow/view' => ['tag' => 'borrow.view', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]查看了订单详情'],
         'borrownew/view' => ['tag' => 'borrow.view', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]查看了订单详情(NEW)'],
-        'borrow/verify-pass-first' => ['tag' => 'borrow.verify-pass-first', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 初审通过'],
-        'borrownew/verify-pass' => ['tag' => 'borrownew.verify-pass', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 终审放款(NEW)'],
-        'borrow/verify-cancel' => ['tag' => 'borrow.verify-cancel', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 取消订单'],
-        'borrow/verify-refuse' => ['tag' => 'borrow.refuse', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]拒绝订单'],
-        'borrow/verify-failpic' => ['tag' => 'borrow.verify-failpic', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]审核-照片不合格'],
+        'borrow/verify-pass-first' => ['tag' => 'auditing.verify-pass-first', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 初审通过'],
+        'borrownew/verify-pass' => ['tag' => 'auditing.verify-pass', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 终审放款(NEW)'],
+        'borrow/verify-cancel' => ['tag' => 'auditing.verify-cancel', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 取消订单'],
+        'borrow/verify-refuse' => ['tag' => 'auditing.refuse', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]拒绝订单'],
+        'borrow/verify-failpic' => ['tag' => 'auditing.verify-failpic', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]审核-照片不合格'],
 
         // 提前还款、取消贵宾服务包、取消个人保障计划:
         'borrownew/prepayment' => ['tag' => 'borrownew.prepayment', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]- 提前还款'],
