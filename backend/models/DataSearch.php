@@ -31,6 +31,8 @@ class DataSearch extends CoreBackendModel
     public $city;
     public $county;
     public $userId;
+    //logs param
+    public $typeTag;
 
     /**
      * @var 统计数据汇总
@@ -81,7 +83,7 @@ class DataSearch extends CoreBackendModel
     public function rules()
     {
         return [
-            [['username','realname','start_time','end_time','province','city','county'], 'trim'],
+            [['username','realname','start_time','end_time','province','city','county', 'typeTag'], 'trim'],
             [['start_time','end_time'], 'date', 'format'=> 'php:Y-m-d']
         ];
     }
@@ -371,5 +373,55 @@ class DataSearch extends CoreBackendModel
             'sear'  => $this->getAttributes(),
         ];
 
+    }
+
+    public function getLogs($param)
+    {
+        $this->load($param);
+        if(!$this->validate()){
+            return [];
+        }
+        if(!empty($this->start_time)){
+            $this->start_time = strtotime($this->start_time);
+        }
+
+        if(!empty($this->end_time)){
+            $this->end_time = strtotime($this->end_time);
+        }
+        $type = $this->logsType();
+        $data = OperationLog::find()
+            ->leftJoin(User::tableName(), 'user.id=operation_logs.operator_id')
+            ->andFilterWhere(['like', 'realname', $this->realname])
+            ->andFilterWhere(['like', 'type_tag', $this->typeTag])
+            ->andFilterWhere(['>=', 'operation_logs.created_at', $this->start_time])
+            ->andFilterWhere(['<=', 'operation_logs.created_at', $this->end_time])
+            ->orderBy('operation_logs.created_at DESC')
+            ->select('operation_logs.* , user.realname')
+            ->asArray()->all();
+
+        return [
+            'data' => $data,
+            'type' => $type,
+            'sear' => $this->getAttributes(),
+        ];
+
+    }
+
+    /**
+     * 日志的分类
+     * @return array
+     */
+    public function logsType()
+    {
+        $type = [
+          ['customer/view', '查看客户'],
+            ['borrownew/deduct-callback', '易极付扣款回调(新)'],
+            ['borrow/deduct-callback', '易极付-扣款回调'],
+            ['borrownew/deduct-callback', '易极付-提前还款扣款'],
+            ['loan/async', '易极付-给商家放款'],
+            ['jun/callback', '君子签-签约']
+        ];
+
+        return $type;
     }
 }
