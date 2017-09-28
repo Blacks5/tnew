@@ -77,6 +77,7 @@ class Orders extends CoreCommonActiveRecord {
 			[['o_is_auto_pay', 'o_is_add_service_fee', 'o_is_free_pack_fee'], 'in', 'range' => [1, 0]],
 			[['o_remark'], 'string', 'max' => 255],
 			[['o_product_code'], 'string', 'max' => 30],
+			[['o_product_code'], 'unique' , 'message' => '商品串码已使用' , 'on' => 'clientValidate2']
 		];
 	}
 
