@@ -14,8 +14,9 @@ return [
 
         // 订单、审核相关:
         'borrow/view' => ['tag' => 'borrow.view', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]查看了订单详情'],
+        'borrownew/view' => ['tag' => 'borrow.view', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]查看了订单详情(NEW)'],
         'borrow/verify-pass-first' => ['tag' => 'borrow.verify-pass-first', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 初审通过'],
-        'borrownew/verify-pass' => ['tag' => 'borrownew.verify-pass', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 终审放款'],
+        'borrownew/verify-pass' => ['tag' => 'borrownew.verify-pass', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 终审放款(NEW)'],
         'borrow/verify-cancel' => ['tag' => 'borrow.verify-cancel', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 取消订单'],
         'borrow/verify-refuse' => ['tag' => 'borrow.refuse', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]拒绝订单'],
         'borrow/verify-failpic' => ['tag' => 'borrow.verify-failpic', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}]审核-照片不合格'],
