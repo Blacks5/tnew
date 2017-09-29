@@ -21,7 +21,7 @@ class BaseController extends Controller {
 		parent::beforeAction($action);
 
 		// 检测是否微信登录
-		Wechat::Login(['site/index']);
+		Wechat::Login(['wechat/oauth-callback']);
 
 		// 检测是否已经绑定
 		$session = Yii::$app->session;
