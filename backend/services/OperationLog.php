@@ -29,7 +29,6 @@ class OperationLog
         } elseif (empty($this->config['memo'])) {
             return;
         }
-
         $this->parse();
         $this->write($this->config['tag'], $this->data['memo'], 0, $this->data['data']);
     }
