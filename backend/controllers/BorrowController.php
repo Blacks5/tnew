@@ -46,8 +46,7 @@ class BorrowController extends CoreBackendController
         if(in_array($action->id, $free_actions)){
             $this->enableCsrfValidation = false;
         }
-        parent::beforeAction($action);
-        return true;
+        return parent::beforeAction($action);
     }
 
     // 列表 待审核
@@ -965,7 +964,6 @@ left join customer on customer.c_id=orders.o_customer_id
         if($request->getIsAjax()){
             $repay = new RepaymentSearch();
             $price = $repay->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
-            var_dump($price);die;
             $trans = Yii::$app->getDb()->beginTransaction();
             try{
                 if($price['total']!=$request->post('price')){
