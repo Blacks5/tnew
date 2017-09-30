@@ -1101,9 +1101,7 @@ left join customer on customer.c_id=orders.o_customer_id
 
                         if($repayCount==count($id)){ //全部提前还款 需要将各种费用清空,月供=本金
                             $date = Carbon::createFromTimestamp($repay_model->r_pre_repay_date);
-                            if($repay_model->r_serial_no == $serialNO && $date->gt(Carbon::now()->addDay(3) )) {
-                                //当前期数需要还月供
-                            }else{
+                            if($repay_model->r_serial_no != $serialNO && $repay_model->r_overdue_day < 4){
                                 $repay_model->r_total_repay = $repay_model->r_principal;  //月供=本金
                                 $repay_model->r_interest = 0;
                                 $repay_model->r_add_service_fee = 0;
