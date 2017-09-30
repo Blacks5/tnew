@@ -167,10 +167,12 @@ class RepaymentSearch extends CoreBackendModel
             ->select('o_is_free_pack_fee')
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->where(['r_orders_id'=>$order_id, 'r_status'=>10]);
+        $count = $sql->count();
         $isPack = $sql->asArray()->one();
-        if($isPack['o_is_free_pack_fee'] == 0){  //如果还款小于3期 或者 未购买贵宾包 +200
+        if($isPack['o_is_free_pack_fee'] == 0 || $count < 3){  //如果还款小于3期 或者 未购买贵宾包 +200
             $total['total'] += 200;
         }
+        $total['serialNo'] = $serialNo;  //当前应还期数
         return $total;
     }
 
@@ -180,7 +182,7 @@ class RepaymentSearch extends CoreBackendModel
      * @return int|mixed
      * @author OneStep
      */
-    private function isThisMonth($order_id){
+    public function isThisMonth($order_id){
         $repayment = Repayment::find()->where(['r_orders_id'=>$order_id])->all();
         $date = Carbon::now();
         foreach ($repayment as $k => $v){

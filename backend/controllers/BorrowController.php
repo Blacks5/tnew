@@ -978,13 +978,19 @@ left join customer on customer.c_id=orders.o_customer_id
                     $data->r_repay_date = strtotime(date('Y-m-d'));
                     $data->r_status = Repayment::STATUS_ALREADY_PAY;
 
+                    $date = Carbon::createFromTimestamp($data['r_pre_repay_date']);
+                    $now = Carbon::now();
                     if($count == $request->post('expected')){
-                        $data->r_total_repay = $data->r_principal;  //月供=本金
-                        $data->r_interest = 0;
-                        $data->r_add_service_fee = 0;
-                        $data->r_free_pack_fee = 0;
-                        $data->r_finance_mangemant_fee = 0;
-                        $data->r_customer_management = 0;
+                        if($price['serialNo'] == $data['r_serial_no'] && $date->gt($now->addDay(3))){
+                            //这期要还月供,不清空其他数据
+                        }else{
+                            $data->r_total_repay = $data->r_principal;  //月供=本金
+                            $data->r_interest = 0;
+                            $data->r_add_service_fee = 0;
+                            $data->r_free_pack_fee = 0;
+                            $data->r_finance_mangemant_fee = 0;
+                            $data->r_customer_management = 0;
+                        }
                     }
                     if($data->save(false)===false){
                         throw new CustomBackendException('还款失败!');
