@@ -12,6 +12,9 @@ return [
         'borrownew/calculation-residual-loan',  //提前还款计算金额
         'borrow/prepayment',            //提前还款
         'borrownew/prepayment',         //提前还款(新)
+        'borrownew/cancel-personal-protection', //取消个人保障计划
+        'borrownew/cancel-vip-pack',    //取消贵宾包
+        'borrownew/update-product-code', //修改商品代码
 
 	]
 ];
