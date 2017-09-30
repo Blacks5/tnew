@@ -143,16 +143,14 @@ class RepaymentSearch extends CoreBackendModel
         $data = $sql->limit($num)->all();
         $serialNo = $this->isThisMonth($order_id);
         if($num == $repayCount){    //判断是否全部还完
-            $interest = $data[0]['r_total_repay']-$data[0]['r_principal']; //本期的所有利息
             foreach ($data as $k => $d){
-                $date = Carbon::createFromTimestamp($d['r_pre_repay_date']);
                 $total['total'] += $d['r_principal']; //获取所有的 本金
                 if($d['r_overdue_day']>3){    //如果逾期,加上除本金外的费用和滞纳金
-                    $total['total'] += $interest + $d['r_overdue_money'];
+                    $total['total'] += $d['r_total_repay'] - $d['r_principal'] + $d['r_overdue_money'];
                 }
-                if($d['r_serial_no'] == $serialNo && $date->gt(Carbon::now()->addDay(3))){ //如果是属于当期时间3天内,不用还利息
+                if($d['r_serial_no'] == $serialNo){ //如果是属于当期需还利息
 
-                    $total['total'] += $interest;
+                    $total['total'] += $d['r_total_repay'] - $d['r_principal'];
                 }
                 array_push($total['num'], $d['r_id']);
             }
@@ -169,7 +167,7 @@ class RepaymentSearch extends CoreBackendModel
             ->where(['r_orders_id'=>$order_id, 'r_status'=>10]);
         $count = $sql->count();
         $isPack = $sql->asArray()->one();
-        if($isPack['o_is_free_pack_fee'] == 0 || $count < 3){  //如果还款小于3期 或者 未购买贵宾包 +200
+        if($isPack['o_is_free_pack_fee'] == 0 || $count < 2){  //如果还款小于3期 或者 未购买贵宾包 +200
             $total['total'] += 200;
         }
         $total['serialNo'] = $serialNo;  //当前应还期数
@@ -188,10 +186,10 @@ class RepaymentSearch extends CoreBackendModel
         foreach ($repayment as $k => $v){
             $reDate = Carbon::createFromTimestamp($v['r_pre_repay_date']);
             if($reDate->month == $date->month){    //判断当期应还的月份
-                if($date->day - $reDate->day >=0){  //如果应还大于现在时间证明本月已还,下月应还为本期
-                    return $v['r_serial_no'] + 1;
-                }else{
+                if($reDate->addDay(3)->gt($date)){  //如果应还大于现在时间证明本月已还,下月应还为本期
                     return $v['r_serial_no'];
+                }else{
+                    return $v['r_serial_no'] + 1;
                 }
             }
         }

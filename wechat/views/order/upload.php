@@ -329,7 +329,7 @@ $(function(){
             // 选取图片
             wx.chooseImage({
                 count: 1,
-                sizeType: ['original', 'compressed'],
+                sizeType: ['compressed'],
                 sourceType: ['camera'],
                 success: function (res) {
                     // 隐藏当前input容器
