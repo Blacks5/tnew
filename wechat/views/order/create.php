@@ -119,6 +119,12 @@
                                 <input class="weui-input" type="text" name="o_remark" placeholder="请输入备注">
                             </div>
                         </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">月供</label></div>
+                            <div class="weui-cell__bd">
+                                <a href="javascript:;" class="weui-btn weui-btn_default" id="calculateBtn">月供查询</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <!--订单信息end-->
@@ -746,6 +752,45 @@
 
             // 初始化
             _this.localSet('o_is_auto_pay' , 1);
+
+            // 绑定计算月供
+            $('#calculateBtn').bind('click' , function(){
+                var storeId = $('select[name=o_store_id]').val();
+                var productId = $('select[name=o_product_id]').val();
+                var goodsType = $('input[name=g_goods_type]').val();
+
+                if(!goodsType){
+                    $.toast('商品类型不合法', "text");return;
+                }
+                if(!(/^\d+$/.test(goodsType))){
+                    $.toast('商品类型不合法', "text");return;
+                }
+
+                if(!storeId){
+                    $.toast('请选择商铺', "text");return;
+                }
+                if(!(/^\d+$/.test(storeId))){
+                    $.toast('选择商铺不合法', "text");return;
+                }
+
+                if(!productId){
+                    $.toast('请选择产品', "text");return;
+                }
+                if(!(/^\d+$/.test(productId))){
+                    $.toast('选择产品不合法', "text");return;
+                }
+                // 验证数据
+                $.ajaxPost($('#formStep2').attr('action') , $('#formStep2').serialize() , function(res){
+                    if(res.status){
+                        var result = _this.calculate();
+                        console.log(result);
+                        var text = "每月还款￥" + result.everyMonthPay;
+                        $.alert(text, "月供查询");
+                    }else{
+                        $.toast(res.message, "text");
+                    }
+                } , 5000);
+            });
         }
 
         // 初始化本地存储数据
@@ -1057,6 +1102,33 @@
          * @return {[type]} [description]
          */
         Page.prototype.checkStep6 = function(currStep){
+            var _this = this;
+
+            // 计算月供等
+            var res = _this.calculate();
+            // 绑定数据
+            $('#sellerName').html(res.sellerName);
+            $('#goodsName').html(res.goodsName + ' ' + res.goodsModel + ' x 1');
+            $('#goodsAmount').html('￥' + res.goodsAmount);
+            $('#paidAmount').html('￥' + res.paidAmount + '(含服务费￥' + res.serverFee + ')');
+            $('#totalPeriod').html(res.totalPeriod + '期');
+            $('#everyMonthPay').html('￥' + res.everyMonthPay);
+            $('#vipServiceAmount').html('￥' + res.vipServiceAmount);
+            $('#securityServiceAmount').html('￥' + res.securityServiceAmount);
+
+            // 修改
+            _this.initStep(currStep);
+            // 绑定提交订单
+            $('.nextStep6').bind('click' , function(){
+                _this.ajaxCommit();
+            });
+        }
+
+        /**
+         * 计算月供费用等
+         * @return {[type]} [description]
+         */
+        Page.prototype.calculate = function(){
             // 获取表单1数据
             var form1 = $('#formStep1').serializeObject();
             // 获取表单2数据
@@ -1112,39 +1184,30 @@
                 }
             }
 
-            console.log(serverFee);
-            console.log(loanAmount);
-            
             // 真实利率
             var realEveryMonthRate = (everyMonthRate/100);
             
             // 计算每月还款本金
             var everyPrincipal = realEveryMonthRate <= 0 ? (loanAmount / totalPeriod).toFixed(2) : (loanAmount * realEveryMonthRate * Math.pow(1 + realEveryMonthRate , totalPeriod)) / (Math.pow(1 + realEveryMonthRate , totalPeriod) - 1);
-            console.log(everyPrincipal);
-            console.log((everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount));
-            console.log(everyPrincipal , securityServiceAmount , vipServiceAmount , customerAmount , financialAmount);
+
             // 每月还款总金额
             var everyMonthPay = (everyPrincipal + securityServiceAmount + vipServiceAmount + customerAmount + financialAmount).toFixed(2);
 
-            // 填充数据和信息
-            $('#sellerName').html($('select[name=o_store_id] option:selected').text());
-            $('#goodsName').html(form1.g_goods_name + ' ' + form1.g_goods_models + ' x 1');
-            $('#goodsAmount').html('￥' + parseFloat(form1.g_goods_price).toFixed(2));
-            $('#paidAmount').html('￥' + parseFloat(form1.g_goods_deposit).toFixed(2) + '(含服务费￥' + serverFee + ')');
-            $('#totalPeriod').html(totalPeriod + '期');
-            $('#everyMonthPay').html('￥' + parseFloat(everyMonthPay).toFixed(2));
-            $('#vipServiceAmount').html('￥' + parseFloat(vipServiceAmount).toFixed(2));
-            $('#securityServiceAmount').html('￥' + parseFloat(securityServiceAmount).toFixed(2));
+            var result = {
+                sellerName : $('select[name=o_store_id] option:selected').text(),
+                goodsName : form1.g_goods_name,
+                goodsModel : form1.g_goods_models,
+                goodsAmount : parseFloat(form1.g_goods_price).toFixed(2),
+                paidAmount : parseFloat(form1.g_goods_deposit).toFixed(2),
+                serverFee : serverFee,
+                totalPeriod : totalPeriod,
+                everyMonthPay : parseFloat(everyMonthPay).toFixed(2),
+                vipServiceAmount : parseFloat(vipServiceAmount).toFixed(2),
+                securityServiceAmount : parseFloat(securityServiceAmount).toFixed(2)
+            };
 
-            var _this = this;
-            // 修改
-            _this.initStep(currStep);
-            // 绑定提交订单
-            $('.nextStep6').bind('click' , function(){
-                _this.ajaxCommit();
-            });
+            return result; 
         }
-
 
         Page.prototype.localSet = function(key , val){
             var storage = window.localStorage || window.sessionStorage;
