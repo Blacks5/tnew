@@ -546,7 +546,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                 <?php } ?>
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                     <div class="form-group">
-                        <div class="col-sm-8 col-sm-offset-3">
+                        <div class="col-sm-8">
                             <?php if($model['o_status'] == 10){ ?>
                             <div class="col-md-3">
                                 <div class="input-group">
@@ -563,7 +563,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="col-md-8 input-group">
+                                <div class="col-md-12 input-group">
                                     <input type="text" value="0" id="calculation_residual_loan_val" class="form-control" disabled/>
                                     <span class="input-group-addon" id="sizing-addon1">元</span>
                                 </div>

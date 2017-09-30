@@ -575,8 +575,8 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
 
                 <?php if ((int)$model['o_status'] === \common\models\Orders::STATUS_PAYING){ ?>
                     <div class="form-group">
-                        <div class="col-sm-8 col-sm-offset-3">
-                            <?php if($model['o_status'] == 10 && $reCount==1){ ?>
+                        <div class="col-sm-8">
+                            <?php if($model['o_status'] == 10 && $isRepayment==0){ ?>
                                 <div class="col-md-3">
                                     <div class="input-group">
                                         <select class="col-md-8 form-control" id="period_num">
