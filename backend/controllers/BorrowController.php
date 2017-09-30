@@ -981,9 +981,7 @@ left join customer on customer.c_id=orders.o_customer_id
                     $date = Carbon::createFromTimestamp($data['r_pre_repay_date']);
                     $now = Carbon::now();
                     if($count == $request->post('expected')){
-                        if($price['serialNo'] == $data['r_serial_no'] && $date->gt($now->addDay(3))){
-                            //这期要还月供,不清空其他数据
-                        }else{
+                        if($price['serialNo'] != $data['r_serial_no'] && $price['r_overdue_day'] < 3){
                             $data->r_total_repay = $data->r_principal;  //月供=本金
                             $data->r_interest = 0;
                             $data->r_add_service_fee = 0;
