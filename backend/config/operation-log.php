@@ -5,10 +5,12 @@ return [
         
         // 回调相关:
         'borrownew/deduct-callback' => ['tag' => 'api.callback.yijifu.deduct-new', 'memo' => 'API回调:易极付-扣款回调-NEW'],
-        'borrow/deduct-callback' => ['tag' => 'api.callback.yijifu.deduct', 'memo' => 'API回调:易极付-扣款回调'],
+        'borrow/deduct-callback' => ['tag' => 'api.callback.yijifu.deduct', 'memo' => 'API回调:易极付-扣款回调（旧）'],
         // 'borrow/update-bank-call-back' => ['tag' => 'api.callback.bankcard-update', 'memo' => 'API回调:易极付-修改银行卡'],
         'borrow/verify-pass-callback' => ['tag' => 'api.callback.yijifu.sign', 'memo' => 'API回调:易极付-签约回调'],
-        'borrownew/deduct-callback' => ['tag' => 'api.callback.yijifu.borrownew-deduct', 'memo' => 'API回调:易极付-提前还款扣款'],
+        // 'borrownew/deduct-callback' => ['tag' => 'api.callback.yijifu.borrownew-deduct', 'memo' => 'API回调:易极付-提前还款扣款'],
+        'repaymentnew/deduct-callback' => ['tag' => 'api.callback.yijifu.repaymentnew-deduct', 'memo' => 'API回调:易极付-扣款扣款（repaymentnew.actionDeductCallback）'],
+        
         'loan/async' => ['tag' => 'api.callback.yijifu.loan-pay', 'memo' => 'API回调:易极付-给商家放款'],
         'jun/callback' => ['tag' => 'api.callback.junziqian.sign', 'memo' => 'API回调:君子签-签约'],
 
