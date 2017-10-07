@@ -9,7 +9,7 @@ return [
         // 'borrow/update-bank-call-back' => ['tag' => 'api.callback.bankcard-update', 'memo' => 'API回调:易极付-修改银行卡'],
         'borrow/verify-pass-callback' => ['tag' => 'api.callback.yijifu.sign', 'memo' => 'API回调:易极付-签约回调'],
         // 'borrownew/deduct-callback' => ['tag' => 'api.callback.yijifu.borrownew-deduct', 'memo' => 'API回调:易极付-提前还款扣款'],
-        'repaymentnew/deduct-callback' => ['tag' => 'api.callback.yijifu.repaymentnew-deduct', 'memo' => 'API回调:易极付-扣款扣款（repaymentnew.actionDeductCallback）'],
+        'repaymentnew/deduct-callback' => ['tag' => 'api.callback.yijifu.repaymentnew-deduct', 'memo' => 'API回调:易极付-扣款回调（repaymentnew.actionDeductCallback）'],
         
         'loan/async' => ['tag' => 'api.callback.yijifu.loan-pay', 'memo' => 'API回调:易极付-给商家放款'],
         'jun/callback' => ['tag' => 'api.callback.junziqian.sign', 'memo' => 'API回调:君子签-签约'],
