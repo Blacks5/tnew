@@ -126,7 +126,7 @@ use yii\helpers\Url;
                                                                     详情</a>
                                                             <?php } ?>
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/all-repayment-list']), ['order_id' => $_v['o_id']])) { ?>
-                                                                <a href="<?= Url::toRoute(['repayment/all-repayment-list', 'order_id' => $_v['o_id']]); ?>"
+                                                                <a href="<?= Url::toRoute(['repaymentnew/all-repayment-list', 'order_id' => $_v['o_id']]); ?>"
                                                                    class="btn btn-primary btn-xs"><i
                                                                             class="fa fa-folder"></i>
                                                                     所有期数</a>
