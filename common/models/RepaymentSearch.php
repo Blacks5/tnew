@@ -66,7 +66,7 @@ class RepaymentSearch extends CoreBackendModel
     }
 
     /**
-     * 获取30天订单详情
+     * 获取订单列表
      * @param $params
      * @return $this
      */
