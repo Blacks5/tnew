@@ -250,7 +250,7 @@ class YejiSearch extends CoreBackendModel{
         $orderQuery = Orders::find()
             ->andWhere(['in', 'o_user_id', $userList])
             ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
-            ->andFilterWhere(['<=', 'o_create_at', $this->end_time]);
+            ->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
 
         $a_orderQuery = clone $orderQuery;
         $s_orderQuery = $orderQuery->andWhere(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]]);
