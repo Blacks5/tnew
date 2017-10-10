@@ -73,9 +73,9 @@ class RepaymentSearch extends CoreBackendModel
     public function repaymentListByOrders($params)
     {
         $query = Orders::find()
-            ->select(['*'])
+            ->select('*')
             ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
-            ->leftJoin(Customer::tableName(), 'r_customer_id=c_id')
+            ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
             ->leftJoin(Product::tableName(), 'o_product_id=p_id');
         $this->load($params);
         if(!$this->validate()){
