@@ -119,15 +119,15 @@ use yii\helpers\Url;
                                                             <?php } ?>
 
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repaymentnew/repay']))) { ?>
-                                                                <?php if($_v['r_status'] == \common\models\Repayment::STATUS_NOT_PAY){ ?>
+                                                                <?php if($_v['repay'] > 0){ ?>
+                                                                    <button class="btn btn-info btn-xs" disabled>
+                                                                        <i class="fa fa-folder"></i>处理中...
+                                                                    </button>
+                                                                <?php }else{ ?>
                                                                     <button data-value="<?= $_v['r_id'] ?>"
                                                                             class="btn btn-info btn-xs repay"><i
                                                                                 class="fa fa-folder"></i>
                                                                         还款
-                                                                    </button>
-                                                                <?php }elseif($_v['r_status'] == \common\models\Repayment::STATUS_PROCESSING){ ?>
-                                                                    <button class="btn btn-info btn-xs">
-                                                                        <i class="fa fa-folder"></i>处理中
                                                                     </button>
                                                                 <?php } ?>
                                                             <?php } ?>
@@ -175,7 +175,7 @@ $(".repay").click(function(env){
             data: {refund_id: r_id},
             success: function (data) {
                 if (data.status === 1) {
-                    return layer.alert(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    return layer.alert(data.message, {icon: data.status}, function(){window.location.reload();});
                 }else{
                     return layer.alert(data.message, {icon: data.status});
                 }

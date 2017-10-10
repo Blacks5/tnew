@@ -58,7 +58,7 @@ class RepaymentnewController extends CoreBackendController
         $model = new RepaymentSearch();
         $query = $model->repaymentListByOrders(Yii::$app->getRequest()->getQueryParams());
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
-        $query = $query->andWhere(['r_status' => [Repayment::STATUS_NOT_PAY, Repayment::STATUS_PROCESSING]]);
+        $query = $query->andWhere(['o_status' => Orders::STATUS_PAYING]);
         $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
         $querycount = clone $query;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
@@ -66,6 +66,7 @@ class RepaymentnewController extends CoreBackendController
         $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         foreach ($data as $k => $v){
             $n = 2;
+            $data[$k]['repay'] = YijifuDeduct::find()->where(['o_serial_id'=> $v['o_serial_id']])->andWhere(['in', 'status', [0,1,2,3]])->count();
             $v['o_total_price'] = round($v['o_total_price'], $n);
             $v['o_total_deposit'] = round($v['o_total_deposit'], $n);
             $v['o_total_interest'] = round($v['o_total_interest'], $n);
@@ -78,6 +79,7 @@ class RepaymentnewController extends CoreBackendController
             $v['r_finance_mangemant_fee'] = round($v['r_finance_mangemant_fee'], $n);
             $v['r_customer_management'] = round($v['r_customer_management'], $n);
         };
+
         return $this->render('waitrepay', [
             'sear' => $model->getAttributes(),
             'model' => $data,
