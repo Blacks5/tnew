@@ -102,7 +102,7 @@ class DataController extends CoreBackendController
             ])
             ->leftJoin(Orders::tableName(), 'orders.o_serial_id=yijifu_sign.o_serial_id')
             ->leftJoin(Customer::tableName(),'o_customer_id=c_id')
-            ->leftJoin(OrderImages::tableName(), 'oi_id=orders.o_id')
+            ->leftJoin(OrderImages::tableName(), 'oi_id=orders.o_images_id')
             ->leftJoin(Goods::tableName(), 'g_order_id=o_id')
             ->where(['<', 'yijifu_sign.created_at', '1505145600'])
             ->andWhere(['status'=>1])
@@ -110,5 +110,8 @@ class DataController extends CoreBackendController
             ->asArray()->all(); //获取9月12日之前签约成功的所有签约
         $change = new ReturnMoney();
         $isChange = $change->changeYijifuSign($oldSign);
+        if($isChange){
+            echo '修改成功';
+        }
     }
 }

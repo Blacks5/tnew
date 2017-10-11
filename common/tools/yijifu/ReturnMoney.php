@@ -375,11 +375,12 @@ class ReturnMoney extends AbstractYijifu
             $reuturn = false;
             foreach ($value as $k => $v){
                 $logs = json_encode($v);   //历史内容存入logs
-                $randString = \Yii::$app->getSecurity()->generateRandomString(4);
+                $randString = \Yii::$app->getSecurity()->generateRandomString(5);
                 $merchOrderNo = $merchContractNo = $v['o_serial_id'] . '-'. $randString;  //新签约合同号
                 $loanAmount = $v['o_total_price'] - $v['o_total_deposit'] + $v['o_service_fee'] + $v['o_service_fee'];
                 $totalRepayAmout = Repayment::find()->select('sum(r_total_repay)')->where(['r_orders_id'=>$v['o_id']])->asArray()->column();
                 $imgs = new \common\models\UploadFile();
+                $this->orderNo = str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999);
                 $param_arr = [
                     'service' => 'fastSign',
                     'merchOrderNo'=>$merchOrderNo,
@@ -410,18 +411,18 @@ class ReturnMoney extends AbstractYijifu
                 $status = 3; // 接口调用失败
                 if($response->getIsOk()){
                     $ret = $response->getData();
-
                     // 代表接口调用成功
                     if(true === $ret['success']) {
                         $status = 2; // 等待回掉
                     }else{
-                        throw new CustomCommonException($ret['resultMessage']);
-                    }
-                    $operator_id = \Yii::$app->getUser()->getId();
-                    $sql = "select * from ". YijifuSign::tableName() ." where id=:id for update";
-                    $sign = \Yii::$app->getDb()->createCommand($sql, ['id'=> $v['id']])->queryOne();
-                    // 写签约记录表
+                        var_dump($ret);die;
 
+                        throw new CustomCommonException($ret['resultMessage'] . ' 易极付错误!');
+                    }
+
+                    $operator_id = \Yii::$app->getUser()->getId();
+                    $sign = YijifuSign::findOne($v['id']);
+                    // 写签约记录表
                     $sign->merchOrderNo = $merchOrderNo;
                     $sign->merchContractNo = $merchOrderNo;
                     $sign->updated_at = $_SERVER['REQUEST_TIME'];
@@ -431,14 +432,15 @@ class ReturnMoney extends AbstractYijifu
                     $sign->orderNo = isset($ret['orderNo'])?$ret['orderNo']:'';
                     $sign->logs = $logs;
 
-                    if($sign->save(false) ===false){
+                    if($sign->save(false) === false){
                         throw new CustomBackendException('修改订单失败');
                     }
                     $reuturn = true;
-                    $trans->commit();
+
                 }
 
             }
+            $trans->commit();
             return $reuturn;
         }catch (CustomBackendException $e){
             $trans->rollBack();
