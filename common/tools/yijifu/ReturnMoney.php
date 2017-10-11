@@ -19,6 +19,7 @@ use common\tools\junziqian\model\UploadFile;
 use yii\db\Exception;
 use yii\db\Query;
 use \yii\httpclient\Client as httpClient;
+use backend\services\OperationLog;
 
 /**
  * 回款接口
@@ -412,6 +413,14 @@ class ReturnMoney extends AbstractYijifu
                 // 发起请求
                 $http_client = new httpClient();
                 $response = $http_client->post($this->api, $param_arr)->send();
+                // 记录发送日志
+                $operationLog = new OperationLog();
+                $operationLog->write(
+                    'debug.yijifu.fix-sign-data',
+                    '修正易极付签约数据',
+                    0,
+                    ['send-data' => $param_arr]
+                );
 
                 $status = 3; // 接口调用失败
                 if($response->getIsOk()){
