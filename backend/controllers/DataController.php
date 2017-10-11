@@ -108,6 +108,7 @@ class DataController extends CoreBackendController
             ->andWhere(['status'=>1])
             ->andWhere(['o_status'=> 10])
             ->asArray()->all(); //获取9月12日之前签约成功的所有签约
+        echo '待重新签约记录数：' . count($oldSign) . PHP_EOL;
         $change = new ReturnMoney();
         $isChange = $change->changeYijifuSign($oldSign);
         if($isChange){

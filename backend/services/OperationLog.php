@@ -82,7 +82,8 @@ class OperationLog
         $post = \Yii::$app->request->post();
         empty($get) or $requestParams['_get'] = $get;
         empty($post) or $requestParams['_post'] = $post;
-        $data['params'] = $requestParams;
+        $data['_time'] = microtime(true);
+        $data['_params'] = $requestParams;
 
         $d = [
             'type_tag' => $typeTag,
