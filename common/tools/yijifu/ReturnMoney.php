@@ -374,7 +374,12 @@ class ReturnMoney extends AbstractYijifu
         try{
             $reuturn = false;
             foreach ($value as $k => $v){
-                $logs = json_encode($v);   //历史内容存入logs
+                $logs = json_decode($v['logs'], true);
+                if (!is_array($logs)) {
+                    $logs = [];
+                }
+                $logs['fix-data-bak'] = $v;
+                $logs = json_encode($logs);   //历史内容存入logs
                 $randString = \Yii::$app->getSecurity()->generateRandomString(5);
                 $merchOrderNo = $merchContractNo = $v['o_serial_id'] . '-'. $randString;  //新签约合同号
                 $loanAmount = $v['o_total_price'] - $v['o_total_deposit'] + $v['o_service_fee'] + $v['o_service_fee'];
