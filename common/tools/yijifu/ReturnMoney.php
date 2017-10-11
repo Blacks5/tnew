@@ -389,18 +389,18 @@ class ReturnMoney extends AbstractYijifu
             $imgs = new \common\models\UploadFile();
             $this->orderNo = str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999);
             $param_arr = [
-                'service' => 'fastSign',
-                'merchOrderNo'=>$merchOrderNo,
-                'merchContractNo'=>$merchOrderNo,
-                'merchContractImageUrl'=>$imgs->getUrl($v['oi_after_contract']),
-                'realName'=>$v['c_customer_name'],
-                'certNo'=>$v['c_customer_id_card'],
-                'bankCardNo'=>$v['c_banknum'],
-                'mobileNo'=>$v['c_customer_cellphone'],
-                'productName'=>$v['g_goods_name'] .'-'. $v['g_goods_models'],
-                'loanAmount'=>$loanAmount,
-                'totalRepayAmount'=> $totalRepayAmout[0],
-                'operateType'=>'SIGN',
+                'service'               => 'fastSign',
+                'merchOrderNo'          => $merchOrderNo,
+                'merchContractNo'       => $merchOrderNo,
+                'merchContractImageUrl' => $imgs->getUrl($v['oi_after_contract']),
+                'realName'              => $v['c_customer_name'],
+                'certNo'                => $v['c_customer_id_card'],
+                'bankCardNo'            => $v['c_banknum'],
+                'mobileNo'              => $v['c_customer_cellphone'],
+                'productName'           => mb_substr($v['g_goods_models'], 0, 15),
+                'loanAmount'            => $loanAmount,
+                'totalRepayAmount'      => $totalRepayAmout[0],
+                'operateType'           => 'SIGN',
             ];
 
             $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
