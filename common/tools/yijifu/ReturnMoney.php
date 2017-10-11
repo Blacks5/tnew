@@ -371,98 +371,90 @@ class ReturnMoney extends AbstractYijifu
 
     public function changeYijifuSign($value)
     {
-        $trans = \Yii::$app->getDb()->beginTransaction();
-        try{
-            $reuturn = false;
-            foreach ($value as $k => $v){
-                $logs = json_decode($v['logs'], true);
-                if (!is_array($logs)) {
-                    $logs = [];
+        $operationLog = new OperationLog();
+        $reuturn = false;
+        foreach ($value as $k => $v){
+            $logs = json_decode($v['logs'], true);
+            if (!is_array($logs)) {
+                $logs = [];
+            } else if (isset($logs['fix-data-bak'])) {
+                continue;
+            }
+            $logs['fix-data-bak'] = $v;
+            $logs = json_encode($logs);   //历史内容存入logs
+            $randString = \Yii::$app->getSecurity()->generateRandomString(5);
+            $merchOrderNo = $merchContractNo = $v['o_serial_id'] . '-'. $randString;  //新签约合同号
+            $loanAmount = $v['o_total_price'] - $v['o_total_deposit'] + $v['o_service_fee'] + $v['o_service_fee'];
+            $totalRepayAmout = Repayment::find()->select('sum(r_total_repay)')->where(['r_orders_id'=>$v['o_id']])->asArray()->column();
+            $imgs = new \common\models\UploadFile();
+            $this->orderNo = str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999);
+            $param_arr = [
+                'service' => 'fastSign',
+                'merchOrderNo'=>$merchOrderNo,
+                'merchContractNo'=>$merchOrderNo,
+                'merchContractImageUrl'=>$imgs->getUrl($v['oi_after_contract']),
+                'realName'=>$v['c_customer_name'],
+                'certNo'=>$v['c_customer_id_card'],
+                'bankCardNo'=>$v['c_banknum'],
+                'mobileNo'=>$v['c_customer_cellphone'],
+                'productName'=>$v['g_goods_name'] .'-'. $v['g_goods_models'],
+                'loanAmount'=>$loanAmount,
+                'totalRepayAmount'=> $totalRepayAmout[0],
+                'operateType'=>'SIGN',
+            ];
+
+            $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
+
+            $common = $this->getCommonParams();
+            $param_arr = array_merge($common, $param_arr);
+            $param_arr = $this->prepQueryParams($param_arr);
+
+
+
+            // 发起请求
+            $http_client = new httpClient();
+            $response = $http_client->post($this->api, $param_arr)->send();
+            // 记录发送日志
+            $operationLog->write(
+                'debug.yijifu.fix-sign-data',
+                '修正易极付签约数据',
+                0,
+                ['send-data' => $param_arr]
+            );
+
+            $status = 3; // 接口调用失败
+            if($response->getIsOk()){
+                $ret = $response->getData();
+                // 代表接口调用成功
+                if(true === $ret['success']) {
+                    $status = 2; // 等待回掉
+                }else{
+                    var_dump($ret);die;
+
+                    throw new CustomCommonException($ret['resultMessage'] . ' 易极付错误!');
                 }
-                $logs['fix-data-bak'] = $v;
-                $logs = json_encode($logs);   //历史内容存入logs
-                $randString = \Yii::$app->getSecurity()->generateRandomString(5);
-                $merchOrderNo = $merchContractNo = $v['o_serial_id'] . '-'. $randString;  //新签约合同号
-                $loanAmount = $v['o_total_price'] - $v['o_total_deposit'] + $v['o_service_fee'] + $v['o_service_fee'];
-                $totalRepayAmout = Repayment::find()->select('sum(r_total_repay)')->where(['r_orders_id'=>$v['o_id']])->asArray()->column();
-                $imgs = new \common\models\UploadFile();
-                $this->orderNo = str_replace('.', '', microtime(true)). mt_rand(1000000, 9999999);
-                $param_arr = [
-                    'service' => 'fastSign',
-                    'merchOrderNo'=>$merchOrderNo,
-                    'merchContractNo'=>$merchOrderNo,
-                    'merchContractImageUrl'=>$imgs->getUrl($v['oi_after_contract']),
-                    'realName'=>$v['c_customer_name'],
-                    'certNo'=>$v['c_customer_id_card'],
-                    'bankCardNo'=>$v['c_banknum'],
-                    'mobileNo'=>$v['c_customer_cellphone'],
-                    'productName'=>$v['g_goods_name'] .'-'. $v['g_goods_models'],
-                    'loanAmount'=>$loanAmount,
-                    'totalRepayAmount'=> $totalRepayAmout[0],
-                    'operateType'=>'SIGN',
-                ];
 
-                $this->notifyUrl = \Yii::$app->params['domain'] ."/borrow/verify-pass-callback";
+                $operator_id = \Yii::$app->getUser()->getId();
+                $sign = YijifuSign::findOne($v['id']);
+                // 写签约记录表
+                $sign->merchOrderNo = $merchOrderNo;
+                $sign->merchContractNo = $merchOrderNo;
+                $sign->updated_at = $_SERVER['REQUEST_TIME'];
+                $sign->operator_id = $operator_id;
+                $sign->status = $status;
+                $sign->sign = isset($ret['sign'])?$ret['sign']:'';
+                $sign->orderNo = isset($ret['orderNo'])?$ret['orderNo']:'';
+                $sign->logs = $logs;
 
-                $common = $this->getCommonParams();
-                $param_arr = array_merge($common, $param_arr);
-                $param_arr = $this->prepQueryParams($param_arr);
-
-
-
-                // 发起请求
-                $http_client = new httpClient();
-                $response = $http_client->post($this->api, $param_arr)->send();
-                // 记录发送日志
-                $operationLog = new OperationLog();
-                $operationLog->write(
-                    'debug.yijifu.fix-sign-data',
-                    '修正易极付签约数据',
-                    0,
-                    ['send-data' => $param_arr]
-                );
-
-                $status = 3; // 接口调用失败
-                if($response->getIsOk()){
-                    $ret = $response->getData();
-                    // 代表接口调用成功
-                    if(true === $ret['success']) {
-                        $status = 2; // 等待回掉
-                    }else{
-                        var_dump($ret);die;
-
-                        throw new CustomCommonException($ret['resultMessage'] . ' 易极付错误!');
-                    }
-
-                    $operator_id = \Yii::$app->getUser()->getId();
-                    $sign = YijifuSign::findOne($v['id']);
-                    // 写签约记录表
-                    $sign->merchOrderNo = $merchOrderNo;
-                    $sign->merchContractNo = $merchOrderNo;
-                    $sign->updated_at = $_SERVER['REQUEST_TIME'];
-                    $sign->operator_id = $operator_id;
-                    $sign->status = $status;
-                    $sign->sign = isset($ret['sign'])?$ret['sign']:'';
-                    $sign->orderNo = isset($ret['orderNo'])?$ret['orderNo']:'';
-                    $sign->logs = $logs;
-
-                    if($sign->save(false) === false){
-                        throw new CustomBackendException('修改订单失败');
-                    }
-                    $reuturn = true;
-
+                if($sign->save(false) === false){
+                    throw new CustomBackendException('修改订单失败');
                 }
+                $reuturn = true;
 
             }
-            $trans->commit();
-            return $reuturn;
-        }catch (CustomBackendException $e){
-            $trans->rollBack();
-            return ['status'=> 0, 'message'=> $e->getMessage()];
-        }catch (Exception $e){
-            $trans->rollBack();
-            return ['status'=>0, 'message'=> $e->getMessage()];
+
         }
+        return $reuturn;
     }
 
 }
