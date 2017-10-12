@@ -141,24 +141,35 @@ class OverdueController extends Controller
      */
     public function fixCustomerBorrowMoney()
     {
-        $money = Orders::find()->select('sum(o_total_price - o_total_deposit + o_service_fee + o_inquiry_fee) as principal,count(o_customer_id) as count,o_customer_id')
+        $error_log = date('Y-m-d H:i:s') . "任务日志 - 修正客户借款金额\r\n";
+        $log_file_path = Yii::$app->basePath . DIRECTORY_SEPARATOR. 'logs'. DIRECTORY_SEPARATOR. 'overdue_operating_record.csv';
+        $money = Orders::find()->select(['
+                sum(o_total_price - o_total_deposit + o_service_fee + o_inquiry_fee) as principal',
+            'count(r_orders_id) as count',
+            'o_customer_id',
+        ])
+            ->leftJoin(Repayment::tableName() ,'r_orders_id=o_id')
             ->where(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
-            ->groupBy('o_customer_id')->asArray()->all();
+            ->groupBy('o_customer_id')
+            ->orderBy('o_customer_id')
+            ->asArray()->all();
 
+        $total = Repayment::find()
+            ->select('sum(r_total_repay) as total, r_customer_id')
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->where(['in', 'o_status', [Orders::STATUS_PAY_OVER, Orders::STATUS_PAYING]])
+            ->groupBy('r_customer_id')
+            ->orderBy('r_customer_id')
+            ->asArray()->all();
 
         foreach ($money as $k => $v){
-            $total = Repayment::find()
-                ->select(['sum(r_total_repay)'])
-                ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
-                ->where(['in', 'o_status', [Orders::STATUS_PAY_OVER, Orders::STATUS_PAYING]])
-                ->andWhere(['r_customer_id'=>$v['o_customer_id']])
-                ->asArray()->column();
             $customer = Customer::findOne($v['o_customer_id']);
             $customer->c_total_borrow_times = $v['count'];
-            $customer->c_total_money = $v['total'];
-            $customer->c_total_interest = $total[0];
+            $customer->c_total_money = $v['principal'];
+            $customer->c_total_interest = $total[$k]['total'];
             if($customer->save(false) === false){
-                return false;
+                $error_log .= '修正客户ID:'.$v['o_customer_id'] . '失败';
+                file_put_contents($log_file_path, $error_log, FILE_APPEND);
             }
         }
 
