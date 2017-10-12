@@ -18,6 +18,7 @@ use common\models\Goods;
 use common\models\OrderImages;
 use common\models\Orders;
 use common\models\Product;
+use common\models\Repayment;
 use common\models\YijifuSign;
 use common\services\Order;
 use common\tools\yijifu\ReturnMoney;
@@ -82,6 +83,10 @@ class DataController extends CoreBackendController
             ]);
     }
 
+    /**
+     * 批量修改易极付9月12号之前的签约
+     * @author OneStep
+     */
     public function actionChangeSign()
     {
         $oldSign = YijifuSign::find()
@@ -115,4 +120,5 @@ class DataController extends CoreBackendController
             echo '修改成功';
         }
     }
+    
 }

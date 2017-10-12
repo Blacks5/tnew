@@ -9,8 +9,12 @@
 
 namespace console\controllers;
 
+use backend\components\CustomBackendException;
 use common\components\CustomCommonException;
+use common\models\Customer;
+use common\models\Orders;
 use common\models\Repayment;
+use WebSocket\BadOpcodeException;
 use yii;
 use yii\console\Controller;
 
@@ -129,5 +133,65 @@ class OverdueController extends Controller
         }finally{
             file_put_contents($log_file_path, $error_log, FILE_APPEND);
         }
+        $count = $this->fixCustomerBorrowMoney();
+        $error_log .= "fixCustomerBorrowMoney success $count 条数据". PHP_EOL;
+        file_put_contents($log_file_path, $error_log, FILE_APPEND);
+    }
+
+    /**
+     * 修在客户的总借款,总还款,和借款次数
+     * @return bool
+     * @author OneStep
+     */
+    public function fixCustomerBorrowMoney()
+    {
+        $error_log = date('Y-m-d H:i:s') . "任务日志 - 修正客户借款金额" .PHP_EOL;
+        $log_file_path = Yii::$app->basePath . DIRECTORY_SEPARATOR. 'logs'. DIRECTORY_SEPARATOR. 'overdue_operating_record.csv';
+        $money = Orders::find()->select(['
+                sum(o_total_price - o_total_deposit + o_service_fee + o_inquiry_fee) as principal',
+            'count(r_orders_id) as count',
+            'o_customer_id',
+        ])
+            ->leftJoin(Repayment::tableName() ,'r_orders_id=o_id')
+            ->where(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
+            ->groupBy('o_customer_id')
+            ->orderBy('o_customer_id')
+            ->asArray()->all();
+
+        $total = Repayment::find()
+            ->select('sum(r_total_repay) as total, r_customer_id')
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->where(['in', 'o_status', [Orders::STATUS_PAY_OVER, Orders::STATUS_PAYING]])
+            ->groupBy('r_customer_id')
+            ->orderBy('r_customer_id')
+            ->asArray()->all();
+        $count = 0;
+        foreach ($money as $k => $v){
+            $trans = Yii::$app->getDb()->beginTransaction();
+            try{
+                $customer = Customer::updateAll([
+                    'c_total_borrow_times'  => $v['count'],
+                    'c_total_money'         => $v['principal'],
+                    'c_total_interest'      => $total[$k]['total']
+                ],['c_id'=>$v['o_customer_id']]);
+
+
+                $trans->commit();
+                if($customer>0){
+                    $count ++;
+                }
+            }catch (yii\db\Exception $e){
+                $trans->rollBack();
+                $error_log .= $v['o_customer_id'] ."更新失败 , 原因:". $e->getMessage();
+                file_put_contents($log_file_path, $error_log, FILE_APPEND);
+            }catch (CustomBackendException $e){
+                $trans->rollBack();
+                $error_log .= $v['o_customer_id'] . "更新失败 , 原因:". $e->getMessage();
+                file_put_contents($log_file_path, $error_log, FILE_APPEND);
+            }
+
+
+        }
+        return $count;
     }
 }
