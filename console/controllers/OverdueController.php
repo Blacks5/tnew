@@ -149,14 +149,14 @@ class OverdueController extends Controller
         $log_file_path = Yii::$app->basePath . DIRECTORY_SEPARATOR. 'logs'. DIRECTORY_SEPARATOR. 'overdue_operating_record.csv';
         $money = Orders::find()->select(['
                 sum(o_total_price - o_total_deposit + o_service_fee + o_inquiry_fee) as principal',
-            'count(r_orders_id) as count',
+            'count(*) as count',
             'o_customer_id',
         ])
-            ->leftJoin(Repayment::tableName() ,'r_orders_id=o_id')
             ->where(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
             ->groupBy('o_customer_id')
             ->orderBy('o_customer_id')
             ->asArray()->all();
+
 
         $total = Repayment::find()
             ->select('sum(r_total_repay) as total, r_customer_id')
