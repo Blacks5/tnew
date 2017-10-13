@@ -18,6 +18,7 @@ use common\models\Orders;
 use common\models\Product;
 use common\models\Stores;
 use common\models\User;
+use WebSocket\Client;
 use Yii;
 use yii\db\Query;
 
@@ -164,6 +165,9 @@ class Order {
 		// 提交数据
 		$trans->commit();
 
+		// 推送消息到后台
+		$this->sendToWs($customerModel->c_customer_name, $ordersModel->o_id);
+
 		return $ordersModel->o_id;
 	}
 
@@ -205,6 +209,27 @@ class Order {
 			}
 		}
 	}
+
+	/**
+	 * 推送订单信息到后台
+	 * @param  [type] $customer_name [description]
+	 * @param  [type] $order_id      [description]
+	 * @return [type]                [description]
+	 */
+	private function sendToWs($customer_name, $order_id)
+    {
+        $client = new Client(\Yii::$app->params['ws']);
+        $string = '顾客:'. $customer_name. '产生了新订单';
+        $data = [
+            'cmd'=>'Orders:newOrderNotify',
+            'data'=>[
+                'message'=>$string,
+                'order_id'=>$order_id
+            ]
+        ];
+        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $client->send($jsonData);
+    }
 
 	/**
 	 * 客户端提交订单，成功返回true，失败直接抛异常
