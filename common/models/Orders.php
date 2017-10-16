@@ -77,7 +77,8 @@ class Orders extends CoreCommonActiveRecord {
 			[['o_is_auto_pay', 'o_is_add_service_fee', 'o_is_free_pack_fee'], 'in', 'range' => [1, 0]],
 			[['o_remark'], 'string', 'max' => 255],
 			[['o_product_code'], 'string', 'max' => 30],
-			[['o_product_code'], 'unique' , 'message' => '商品串码已使用' , 'on' => 'clientValidate2']
+			// [['o_product_code'], 'unique' , 'message' => '商品串码已使用' , 'on' => 'clientValidate2']
+			[['o_product_code'], 'checkProductCode', 'message' => '商品串码已使用', 'on' => 'clientValidate2'],
 		];
 	}
 
@@ -137,4 +138,31 @@ class Orders extends CoreCommonActiveRecord {
 		//        return $data;
 	}
 
+	/**
+	 * 检测订单商品串码是否已经存在
+	 * @param  [type] $attribute [description]
+	 * @param  [type] $params    [description]
+	 * @return [type]            [description]
+	 */
+	public function checkProductCode($attribute, $params) {
+		$order = self::findOne([
+			'o_product_code' => ($this->$attribute),
+			'o_status' => [
+				self::STATUS_NOT_COMPLETE,
+				self::STATUS_WAIT_CHECK,
+				self::STATUS_WAIT_CHECK_AGAIN,
+				self::STATUS_PAYING,
+				self::STATUS_PAY_OVER,
+				self::STATUS_WAIT_APP_UPLOAD_AGAIN,
+			],
+		]);
+
+		if ($order) {
+			$this->addError($attribute, '商品串码已使用');
+
+			return false;
+		}
+
+		return true;
+	}
 }
