@@ -430,6 +430,7 @@ use mdm\admin\components\MenuHelper;
             //关闭loading提示
             layer.close(loading);
         });
+        setTimeout(layer.close(loading), 3000);
     }
 
 </script>
