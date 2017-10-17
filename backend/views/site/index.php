@@ -318,7 +318,16 @@ use mdm\admin\components\MenuHelper;
 //                console.log("收到消息");
                 //console.log(event.data);
 //                console.log(JSON.parse(event.data).type);
-                if(JSON.parse(event.data).type == 'loanNotify') {
+                
+                var notifyType = '';
+                try {
+                    notifyType = JSON.parse(event.data).type;
+                } catch (error) {
+                    console.log('无法解析通知数据:', event.data);
+                    return false;
+                }
+                
+                if(notifyType == 'loanNotify') {
                     var n = new Notification("放款通知:", {
                         icon: '<?php echo Url::to('@web/img/notice_icon.png'); ?>',
                         body: JSON.parse(event.data).message
