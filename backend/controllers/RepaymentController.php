@@ -525,4 +525,18 @@ class RepaymentController extends CoreBackendController
 
     }
 
+    public function actionUpdateUndesirable($o_id, $value)
+    {
+        Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
+        if(yii::$app->request->getIsAjax()){
+            $is = $value==0?1:0;
+            $orders = Orders::findOne($o_id);
+            $orders->o_is_undesirable = $is;
+            if($orders->save(false)){
+                return ['status'=>1, 'message'=>'修改不良成功!'];
+            }
+        }
+        return ['status'=>2,'message'=>'不知道怎么就出错了!'];
+    }
+
 }

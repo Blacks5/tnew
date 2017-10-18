@@ -211,7 +211,7 @@ class YejiSearch extends CoreBackendModel{
         $all_list['f_packcount'] = $all_list['s_ordercount'] ? round($all_list['f_packcount']/$all_list['s_ordercount']*100, 3).'%':'0%';
         $all_list['overdue_ratio'] = $all_list['overdue_num'] ? round($all_list['overdue_num']/$all_list['s_ordercount']*100, 3). '%': '0%';
         //分页通过率
-        $all_list['adopt_ratio'] = $all_list['s_ordercount'] == 0 ?'0%':round($all_list['t_ordercount']/$all_list['s_ordercount']*100, 2). '%';
+        $all_list['adopt_ratio'] = $all_list['s_ordercount'] == 0 ?'0%':round($all_list['s_ordercount']/$all_list['t_ordercount']*100, 2). '%';
         //分页逾期金额比
         $all_list['overdueMoney_ratio'] = $all_list['overdue_money'] == 0 ?'0%':round($all_list['overdue_money']/$all_list['s_amount']*100,2).'%';
         //不良率
