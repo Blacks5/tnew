@@ -19,7 +19,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
             <!--订单信息部分-->
             <section class="content-header">
-                <h2 class="center"><?= $this->title; ?></h2>
+                <h2 class="center <?= $model['o_is_undesirable']==1?'text-danger':''?>"><?= $this->title; ?><?= $model['o_is_undesirable']==1?'【不良贷款】':''?></h2>
 
                 <h3 class="center color-orange">订单信息</h3>
                 <div class="hr-line-dashed"></div>
@@ -587,6 +587,11 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                         <i class="fa fa-folder"></i>修改还款日期
                                     </a>
                                 <?php } ?>
+                                <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['repayment/update-undesirable']))){ ?>
+                                    <button class="btn <?=$model['o_is_undesirable']==0?'btn-danger':'btn-info'?>" id="undesirable" value="<?=$model['o_is_undesirable']?>">
+                                        <?=$model['o_is_undesirable']==0?'不良订单':'取消不良'?>
+                                    </button>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -895,6 +900,27 @@ $("#prepayment").click(function(){
             },
             complete: function () {
                 layer.close(loading);
+            }
+        });
+    });
+});
+//修改不良订单状态
+$("#undesirable").click(function(){
+    var value = $("#undesirable").val();
+    layer.confirm("确定要修改这个订单的不良么?",{title:"确定要修改么",icon:3},function(index){
+        $.ajax({
+            url:"'. \yii\helpers\Url::toRoute(['repayment/update-undesirable','o_id'=>$model['o_id'],'value'=>$model['o_is_undesirable']]) .'",
+            type:"GET",
+            dataType:"JSON",
+            success:function (data){
+                if(data.status == 1){
+                    return layer.alert(data.message,{icon:data.status}, function(){return window.location.reload();});
+                }else{
+                    return layer.alert(data.message,{icon:data.status});
+                }
+            },
+            error:function (){
+                layer.alert("哦豁,出问题了",{icon:2});
             }
         });
     });

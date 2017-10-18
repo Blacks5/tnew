@@ -74,7 +74,7 @@ class Orders extends CoreCommonActiveRecord {
 			[['o_product_id'], 'exist', 'targetClass' => 'common\models\Product', 'targetAttribute' => 'p_id', 'message' => '产品不存在'],
 			[['o_store_id'], 'exist', 'targetClass' => 'common\models\Stores', 'targetAttribute' => 's_id', 'message' => '商户不存在'],
 
-			[['o_is_auto_pay', 'o_is_add_service_fee', 'o_is_free_pack_fee'], 'in', 'range' => [1, 0]],
+			[['o_is_auto_pay', 'o_is_add_service_fee', 'o_is_free_pack_fee', 'o_is_undesirable', 'o_is_bad_order'], 'in', 'range' => [1, 0]],
 			[['o_remark'], 'string', 'max' => 255],
 			[['o_product_code'], 'string', 'max' => 30],
 			// [['o_product_code'], 'unique' , 'message' => '商品串码已使用' , 'on' => 'clientValidate2']
@@ -102,6 +102,8 @@ class Orders extends CoreCommonActiveRecord {
 			'o_status' => '订单状态',
 			'o_product_code' => '商品串码',
 			'o_remark' => '备注信息',
+            'o_is_undesirable' => '不良',
+            'o_is_bad_order' => '坏账',
 		];
 	}
 

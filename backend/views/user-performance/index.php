@@ -125,15 +125,13 @@
                             <a class="list-group-item">逾期金额<span class="badge"><?= round($total['overdue_money'], 0) ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
+                            <a class="list-group-item">通过率<span class="badge"><?= $total['adopt_ratio'] ?></span> </a>
                             <a class="list-group-item">逾期金额比<span class="badge"><?= $total['overdue_moneyRatio'] ?></span> </a>
-                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
-                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
+                            <a class="list-group-item">不良率<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item <?=(int)$all['risk_num']>=6?'list-group-item-warning':''?> <?=(int)$all['risk_num']>=8?'list-group-item-danger':''?>">
-                                风控率(单数)<span class="badge"></span>
-                            </a>
-                            <a class="list-group-item">风控率(金额)<span class="badge"></span> </a>
+                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
+                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
                         </div>
 
                     </div>
@@ -160,8 +158,9 @@
                                                     <th>逾期单数</th>
                                                     <th>逾期金额</th>
                                                     <th>逾期率</th>
-                                                    <th>风控率(单数)</th>
-                                                    <th>风控率(金额)</th>
+                                                    <th>通过率</th>
+                                                    <th>逾期金额比</th>
+                                                    <th>不良率</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -178,8 +177,9 @@
                                                         <td><?= $all['overdue_num']?></td>
                                                         <td><?= $all['overdue_money']?></td>
                                                         <td><?= $all['overdue_ratio']?></td>
-                                                        <td><?= $all['risk_num']?></td>
-                                                        <td><?= $all['f_packcount']?></td>
+                                                        <td><?= $all['adopt_ratio']?></td>
+                                                        <td><?= $all['overdueMoney_ratio']?></td>
+                                                        <td><?= $all['undesirable_ratio']?></td>
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
@@ -198,8 +198,9 @@
                                                         <td class="client-status"><?= $_v['overdue_count'] ?></td>
                                                         <td class="client-status"><?= $_v['overdue_money'] ?></td>
                                                         <td class="client-status"><?= $_v['overdue_ratio'] ?></td>
-                                                        <td class="client-status"><?= $_v['risk_num'] ?></td>
-                                                        <td class="client-status"><?= $_v['risk_num'] ?></td>
+                                                        <td class="client-status"><?= $_v['adopt_ratio'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdueMoney_ratio'] ?></td>
+                                                        <td class="client-status"><?= $_v['undesirable_ratio'] ?></td>
                                                         <td class="client-status">
                                                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/index']))) { ?>
                                                                 <a class="btn btn-primary btn-xs"
