@@ -23,7 +23,6 @@ use yii\helpers\Html;
     <!--[if lt IE 9]>
     <meta http-equiv="refresh" content="0;ie.html"/>
     <![endif]-->
-    <link rel="shortcut icon" href="favicon.ico">
 
     <?= Html::cssFile('@web/css/bootstrap.min.css') ?>
     <?= Html::cssFile('@web/css/font-awesome.min.css') ?>
