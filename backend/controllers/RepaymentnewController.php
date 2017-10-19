@@ -16,6 +16,7 @@ use common\components\Helper;
 use common\models\Customer;
 use common\models\Orders;
 use common\models\OrdersSearch;
+use common\models\Product;
 use common\models\Repayment;
 use common\models\RepaymentSearch;
 use common\models\User;
@@ -56,15 +57,37 @@ class RepaymentnewController extends CoreBackendController
     public function actionWaitRepay()
     {
         $this->getView()->title = '待还款列表';
+        $params = Yii::$app->getRequest()->getQueryParams();
+
         $model = new RepaymentSearch();
-        $query = $model->repaymentListByOrders(Yii::$app->getRequest()->getQueryParams());
+        $query = $model->repaymentListByOrders($params);
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
-        $query = $query->andWhere(['r_status' => Repayment::STATUS_NOT_PAY]);
-        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
-        $querycount = clone $query;
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])])->andWhere(['o_status'=>Orders::STATUS_PAYING])->asArray()->all();
+
+        $repayment =[];
+        foreach ($query as $k => $v){
+            $repQuery = Repayment::find()->select('r_id')->where(['r_orders_id'=>$v['o_id'], 'r_status'=>1])->orderBy('r_pre_repay_date');
+            if(!empty($params['s_time'])){
+                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['s_time'] . '00:00:00')]);
+            }
+            if(!empty($params['e_time'])){
+                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['e_time'] . '00:00:00')]);
+            }
+
+            $repayment[$k] = $repQuery->asArray()->one();
+
+        }
+        $repaymentQuery = Repayment::find()
+            ->select('*')
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->leftJoin(Customer::tableName(), 'c_id=r_customer_id')
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+            ->where(['r_id'=> $repayment])
+            ->orderBy('r_pre_repay_date');
+        $querycount = clone $repaymentQuery;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $repaymentQuery->offset($pages->offset)->limit($pages->limit)->asArray()->all();
         foreach ($data as $k => $v){
             $n = 2;
             $data[$k]['repay'] = YijifuDeduct::find()->where(['o_serial_id'=> $v['o_serial_id']])->andWhere(['in', 'status', [0,1,2,3]])->count();
@@ -188,34 +211,55 @@ class RepaymentnewController extends CoreBackendController
     public function actionOverdueRepay()
     {
         $this->getView()->title = '已逾期还款列表';
+        $params = Yii::$app->getRequest()->getQueryParams();
+
         $model = new RepaymentSearch();
-        $query = $model->repaymentListByOrders(Yii::$app->getRequest()->getQueryParams());
-        $query = $query
-            ->andWhere(['>', 'r_overdue_day', 0])->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY]);
-        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])]);
-        $querycount = clone $query;
+        $query = $model->repaymentListByOrders($params);
+//        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
+        $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])])->andWhere(['o_status'=>Orders::STATUS_PAYING])->asArray()->all();
+        $repayment =[];
+        foreach ($query as $k => $v){
+            $repQuery = Repayment::find()->select('r_id')->where(['r_orders_id'=>$v['o_id'], 'r_status'=>1])->orderBy('r_pre_repay_date');
+            if(!empty($params['s_time'])){
+                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['s_time'] . '00:00:00')]);
+            }
+            if(!empty($params['e_time'])){
+                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['e_time'] . '00:00:00')]);
+            }
+
+            $repayment[$k] = $repQuery->asArray()->one();
+
+        }
+        $repaymentQuery = Repayment::find()
+            ->select('*')
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->leftJoin(Customer::tableName(), 'c_id=r_customer_id')
+            ->leftJoin(Product::tableName(), 'o_product_id=p_id')
+            ->where(['r_id'=> $repayment])
+            ->andWhere(['>', 'r_overdue_day', 3])
+            ->orderBy('r_pre_repay_date');
+        $querycount = clone $repaymentQuery;
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
-        $data = $query/*->orderBy(['orders.o_created_at' => SORT_DESC])*/
-        ->offset($pages->offset)->limit($pages->limit)->asArray()->all();
+        $data = $repaymentQuery->offset($pages->offset)->limit($pages->limit)->asArray()->all();
 
         $stat_data = array();
         //已还总金额
-        $stat_data['r_total_repay'] = round($query->sum('r_total_repay'),2);
+        $stat_data['r_total_repay'] = round($repaymentQuery->sum('r_total_repay'),2);
         //本金
-        $stat_data['r_principal'] = round($query->sum('r_principal'),2);
+        $stat_data['r_principal'] = round($repaymentQuery->sum('r_principal'),2);
         //利息
-        $stat_data['r_interest'] = round($query->sum('r_interest'),2);
+        $stat_data['r_interest'] = round($repaymentQuery->sum('r_interest'),2);
         //贵宾服务包
-        $stat_data['r_add_service_fee'] = round($query->sum('r_add_service_fee'),2);
+        $stat_data['r_add_service_fee'] = round($repaymentQuery->sum('r_add_service_fee'),2);
         //随心包服务费
-        $stat_data['r_free_pack_fee'] = round($query->sum('r_free_pack_fee'),2);
+        $stat_data['r_free_pack_fee'] = round($repaymentQuery->sum('r_free_pack_fee'),2);
         //财务管理费
-        $stat_data['r_finance_mangemant_fee'] = round($query->sum('r_finance_mangemant_fee'),2);
+        $stat_data['r_finance_mangemant_fee'] = round($repaymentQuery->sum('r_finance_mangemant_fee'),2);
         //客户管理费
-        $stat_data['r_customer_management'] = round($query->sum('r_customer_management'),2);
+        $stat_data['r_customer_management'] = round($repaymentQuery->sum('r_customer_management'),2);
         //逾期滞纳金
-        $stat_data['r_overdue_money'] = round($query->sum('r_overdue_money'),2);
+        $stat_data['r_overdue_money'] = round($repaymentQuery->sum('r_overdue_money'),2);
 
         array_walk($data, function(&$v){
             $n = 2;
