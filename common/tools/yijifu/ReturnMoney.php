@@ -20,6 +20,7 @@ use yii\db\Exception;
 use yii\db\Query;
 use \yii\httpclient\Client as httpClient;
 use backend\services\OperationLog;
+use yii;
 use yii\log\FileTarget;
 
 /**
