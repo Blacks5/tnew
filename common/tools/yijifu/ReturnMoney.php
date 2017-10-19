@@ -20,6 +20,7 @@ use yii\db\Exception;
 use yii\db\Query;
 use \yii\httpclient\Client as httpClient;
 use backend\services\OperationLog;
+use yii\log\FileTarget;
 
 /**
  * 回款接口
@@ -113,12 +114,21 @@ class ReturnMoney extends AbstractYijifu
 
         // 发起请求
         $http_client = new httpClient();
+        
+        $log = new FileTarget();
+        $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou-faqi.log';
+        $log->messages[] = ['准备发起扣款请求,post data:' . json_encode($param_arr, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
+        $log->export();
         $response = $http_client->post($this->api, $param_arr)/*->setFormat(httpClient::FORMAT_JSON)*/->send();
 
         $status = 3; // 接口调用失败
         $reuturn = false;
         if($response->getIsOk()){
             $ret = $response->getData();
+
+            $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou-faqi.log';
+            $log->messages[] = ['易极付响应:' . json_encode($ret, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
+            $log->export();
 
             /*ob_start();
             var_dump($param_arr);
@@ -133,7 +143,12 @@ class ReturnMoney extends AbstractYijifu
             }else{
                 throw new CustomCommonException($ret['resultMessage']);
             }
+        } else {
+            $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou-faqi.log';
+            $log->messages[] = ['!! http 请求失败!!', 2, 'yijifu', microtime(true)];
+            $log->export();
         }
+
         $operator_id = \Yii::$app->getUser()->getId();
         // 写签约记录表
         $wait_inster_data = [

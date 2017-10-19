@@ -25,6 +25,7 @@ use common\tools\yijifu\ReturnMoney;
 use WebSocket\Client;
 use yii\data\Pagination;
 use yii;
+use yii\log\FileTarget;
 
 class RepaymentnewController extends CoreBackendController
 {
@@ -360,6 +361,12 @@ class RepaymentnewController extends CoreBackendController
     public function actionDeductCallback()
     {
         $post = Yii::$app->getRequest()->post();
+
+        $log = new FileTarget();
+        $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou.log';
+        $log->messages[] = ['收到易极付代扣回调,post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'yijifu', microtime(true)];
+        $log->export();
+
         if('true' === $post['success']){
             $status_arr = [
                 'INIT' => 1, // 待处理
