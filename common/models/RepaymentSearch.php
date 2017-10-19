@@ -73,8 +73,7 @@ class RepaymentSearch extends CoreBackendModel
     public function repaymentListByOrders($params)
     {
         $query = Orders::find()
-            ->select('*')
-            ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
+            ->select('orders.o_id')
             ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
             ->leftJoin(Product::tableName(), 'o_product_id=p_id');
         $this->load($params);
@@ -91,17 +90,9 @@ class RepaymentSearch extends CoreBackendModel
         $query->andFilterWhere(['like', 'c_customer_name', $this->c_customer_name])
             ->andFilterWhere(['like', 'c_customer_id_card', $this->c_customer_id_card])
             ->andFilterWhere(['like', 'c_customer_cellphone', $this->c_customer_cellphone]);
-        if (!empty($this->s_time)) {
-            $this->s_time = strtotime($this->s_time . '00:00:00');
-            $query->andWhere(['>=', 'r_pre_repay_date', $this->s_time]);
-        }
-        if (!empty($this->e_time)) {
-            $this->e_time = strtotime($this->e_time . '23:59:59');
-            $query->andWhere(['<=', 'r_pre_repay_date', $this->e_time]);
-        }
 
         //var_dump($query->createCommand()->getRawSql());
-        return $query->orderBy(['r_pre_repay_date' => SORT_ASC]);
+        return $query;
     }
 
     /**
