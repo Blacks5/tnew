@@ -69,11 +69,11 @@ class RepaymentController extends CoreBackendController
         $repayment =[];
         foreach ($query as $k => $v){
             $repQuery = Repayment::find()->select('r_id')->where(['r_orders_id'=>$v['o_id'], 'r_status'=>1])->orderBy('r_pre_repay_date');
-            if(!empty($params['s_time'])){
-                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['s_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['s_time'])){
+                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['s_time'] . '00:00:00')]);
             }
-            if(!empty($params['e_time'])){
-                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['e_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['e_time'])){
+                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['e_time'] . '00:00:00')]);
             }
 
             $repayment[$k] = $repQuery->asArray()->one();
@@ -220,11 +220,11 @@ class RepaymentController extends CoreBackendController
         $repayment =[];
         foreach ($query as $k => $v){
             $repQuery = Repayment::find()->select('r_id')->where(['r_orders_id'=>$v['o_id'], 'r_status'=>1])->orderBy('r_pre_repay_date');
-            if(!empty($params['s_time'])){
-                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['s_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['s_time'])){
+                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['s_time'] . '00:00:00')]);
             }
-            if(!empty($params['e_time'])){
-                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['e_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['e_time'])){
+                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['e_time'] . '23:59:59')]);
             }
 
             $repayment[$k] = $repQuery->asArray()->one();

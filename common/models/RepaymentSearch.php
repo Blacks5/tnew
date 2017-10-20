@@ -91,7 +91,6 @@ class RepaymentSearch extends CoreBackendModel
             ->andFilterWhere(['like', 'c_customer_id_card', $this->c_customer_id_card])
             ->andFilterWhere(['like', 'c_customer_cellphone', $this->c_customer_cellphone]);
 
-        //var_dump($query->createCommand()->getRawSql());
         return $query;
     }
 

@@ -67,11 +67,11 @@ class RepaymentnewController extends CoreBackendController
         $repayment =[];
         foreach ($query as $k => $v){
             $repQuery = Repayment::find()->select('r_id')->where(['r_orders_id'=>$v['o_id'], 'r_status'=>1])->orderBy('r_pre_repay_date');
-            if(!empty($params['s_time'])){
-                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['s_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['s_time'])){
+                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['s_time']. '00:00:00')]);
             }
-            if(!empty($params['e_time'])){
-                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['e_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['e_time'])){
+                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['e_time']. '23:59:59')]);
             }
 
             $repayment[$k] = $repQuery->asArray()->one();
@@ -214,17 +214,19 @@ class RepaymentnewController extends CoreBackendController
         $params = Yii::$app->getRequest()->getQueryParams();
 
         $model = new RepaymentSearch();
-        $query = $model->repaymentListByOrders($params);
+        $query = $model->repaymentListByOrders(Yii::$app->getRequest()->getQueryParams());
 //        $time = $_SERVER['REQUEST_TIME']+(3600*24*33);
         $query = $query->andWhere(['>=','o_created_at',strtotime(Yii::$app->params['customernew_date'])])->andWhere(['o_status'=>Orders::STATUS_PAYING])->asArray()->all();
         $repayment =[];
+
+
         foreach ($query as $k => $v){
             $repQuery = Repayment::find()->select('r_id')->where(['r_orders_id'=>$v['o_id'], 'r_status'=>1])->orderBy('r_pre_repay_date');
-            if(!empty($params['s_time'])){
-                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['s_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['s_time'])){
+                $repQuery = $repQuery->andFilterWhere(['>=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['s_time'] . '00:00:00')]);
             }
-            if(!empty($params['e_time'])){
-                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['e_time'] . '00:00:00')]);
+            if(!empty($params['RepaymentSearch']['e_time'])){
+                $repQuery = $repQuery->andFilterWhere(['<=', 'r_pre_repay_date', strtotime($params['RepaymentSearch']['e_time'] . '00:00:00')]);
             }
 
             $repayment[$k] = $repQuery->asArray()->one();
@@ -275,6 +277,7 @@ class RepaymentnewController extends CoreBackendController
             $v['r_finance_mangemant_fee'] = round($v['r_finance_mangemant_fee'], $n);
             $v['r_customer_management'] = round($v['r_customer_management'], $n);
         });
+
         return $this->render('overdue', [
             'sear' => $model->getAttributes(),
             'model' => $data,
