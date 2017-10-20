@@ -10,6 +10,7 @@ namespace console\controllers;
 
 
 use backend\components\CustomBackendException;
+use common\models\Orders;
 use common\models\YijifuSign;
 use yii\console\Controller;
 use yii\db\Exception;
@@ -31,10 +32,7 @@ class SignController extends Controller
                 }
                 $logs = $logs['fix-data-bak'];
                 if(!empty($logs->created_at) && ($logs->merchOrderNo != $v['merchOrderNo'])){
-                    $change = YijifuSign::updateAll([
-                        'created_at'=>$logs->created_at,
-                        'updated_at'=>strtotime(date('Y-m-d'))
-                    ],['id'=>$v['id']]);
+                    $change = Orders::updateAll(['o_operator_date'=>$logs['created_at'],['o_serial_id'=>$v['o_serial_id']]]);
                     if($change){
                         $count ++;
                     }
