@@ -38,10 +38,10 @@ use yii\helpers\Url;
                             <div class="input-daterange input-group" id="datepicker">
                                 <input type="text" class="form-control" name="RepaymentSearch[s_time]"
                                        placeholder="应还款开始时间"
-                                       value="<?php echo $sear['s_time'] ? (date('Y-m-d', $sear['s_time'])) : ''; ?>">
+                                       value="<?php echo $sear['s_time'] ? $sear['s_time'] : ''; ?>">
                                 <span class="input-group-addon ">到</span>
                                 <input type="text" class="form-control" name="RepaymentSearch[e_time]"
-                                       value="<?php echo $sear['e_time'] ? (date('Y-m-d', $sear['e_time'])) : ''; ?>"
+                                       value="<?php echo $sear['e_time'] ? $sear['e_time'] : ''; ?>"
                                        placeholder="应还款结束时间">
                             </div>
                         </div>
