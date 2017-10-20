@@ -26,7 +26,11 @@ class SignController extends Controller
         try{
             foreach ($sign as $k => $v){
                 $logs = json_decode($v['logs']);
-                if(!empty($logs->created_at) && $logs->merchOrderNo != $v['merchOrderNo']){
+                if(!isset($logs['fix-data-bak'])){
+                    continue;
+                }
+                $logs = $logs['fix-data-bak'];
+                if(!empty($logs->created_at) && ($logs->merchOrderNo != $v['merchOrderNo'])){
                     $change = YijifuSign::updateAll([
                         'created_at'=>$logs->created_at,
                         'updated_at'=>strtotime(date('Y-m-d'))
@@ -38,7 +42,7 @@ class SignController extends Controller
             }
             $trans->commit();
             echo "成功修改".$count.'条数据的日期';
-            $message = ['成功修改了'.$count.'条数据的日期',1,'success',strtotime(date('Y-m-d'))];
+            $message = ['成功修改了'.$count.'条数据的日期','success','success',strtotime(date('Y-m-d'))];
 
         }catch (Exception $e){
             $trans->rollBack();
