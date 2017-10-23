@@ -21,6 +21,8 @@ class BaseController extends Controller {
 	public function beforeAction($action) {
 		parent::beforeAction($action);
 
+		// $this->userSession();
+		
 		// 检测是否微信登录
 		Wechat::Login(['site/index']);
 
