@@ -9,7 +9,9 @@
 namespace backend\controllers;
 
 
+use backend\components\CustomBackendException;
 use backend\models\DataSearch;
+use backend\models\Log;
 use backend\models\YejiSearch;
 use common\components\Helper;
 use backend\core\CoreBackendController;
@@ -120,5 +122,4 @@ class DataController extends CoreBackendController
             echo '修改成功';
         }
     }
-    
 }

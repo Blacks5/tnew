@@ -79,29 +79,25 @@ class AllOrdersWithStoreSearch extends CoreCommonModel{
         return $query;
     }
 
-    //条件查询逾期订单id
-    public function totalOverdueIds($id, $param = NULL)
+    /**
+     * 商户逾期订单(笔数,金额)
+     * 重构与2017年10月23日10:34:11
+     * @param $id
+     * @param null $param
+     * @return $this
+     * @author OneStep
+     */
+    public function totalOverdueIds($id)
     {
-        $this->load($param);
-        $query = Orders::find()->select(['o_id'])->distinct()
-            ->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
-            ->leftJoin(Repayment::tableName(), 'r_orders_id = o_id')
-            ->Where(['o_store_id' => $id]);
-        if(!$this->validate()){
-            return $query->andWhere('1=2');
-        }
-        $query->andFilterWhere(['like', 'c_customer_name', $this->username]);
-        $query->andFilterWhere(['like', 'c_customer_cellphone', $this->phone]);
-        if (!empty($this->s_time)) {
-            $this->s_time = strtotime($this->s_time . '00:00:00');
-            $query->andWhere(['>=', 'o_created_at', $this->s_time]);
-        }
-        if (!empty($this->e_time)) {
-            $this->e_time = strtotime($this->e_time . '23:59:59');
-            $query->andWhere(['<=', 'o_created_at', $this->e_time]);
-        }
-        $query->andWhere(['>', 'r_overdue_day', 3]);
-        $query->andWhere(['=', 'o_status', Orders::STATUS_PAYING]);
+        $query = Repayment::find()
+            ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
+            ->leftJoin(Stores::tableName(),'s_id=o_store_id')
+            ->where(['s_id'=>$id])
+            ->andWhere(['o_status'=> Orders::STATUS_PAYING])
+            ->andWhere(['>', 'r_overdue_day', 3])
+            ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
+            ->groupBy('r_orders_id');
+
         return $query;
     }
 
