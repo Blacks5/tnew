@@ -12,6 +12,7 @@ namespace wechat\controllers;
 use wechat\Tools\Wechat;
 use Yii;
 use yii\web\Controller;
+use common\models\LoginForm;
 use EasyWeChat\Foundation\Application;
 
 class BaseController extends Controller {
@@ -31,6 +32,18 @@ class BaseController extends Controller {
 		}
 
 		return true;
+	}
+
+	private function userSession(){
+		$model = new LoginForm();
+		$data['data'] = [
+			'username' => 'chunlantian'
+		];
+		$model->load($data, 'data');
+
+		$sys_user = $model->getUser();
+
+		Yii::$app->session->set('sys_user', $sys_user);
 	}
 
 	/**
