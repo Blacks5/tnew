@@ -33,8 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
-                    <li>风控率（单数）：<?php echo $totalData['totalOrderNum']; ?>单</li>
-                    <li>风控率（金额）：<?php echo $totalData['totalOrderNum']; ?>元</li>
+                    <li>逾期金额比：<?php echo $totalData['totalOverdueRatio']; ?>%</li>
                 </div>
             </div>
         </div>

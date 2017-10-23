@@ -197,6 +197,12 @@ class StoresController extends CoreBackendController
         return $this->error('删除失败');
     }
 
+    /**
+     * 商户所有订单
+     * @param $id
+     * @return string
+     * @author OneStep
+     */
     public function actionAllorders($id)
     {
         $this->getView()->title = '商户所有订单';
@@ -214,19 +220,19 @@ class StoresController extends CoreBackendController
         $totalOrderPrice  = $totalPriceQuery->asArray()->one();
         $totalData['totalOrderNum'] = $totalPriceQuery->count();
         $totalData['totalOrderPrice'] = $totalOrderPrice['total_price']?$totalOrderPrice['total_price']:0;
-        $ids = $model->totalOverdueIds($id, $params)->asArray()->all();
-        if(empty($totalData['totalOrderNum'])){
-            $num = 0;
-        }else{
-            $num = count($ids)/$totalData['totalOrderNum'];
-        }
-        $totalData['totalOverdueNum'] = ($num)*100;
-        if(!empty($ids)){
-            $totalOverduePrice = $model->totalOverdue($ids, $params)->asArray()->one();
-        }else{
-            $totalOverduePrice['r_principal'] = 0;
-        }
-        $totalData['totalOverduePrice'] = $totalOverduePrice['r_principal'];
+
+        $overdueQuery = $model->totalOverdueIds($id);
+        $overdueCount = $overdueQuery->select('r_orders_id')->count();  //逾期笔数
+        $overdueNum = $overdueQuery->select('r_orders_id')->column();   //逾期订单
+        $overdueMoney = Repayment::find()
+            ->select('sum(r_total_repay)')
+            ->where(['in','r_orders_id',$overdueNum])
+            ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
+            ->column();     //逾期金额
+       
+        $totalData['totalOverdueNum'] = $overdueCount?round($overdueCount/$totalData['totalOrderNum']*100,2):0;  //逾期率
+        $totalData['totalOverduePrice'] = round($overdueMoney[0],2);    //逾期金额
+        $totalData['totalOverdueRatio'] = empty($overdueMoney[0])?0:round($overdueMoney[0]/$totalData['totalOrderPrice']*100,2); //逾期金额比
 
         $pages = new yii\data\Pagination(['totalCount' => $querycount->count()]);
         $pages->pageSize = Yii::$app->params['page_size'];
