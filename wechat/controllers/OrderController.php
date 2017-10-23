@@ -453,7 +453,7 @@ class OrderController extends BaseController {
 			$pages->pageSize = Yii::$app->params['page_size'];
 
 			// 获取分页数据
-			$data = $query->orderBy(['orders.o_created_at' => SORT_DESC])
+			$data = $query->orderBy(['repayment.r_overdue_day' => SORT_DESC])
 				->offset($pages->offset)
 				->limit($pages->limit)
 				->asArray()
