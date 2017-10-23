@@ -58,7 +58,7 @@ class AllOrdersWithStoreSearch extends CoreCommonModel{
     public function totalOrder($id, $param = NULL)
     {
         $this->load($param);
-        $query = Orders::find()->select(['sum(o_total_price) as total_price'])->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
+        $query = Orders::find()->select(['sum(o_total_price-o_total_deposit+o_service_fee+o_inquiry_fee) as total_price'])->leftJoin(Customer::tableName(), 'o_customer_id=c_id')
             ->Where(['o_store_id' => $id])
         ;
 
@@ -87,8 +87,13 @@ class AllOrdersWithStoreSearch extends CoreCommonModel{
      * @return $this
      * @author OneStep
      */
-    public function totalOverdueIds($id)
+    public function totalOverdueIds($id, $param = NULL)
     {
+        $this->load($param);
+        if(!$this->validate()){
+            return [];
+        }
+
         $query = Repayment::find()
             ->leftJoin(Orders::tableName(), 'o_id=r_orders_id')
             ->leftJoin(Stores::tableName(),'s_id=o_store_id')
@@ -96,8 +101,17 @@ class AllOrdersWithStoreSearch extends CoreCommonModel{
             ->andWhere(['o_status'=> Orders::STATUS_PAYING])
             ->andWhere(['>', 'r_overdue_day', 3])
             ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
-            ->groupBy('r_orders_id');
-
+            ->groupBy('r_orders_id')
+            ->andFilterWhere(['like', 'c_customer_name', $this->username])
+            ->andFilterWhere(['like', 'c_customer_cellphone', $this->phone]);
+        if(!empty($this->s_time)){
+            $this->s_time = strtotime($this->s_time . '00:00:00');
+            $query = $query->andWhere(['>=','o_created_at', $this->s_time]);
+        }
+        if(!empty($this->e_time)){
+            $this->e_time = strtotime($this->e_time . '23:59:59');
+            $query = $query->andWhere(['<=', 'o_created_at', $this->e_time]);
+        }
         return $query;
     }
 

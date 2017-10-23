@@ -221,7 +221,7 @@ class StoresController extends CoreBackendController
         $totalData['totalOrderNum'] = $totalPriceQuery->count();
         $totalData['totalOrderPrice'] = $totalOrderPrice['total_price']?$totalOrderPrice['total_price']:0;
 
-        $overdueQuery = $model->totalOverdueIds($id);
+        $overdueQuery = $model->totalOverdueIds($id, $params);
         $overdueCount = $overdueQuery->select('r_orders_id')->count();  //逾期笔数
         $overdueNum = $overdueQuery->select('r_orders_id')->column();   //逾期订单
         $overdueMoney = Repayment::find()
@@ -229,7 +229,7 @@ class StoresController extends CoreBackendController
             ->where(['in','r_orders_id',$overdueNum])
             ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
             ->column();     //逾期金额
-       
+
         $totalData['totalOverdueNum'] = $overdueCount?round($overdueCount/$totalData['totalOrderNum']*100,2):0;  //逾期率
         $totalData['totalOverduePrice'] = round($overdueMoney[0],2);    //逾期金额
         $totalData['totalOverdueRatio'] = empty($overdueMoney[0])?0:round($overdueMoney[0]/$totalData['totalOrderPrice']*100,2); //逾期金额比

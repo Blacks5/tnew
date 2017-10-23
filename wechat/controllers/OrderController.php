@@ -476,7 +476,7 @@ class OrderController extends BaseController {
 					'o_created_at' => date('Y-m-d H:i:s', $item['o_created_at']),
 					'r_overdue_day' => $item['r_overdue_day'],
 					'r_overdue_money' => round($item['r_overdue_money'], 2),
-					'r_total_repay' => round($item['r_total_repay'], 2),
+					'r_total_repay' => round($item['r_total_repay'] + $item['r_overdue_money'], 2),
 					'r_principal' => round($item['r_principal'], 2),
 					'r_interest' => round($item['r_interest'], 2),
 					'r_serial_no' => $item['r_serial_no'],
