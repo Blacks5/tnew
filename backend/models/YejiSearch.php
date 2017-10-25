@@ -142,13 +142,20 @@ class YejiSearch extends CoreBackendModel{
             $service = clone $orderinfo;
             $pack = clone $orderinfo;
 
-            $undesirable = Orders::find()->where(['o_user_id'=>$_v['id']])->andWhere(['o_is_undesirable'=>1])->count();  //标记为不良的订单数量
+            $undesirable = Orders::find()
+                ->where(['o_user_id'=>$_v['id']])
+                ->andWhere(['o_is_undesirable'=>1])
+                ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
+                ->andFilterWhere(['<=', 'o_created_at', $this->end_time])
+                ->count();  //标记为不良的订单数量
             $undesirable += Orders::find()
                 ->select('r_orders_id')
                 ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
                 ->where(['o_user_id'=>$_v['id']])
                 ->andWhere(['o_status'=>[Orders::STATUS_PAYING]])
                 ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
+                ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
+                ->andFilterWhere(['<=', 'o_created_at', $this->end_time])
                 ->andWhere(['>','r_overdue_day', 30])
                 ->groupBy('r_orders_id')
                 ->count();  //逾期超过30天的不良订单数量
@@ -189,7 +196,8 @@ class YejiSearch extends CoreBackendModel{
             //通过率
             $userlist[$_k]['adopt_ratio'] = $userlist[$_k]['s_ordercount'] ==0 ?'0%':round($userlist[$_k]['s_ordercount']/ $userlist[$_k]['t_ordercount']*100, 2). '%';
             //不良率
-            $userlist[$_k]['undesirable_ratio'] = $undesirable == 0?'0%':round($undesirable / $userlist[$_k]['s_ordercount']*100, 2). '%';  //不良率
+            $userlist[$_k]['undesirable_ratio'] = $undesirable==0?'0%':round($undesirable/$userlist[$_k]['s_ordercount']*100,2).'%';  //不良率
+
             //逾期金额比
             $userlist[$_k]['overdueMoney_ratio'] = $userlist[$_k]['overdue_money'] == 0? '0%':round($userlist[$_k]['overdue_money']/$s_amount*100,2).'%';
 
@@ -310,8 +318,8 @@ class YejiSearch extends CoreBackendModel{
         $total['overdue_moneyRatio'] =empty($total['overdue_money'])?'0%':round($total['overdue_money']/$total['s_orderMoney']*100, 2). '%';
         $total['service_ratio'] = empty($total['service'])?'0%':round($total['service']/$total['s_orderCount']*100, 2).'%';
         $total['pack_ratio'] = empty($total['pack'])?'0%':round($total['pack']/$total['s_orderCount']*100,2).'%';
-        $total['adopt_ratio'] = round($total['s_orderCount'] / $total['a_orderCount']*100, 2). '%';  //通过率
-        $total['undesirable_ratio'] = round($total['undesirable'] / $total['a_orderCount']*100, 2). '%'; //不良率
+        $total['adopt_ratio'] = empty($total['s_orderCount'])?'0%':round($total['s_orderCount'] / $total['a_orderCount']*100, 2). '%';  //通过率
+        $total['undesirable_ratio'] = empty($total['undesirable'])?'0%':round($total['undesirable'] / $total['a_orderCount']*100, 2). '%'; //不良率
 
         return $total;
     }
