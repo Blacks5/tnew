@@ -10,11 +10,17 @@ namespace backend\models;
 
 
 use backend\core\CoreBackendModel;
+use Carbon\Carbon;
 use common\components\Helper;
+use common\models\Customer;
+use common\models\Goods;
 use common\models\Orders;
+use common\models\Product;
 use common\models\Repayment;
+use common\models\Stores;
 use common\models\User;
 use function GuzzleHttp\Promise\all;
+use function GuzzleHttp\Psr7\str;
 use yii;
 
 class DataSearch extends CoreBackendModel
@@ -428,5 +434,92 @@ class DataSearch extends CoreBackendModel
         ];
 
         return $type;
+    }
+
+    public function getCustomerOders($s_time, $e_time)
+    {
+
+
+        $orders = Orders::find()
+            ->select('*')
+            ->leftJoin(Customer::tableName(), 'c_id=o_customer_id')
+            ->leftJoin(Stores::tableName(), 's_id=o_store_id')
+            ->leftJoin(Product::tableName(), 'p_id=o_product_id')
+            ->leftJoin(User::tableName(), 'id=o_user_id')
+            ->leftJoin(Goods::tableName(), 'g_order_id=o_id')
+            ->Where(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
+            ->andFilterWhere(['>=', 'orders.o_operator_date', $s_time])
+            ->andFilterWhere(['<=', 'orders.o_operator_date', $e_time])
+            ->asArray()->all();
+
+        $data = [];
+        $marital = [1 => '未婚', 2 => '已婚', 3 => '离异', 4 => '丧偶'];
+        $kinship = [1 => '父亲', 2 => '母亲', 3 => '兄弟', 4 => '姐妹', 5 => '子女', 6 => '表兄弟', 7 => '表兄妹', 8 => '其他'];
+        $other = [1 => '同事', 2 => '朋友', 3 => '同学'];
+        foreach ($orders as $k => $v) {
+            $repayment = Repayment::find()->select(['r_total_repay', 'r_pre_repay_date'])->where(['r_orders_id' => $v['o_id']])->orderBy('r_pre_repay_date')->asArray()->one();
+            $repay_date = Carbon::createFromTimestamp($repayment['r_pre_repay_date'])->day;
+
+            $operator = User::findOne($v['o_operator_id']);
+
+            $data[$k]['o_operator_date'] = date('Y-m-d', $v['o_operator_date']);
+            $data[$k]['o_serial_id'] = $v['o_serial_id'];
+            $data[$k]['customer_name'] = $v['c_customer_name'];
+            $data[$k]['customer_gender'] = $v['c_customer_gender'] == 1 ? '男' : '女';
+            $data[$k]['customer_marital'] = $marital[$v['c_family_marital_status']];
+            $data[$k]['customer_phone'] = $v['c_customer_cellphone'];
+            $data[$k]['customer_card_type'] = '身份证';
+            $data[$k]['customer_card'] = $v['c_customer_id_card'];
+            $data[$k]['s_name'] = $v['s_name'];
+            $data[$k]['s_phone'] = $v['s_owner_phone'];
+            $data[$k]['p_name'] = $v['p_name'];
+            $data[$k]['p_period'] = $v['p_period'];
+            $data[$k]['g_goods_name'] = $v['g_goods_name'];
+            $data[$k]['total'] = $v['o_total_price'];
+            $data[$k]['interest'] = $v['o_total_price'] - $v['o_total_deposit'] + $v['o_service_fee'] + $v['o_inquiry_fee'];
+            $data[$k]['repay_date'] = $repay_date;
+            $data[$k]['r_total_repay'] = $repayment['r_total_repay'];
+            $data[$k]['customer_bank'] = $v['c_bank'];
+            $data[$k]['customer_bank_no'] = $v['c_banknum'];
+            $data[$k]['server_fee'] = $v['o_is_add_service_fee'] == 1 ? '是' : '否';
+            $data[$k]['free_pack'] = $v['o_is_free_pack_fee'] == 1 ? '是' : '否';
+            $data[$k]['auto_pay'] = $v['o_is_auto_pay'] == 1 ? '是' : '否';
+            $data[$k]['kinship'] = $kinship[$v['c_kinship_relation']] . '-' . $v['c_kinship_name'] . '-' . $v['c_kinship_cellphone'];
+            $data[$k]['partner_phone'] = $v['c_family_marital_partner_cellphone'];
+            $data[$k]['other'] = Yii::$app->params['kinship'][$v['c_other_people_relation']]['kinship_str'] . '-' . $v['c_other_people_name'] . '-' . $v['c_other_people_cellphone'];
+            $data[$k]['customer_address'] = $v['c_customer_idcard_detail_addr'];
+            $data[$k]['customer_detail_address'] = $v['c_customer_addr_detail'];
+            $data[$k]['customer_work_address'] = $v['c_customer_jobs_detail_addr'];
+            $data[$k]['customer_work_name'] = $v['c_customer_jobs_company'];
+            $data[$k]['customer_work_phone'] = $v['c_customer_jobs_phone'];
+            $data[$k]['user_name'] = $v['realname'];
+            $data[$k]['operator_name'] = $operator->realname;
+        }
+
+        if(empty($data)){
+            throw new yii\base\ErrorException('这期间没有订单');
+        }
+        $fileName = date('Y/m/d',$s_time).'-'. date('Y/m/d',$e_time) . '.csv';
+        $this->downloadCsv($data, $fileName);
+    }
+
+    private function downloadCsv($parameter, $fileName)
+    {
+        if (is_array($parameter)) {
+            $filename = $fileName;
+            header('Content-Type: text/csv');
+            header("Content-Disposition: attachment;filename={$filename}");
+            $fp = fopen('php://output', 'w');
+            fwrite($fp,chr(0xEF).chr(0xBB).chr(0xBF));
+            if ( ! empty($parameter['header']) && is_array($parameter['header'])) {
+                fputcsv($fp, $parameter['header']);
+            }
+            if (isset($parameter)) {
+                foreach ($parameter as $row) {
+                    fputcsv($fp, $row);
+                }
+            }return true;
+        }
+        throw new yii\web\HttpException(500, "Not a valid parameter!");
     }
 }
