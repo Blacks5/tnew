@@ -57,7 +57,7 @@ return [
         ['kinship_id'=>6, 'kinship_str'=>'其他'],
         ['kinship_id'=>7, 'kinship_str'=>'子女'],
         //        ['kinship_id'=>6, 'kinship_str'=>'表兄弟'],
-//        ['kinship_id'=>7, 'kinship_str'=>'表姐妹'],
+        ['kinship_id'=>7, 'kinship_str'=>'表姐妹'],
     ], // 亲属关系
 
     // 其他关系
