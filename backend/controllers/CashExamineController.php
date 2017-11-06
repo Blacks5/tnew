@@ -9,7 +9,30 @@
 namespace backend\controllers;
 
 
-class CashExamineController
-{
+use backend\core\CoreBackendController;
 
+class CashExamineController extends CoreBackendController
+{
+    public function actionWait()
+    {
+        $examine = 'wait';
+        return $this->render('wait',['examine' => $examine]);
+    }
+
+    public function actionRevoke()
+    {
+        $examine = 'revoke';
+        return $this->render('wait',['examine' => $examine]);
+    }
+
+    public function actionPass()
+    {
+        $examine = 'pass';
+        return $this->render('wait', ['examine' => $examine]);
+    }
+
+    public function actionInfo($id)
+    {
+        return $this->render('info', ['id' => $id]);
+    }
 }
