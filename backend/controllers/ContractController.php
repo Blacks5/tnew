@@ -135,7 +135,7 @@ class ContractController extends Controller
         }elseif($orderInfo['p_is_promotional']==1){  //促销商品返回给商家的费用
 //            if($orderInfo['p_period'] > 11 && $orderInfo['p_period'] < 15){
 //                $service = $total * 0.03;
-//            }elseif ($orderInfo['p_period'] >= 15){
+//            }elseif ($orderInfo['p_period'] >= 15){      
 //                $service = $total *0.05;
 //            }
             $service = $total * 0.02;
