@@ -125,21 +125,22 @@ class ContractController extends Controller
         $total = $orderInfo['o_total_price'] - $orderInfo['o_total_deposit'];  //借出去的本金
 
         //常规商品返还给商家的费用
-        /*if($orderInfo['p_is_promotional']==0){
-            if($orderInfo['p_period']>11 && $orderInfo['p_period'] < 15){
-                $service = $total * 0.01;
-            }elseif($orderInfo['p_period'] >= 15){
-                $service = $total * 0.035;
-            }
+        if($orderInfo['p_is_promotional']==0){
+//            if($orderInfo['p_period']>11 && $orderInfo['p_period'] < 15){
+//                $service = $total * 0.01;
+//            }elseif($orderInfo['p_period'] >= 15){
+//                $service = $total * 0.035;
+//            }
+            $service = $total * 0.035;
         }elseif($orderInfo['p_is_promotional']==1){  //促销商品返回给商家的费用
-            if($orderInfo['p_period'] > 11 && $orderInfo['p_period'] < 15){
-                $service = $total * 0.03;
-            }elseif ($orderInfo['p_period'] >= 15){
-                $service = $total *0.05;
-            }
-        }*/
+//            if($orderInfo['p_period'] > 11 && $orderInfo['p_period'] < 15){
+//                $service = $total * 0.03;
+//            }elseif ($orderInfo['p_period'] >= 15){
+//                $service = $total *0.05;
+//            }
+            $service = $total * 0.02;
+        }
 
-        $service = $total * 0.02;
 
         $allTotal = $total + $service + Yii::$app->params['inquiryFee'];
         $this->updateOrders($orderInfo, $service);
