@@ -517,6 +517,10 @@
 
         // 商家服务费率
         var serverFeeRate = <?=\Yii::$app->params['seller_serverfee_rate']?>;
+        // 商家服务费率【促销商品】
+        var promotionsServerFeeRate = <?=\Yii::$app->params['promotions_seller_serverfee_rate']?>;
+        // 商家服务费率【普通商品】
+        var commonServerFeeRate = <?=\Yii::$app->params['common_seller_serverfee_rate']?>;
         // 查询费
         var queryFee = <?=\Yii::$app->params['inquiryFee']?>;
         // 产品信息列表
@@ -1110,7 +1114,7 @@
             $('#sellerName').html(res.sellerName);
             $('#goodsName').html(res.goodsName + ' ' + res.goodsModel + ' x 1');
             $('#goodsAmount').html('￥' + res.goodsAmount);
-            $('#paidAmount').html('￥' + res.paidAmount + '(含服务费￥' + res.serverFee + ')');
+            $('#paidAmount').html('￥' + res.paidAmount + '(含服务费￥' + res.serverFee + '和查询费￥' + queryFee + ')');
             $('#totalPeriod').html(res.totalPeriod + '期');
             $('#everyMonthPay').html('￥' + res.everyMonthPay);
             $('#vipServiceAmount').html('￥' + res.vipServiceAmount);
@@ -1143,6 +1147,21 @@
             var vipServiceStatus = form2['o_is_free_pack_fee'] == 'on' ? 1 : 0;
             // 获取是否选中了个人保障计划
             var securityServiceStatus = form2['o_is_add_service_fee'] == 'on' ? 1 : 0;
+
+            // 获取相关产品服务费率
+            for(var i in products){
+                if(products[i].p_id == productId){
+                    // 是否是促销
+                    if(products[i].p_is_promotional == 1){
+                        serverFeeRate = promotionsServerFeeRate;
+                    }else{
+                        serverFeeRate = commonServerFeeRate;
+                    }
+
+                    break;
+                }
+            }
+
             // 计算商家服务费
             var serverFee = parseFloat(((goodsAmount - paidAmount) * parseFloat(serverFeeRate)).toFixed(2));
             // 计算贷款总金额
