@@ -1152,7 +1152,7 @@
             for(var i in products){
                 if(products[i].p_id == productId){
                     // 是否是促销
-                    if(products[i].p_is_promotional){
+                    if(products[i].p_is_promotional == 1){
                         serverFeeRate = promotionsServerFeeRate;
                     }else{
                         serverFeeRate = commonServerFeeRate;
@@ -1198,13 +1198,6 @@
                     totalPeriod = parseInt(products[i].p_period);
                     // 每月利率
                     everyMonthRate = parseFloat(products[i].p_month_rate);
-
-                    // 是否是促销
-                    if(products[i].p_is_promotional){
-                        serverFeeRate = promotionsServerFeeRate;
-                    }else{
-                        serverFeeRate = commonServerFeeRate;
-                    }
 
                     break;
                 }
