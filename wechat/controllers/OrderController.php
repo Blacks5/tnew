@@ -62,7 +62,7 @@ class OrderController extends BaseController {
 			$goods_type = Yii::$app->params['goods_type'];
 
 			// 可选产品
-			$products = (new Query())->select(['p_id', 'p_name', 'p_month_rate', 'p_period', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management'])
+			$products = (new Query())->select(['p_id', 'p_name', 'p_month_rate', 'p_period', 'p_add_service_fee', 'p_free_pack_fee', 'p_finance_mangemant_fee', 'p_customer_management' , 'p_is_promotional'])
 				->from(Product::tableName())
 				->where(['p_status' => Product::STATUS_OK])
 				->all();
