@@ -36,6 +36,12 @@ use org\ebq\api\tool\RopUtils;
 use yii;
 use yii\db\Query;
 use common\components\CustomCommonException;
+
+use yii\httpclient\Client;
+use yii\httpclient\Request;
+use yii\httpclient\RequestEvent;
+use yii\log\FileTarget;
+
 //use common\tools\junziqian\model\AuthLevel;
 //use common\tools\junziqian\model\DealType;
 //use common\tools\junziqian\model\IdentityType;
@@ -432,21 +438,11 @@ class JunController extends CoreBackendController
         try{
             $request = Yii::$app->getRequest();
             $post = $request->post();
-            /*$post = [
-                "sign"=>"94c19db05ad83c5b3f18a60c57e93a2e1470fd10",
-            "timestamp"=>"1501338027078",
-            "identityType"=>"1",
-            "optTime"=>"1501336848000",
-            "signStatus"=>"3",
-            "applyNo"=>"APL891288745368752128",
-            "identityCard"=>"510623198812250210",
-            "fullName"=>"涂鸿"
-            ];*/
-
 
             $applyNo = $post['applyNo'] ?? '';
             $model = JzqSign::find()->where(['applyNo'=>$applyNo])->one();
             if(false === !empty($model)){
+                $this->forward();
                 throw new CustomBackendException('数据不存在');
             }
             $model->identityType = $post['identityType'];
@@ -505,6 +501,44 @@ class JunController extends CoreBackendController
             'totalpage' => $pages->pageCount,
             'pages' => $pages
         ]);
+    }
+
+    /**
+     * 转发请求到新系统
+     *
+     * @return void
+     */
+    private function forward()
+    {
+        $post = Yii::$app->getRequest()->post();
+
+        $log = new FileTarget();
+        $log->logFile = Yii::$app->getRuntimePath() . '/logs/junziqian-forward.log';
+        $log->messages[] = ['转发君子签请求到新接口,post data:' . json_encode($post, JSON_UNESCAPED_UNICODE), 2, 'junziqian', microtime(true)];
+        $log->export();
+        $log->messages = null;
+
+        $client = new Client();
+        $request = $client->createRequest()
+        ->setMethod('post')
+        ->setFormat(Client::FORMAT_URLENCODED)
+        ->setUrl(Yii::$app->params['jzq_v2_url'])
+        ->setHeaders(['X-TOKEN' => Yii::$app->params['jzq_v2_token']])
+        ->setData($post);
+
+        $request->on(Request::EVENT_AFTER_SEND, function (RequestEvent $e) use ($log) {
+            $jsonData = json_encode($e->response->getData(), JSON_UNESCAPED_UNICODE);
+            if ($e->response->getStatusCode() == 200) {
+                $logMsg = '转发成功(200)';
+            } else {
+                $logMsg = '转发失败('. $e->response->getStatusCode() .')';
+            }
+            $log->messages[] = [$logMsg . ', 新接口返回数据:' . $jsonData, 2, 'junziqian', microtime(true)];
+            $log->export();
+            $log->messages = null;
+        });
+
+        $response = $request->send();
     }
 
     /**
