@@ -16,5 +16,6 @@ return [
         'borrownew/cancel-vip-pack',    //取消贵宾包
         'borrownew/update-product-code', //修改商品代码
 
-	]
+    ],
+    'jzq_v2_url' => 'http://third-party.devapi.tnew.cn/sign/sign_call',
 ];

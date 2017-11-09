@@ -162,5 +162,10 @@ return [
     'ws'=>'ws://119.23.15.90:8081',
     'customernew_date'=>'2017-08-02 00:00:00',//新用户创建时间,用于筛选
     // 商家服务费率
-    'seller_serverfee_rate' => 0.02, 
+    'seller_serverfee_rate' => 0.02,
+
+    // 商家服务费率【促销商品】
+    'promotions_seller_serverfee_rate' => 0.02,
+    // 商家服务费率【普通商品】
+    'common_seller_serverfee_rate' => 0.035,
 ];
