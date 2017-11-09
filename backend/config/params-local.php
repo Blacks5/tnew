@@ -17,5 +17,9 @@ return [
         'borrownew/update-product-code', //修改商品代码
 
     ],
-    'jzq_v2_url' => 'http://third-party.devapi.tnew.cn/sign/sign_call',
+    'v2_jzq' => 'http://third-party.devapi.tnew.cn/sign/sign_call',
+    'v2_jzq_token' => '',
+    'v2_user' => 'http://users.devapi.tnew.cn/v1/',
+    // 'v2_user' => 'http://users.api.tnew.loc/v1/',
+    'v2_user_token' => '',
 ];

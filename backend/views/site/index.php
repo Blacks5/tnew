@@ -267,7 +267,8 @@ use mdm\admin\components\MenuHelper;
 <?= Html::jsFile('@web/js/plugins/pace/pace.min.js') ?>
 
 <script>
-
+    var v2Token = '<?=$v2Token?>';
+    window.sessionStorage.setItem('V2_TOKEN', v2Token);
 
     $(function () {
         //获取通知权限
