@@ -522,8 +522,8 @@ class JunController extends CoreBackendController
         $request = $client->createRequest()
         ->setMethod('post')
         ->setFormat(Client::FORMAT_URLENCODED)
-        ->setUrl(Yii::$app->params['jzq_v2_url'])
-        ->setHeaders(['X-TOKEN' => Yii::$app->params['jzq_v2_token']])
+        ->setUrl(Yii::$app->params['v2_jzq'])
+        ->setHeaders(['X-TOKEN' => Yii::$app->params['v2_jzq_token']])
         ->setData($post);
 
         $request->on(Request::EVENT_AFTER_SEND, function (RequestEvent $e) use ($log) {

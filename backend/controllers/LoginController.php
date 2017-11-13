@@ -12,6 +12,10 @@ use backend\events\LoginEvent;
 use common\models\LoginForm;
 use yii;
 use common\core\CoreCommonController;
+use yii\httpclient\Client as HttpClient;
+use yii\httpclient\Request;
+use yii\httpclient\RequestEvent;
+use yii\log\FileTarget;
 
 /**
  * 登录 退出 控制器
@@ -40,9 +44,11 @@ class LoginController extends CoreCommonController
             // 先綁定事件hander \yii\web\User里会trigger
             // 写登录日志
             Yii::$app->getUser()->on(yii\web\User::EVENT_AFTER_LOGIN, ['backend\events\LoginEvent', 'writeLoginLog']);
-
             // 然后执行
-            $model->login();
+            $v = $model->login();
+            if ($v) {
+                Yii::$app->session->set('V2_TOKEN', $this->v2Token());
+            }
             return $this->redirect(['site/index']);
         } else {
             // 解决页面跳转问题
@@ -59,6 +65,30 @@ class LoginController extends CoreCommonController
                 'model' => $model,
             ]);
         }
+    }
+
+    private function v2Token()
+    {
+        $client = new HttpClient();
+        $request = $client->createRequest()
+            ->setMethod('post')
+            ->setFormat(HttpClient::FORMAT_URLENCODED)
+            ->setUrl(sprintf(
+                '%susers/%s/tokens',
+                Yii::$app->params['v2_user'],
+                Yii::$app->getUser()->getIdentity()->username
+            ))
+            ->setHeaders(['X-TOKEN' => Yii::$app->params['v2_user_token']])
+            ->setData($post);
+        $token = '';
+        $request->on(Request::EVENT_AFTER_SEND, function (RequestEvent $e) use (&$token) {
+            $res = $e->response->getData();
+            if ($res['success']) {
+                $token = $res['data']['token']['access_token'];
+            }
+        });
+        $request->send();
+        return $token;
     }
 
     /**

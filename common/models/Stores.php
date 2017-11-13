@@ -187,10 +187,14 @@ class Stores extends CoreCommonActiveRecord {
 			$this->userList = User::getLowerForId();
 		}
 
+		$users = new User();
+		$area = $users->getUserArea();
+
 		$this->setScenario('search');
 		$this->load($param);
 		$query = self::find()->where(['!=', 's_status', self::STATUS_DELETE])
-			->andWhere(['or', ['in', 's_id', $store], ['in', 's_add_user_id', array_merge((array) $this->userList, [$user->getId()])]]);
+            ->andWhere(['s_'.$area['area'] => $area['area_value']]);
+			//->andWhere(['or', ['in', 's_id', $store], ['in', 's_add_user_id', array_merge((array) $this->userList, [$user->getId()])]]);
 		if (!$this->validate()) {
 			return $query->where('1=2');
 		}

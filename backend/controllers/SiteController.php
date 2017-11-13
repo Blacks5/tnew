@@ -21,6 +21,11 @@ use common\components\CustomCommonException;
 use common\components\Helper;
 use yii\helpers\Url;
 
+use yii\httpclient\Client as HttpClient;
+use yii\httpclient\Request;
+use yii\httpclient\RequestEvent;
+use yii\log\FileTarget;
+
 /**
  * Site controller
  */
@@ -79,6 +84,7 @@ class SiteController extends CoreBackendController
 //        echo '<pre>';
 //        var_dump($menu);die;
         return $this->render('index',[
+            'v2Token' => Yii::$app->session->get('V2_TOKEN'),
             'menu' => $menu,
 //            'user_info' => key($user_info)
                 'user_info'=>$user_info
