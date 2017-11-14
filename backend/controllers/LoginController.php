@@ -79,10 +79,22 @@ class LoginController extends CoreCommonController
                 Yii::$app->getUser()->getIdentity()->username
             ))
             ->setHeaders(['X-TOKEN' => Yii::$app->params['v2_user_token']])
-            ->setData($post);
+            ->setData([]);
         $token = '';
         $request->on(Request::EVENT_AFTER_SEND, function (RequestEvent $e) use (&$token) {
             $res = $e->response->getData();
+
+            $log = new FileTarget();
+            $log->logFile = Yii::$app->getRuntimePath() . '/logs/v2-api.log';
+            $log->messages[] = [sprintf(
+                '向V2发起登录请求, URL: %susers/%s/tokens', 
+                Yii::$app->params['v2_user'],
+                Yii::$app->getUser()->getIdentity()->username
+            ), 2, 'v2-api', microtime(true)];
+            $log->messages[] = ['登录时新接口返回数据:' . json_encode($res, JSON_UNESCAPED_UNICODE), 2, 'v2-api', microtime(true)];
+            $log->export();
+            $log->messages = null;
+
             if ($res['success']) {
                 $token = $res['data']['token']['access_token'];
             }
