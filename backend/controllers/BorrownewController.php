@@ -373,7 +373,7 @@ left join customer on customer.c_id=orders.o_customer_id
                 // 客户表  商品表 还款计划表
                 $repayment = Repayment::findBySql("select r_total_repay , r_serial_total from repayment where r_orders_id=:r_orders_id", [':r_orders_id'=>$order_id])->one();
                 $_goods = Goods::findBySql('select g_goods_name, g_goods_models from goods where g_order_id=:g_order_id', [':g_order_id'=>$order_id])->one();
-                $purchasedProductName = $_goods['g_goods_name']. $_goods['g_goods_models'];
+                $purchasedProductName = $_goods['g_goods_name'];
                 $loanAmount = round($repayment['r_total_repay'] * $repayment['r_serial_total'], 3);
                 // 获取签约合同
                 $applyNo = JzqSign::find()->select(['applyNo'])->where(['o_serial_id'=>$model['o_serial_id'], 'signStatus'=>JzqSign::STATUS_SIGN_AND_BAOQUAN])->scalar();
