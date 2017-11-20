@@ -109,11 +109,11 @@ class YejiSearch extends CoreBackendModel{
             ->asArray()->all();
 
         if(!empty($this->start_time)){
-            $this->start_time = strtotime($this->start_time);
+            $this->start_time = strtotime($this->start_time . ' 00:00:00');
         }
 
         if(!empty($this->end_time)){
-            $this->end_time = strtotime($this->end_time);
+            $this->end_time = strtotime($this->end_time. ' 23:59:59');
         }
 
         $all_list['t_ordercount']   = 0;    //总提单数
