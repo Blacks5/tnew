@@ -32,5 +32,9 @@ return [
         'loan/loan' => ['tag' => 'loan.loan', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 发起向商家放款请求'],
         'repaymentnew/repay' => ['tag' => 'repaymentnew.repay', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 发起还款扣款请求'],
 
+        // 操作商户相关
+        'stores/create' => ['tag' => 'stores.create', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 添加商家'],
+        'stores/update' => ['tag' => 'stores.update', 'memo' => '{OPERATOR_REALNAME}[{OPERATOR_ID}] 编辑商家'],
+
     ],
 ];
