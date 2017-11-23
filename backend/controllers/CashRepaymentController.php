@@ -9,7 +9,32 @@
 namespace backend\controllers;
 
 
-class CashRepaymentController
-{
+use backend\core\CoreBackendController;
 
+class CashRepaymentController extends CoreBackendController
+{
+    public function actionWait()
+    {
+        return $this->render('index', ['repayment' => 'wait']);
+    }
+
+    public function actionOverdue()
+    {
+        return $this->render('index', ['repayment' => 'overdue']);
+    }
+
+    public function actionPaid()
+    {
+        return $this->render('index', ['repayment' => 'paid']);
+    }
+
+    public function actionPaidOff()
+    {
+        return $this->render('index', ['repayment' => 'paidOff']);
+    }
+
+    public function actionLists($orderID)
+    {
+        return $this->render('lists', ['orderID' => $orderID]);
+    }
 }
