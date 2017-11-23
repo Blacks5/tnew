@@ -31,8 +31,19 @@ class CashExamineController extends CoreBackendController
         return $this->render('wait', ['examine' => $examine]);
     }
 
+    public function actionCancel()
+    {
+        $examine = 'cancel';
+        return $this->render('wait', ['examine' => $examine]);
+    }
+
     public function actionInfo($id)
     {
         return $this->render('info', ['id' => $id]);
+    }
+
+    public function actionImages($orderID)
+    {
+        return $this->render('images', ['orderID' => $orderID]);
     }
 }
