@@ -9,11 +9,12 @@
 
 namespace wechat\controllers;
 
+use common\models\LoginForm;
 use wechat\Tools\Wechat;
 use Yii;
+use yii\httpclient\Client;
 use yii\web\Controller;
-use common\models\LoginForm;
-use EasyWeChat\Foundation\Application;
+use common\services\User;
 
 class BaseController extends Controller {
 	public $enableCsrfValidation = false;
@@ -22,7 +23,7 @@ class BaseController extends Controller {
 		parent::beforeAction($action);
 
 		// $this->userSession();
-		
+
 		// 检测是否微信登录
 		Wechat::Login(['site/index']);
 
@@ -36,10 +37,10 @@ class BaseController extends Controller {
 		return true;
 	}
 
-	private function userSession(){
+	private function userSession() {
 		$model = new LoginForm();
 		$data['data'] = [
-			'username' => 'chunlantian'
+			'username' => 'chunlantian',
 		];
 		$model->load($data, 'data');
 
@@ -59,7 +60,7 @@ class BaseController extends Controller {
 			'title' => $title,
 			'desc' => $desc,
 			'status' => 0,
-			'js' => Wechat::jssdk()
+			'js' => Wechat::jssdk(),
 		]);
 	}
 
@@ -74,7 +75,9 @@ class BaseController extends Controller {
 			'title' => $title,
 			'desc' => $desc,
 			'status' => 1,
-			'js' => Wechat::jssdk()
+			'js' => Wechat::jssdk(),
 		]);
 	}
+
+	
 }
