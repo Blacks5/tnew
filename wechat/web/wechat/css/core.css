@@ -169,3 +169,48 @@ footer a {
   background-color: #1aad19;
   color: #fff;
 }
+
+
+/*现金贷*/
+.weui-cell_select-picker .weui-cell__bd:after {
+    content: " ";
+    display: inline-block;
+    height: 6px;
+    width: 6px;
+    border-width: 2px 2px 0 0;
+    border-color: #c8c8cd;
+    border-style: solid;
+    -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
+    transform: matrix(.71,.71,-.71,.71,0,0);
+    position: relative;
+    top: -2px;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    margin-top: -4px;
+}
+.weui-cell__bd_text-right{
+    text-align: right;
+}
+.weui-cells-radio{
+    margin-top: 0;
+}
+.weui-cells-radio:before{
+    border: none;
+}
+.weui-cells-radio:after{
+    border: none;
+}
+.weui-uploader-box {
+  height: 120px;
+  width: 79px;
+  float: left;
+  margin-bottom: 9px;
+  margin-right: 9px;
+}
+.weui-uploader-box .uploader-tips{
+  display: inline-block;
+  width: 79px;
+  text-align: center;
+  font-size: 14px;
+}
