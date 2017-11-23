@@ -21,5 +21,5 @@ return [
     'v2_jzq_token' => '',
     'v2_user' => 'http://users.devapi.tnew.cn/v1/',
     // 'v2_user' => 'http://users.api.tnew.loc/v1/',
-    'v2_user_token' => '',
+    'v2_user_token' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
 ];
