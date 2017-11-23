@@ -22,17 +22,17 @@ class BaseController extends Controller {
 	public function beforeAction($action) {
 		parent::beforeAction($action);
 
-		$this->userSession();
+		// $this->userSession();
 
-		// // 检测是否微信登录
-		// Wechat::Login(['site/index']);
+		// 检测是否微信登录
+		Wechat::Login(['site/index']);
 
-		// // 检测是否已经绑定
-		// $session = Yii::$app->session;
+		// 检测是否已经绑定
+		$session = Yii::$app->session;
 
-		// if (!$session->get('sys_user')) {
-		// 	return $this->redirect(['login/bind']);
-		// }
+		if (!$session->get('sys_user')) {
+			return $this->redirect(['login/bind']);
+		}
 
 		return true;
 	}
