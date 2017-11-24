@@ -16,15 +16,16 @@
                     <div class="list-group">
                         <a class="list-group-item col-sm-3">订单编号<span class="badge">{{order['order_number']}}</span></a>
                         <a class="list-group-item  col-sm-3">申请金额<span class="badge">{{order['expected_amount']}}</span></a>
+                        <a class="list-group-item  col-sm-3" v-if="order.status >= 40 && order.status != 200">审批金额<span class="badge">{{order['accepted_amount']}}</span></a>
                         <a class="list-group-item  col-sm-3">还款期数<span class="badge">{{order['period_total']}}</span></a>
                         <a class="list-group-item  col-sm-3">还款周期<span class="badge">{{order['repay_cycle'] == 'week'?'周':'月'}}</span></a>
                         <a class="list-group-item  col-sm-3">个人保障计划<span class="badge">{{order['is_free_pack_fee'] ==1 ?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3">贵宾服务包<span class="badge">{{order['is_add_service_fee']==1?'是':'否'}}</span></a>
-                        <a class="list-group-item  col-sm-3">备注<span class="badge">{{order['extended_data']}}</span></a>
                         <a class="list-group-item  col-sm-3" @click="images(order['id'])">图片<span class="badge">点击查看</span></a>
+                        <a class="list-group-item  col-sm-12">备注<span class="badge">{{order['extended_data']}}</span></a>
                     </div>
                 </div>
-                <div class="container" v-if="order['status'] < 90">
+                <div class="container" v-if="order['status'] < 90 ">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">贷款信息</h3></div>
                     <hr/>
                     <div class="list-group">
@@ -36,7 +37,7 @@
                         <a class="list-group-item col-sm-3">预计月供<span class="badge">{{amount['periodAmount']}}元</span> </a>
                     </div>
                 </div>
-                <div class="container" v-if="order['status'] > 90">
+                <div class="container" v-if="order['status'] > 90 && order.status!= 200">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">贷款信息</h3></div>
                     <hr/>
                     <div class="list-group" >
@@ -90,10 +91,10 @@
                             <button class="btn btn-info" type="button" @click="setVisitor">分配上门审核人员</button>
                         </div>
                         <div class="col-sm-2" v-if="order['status'] == 30">
-                            <button type="button" class="btn btn-info" @click="examine">一审通过</button>
+                            <button type="button" class="btn btn-info" @click="examine">一审</button>
                         </div>
                         <div class="col-sm-2" v-if="order['status'] == 50">
-                            <button type="button" class="btn btn-info" @click="examineTwo">二审通过</button>
+                            <button type="button" class="btn btn-info" @click="examineTwo">二审</button>
                         </div>
                         <div class="col-sm-2" v-if="order['status'] == 60">
                             <button type="button" class="btn btn-info" @click="contract">电子合同签约</button>
@@ -166,20 +167,24 @@
                     var json = data.bodyText;
                     var usedData = JSON.parse(json);
 
-                    this.order = usedData['data']['order'];
-                    this.rate = usedData['data']['rate'];
-                    this.amount = usedData['data']['amount'];
-                    this.component = this.order['component'];
-                    this.identification = this.order['identification_card'];
-                    this.job = this.order['job'];
-                    this.marital =this.order['marital'];
-                    this.contacts = this.order['contacts'];
-                    this.bank = this.order['bank_card'];
-                    this.visitor = usedData['data']['visitor'];
+                    this.setDomData(usedData);
+
                 }, function (response) {
                     console.log(response['body']['errors']);
                     layer.msg(response['body']['errors'][0]['message'], {icon: 2})
                 });
+            },
+            setDomData:function(usedData){
+                this.order = usedData['data']['order'];
+                this.rate = usedData['data']['rate'];
+                this.amount = usedData['data']['amount'];
+                this.component = this.order['component'];
+                this.identification = this.order['identification_card'];
+                this.job = this.order['job'];
+                this.marital =this.order['marital'];
+                this.contacts = this.order['contacts'];
+                this.bank = this.order['bank_card'];
+                this.visitor = usedData['data']['visitor'];
             },
             setVisitor: function(){
                 var url = baseUrl + "<?= $id ?>/visitor";
@@ -191,13 +196,26 @@
                 this.postOrder(url, header);
             },
             examineTwo: function(){
-                var url = baseUrl + "<?= $id ?>/examine/first";
+                var url = baseUrl + "<?= $id ?>/examine/second";
                 var data = 1;
+                var index = layer.open({
+                   type:1,
+                   shade:0.2,
+                   title:false,
+                   content:$('examine'),
+                   btn:['通过','拒绝'],
+                   btn1:function(){
+                       data =1;
+                   } ,
+                    btn2:function(){
+                       data = 2;
+                    }
+                });
                 this.openDiv(url, data);
             },
             examine:function(){
                 $('#acceptAmount').val(this.order['expected_amount']);
-                var url = baseUrl + "<?= $id ?>/examine/second";
+                var url = baseUrl + "<?= $id ?>/examine/first";
 
                 var __this = this;
                 var index = layer.open({
@@ -205,7 +223,7 @@
                     shade:0.2,
                     title:false,
                     content:$('#examineTwo'),
-                    btn:['确定','取消'],
+                    btn:['通过','拒绝'],
                     btn1:function(){
                         if($('#acceptAmount').val() == ''){
                             layer.msg('终审金额不能为空!',{icon:2});return false;
@@ -218,6 +236,12 @@
                         __this.postOrder(url, data);
                     },
                     btn2:function(){
+                        var data = {
+                            examine:2,
+                            reason:$('#reasonTwo').val(),
+                            acceptAmount:$('#acceptAmount').val()
+                        };
+                        __this.postOrder(url, data);
                         layer.close(index);
                     }
                 });
@@ -301,13 +325,13 @@
                 this.$http.post(url, data,token).then(function(data){
                     layer.close(loading);
                     var json = data.bodyText;
-                    var usedDatas = JSON.parse(json);
-                    if(usedDatas['success']==true){
-                        layer.msg(usedDatas['data']);
-                        setTimeout("window.location.reload()", 2000)
+                    var usedData = JSON.parse(json);
+                    if(usedData['success']==true){
+                        layer.msg(usedData['data']['message']);
                     }else{
-                        layer.msg(usedDatas['data'],{icon:2});
+                        layer.msg(usedData['data']['message'],{icon:2});
                     }
+                    this.setDomData(usedData['data']);
                 },function(response){
                     layer.close(loading);
                     var json = response.bodyText;
