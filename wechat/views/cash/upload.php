@@ -406,6 +406,8 @@ $(function(){
             // if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE || orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
                 var post = [];
 
+                alert(imagesArr);
+
                 // 一审上传检测
                 // if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE){
                     for(var i = 0 ; i < firstPost.length ; i++){
@@ -439,7 +441,7 @@ $(function(){
                 //         post.push(imageType + ':' + imagesArr[imageType]);
                 //     }
                 // }
-                
+
                 alert(post.join(','));
                 $.ajaxPost(uploadOrderImgUrl , {images : post.join(',')} , function(res){
                     if(res.status){
