@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 15:07:18
+ * @Last Modified time: 2017-11-24 15:23:46
  */
 namespace common\services;
 
@@ -182,7 +182,7 @@ class Service {
 
 			$basePath = '../runtime/temp';
 
-			is_dir($basePath) || @mkdir($basePath, true, 0777);
+			is_dir($basePath) || @mkdir($basePath, 0777 , true);
 
 			$filepath = $basePath . '/' . $filename;
 
