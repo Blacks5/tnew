@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 17:10:04
+ * @Last Modified time: 2017-11-24 17:11:08
  */
 namespace common\services;
 
@@ -177,6 +177,7 @@ class Cash extends Service {
 		$url = $this->buildUrl($this->saveOrderImageRouter, ['id' => $orderId]);
 
 		$res = $this->httpPost($url, $params);
+		print_r($params);
 		print_r($res);die;
 		if ($res['success']) {
 			return $res['data'];
