@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 09:36:26
+ * @Last Modified time: 2017-11-24 09:48:59
  */
 namespace wechat\controllers;
 
@@ -338,6 +338,8 @@ class CashController extends BaseController {
 		$request = Yii::$app->request;
 
 		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+			
 			// 获取meidaID
 			$mediaId = $request->post('mediaId', '');
 
