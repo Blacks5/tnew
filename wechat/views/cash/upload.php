@@ -310,7 +310,7 @@ $(function(){
     ];
 
     // 上传照片数据
-    var imagesArr = [];
+    var imagesArr = new Array;
 
     wx.ready(function(){
         wx.hideMenuItems({
@@ -370,7 +370,7 @@ $(function(){
                                     $.toptip('上传成功', 'success');
 
                                     // 临时存储上传文件
-                                    imagesArr[imageType] = res.uuid;
+                                    imagesArr[imageType] = res.data.uuid;
 
                                     preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
                                     // 当前数量
