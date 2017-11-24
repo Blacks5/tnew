@@ -340,7 +340,7 @@ $(function(){
                         isShowProgressTips: 1,
                         success: function(res) {
                             // 请求网络
-                            $.ajaxPost(uploadUrl , res.serverId , function(res){
+                            $.ajaxPost(uploadUrl , {mediaId:res.serverId} , function(res){
                                 if(res.status){
                                     $.toptip('上传成功', 'success');
 
