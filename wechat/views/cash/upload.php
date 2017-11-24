@@ -313,7 +313,7 @@ $(function(){
             // 获取图片显示容器
             var filesContainer = uploaderContainer.find('.weui-uploader__files');
             // 获取input容器
-            var inputContainer = _that.parents('.weui-uploader__input-box');
+            var inputContainer = _that.parents('.weui-uploader-box');
             // 获取图片数量容器
             var numContainer = uploaderContainer.find('.weui-uploader__info');
             // 获取最大图片上传数
