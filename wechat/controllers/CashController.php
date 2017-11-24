@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 09:48:59
+ * @Last Modified time: 2017-11-24 09:51:35
  */
 namespace wechat\controllers;
 
@@ -339,12 +339,12 @@ class CashController extends BaseController {
 
 		if ($request->isAjax && $request->isPost) {
 			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
-			
+
 			// 获取meidaID
 			$mediaId = $request->post('mediaId', '');
 
 			if ($mediaId) {
-				try {
+				// try {
 					// 上传
 					$files = new Files;
 					$res = $files->upload($mediaId);
@@ -352,12 +352,12 @@ class CashController extends BaseController {
 					return ['status' => 1, 'message' => '上传成功', 'data' => [
 						'uuid' => $res['uuid'],
 					]];
-				} catch (CustomCommonException $e) {
-					return ['status' => 0, 'message' => '上传失败'];
-				}
+				// } catch (CustomCommonException $e) {
+				// 	return ['status' => 0, 'message' => '上传失败1'];
+				// }
 			}
 
-			return ['status' => 0, 'message' => '上传失败'];
+			return ['status' => 0, 'message' => '上传失败2'];
 		}
 	}
 
