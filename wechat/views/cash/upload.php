@@ -42,7 +42,7 @@
         <div class="weui-cells weui-cells_form weui-cells_upload">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <?php if (1) {?>
+                    <?php if (in_array($order['orderStatus'], [2, 5])) {?>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证照片(正、反面)<span class="color-danger">*</span></p>
@@ -403,13 +403,11 @@ $(function(){
 
         // 绑定提交
         $('#submitBtn').bind('click' , function(){
-            // if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE || orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
+            if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE || orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
                 var post = [];
 
-                alert(imagesArr);
-
                 // 一审上传检测
-                // if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE){
+                if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE){
                     for(var i = 0 ; i < firstPost.length ; i++){
                         var item = firstPost[i];
                         var imageType = item.imageType;
@@ -423,27 +421,26 @@ $(function(){
                         // 加入待上传的数据中
                         post.push(imageType + ':' + imagesArr[imageType]);
                     }
-                // }
+                }
 
                 // 二审上传检测
-                // if(orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
-                //     for(var i = 0 ; i < secondPost.length ; i++){
-                //         var item = secondPost[i];
-                //         var imageType = item.imageType;
-                //         var isMust = item.isMust;
-                //         var descText = item.descText;
+                if(orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
+                    for(var i = 0 ; i < secondPost.length ; i++){
+                        var item = secondPost[i];
+                        var imageType = item.imageType;
+                        var isMust = item.isMust;
+                        var descText = item.descText;
 
-                //         if(isMust && !imagesArr[imageType]){
-                //             $.toast('请上传' + descText, 'text');
-                //             return;
-                //         }
-                //         // 加入待上传的数据中
-                //         post.push(imageType + ':' + imagesArr[imageType]);
-                //     }
-                // }
+                        if(isMust && !imagesArr[imageType]){
+                            $.toast('请上传' + descText, 'text');
+                            return;
+                        }
+                        // 加入待上传的数据中
+                        post.push(imageType + ':' + imagesArr[imageType]);
+                    }
+                }
 
-                alert(post.join(','));
-                $.ajaxPost(uploadOrderImgUrl , {images : post.join(',')} , function(res){
+                $.ajaxPost(uploadOrderImgUrl , {orderId : orderId, images : post.join(',')} , function(res){
                     if(res.status){
                         $.toast(res.message, function(){
                             window.location = successUrl + "?orderId=" + orderId;
@@ -452,9 +449,9 @@ $(function(){
                         $.toast(res.message, "text");
                     }
                 } , 120000);
-            // }else{
-            //     $.toast('该订单不存在或已在审核', "text");
-            // }
+            }else{
+                $.toast('该订单不存在或已在审核', "text");
+            }
         });
     });
 });

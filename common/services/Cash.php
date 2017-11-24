@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-23 16:44:59
+ * @Last Modified time: 2017-11-24 16:51:09
  */
 namespace common\services;
 
@@ -24,6 +24,8 @@ class Cash extends Service {
 	private $queryOrderRouter = '/orders/{id}';
 	// 修改订单
 	private $editOrderRouter = '/orders/{id}';
+	// 保存上传图片
+	private $saveOrderImageRouter = '/orders/{id}/images';
 	// 每一页显示的数据量
 	private $range = 15;
 
@@ -165,5 +167,21 @@ class Cash extends Service {
 		}
 	}
 
-	
+	/**
+	 * 保存上传图片
+	 * @param  string $orderId 订单ID
+	 * @param  array $params   图片参数
+	 * @return array           订单数据
+	 */
+	public function saveOrderImage($orderId, $params) {
+		$url = $this->buildUrl($this->saveOrderImageRouter, ['id' => $orderId]);
+
+		$res = $this->httpPost($url, $params);
+
+		if ($res['success']) {
+			return $res['data'];
+		} else {
+			throw new CustomCommonException($res['errors'][0]['message']);
+		}
+	}
 }

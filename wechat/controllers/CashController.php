@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 15:06:02
+ * @Last Modified time: 2017-11-24 16:51:19
  */
 namespace wechat\controllers;
 
@@ -305,11 +305,48 @@ class CashController extends BaseController {
 		}
 	}
 
+	// 上传订单图片
 	public function actionUploadOrderImg() {
 		$request = Yii::$app->request;
 
 		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
+			// 获取orderID
+			$orderId = $request->post('orderId', '');
+			$images = $request->post('images', '');
+
+			if ($orderId) {
+				// 临时数据
+				$imagesArr = [];
+
+				// 拆分数组
+				$imagesSplit = explode(',', $images);
+
+				foreach ($imagesSplit as $item) {
+					// 拆分数据
+					list($imageType, $uuid) = explode(':', $item);
+
+					$imagesArr[$imageType] = $uuid;
+				}
+
+				$params = [
+					'orderID' => $orderId,
+					'images' => json_encode($imagesArr, JSON_UNESCAPED_UNICODE),
+				];
+
+				try {
+					// 保存图片相关数据
+					$cash = new Cash;
+					$res = $cash->saveOrderImage($orderId , $params);
+
+					return ['status' => 1, 'message' => '提交成功'];
+				} catch (CustomCommonException $e) {
+					return ['status' => 0, 'message' => $e->getMessage()];	
+				}
+			} else {
+				return ['status' => 0, 'message' => '参数异常'];
+			}
 		} else {
 			$orderId = intval($request->get('orderId', 0));
 
@@ -318,13 +355,15 @@ class CashController extends BaseController {
 				$cash = new Cash;
 				$order = $cash->queryOrder($orderId);
 
-				// if (in_array($order['orderStatus'], [2, 4, 5, 7])) {
-				return $this->renderPartial('upload', [
-					'orderId' => $orderId,
-					'order' => $order,
-					'js' => Wechat::jssdk(),
-				]);
-				// }
+				if (in_array($order['orderStatus'], [2, 4, 5, 7])) {
+					return $this->renderPartial('upload', [
+						'orderId' => $orderId,
+						'order' => $order,
+						'js' => Wechat::jssdk(),
+					]);
+				} else {
+					return $this->renderPartial('fail');
+				}
 			} catch (CustomCommonException $e) {
 				return $this->renderPartial('fail');
 			}
@@ -338,29 +377,29 @@ class CashController extends BaseController {
 	public function actionUpload() {
 		$request = Yii::$app->request;
 
-		// if ($request->isAjax && $request->isPost) {
-		Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
-		// 获取meidaID
-		$mediaId = $request->post('mediaId', '');
+			// 获取meidaID
+			$mediaId = $request->post('mediaId', '');
 
-		if ($mediaId) {
-			try {
-				// 上传
-				$files = new Files;
-				$res = $files->upload($mediaId);
+			if ($mediaId) {
+				try {
+					// 上传
+					$files = new Files;
+					$res = $files->upload($mediaId);
 
-				return ['status' => 1, 'message' => '上传成功', 'data' => [
-					'uuid' => $res['uuid'],
-					'url' => $res['url'],
-				]];
-			} catch (CustomCommonException $e) {
-				return ['status' => 0, 'message' => '上传失败1'];
+					return ['status' => 1, 'message' => '上传成功', 'data' => [
+						'uuid' => $res['uuid'],
+						'url' => $res['url'],
+					]];
+				} catch (CustomCommonException $e) {
+					return ['status' => 0, 'message' => $e->getMessage()];
+				}
 			}
-		}
 
-		return ['status' => 0, 'message' => '上传失败2'];
-		// }
+			return ['status' => 0, 'message' => '上传失败'];
+		}
 	}
 
 	// 操作成功
