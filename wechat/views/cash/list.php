@@ -351,18 +351,22 @@
 
                     // 绑定操作
                     var actions = new Array;
-                    if(status == 1){
-                        actions.push(defaultActions.edit);
-                        actions.push(defaultActions.upload);
-                        actions.push(defaultActions.cancel);
-                    }else if(status == _this.WAIT_CHECK){
-                        actions.push(defaultActions.cancel);
-                    }else if(status == _this.WAIT_APP_UPLOAD_AGAIN){
-                        actions.push(defaultActions.upload);
-                        actions.push(defaultActions.cancel);
-                    }else if(status == _this.WAIT_CHECK_AGAIN){
-                        actions.push(defaultActions.cancel);
-                    }
+                    // if(status == 1){
+                    //     actions.push(defaultActions.edit);
+                    //     actions.push(defaultActions.upload);
+                    //     actions.push(defaultActions.cancel);
+                    // }else if(status == _this.WAIT_CHECK){
+                    //     actions.push(defaultActions.cancel);
+                    // }else if(status == _this.WAIT_APP_UPLOAD_AGAIN){
+                    //     actions.push(defaultActions.upload);
+                    //     actions.push(defaultActions.cancel);
+                    // }else if(status == _this.WAIT_CHECK_AGAIN){
+                    //     actions.push(defaultActions.cancel);
+                    // }
+
+                    actions.push(defaultActions.edit);
+                    actions.push(defaultActions.upload);
+                    actions.push(defaultActions.cancel);
 
                     $.actions({
                         title: "操作",

@@ -408,7 +408,8 @@ $(function(){
 
                 // 一审上传检测
                 // if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE){
-                    firstPost.forEach(function(item){
+                    for(var i = 0 ; i < firstPost.length ; i++){
+                        var item = firstPost[i];
                         var imageType = item.imageType;
                         var isMust = item.isMust;
                         var descText = item.descText;
@@ -419,12 +420,13 @@ $(function(){
                         }
                         // 加入待上传的数据中
                         post.push(imageType + ':' + imagesArr[imageType]);
-                    });
+                    }
                 // }
 
                 // 二审上传检测
                 // if(orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
-                //     secondPost.forEach(function(item){
+                //     for(var i = 0 ; i < secondPost.length ; i++){
+                //         var item = secondPost[i];
                 //         var imageType = item.imageType;
                 //         var isMust = item.isMust;
                 //         var descText = item.descText;
@@ -435,8 +437,9 @@ $(function(){
                 //         }
                 //         // 加入待上传的数据中
                 //         post.push(imageType + ':' + imagesArr[imageType]);
-                //     });
+                //     }
                 // }
+                
                 alert(post.join(','));
                 $.ajaxPost(uploadOrderImgUrl , {images : post.join(',')} , function(res){
                     if(res.status){
