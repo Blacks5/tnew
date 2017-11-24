@@ -418,8 +418,11 @@ $(function(){
                             $.toast('请上传' + descText, 'text');
                             return;
                         }
+                        
+                        var uuid = imagesArr[imageType] ? imagesArr[imageType] : '';
+
                         // 加入待上传的数据中
-                        post.push(imageType + ':' + imagesArr[imageType]);
+                        post.push(imageType + ':' + uuid);
                     }
                 }
 
@@ -435,8 +438,9 @@ $(function(){
                             $.toast('请上传' + descText, 'text');
                             return;
                         }
+                        var uuid = imagesArr[imageType] ? imagesArr[imageType] : '';
                         // 加入待上传的数据中
-                        post.push(imageType + ':' + imagesArr[imageType]);
+                        post.push(imageType + ':' + uuid);
                     }
                 }
 
