@@ -382,7 +382,7 @@ $(function(){
 
         // 绑定提交
         $('#submitBtn').bind('click' , function(){
-            if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE || orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
+            // if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE || orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
                 $.ajaxPost(uploadOrderImgUrl , post , function(res){
                     if(res.status){
                         $.toast(res.message, function(){
@@ -392,9 +392,9 @@ $(function(){
                         $.toast(res.message, "text");
                     }
                 } , 120000);
-            }else{
-                $.toast('该订单不存在或已在审核', "text");
-            }
+            // }else{
+            //     $.toast('该订单不存在或已在审核', "text");
+            // }
         });
     });
 });

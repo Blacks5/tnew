@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-23 17:46:14
+ * @Last Modified time: 2017-11-24 09:36:26
  */
 namespace wechat\controllers;
 
@@ -317,13 +317,13 @@ class CashController extends BaseController {
 				$cash = new Cash;
 				$order = $cash->queryOrder($orderId);
 
-				if (in_array($order['orderStatus'], [2, 4, 5, 7])) {
+				// if (in_array($order['orderStatus'], [2, 4, 5, 7])) {
 					return $this->renderPartial('upload', [
 						'orderId' => $orderId,
 						'order' => $order,
 						'js' => Wechat::jssdk(),
 					]);
-				}
+				// }
 			} catch (CustomCommonException $e) {
 				return $this->renderPartial('fail');
 			}
