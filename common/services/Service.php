@@ -5,11 +5,13 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-23 14:33:46
+ * @Last Modified time: 2017-11-24 15:07:18
  */
 namespace common\services;
 
 use common\components\CustomCommonException;
+use EasyWeChat\Foundation\Application;
+use Exception;
 use Yii;
 use yii\httpclient\Client;
 
@@ -22,15 +24,46 @@ class Service {
 	 */
 	protected function httpPost($url, $params = [], $tokenFrom = 'user') {
 		if ($token = $this->getToken($tokenFrom)) {
-			$httpClient = new Client();
+			try {
+				$httpClient = new Client();
 
-			$response = $httpClient->post($url, $params, [
-				'X-TOKEN' => $token,
-			])->send();
+				$response = $httpClient->post($url, $params, [
+					'X-TOKEN' => $token,
+				])->send();
 
-			return $response->data;
+				return $response->data;
+			} catch (Exception $e) {
+				throw new CustomCommonException('Remote Server Exception.');
+			}
 		} else {
-			throw new CustomCommonException('Service token failed to get.');
+			throw new CustomCommonException('Service Token Failed To Get.');
+		}
+	}
+
+	/**
+	 * 发起HTTP POST请求
+	 * @param  string $url    请求地址
+	 * @param  array  $params 请求参数
+	 * @return array
+	 */
+	protected function httpUpload($url, $file, $tokenFrom = 'user') {
+		if ($token = $this->getToken($tokenFrom)) {
+			try {
+				$httpClient = new Client();
+
+				$response = $httpClient->createRequest()
+					->setMethod('post')
+					->setUrl($url)
+					->addHeaders(['X-TOKEN' => $token])
+					->addFile('image', $file)
+					->send();
+
+				return $response->data;
+			} catch (Exception $e) {
+				throw new CustomCommonException('Remote Server Exception.');
+			}
+		} else {
+			throw new CustomCommonException('Service Token Failed To Get.');
 		}
 	}
 
@@ -128,5 +161,38 @@ class Service {
 		} else {
 			return Yii::$app->params['server_communicate_token'];
 		}
+	}
+
+	/**
+	 * 拉取文件到本地
+	 * @param  string $mediaid  微信临时素材
+	 * @param  string $filename 文件名
+	 * @return string           文件路径
+	 */
+	protected function pullMediaToLocal($mediaid, $filename = null) {
+		$config = Yii::$app->params['wechat'];
+		$app = new Application($config);
+
+		// 临时素材
+		$temporary = $app->material_temporary;
+
+		// 获取素材内容
+		if ($content = $temporary->getStream($mediaid)) {
+			$filename = $filename ? $filename : uniqid() . '.jpg';
+
+			$basePath = '../runtime/temp';
+
+			is_dir($basePath) || @mkdir($basePath, true, 0777);
+
+			$filepath = $basePath . '/' . $filename;
+
+			$status = file_put_contents($filepath, $content);
+
+			if ($status) {
+				return $filepath;
+			}
+		}
+
+		return null;
 	}
 }

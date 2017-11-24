@@ -5,13 +5,14 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 09:51:35
+ * @Last Modified time: 2017-11-24 15:06:02
  */
 namespace wechat\controllers;
 
 use common\components\CustomCommonException;
 use common\components\Helper;
 use common\services\Cash;
+use common\services\Files;
 use wechat\Tools\Wechat;
 use Yii;
 use yii\web\Response;
@@ -318,11 +319,11 @@ class CashController extends BaseController {
 				$order = $cash->queryOrder($orderId);
 
 				// if (in_array($order['orderStatus'], [2, 4, 5, 7])) {
-					return $this->renderPartial('upload', [
-						'orderId' => $orderId,
-						'order' => $order,
-						'js' => Wechat::jssdk(),
-					]);
+				return $this->renderPartial('upload', [
+					'orderId' => $orderId,
+					'order' => $order,
+					'js' => Wechat::jssdk(),
+				]);
 				// }
 			} catch (CustomCommonException $e) {
 				return $this->renderPartial('fail');
@@ -337,28 +338,29 @@ class CashController extends BaseController {
 	public function actionUpload() {
 		$request = Yii::$app->request;
 
-		if ($request->isAjax && $request->isPost) {
-			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+		// if ($request->isAjax && $request->isPost) {
+		Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
-			// 获取meidaID
-			$mediaId = $request->post('mediaId', '');
+		// 获取meidaID
+		$mediaId = $request->post('mediaId', '');
 
-			if ($mediaId) {
-				// try {
-					// 上传
-					$files = new Files;
-					$res = $files->upload($mediaId);
+		if ($mediaId) {
+			try {
+				// 上传
+				$files = new Files;
+				$res = $files->upload($mediaId);
 
-					return ['status' => 1, 'message' => '上传成功', 'data' => [
-						'uuid' => $res['uuid'],
-					]];
-				// } catch (CustomCommonException $e) {
-				// 	return ['status' => 0, 'message' => '上传失败1'];
-				// }
+				return ['status' => 1, 'message' => '上传成功', 'data' => [
+					'uuid' => $res['uuid'],
+					'url' => $res['url'],
+				]];
+			} catch (CustomCommonException $e) {
+				return ['status' => 0, 'message' => '上传失败1'];
 			}
-
-			return ['status' => 0, 'message' => '上传失败2'];
 		}
+
+		return ['status' => 0, 'message' => '上传失败2'];
+		// }
 	}
 
 	// 操作成功

@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-23 16:43:28
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-23 16:47:01
+ * @Last Modified time: 2017-11-24 15:03:40
  */
 
 namespace common\services;
@@ -14,9 +14,9 @@ use common\components\CustomCommonException;
 
 class Files extends Service {
 	// 微服务记录地址
-	protected $microServiceUrl = 'http://file.devapi.tnew.cn/v1/';
+	protected $microServiceUrl = 'http://files.devapi.tnew.cn/v1/';
 	// 上传照片
-	private $uploadRouter = '/files';
+	private $uploadRouter = '/files/';
 
 	/**
 	 * 上传照片
@@ -26,14 +26,22 @@ class Files extends Service {
 	public function upload($mediaId) {
 		$url = $this->buildUrl($this->uploadRouter);
 
-		$res = $this->httpPost($url, [
-			'image' => $mediaId,
-		]);
+		try {
+			if ($filepath = $this->pullMediaToLocal($mediaId)) {
+				$res = $this->httpUpload($url, $filepath);
 
-		if ($res['success']) {
-			return $res['data'];
-		} else {
-			throw new CustomCommonException($res['errors'][0]['message']);
+				@unlink($filepath);
+
+				if ($res['success']) {
+					return $res['data'];
+				} else {
+					throw new CustomCommonException($res['errors'][0]['message']);
+				}
+			} else {
+				throw new CustomCommonException('Files Upload Exception.');
+			}
+		} catch (Exception $e) {
+			throw new CustomCommonException('Remote Server Exception.');
 		}
 	}
 }
