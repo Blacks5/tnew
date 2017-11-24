@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-11-21 15:42:09
+ * @Last Modified time: 2017-11-24 18:01:56
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -128,12 +128,12 @@
 			errormsg: "贷款金额不合法"
 		}, {
 			ele: "input[name=installmentCycle]",
-			datatype: '*2-20',
+			datatype: '*1-20',
 			nullmsg: "请选择分期方式",
 			errormsg: "请选择分期方式"
 		}, {
 			ele: "input[name=installmentPeriod]",
-			datatype: '*2-20',
+			datatype: '*1-20',
 			nullmsg: "请选择分期时长",
 			errormsg: "请选择分期时长"
 		}]);

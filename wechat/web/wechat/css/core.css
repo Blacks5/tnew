@@ -127,6 +127,7 @@ footer a {
   position: fixed;
   bottom: 0;
   left: 0;
+  z-index: 9999;
 }
 .weui-uploader__file{
   position: relative;
