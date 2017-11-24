@@ -414,7 +414,7 @@ $(function(){
                         var descText = item.descText;
 
                         if(isMust && !imagesArr[imageType]){
-                            $.toptip(res.message, 'warning');
+                            $.toast('请上传' + descText, 'text');
                             return;
                         }
                         // 加入待上传的数据中
@@ -430,7 +430,7 @@ $(function(){
                 //         var descText = item.descText;
 
                 //         if(isMust && !imagesArr[imageType]){
-                //             $.toptip(res.message, 'warning');
+                //             $.toast('请上传' + descText, 'text');
                 //             return;
                 //         }
                 //         // 加入待上传的数据中
