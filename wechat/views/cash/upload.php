@@ -296,12 +296,12 @@ $(function(){
         {imageType : 8 , isMust : 1 , descText : '住房门牌照'},
         {imageType : 9 , isMust : 1 , descText : '住房室内照1'},
         {imageType : 10 , isMust : 1 , descText : '住房室内照2'},
-        {imageType : 11 , isMust : 1 , descText : '住房室内照3'},
-        {imageType : 12 , isMust : 1 , descText : '住房室内照4'},
-        {imageType : 13 , isMust : 1 , descText : '补充照片1'},
-        {imageType : 14 , isMust : 1 , descText : '补充照片2'},
-        {imageType : 15 , isMust : 1 , descText : '补充照片3'},
-        {imageType : 16 , isMust : 1 , descText : '补充照片4'},
+        {imageType : 11 , isMust : 0 , descText : '住房室内照3'},
+        {imageType : 12 , isMust : 0 , descText : '住房室内照4'},
+        {imageType : 13 , isMust : 0 , descText : '补充照片1'},
+        {imageType : 14 , isMust : 0 , descText : '补充照片2'},
+        {imageType : 15 , isMust : 0 , descText : '补充照片3'},
+        {imageType : 16 , isMust : 0 , descText : '补充照片4'},
     ];
     // 二审必需上传的文件
     var secondPost = [
