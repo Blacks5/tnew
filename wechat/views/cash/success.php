@@ -16,7 +16,7 @@
             <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
             <div class="weui-msg__text-area">
                 <h2 class="weui-msg__title">提交成功</h2>
-                <p class="weui-msg__desc">订单已提交成功，请耐心等待。<br />如需了解审核进度，请<a href="<?= Yii::$app->getUrlManager()->createUrl(['case/detail'])?>">点击查看</a>订单详情</p>
+                <p class="weui-msg__desc">订单已提交成功，请耐心等待。<br />如需了解审核进度，请<a href="<?= Yii::$app->getUrlManager()->createUrl(['case/order-list'])?>">点击查看</a>订单详情</p>
             </div>
             <div class="weui-msg__opr-area">
                 <p class="weui-btn-area">
