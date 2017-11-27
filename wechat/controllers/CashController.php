@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 16:51:19
+ * @Last Modified time: 2017-11-27 11:25:14
  */
 namespace wechat\controllers;
 
@@ -96,8 +96,8 @@ class CashController extends BaseController {
 				'amount' => $request->post('loanAmount', 0),
 				'cycle' => $request->post('installmentCycle', ''),
 				'period' => $request->post('installmentPeriod', ''),
-				'isFreePackFee' => intval($request->post('isProtectionFee', 0)),
-				'isAddServiceFee' => intval($request->post('isVipServiceFee', 0)),
+				'isFreePackFee' => $request->post('isProtectionFee', 0) ? 1 : 0,
+				'isAddServiceFee' => $request->post('isVipServiceFee', 0) ? 1 : 0,
 			];
 
 			try {
@@ -338,11 +338,11 @@ class CashController extends BaseController {
 				try {
 					// 保存图片相关数据
 					$cash = new Cash;
-					$res = $cash->saveOrderImage($orderId , $params);
+					$res = $cash->saveOrderImage($orderId, $params);
 
 					return ['status' => 1, 'message' => '提交成功'];
 				} catch (CustomCommonException $e) {
-					return ['status' => 0, 'message' => $e->getMessage()];	
+					return ['status' => 0, 'message' => $e->getMessage()];
 				}
 			} else {
 				return ['status' => 0, 'message' => '参数异常'];
@@ -402,8 +402,40 @@ class CashController extends BaseController {
 		}
 	}
 
-	// 操作成功
-	public function actionCancle() {
-		return $this->renderPartial('fail');
+	// 取消订单
+	public function actionCancelOrder() {
+		$request = Yii::$app->request;
+
+		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+
+			$params = [
+				'orderID' => $request->post('orderId', 0),
+				'reason' => $request->post('reason', ''),
+				'examine' => 2,
+			];
+
+			$cashModel = new \common\models\Cash();
+			$cashModel->load([
+				'data' => $params,
+			], 'data');
+
+			$cashModel->scenario = 'cancelOrder';
+
+			if (false === $cashModel->validate()) {
+				$msg = $cashModel->getFirstErrors();
+				return ['status' => 0, 'message' => reset($msg)];
+			}
+
+			try {
+				// 保存图片相关数据
+				$cash = new Cash;
+				$res = $cash->cancelCashOrder($params);
+
+				return ['status' => 1, 'message' => '取消成功'];
+			} catch (CustomCommonException $e) {
+				return ['status' => 0, 'message' => $e->getMessage()];
+			}
+		}
 	}
 }

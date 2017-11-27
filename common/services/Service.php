@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 15:23:46
+ * @Last Modified time: 2017-11-27 10:08:49
  */
 namespace common\services;
 
@@ -104,6 +104,30 @@ class Service {
 			return $response->data;
 		} else {
 			throw new CustomCommonException('Service token failed to get.');
+		}
+	}
+
+	/**
+	 * 发起HTTP DELETE请求
+	 * @param  string $url    请求地址
+	 * @param  array  $params 请求参数
+	 * @return array
+	 */
+	protected function httpDelete($url, $params = [], $tokenFrom = 'user') {
+		if ($token = $this->getToken($tokenFrom)) {
+			try {
+				$httpClient = new Client();
+
+				$response = $httpClient->delete($url, $params, [
+					'X-TOKEN' => $token,
+				])->send();
+
+				return $response->data;
+			} catch (Exception $e) {
+				throw new CustomCommonException('Remote Server Exception.');
+			}
+		} else {
+			throw new CustomCommonException('Service Token Failed To Get.');
 		}
 	}
 

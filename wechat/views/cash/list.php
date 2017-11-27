@@ -52,6 +52,7 @@
     <script src="/wechat/lib/jquery-2.1.4.js"></script>
     <script src="/wechat/lib/fastclick.js"></script>
     <script src="/wechat/js/jquery-weui.js"></script>
+    <script src="/wechat/js/jquery-weui-extend.js"></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
         // 订单列表请求地址
@@ -60,6 +61,17 @@
         var editOrderInfoUrl = "<?=Yii::$app->getUrlManager()->createUrl(['cash/edit-order'])?>";
         // 上传订单照片
         var uploadOrderImgUrl = "<?=Yii::$app->getUrlManager()->createUrl(['cash/upload-order-img'])?>";
+        // 取消订单
+        var cancelOrderUrl = "<?=Yii::$app->getUrlManager()->createUrl(['cash/cancel-order'])?>";
+
+        // 待一审上传照片
+        var ORDER_STATUS_FIRST_UPLOAD = 2;
+        // 一审拒绝，重新上传
+        var ORDER_STATUS_FIRST_REFUSE = 5;
+        // 一审通过，待上传二审照片
+        var ORDER_STATUS_SECOND_UPLOAD = 4;
+        // 二审拒绝，重新上传
+        var ORDER_STATUS_SECOND_REFUSE = 7;
 
         $(function(){
             FastClick.attach(document.body);
@@ -99,6 +111,8 @@
                 this.editOrderInfoUrl = options.editOrderInfoUrl;
                 // 上传照片
                 this.uploadOrderImgUrl = options.uploadOrderImgUrl;
+                // 取消订单
+                this.cancelOrderUrl = options.cancelOrderUrl;
                 // 是否加载完毕
                 this.isLoaded = false;
                 // 当前页面
@@ -323,13 +337,13 @@
                                             $.toast('请填写取消原因', "text");return;
                                         }
                                         // 网络请求
-                                        $.ajaxPost(_this.cancelUrl , {o_id : id , remark : input} , function(res){
+                                        $.ajaxPost(_this.cancelOrderUrl , {orderId : orderId , reason : input} , function(res){
                                             if(res.status){
                                                 $.toast(res.message, function(){
                                                     _this.doRequest({
                                                         page : _this.currPage,
                                                         keywords : $('#searchInput').val(),
-                                                        screen_type : $('#picker').attr('data-values')
+                                                        status : $('#picker').attr('data-values')
                                                     });
                                                 });
                                             }else{
@@ -351,22 +365,21 @@
 
                     // 绑定操作
                     var actions = new Array;
-                    // if(status == 1){
-                    //     actions.push(defaultActions.edit);
-                    //     actions.push(defaultActions.upload);
-                    //     actions.push(defaultActions.cancel);
-                    // }else if(status == _this.WAIT_CHECK){
-                    //     actions.push(defaultActions.cancel);
-                    // }else if(status == _this.WAIT_APP_UPLOAD_AGAIN){
-                    //     actions.push(defaultActions.upload);
-                    //     actions.push(defaultActions.cancel);
-                    // }else if(status == _this.WAIT_CHECK_AGAIN){
-                    //     actions.push(defaultActions.cancel);
-                    // }
 
-                    actions.push(defaultActions.edit);
-                    actions.push(defaultActions.upload);
-                    actions.push(defaultActions.cancel);
+                    // 上传照片
+                    if(status == ORDER_STATUS_FIRST_UPLOAD || status == ORDER_STATUS_FIRST_REFUSE || status == ORDER_STATUS_SECOND_UPLOAD || status == ORDER_STATUS_SECOND_REFUSE){
+                        actions.push(defaultActions.upload);
+                    }
+
+                    // 取消订单
+                    if(status == ORDER_STATUS_SECOND_UPLOAD || status == ORDER_STATUS_SECOND_REFUSE){
+                        actions.push(defaultActions.cancel);
+                    }
+
+                    // 开始调查
+                    if(status == ORDER_STATUS_FIRST_UPLOAD){
+                        actions.push(defaultActions.edit);
+                    }
 
                     $.actions({
                         title: "操作",
@@ -381,6 +394,7 @@
                 queryOrderListUrl:queryOrderListUrl,
                 editOrderInfoUrl:editOrderInfoUrl,
                 uploadOrderImgUrl:uploadOrderImgUrl,
+                cancelOrderUrl:cancelOrderUrl
             };
             var page = new Pages(options);
             page.init();

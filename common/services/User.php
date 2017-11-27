@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:48:34
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-22 14:42:53
+ * @Last Modified time: 2017-11-27 10:57:49
  */
 
 namespace common\services;
@@ -40,7 +40,6 @@ class User extends Service {
 
 
 
-	Yii::$app->cache->
 	$cache->set('cache_data_key', $cacheData, 60*60); 
 
 }

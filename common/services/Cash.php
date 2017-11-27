@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 17:44:41
+ * @Last Modified time: 2017-11-27 11:05:15
  */
 namespace common\services;
 
@@ -26,6 +26,8 @@ class Cash extends Service {
 	private $editOrderRouter = '/orders/{id}';
 	// 保存上传图片
 	private $saveOrderImageRouter = '/orders/{id}/images';
+	// 取消订单
+	private $cancelOrderRouter = '/orders/{id}';
 	// 每一页显示的数据量
 	private $range = 15;
 
@@ -177,6 +179,23 @@ class Cash extends Service {
 		$url = $this->buildUrl($this->saveOrderImageRouter, ['id' => $orderId]);
 
 		$res = $this->httpPost($url, $params);
+
+		if ($res['success']) {
+			return $res['data'];
+		} else {
+			throw new CustomCommonException($res['errors'][0]['message']);
+		}
+	}
+
+	/**
+	 * 取消订单
+	 * @param  array $params 订单参数
+	 * @return [type]        订单相关数据
+	 */
+	public function cancelCashOrder($params) {
+		$url = $this->buildUrl($this->cancelOrderRouter, ['id' => $params['orderID']]);
+
+		$res = $this->httpDelete($url, $params);
 
 		if ($res['success']) {
 			return $res['data'];

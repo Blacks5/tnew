@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-11-24 18:01:56
+ * @Last Modified time: 2017-11-27 11:25:45
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -62,9 +62,6 @@
 				_this.step1(swiper.activeIndex);
 			}
 		});
-		// 初始化数据
-		$('#vipServiceFee').text('(' + _this.vipServiceFee + '元/月)');
-		$('#protectionFee').text('(' + _this.protectionFee + '元/月)');
 
 		// 绑定
 		_this.bind();
@@ -159,7 +156,7 @@
 					$.ajaxPost(this.createUrl, data, function(res) {
 						if (res.status) {
 							$.toast(res.message, function() {
-								// Cache.batchDel();
+								Cache.batchDel();
 								window.location = _this.successUrl + '?orderId=' + res.data.orderId;
 							});
 						} else {
@@ -330,7 +327,6 @@
 	cash.prototype.getPayment = function() {
 		// 获取表单对象数据
 		var data = $('#formStep1').serializeObject();
-		console.log(data);
 		// 检测数据完整性
 		if (!data.installmentCycle) return;
 		if (!data.installmentPeriod) return;
@@ -349,8 +345,8 @@
 				if (res.status) {
 					var content = res.data.periodAmount + '元x' + data.installmentPeriod + '<br>(含可选服务费' + (parseFloat(res.data.vipServiceFee) + parseFloat(res.data.protectionFee)) + '元)';
 					$('#paymentContent').html(content);
-					$('#vipServiceFee').text('(' + res.data.vipServiceFee + '元/月)');
-					$('#protectionFee').text('(' + res.data.protectionFee + '元/月)');
+					$('#vipServiceFee').text('(' + res.data.vipServiceFee + '元/期)');
+					$('#protectionFee').text('(' + res.data.protectionFee + '元/期)');
 				} else {
 					$('#paymentContent').html(paymentCnt);
 				}
