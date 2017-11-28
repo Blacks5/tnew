@@ -49,14 +49,14 @@ class WechatController extends Controller {
 		// 获取微信用户相关信息
 		try {
 			if ($wechat_user = (new Application($config))->oauth->user()) {
-				// 保存微信登录信息
-				$session->set('wechat_user', $wechat_user);
-
 				// 检测是否绑定用户信息
 				$sys_user = User::findByWechatOpenid($wechat_user->id);
 
 				if ($sys_user) {
 					if ($sys_user->status == 10) {
+						// 保存微信登录信息
+						$session->set('wechat_user', $wechat_user);
+
 						// 保存系统相关信息
 						$session->set('sys_user', $sys_user);
 
@@ -67,6 +67,9 @@ class WechatController extends Controller {
 						return $this->renderPartial('fail');
 					}
 				} else {
+					// 保存微信登录信息
+					$session->set('wechat_user', $wechat_user);
+
 					return $this->redirect(['login/bind']);
 				}
 			}
