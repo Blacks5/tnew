@@ -64,7 +64,7 @@ class WechatController extends Controller {
 
 						return $this->redirect($targetUrl);
 					} else {
-						return $this->renderPartial('site/fail');
+						return $this->renderPartial('/site/fail');
 					}
 				} else {
 					return $this->redirect(['login/bind']);
