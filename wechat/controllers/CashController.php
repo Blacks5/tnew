@@ -5,13 +5,14 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-23 17:46:14
+ * @Last Modified time: 2017-11-27 11:25:14
  */
 namespace wechat\controllers;
 
 use common\components\CustomCommonException;
 use common\components\Helper;
 use common\services\Cash;
+use common\services\Files;
 use wechat\Tools\Wechat;
 use Yii;
 use yii\web\Response;
@@ -95,8 +96,8 @@ class CashController extends BaseController {
 				'amount' => $request->post('loanAmount', 0),
 				'cycle' => $request->post('installmentCycle', ''),
 				'period' => $request->post('installmentPeriod', ''),
-				'isFreePackFee' => intval($request->post('isProtectionFee', 0)),
-				'isAddServiceFee' => intval($request->post('isVipServiceFee', 0)),
+				'isFreePackFee' => $request->post('isProtectionFee', 0) ? 1 : 0,
+				'isAddServiceFee' => $request->post('isVipServiceFee', 0) ? 1 : 0,
 			];
 
 			try {
@@ -304,11 +305,48 @@ class CashController extends BaseController {
 		}
 	}
 
+	// 上传订单图片
 	public function actionUploadOrderImg() {
 		$request = Yii::$app->request;
 
 		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
+			// 获取orderID
+			$orderId = $request->post('orderId', '');
+			$images = $request->post('images', '');
+
+			if ($orderId) {
+				// 临时数据
+				$imagesArr = [];
+
+				// 拆分数组
+				$imagesSplit = explode(',', $images);
+
+				foreach ($imagesSplit as $item) {
+					// 拆分数据
+					list($imageType, $uuid) = explode(':', $item);
+
+					$imagesArr[$imageType] = $uuid;
+				}
+
+				$params = [
+					'orderID' => $orderId,
+					'images' => json_encode($imagesArr, JSON_UNESCAPED_UNICODE),
+				];
+
+				try {
+					// 保存图片相关数据
+					$cash = new Cash;
+					$res = $cash->saveOrderImage($orderId, $params);
+
+					return ['status' => 1, 'message' => '提交成功'];
+				} catch (CustomCommonException $e) {
+					return ['status' => 0, 'message' => $e->getMessage()];
+				}
+			} else {
+				return ['status' => 0, 'message' => '参数异常'];
+			}
 		} else {
 			$orderId = intval($request->get('orderId', 0));
 
@@ -323,6 +361,8 @@ class CashController extends BaseController {
 						'order' => $order,
 						'js' => Wechat::jssdk(),
 					]);
+				} else {
+					return $this->renderPartial('fail');
 				}
 			} catch (CustomCommonException $e) {
 				return $this->renderPartial('fail');
@@ -338,6 +378,8 @@ class CashController extends BaseController {
 		$request = Yii::$app->request;
 
 		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+
 			// 获取meidaID
 			$mediaId = $request->post('mediaId', '');
 
@@ -349,9 +391,10 @@ class CashController extends BaseController {
 
 					return ['status' => 1, 'message' => '上传成功', 'data' => [
 						'uuid' => $res['uuid'],
+						'url' => $res['url'],
 					]];
 				} catch (CustomCommonException $e) {
-					return ['status' => 0, 'message' => '上传失败'];
+					return ['status' => 0, 'message' => $e->getMessage()];
 				}
 			}
 
@@ -359,8 +402,40 @@ class CashController extends BaseController {
 		}
 	}
 
-	// 操作成功
-	public function actionCancle() {
-		return $this->renderPartial('fail');
+	// 取消订单
+	public function actionCancelOrder() {
+		$request = Yii::$app->request;
+
+		if ($request->isAjax && $request->isPost) {
+			Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+
+			$params = [
+				'orderID' => $request->post('orderId', 0),
+				'reason' => $request->post('reason', ''),
+				'examine' => 2,
+			];
+
+			$cashModel = new \common\models\Cash();
+			$cashModel->load([
+				'data' => $params,
+			], 'data');
+
+			$cashModel->scenario = 'cancelOrder';
+
+			if (false === $cashModel->validate()) {
+				$msg = $cashModel->getFirstErrors();
+				return ['status' => 0, 'message' => reset($msg)];
+			}
+
+			try {
+				// 保存图片相关数据
+				$cash = new Cash;
+				$res = $cash->cancelCashOrder($params);
+
+				return ['status' => 1, 'message' => '取消成功'];
+			} catch (CustomCommonException $e) {
+				return ['status' => 0, 'message' => $e->getMessage()];
+			}
+		}
 	}
 }

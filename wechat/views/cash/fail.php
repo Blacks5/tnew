@@ -15,13 +15,13 @@
         <div class="weui-msg">
             <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
             <div class="weui-msg__text-area">
-                <h2 class="weui-msg__title">提交成功</h2>
-                <p class="weui-msg__desc">订单已提交成功，请耐心等待。<br />如需了解审核进度，请<a href="<?= Yii::$app->getUrlManager()->createUrl(['case/order-list'])?>">点击查看</a>订单详情</p>
+                <h2 class="weui-msg__title">访问页面错误</h2>
+                <p class="weui-msg__desc">访问页面不存在或出现错误</p>
             </div>
             <div class="weui-msg__opr-area">
                 <p class="weui-btn-area">
                     <a href="<?= Yii::$app->getUrlManager()->createUrl(['site/index'])?>" class="weui-btn weui-btn_primary">返回菜单</a>
-                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/create-order'])?>" class="weui-btn weui-btn_default">再次提单</a>
+                    <a href="javascript:window.history.go(-1);" class="weui-btn weui-btn_default">返回上一页</a>
                 </p>
             </div>
             <div class="weui-msg__extra-area">

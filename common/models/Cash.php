@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-20 13:47:36
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-23 13:46:44
+ * @Last Modified time: 2017-11-27 10:26:37
  */
 
 namespace common\models;
@@ -13,6 +13,8 @@ namespace common\models;
 use common\core\CoreCommonActiveRecord;
 
 class Cash extends CoreCommonActiveRecord {
+	public $orderID;
+	public $reason;
 	public $loanAmount;
 	public $installmentCycle;
 	public $installmentPeriod;
@@ -63,6 +65,10 @@ class Cash extends CoreCommonActiveRecord {
 			['contactRelation', 'in', 'message' => '请选择联系人关系', 'range' => ['family' , 'workmate' , 'friend' , 'other']],
 			['contactPhone', 'required', 'message' => '请输入联系人手机'],
 			['contactPhone', 'match', 'message' => '联系人手机不合法', 'pattern' => '/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/'],
+			['orderID', 'required', 'message' => '参数异常'],
+			['orderID', 'number', 'message' => '参数异常'],
+			['reason', 'required', 'message' => '请输入取消原因'],
+			['reason', 'string', 'length' => [2 , 60] , 'message' => '取消原因长度在2~60之间'],
 		];
 	}
 
@@ -83,6 +89,8 @@ class Cash extends CoreCommonActiveRecord {
 			'contactName' => '联系人姓名',
 			'contactRelation' => '联系人关系',
 			'contactPhone' => '联系人手机',
+			'orderID' => '订单ID',
+			'reason' => '取消原因',
 		];
 	}
 
@@ -93,6 +101,7 @@ class Cash extends CoreCommonActiveRecord {
 		$scenarios['customerInfo'] = ['realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
 		$scenarios['orderInfo'] = ['loanAmount', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
 		$scenarios['contactInfo'] = ['contactName', 'contactRelation', 'contactPhone'];
+		$scenarios['cancelOrder'] = ['orderID', 'reason'];
 		return $scenarios;
 	}
 }

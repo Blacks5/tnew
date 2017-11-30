@@ -17,7 +17,7 @@
                 <div class="weui-form-preview">
                     <div class="weui-form-preview__hd">
                         <label class="weui-form-preview__label"><?=$order['card']['name']?></label>
-                        <em class="weui-form-preview__value"><?=\common\components\Helper::currency($order['periodAmount'] , 2)?>元/<?=$order['period']?><?php echo $order['cycle'] == 'week' ? '周' : '月'?></em>
+                        <em class="weui-form-preview__value"><?=\common\components\Helper::currency($order['periodAmount'], 2)?>元/<?=$order['period']?><?php echo $order['cycle'] == 'week' ? '周' : '月' ?></em>
                     </div>
                     <div class="weui-form-preview__bd">
                         <div class="weui-form-preview__item">
@@ -26,12 +26,12 @@
                         </div>
                         <div class="weui-form-preview__item">
                             <label class="weui-form-preview__label">申请金额</label>
-                            <span class="weui-form-preview__value"><?=\common\components\Helper::currency($order['expectedAmount'] , 2)?>元</span>
+                            <span class="weui-form-preview__value"><?=\common\components\Helper::currency($order['expectedAmount'], 2)?>元</span>
                         </div>
                         <div class="weui-form-preview__item">
                             <label class="weui-form-preview__label">放款金额</label>
                             <span class="weui-form-preview__value">
-                                <?php echo $order['acceptedAmount'] ? \common\components\Helper::currency($order['acceptedAmount'] , 2) : '-'?>元
+                                <?php echo $order['acceptedAmount'] ? \common\components\Helper::currency($order['acceptedAmount'], 2) : '-' ?>元
                             </span>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
         <div class="weui-cells weui-cells_form weui-cells_upload">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <?php if (1) {?>
+                    <?php if (in_array($order['orderStatus'], [2, 5])) {?>
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证照片(正、反面)<span class="color-danger">*</span></p>
@@ -284,6 +284,34 @@ $(function(){
     // 上传成功
     var successUrl = "<?=Yii::$app->getUrlManager()->createUrl(['cash/success'])?>";
 
+    // 一审必需上传的文件
+    var firstPost = [
+        {imageType : 1 , isMust : 1 , descText : '身份证正面'},
+        {imageType : 2 , isMust : 1 , descText : '身份证反面'},
+        {imageType : 3 , isMust : 1 , descText : '户口本户主页'},
+        {imageType : 4 , isMust : 1 , descText : '户口本贷款人页'},
+        {imageType : 5 , isMust : 1 , descText : '房产证或房屋租赁合同'},
+        {imageType : 6 , isMust : 1 , descText : '结婚证'},
+        {imageType : 7 , isMust : 1 , descText : '住房合照'},
+        {imageType : 8 , isMust : 1 , descText : '住房门牌照'},
+        {imageType : 9 , isMust : 1 , descText : '住房室内照1'},
+        {imageType : 10 , isMust : 1 , descText : '住房室内照2'},
+        {imageType : 11 , isMust : 0 , descText : '住房室内照3'},
+        {imageType : 12 , isMust : 0 , descText : '住房室内照4'},
+        {imageType : 13 , isMust : 0 , descText : '补充照片1'},
+        {imageType : 14 , isMust : 0 , descText : '补充照片2'},
+        {imageType : 15 , isMust : 0 , descText : '补充照片3'},
+        {imageType : 16 , isMust : 0 , descText : '补充照片4'},
+    ];
+    // 二审必需上传的文件
+    var secondPost = [
+        {imageType : 17 , isMust : 1 , descText : '签字照'},
+        {imageType : 18 , isMust : 1 , descText : '还款小贴士'},
+    ];
+
+    // 上传照片数据
+    var imagesArr = new Array;
+
     wx.ready(function(){
         wx.hideMenuItems({
             menuList: [
@@ -301,9 +329,6 @@ $(function(){
             ]
         });
 
-        // 上传照片数据
-        var imagesArr = [];
-
         // 绑定上传图片
         $('.weui-uploader__input').bind('click' , function(){
             // 获取当前input
@@ -313,7 +338,7 @@ $(function(){
             // 获取图片显示容器
             var filesContainer = uploaderContainer.find('.weui-uploader__files');
             // 获取input容器
-            var inputContainer = _that.parents('.weui-uploader__input-box');
+            var inputContainer = _that.parents('.weui-uploader-box');
             // 获取图片数量容器
             var numContainer = uploaderContainer.find('.weui-uploader__info');
             // 获取最大图片上传数
@@ -340,11 +365,12 @@ $(function(){
                         isShowProgressTips: 1,
                         success: function(res) {
                             // 请求网络
-                            $.ajaxPost(uploadUrl , res.serverId , function(res){
+                            $.ajaxPost(uploadUrl , {mediaId:res.serverId} , function(res){
                                 if(res.status){
                                     $.toptip('上传成功', 'success');
 
-                                    imagesArr[imageType] = res.uuid;
+                                    // 临时存储上传文件
+                                    imagesArr[imageType] = res.data.uuid;
 
                                     preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
                                     // 当前数量
@@ -375,15 +401,50 @@ $(function(){
             });
         });
 
-        // 失去焦点绑定
-        $('input[name=o_product_code]').bind('blur' , function(){
-            post.o_product_code = $(this).val();
-        });
-
         // 绑定提交
         $('#submitBtn').bind('click' , function(){
             if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE || orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
-                $.ajaxPost(uploadOrderImgUrl , post , function(res){
+                var post = [];
+
+                // 一审上传检测
+                if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE){
+                    for(var i = 0 ; i < firstPost.length ; i++){
+                        var item = firstPost[i];
+                        var imageType = item.imageType;
+                        var isMust = item.isMust;
+                        var descText = item.descText;
+
+                        if(isMust && !imagesArr[imageType]){
+                            $.toast('请上传' + descText, 'text');
+                            return;
+                        }
+                        
+                        var uuid = imagesArr[imageType] ? imagesArr[imageType] : '';
+
+                        // 加入待上传的数据中
+                        post.push(imageType + ':' + uuid);
+                    }
+                }
+
+                // 二审上传检测
+                if(orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
+                    for(var i = 0 ; i < secondPost.length ; i++){
+                        var item = secondPost[i];
+                        var imageType = item.imageType;
+                        var isMust = item.isMust;
+                        var descText = item.descText;
+
+                        if(isMust && !imagesArr[imageType]){
+                            $.toast('请上传' + descText, 'text');
+                            return;
+                        }
+                        var uuid = imagesArr[imageType] ? imagesArr[imageType] : '';
+                        // 加入待上传的数据中
+                        post.push(imageType + ':' + uuid);
+                    }
+                }
+
+                $.ajaxPost(uploadOrderImgUrl , {orderId : orderId, images : post.join(',')} , function(res){
                     if(res.status){
                         $.toast(res.message, function(){
                             window.location = successUrl + "?orderId=" + orderId;

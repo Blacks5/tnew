@@ -15,14 +15,8 @@
         <div class="weui-msg">
             <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
             <div class="weui-msg__text-area">
-                <h2 class="weui-msg__title">提交成功</h2>
-                <p class="weui-msg__desc">订单已提交成功，请耐心等待。<br />如需了解审核进度，请<a href="<?= Yii::$app->getUrlManager()->createUrl(['case/order-list'])?>">点击查看</a>订单详情</p>
-            </div>
-            <div class="weui-msg__opr-area">
-                <p class="weui-btn-area">
-                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['site/index'])?>" class="weui-btn weui-btn_primary">返回菜单</a>
-                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/create-order'])?>" class="weui-btn weui-btn_default">再次提单</a>
-                </p>
+                <h2 class="weui-msg__title">账号不存在</h2>
+                <p class="weui-msg__desc">账号已禁用或不存在，请联系管理员处理。</p>
             </div>
             <div class="weui-msg__extra-area">
                 <div class="weui-footer">
@@ -35,11 +29,4 @@
         </div>
     </div>
 </body>
-<script src="/wechat/lib/jquery-2.1.4.js"></script>
-<script src="/wechat/lib/weui.js"></script>
-<script src="/wechat/lib/fastclick.js"></script>
-<script src="/wechat/js/jquery-weui.js"></script>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<script>
-</script>
 </html>
