@@ -54,12 +54,13 @@
                 });
             },
             show:function (url){
-                layer.open({
+                parent.parent.layer.open({
                     type: 1,
                     title: false,
                     shadeClose:true,
                     shade: [0.8],
-                    content: "<img src='"+url+"'>"
+                    area: ['auto','auto'],
+                    content: "<img src='"+url+"' style='max-width:800px;max-height:800px;'>"
 
                 })
             }

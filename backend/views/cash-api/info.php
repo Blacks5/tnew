@@ -19,10 +19,10 @@
                         <a class="list-group-item col-sm-4">借款人姓名<span class="badge">{{json(data.bank_card)['user_name']}}</span></a>
                         <a class="list-group-item col-sm-4">身份证号<span class="badge">{{json(data.identification_card)['number']}}</span></a>
                         <a class="list-group-item col-sm-4">银行卡号码<span class="badge">{{json(data.bank_card)['number']}}</span></a>
-                        <a class="list-group-item col-sm-4">手机号码<span class="badge">{{data.phone}}</span></a>
+                        <a class="list-group-item col-sm-4">手机号码<span class="badge">{{json(data.bank_card)['phone']}}</span></a>
                         <a class="list-group-item col-sm-4">操作人<span class="badge">{{data.name}}</span></a>
                         <a class="list-group-item col-sm-4">借款金额<span class="badge">{{data.accepted_amount}}</span></a>
-                        <a class="list-group-item col-sm-4">状态<span class="badge">{{data.signStatus}}</span></a>
+                        <a class="list-group-item col-sm-4" @click="change">状态<span class="badge">{{data.signText}}</span></a>
                     </div>
                 </div>
             </div>
@@ -67,6 +67,32 @@
                }else{
                    return JSON.parse(data);
                }
+           },
+           change: function ()
+           {
+               var __this = this;
+               var url = this.baseUrl + "<?= $id ?>/status";
+               var data = {action:"<?= $url ?>"};
+               var token = {headers:{'X-TOKEN':this.token}};
+               var index = layer.msg('确定修改状态么?',{
+                   btn:['确定','取消'],
+                   btn1:function (){
+                       __this.$http.patch(url, data,token).then(function(data){
+                           var json = data.bodyText;
+                           var usedData = JSON.parse(json);
+
+                           layer.msg(usedData['data'],{icon:1});
+                       },function(response){
+                           layer.close(loading);
+                           var json = response.bodyText;
+                           var usedData = JSON.parse(json);
+                           layer.msg(usedData['errors'][0]['message'], {icon:2});
+                       });
+                   },
+                   btn2:function (){
+                       layer.close(index);
+                   }
+               })
            }
         }
     });

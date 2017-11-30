@@ -40,6 +40,7 @@
                                     <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
                                     <th>客户电话</th>
                                     <th class="client-status">申请金额</th>
+                                    <th class="client-status">审批金额</th>
                                     <th>申请期数</th>
                                     <th>还款周期</th>
                                     <th>申请时间</th>
@@ -52,6 +53,7 @@
                                         <td>{{value.name}}</td>
                                         <td>{{value.phone}}</td>
                                         <td>{{value.expected_amount}}</td>
+                                        <td>{{value.accepted_amount}}</td>
                                         <td class="client-status">{{value.period_total}}</td>
                                         <td class="client-status">{{value.repay_cycle == 'week'?'周':'月'}}</td>
                                         <td class="client-status">{{value.created_at}}</td>
@@ -131,7 +133,6 @@
                     this.dataList = usedData['data']['list']['data'];
                     this.params = usedData['data']['param'];
                     this.pageCount = usedData['data']['list']['last_page'];
-                    this.pageIndex = usedData['data']['list']['current_page'];
                 },function (response){
                     console.log(response['body']['errors']);
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})
@@ -176,7 +177,7 @@
             loan:function (id){
                 var __this = this;
                 var url = this.baseUrl + id + "/loans";
-                var data = [];
+                var data = {param:this.param,status:'pass'};
                 var index = layer.msg('确定发起放款么?',{
                     btn:['确定','取消'],
                     btn1:function (){
@@ -195,10 +196,11 @@
                     var json = data.bodyText;
                     var usedDatas = JSON.parse(json);
                     if(usedDatas['success']==true){
-                        layer.msg(usedDatas['data']);
-                        setTimeout("window.location.reload()", 2000)
+                        parent.layer.msg('放款成功', {icon:1});
+
+                        this.dataList = usedDatas['data']['data']['data'];
                     }else{
-                        layer.msg(usedDatas['data'],{icon:2});
+                        layer.msg(usedDatas['data']['message'],{icon:2});
                     }
                 },function(response){
                     layer.close(loading);

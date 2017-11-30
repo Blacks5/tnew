@@ -103,7 +103,7 @@
                     var json =data.bodyText;
                     var usedData = JSON.parse(json);
 
-                    window.op;
+                    window.open(usedData['data']['detailLink']);
                 },function (response){
                     layer.msg(response['body']['errors'][0]['message'],{icon:2});
                 })
