@@ -315,7 +315,7 @@
                     var orderId = parseInt(preview.attr('data-o-id'));
                     var status = parseInt(preview.attr('data-o-status'));
                     var operateable = parseInt(preview.attr('data-o-operateable'));
-
+                    alert(operateable);
                     // 默认操作
                     var defaultActions = {
                         edit : {
