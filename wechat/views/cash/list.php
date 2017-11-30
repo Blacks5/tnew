@@ -267,7 +267,7 @@
 
                         for(var i in res.data.data){
                             var item = res.data.data[i];
-                            html += '<div class="weui-form-preview" data-o-id="' + item.orderID +'" data-o-status="' +item.orderStatus+ '"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.customerName + '</label><em class="weui-form-preview__value">　</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.orderNumber + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">申请金额</label><span class="weui-form-preview__value">' + parseFloat(item.applyAmount).toFixed(2) + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">放款金额</label><span class="weui-form-preview__value">' + (item.acceptAmount ? parseFloat(item.acceptAmount).toFixed(2) + '元' : '-') + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.orderPhone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户地址</label><span class="weui-form-preview__value">' + item.orderAddress + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">申请时间</label><span class="weui-form-preview__value">' + (item.applyTime.date).split('.')[0] + '</span></div>';
+                            html += '<div class="weui-form-preview" data-o-id="' + item.orderID +'" data-o-status="' +item.orderStatus+ '" data-o-operateable="'+item.canVisitor+'"><div class="weui-form-preview__hd"><label class="weui-form-preview__label">' + item.customerName + '</label><em class="weui-form-preview__value">　</em></div><div class="weui-form-preview__bd"><div class="weui-form-preview__item"><label class="weui-form-preview__label">订单编号</label><span class="weui-form-preview__value">' + item.orderNumber + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">申请金额</label><span class="weui-form-preview__value">' + parseFloat(item.applyAmount).toFixed(2) + '元</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">放款金额</label><span class="weui-form-preview__value">' + (item.acceptAmount ? parseFloat(item.acceptAmount).toFixed(2) + '元' : '-') + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户电话</label><span class="weui-form-preview__value">' + item.orderPhone + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">客户地址</label><span class="weui-form-preview__value">' + item.orderAddress + '</span></div><div class="weui-form-preview__item"><label class="weui-form-preview__label">申请时间</label><span class="weui-form-preview__value">' + (item.applyTime.date).split('.')[0] + '</span></div>';
 
                             switch(parseInt(item.status)){
                                 case _this.SUBMIT:
@@ -314,6 +314,7 @@
                     // 获取订单ID和订单状态
                     var orderId = parseInt(preview.attr('data-o-id'));
                     var status = parseInt(preview.attr('data-o-status'));
+                    var operateable = parseInt(preview.attr('data-o-operateable'));
 
                     // 默认操作
                     var defaultActions = {
@@ -366,19 +367,21 @@
                     // 绑定操作
                     var actions = new Array;
 
-                    // 上传照片
-                    if(status == ORDER_STATUS_FIRST_UPLOAD || status == ORDER_STATUS_FIRST_REFUSE || status == ORDER_STATUS_SECOND_UPLOAD || status == ORDER_STATUS_SECOND_REFUSE){
-                        actions.push(defaultActions.upload);
-                    }
+                    if(operateable == 1){
+                        // 上传照片
+                        if(status == ORDER_STATUS_FIRST_UPLOAD || status == ORDER_STATUS_FIRST_REFUSE || status == ORDER_STATUS_SECOND_UPLOAD || status == ORDER_STATUS_SECOND_REFUSE){
+                            actions.push(defaultActions.upload);
+                        }
 
-                    // 取消订单
-                    if(status == ORDER_STATUS_SECOND_UPLOAD || status == ORDER_STATUS_SECOND_REFUSE){
-                        actions.push(defaultActions.cancel);
-                    }
+                        // 取消订单
+                        if(status == ORDER_STATUS_SECOND_UPLOAD || status == ORDER_STATUS_SECOND_REFUSE){
+                            actions.push(defaultActions.cancel);
+                        }
 
-                    // 开始调查
-                    if(status == ORDER_STATUS_FIRST_UPLOAD){
-                        actions.push(defaultActions.edit);
+                        // 开始调查
+                        if(status == ORDER_STATUS_FIRST_UPLOAD){
+                            actions.push(defaultActions.edit);
+                        }
                     }
 
                     $.actions({
