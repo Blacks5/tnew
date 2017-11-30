@@ -22,7 +22,7 @@
                         <a class="list-group-item  col-sm-3">个人保障计划<span class="badge">{{order['is_free_pack_fee'] ==1 ?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3">贵宾服务包<span class="badge">{{order['is_add_service_fee']==1?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3" @click="images(order['id'])">图片<span class="badge">点击查看</span></a>
-                        <a class="list-group-item  col-sm-12">备注<span class="badge">{{order['extended_data']}}</span></a>
+                        <a class="list-group-item  col-sm-12" v-if="order.extended_data != null">备注<span class="badge">支付宝:{{order['extended_data'].alipay}}</span></a>
                     </div>
                 </div>
                 <div class="container" v-if="order['status'] < 90 ">
@@ -38,17 +38,17 @@
                     </div>
                 </div>
                 <div class="container" v-if="order['status'] > 90 && order.status!= 200">
-                    <div class="col-sm-12 height"><h3 class="text-danger text-center">贷款信息</h3></div>
+                    <div class="col-sm-12 height"><h3 class="text-danger text-center">还款信息</h3></div>
                     <hr/>
                     <div class="list-group" >
                         <a class="list-group-item col-sm-3">{{order['repay_cycle'] == 'week'?'日':'月'}}利率<span class="badge">{{rate['rate']}}</span> </a>
                         <a class="list-group-item col-sm-3">每期还款金额<span class="badge">{{order['total_repay']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">本金<span class="badge">{{component['interest']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">利息<span class="badge">{{component['principal']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">个人保障计划<span class="badge">{{component['free_pack_fee']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">贵宾服务包<span class="badge">{{component['add_server_fee']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">财务管理费<span class="badge">{{component['finance_manage_fee']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">客户管理费<span class="badge">{{component['customer_manage_fee']}}</span> </a>
+                        <a class="list-group-item col-sm-3">本金<span class="badge">{{components['interest']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">利息<span class="badge">{{components['principal']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">个人保障计划<span class="badge">{{components['free_pack_fee']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">贵宾服务包<span class="badge">{{components['add_server_fee']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">财务管理费<span class="badge">{{components['finance_manage_fee']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">客户管理费<span class="badge">{{components['customer_manage_fee']}}</span> </a>
                     </div>
                 </div>
                 <div class="container">
@@ -58,7 +58,7 @@
                         <a class="list-group-item col-sm-3">客户姓名<span class="badge">{{order['name']}}</span> </a>
                         <a class="list-group-item col-sm-3">客户电话<span class="badge">{{order['phone']}}</span> </a>
                         <a class="list-group-item col-sm-3">身份证<span class="badge">{{identification['number']}}</span> </a>
-                        <a class="list-group-item col-sm-3">性别<span class="badge">{{order['gender']}}</span> </a>
+                        <a class="list-group-item col-sm-3">性别<span class="badge">{{order['extended_data'] == null?'未填':order.extended_data['gender']}}</span> </a>
                         <a class="list-group-item col-sm-3">QQ号<span class="badge">{{order['qq']}}</span> </a>
                         <a class="list-group-item col-sm-3">微信号<span class="badge">{{order['wechat_number']}}</span> </a>
                         <a class="list-group-item col-sm-6">户籍地址<span class="badge">{{identification['address']}}</span> </a>
@@ -70,14 +70,14 @@
                         <a class="list-group-item col-sm-4" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
                         <a class="list-group-item col-sm-4" >现居地址<span class="badge">{{order.address}}</span> </a>
 
-                        <a class="list-group-item col-sm-3" v-for="c in contacts">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{c['relation']}}</span> </a>
+                        <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{c['relation']}}</span> </a>
 
                     </div>
                 </div>
                 <div class="container" v-if="order['status'] >= 20">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核放款信息</h3></div>
                     <div class="list-group">
-                        <a class="list-group-item col-sm-3" v-if="order['status'] >=20">上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
+                        <a class="list-group-item col-sm-3" v-if="order['status'] >=20 && order.visitor != null">上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
                     </div>
                 </div>
                 <div class="container center" style="margin-top: 30px;">
@@ -139,7 +139,7 @@
             order: [],
             rate: [],
             amount:[],
-            component:[],
+            components:[],
             identification:[],
             marital:[],
             contacts:[],
@@ -178,7 +178,7 @@
                 this.order = usedData['data']['order'];
                 this.rate = usedData['data']['rate'];
                 this.amount = usedData['data']['amount'];
-                this.component = this.order['component'];
+                this.components = JSON.parse(this.order['component']);
                 this.identification = this.order['identification_card'];
                 this.job = this.order['job'];
                 this.marital =this.order['marital'];

@@ -134,7 +134,7 @@
                     var json = data.bodyText;
                     var usedDatas = JSON.parse(json);
                     if(usedDatas['success']==true){
-                        layer.msg(usedDatas['data']);
+                        layer.msg('发起代扣成功',{icon:1});
                         setTimeout("window.location.reload()", 1000)
                     }else{
                         layer.msg(usedDatas['data'],{icon:2});

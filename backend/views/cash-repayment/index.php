@@ -196,7 +196,9 @@
                 var __this = this;
                 var url = this.baseUrl + id + "/repayments";
                 var data = {
-                    period: 1
+                    period: 1,
+                    param: this.param ,
+                    status: "<?= $repayment ?>"
                 };
                 var index = layer.msg('确定发起还款么?',{
                     btn:['确定','取消'],
@@ -216,8 +218,8 @@
                     var json = data.bodyText;
                     var usedDatas = JSON.parse(json);
                     if(usedDatas['success']==true){
-                        layer.msg(usedDatas['data']);
-                        setTimeout("window.location.reload()", 1000)
+                        parent.layer.msg('发起还款成功!',{icon:1});
+                        this.dataList = usedDatas['data']['data'];
                     }else{
                         layer.msg(usedDatas['data'],{icon:2});
                     }
