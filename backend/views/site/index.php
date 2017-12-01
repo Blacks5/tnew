@@ -382,22 +382,23 @@ use mdm\admin\components\MenuHelper;
             //CASE
             var cashAudio = '';
             switch (key) {
-                case 'order.created':
+                case 'cash.order.created':
                     cashAudio = 'cash_order_created.mp3';
                     break;
-                case 'order.modified':
+                case 'cash.order.modified':
                     cashAudio = 'cash_order_modified.mp3';
                     break;
-                case 'order.tips_signed':
+                case 'cash.order.tips_signed':
                     cashAudio = 'cash_order_tips_signed.mp3';
                     break;
             }
             if (cashAudio != '') {
                 var audio = new Audio("/audio_ws/" + cashAudio);
                 audio.play();
+                return null;
             }
             // CASE.END
-            
+
             if(key == 'newOrderNotify'){
                 var audio = new Audio("/audio_ws/neworder.mp3");
                 audio.play();
