@@ -13,7 +13,6 @@ use common\models\User;
 use EasyWeChat\Foundation\Application;
 use Yii;
 use yii\web\Controller;
-use common\services\Order;
 
 /**
  * 需要授权的页面调用如下方法即可
@@ -48,26 +47,33 @@ class WechatController extends Controller {
 		$config = Yii::$app->params['wechat'];
 
 		// 获取微信用户相关信息
-		try{
+		try {
 			if ($wechat_user = (new Application($config))->oauth->user()) {
-				// 保存微信登录信息
-				$session->set('wechat_user', $wechat_user);
-
 				// 检测是否绑定用户信息
-	            $sys_user = User::findByWechatOpenid($wechat_user->id);
+				$sys_user = User::findByWechatOpenid($wechat_user->id);
 
 				if ($sys_user) {
-					// 保存系统相关信息
-					$session->set('sys_user', $sys_user);
+					if ($sys_user->status == 10) {
+						// 保存微信登录信息
+						$session->set('wechat_user', $wechat_user);
 
-					$targetUrl = empty($session->get('target_url')) ? '/' : $session->get('target_url');
+						// 保存系统相关信息
+						$session->set('sys_user', $sys_user);
 
-					return $this->redirect($targetUrl);
+						$targetUrl = empty($session->get('target_url')) ? '/' : $session->get('target_url');
+
+						return $this->redirect($targetUrl);
+					} else {
+						return $this->renderPartial('fail');
+					}
 				} else {
+					// 保存微信登录信息
+					$session->set('wechat_user', $wechat_user);
+
 					return $this->redirect(['login/bind']);
 				}
 			}
-		}catch(\Overtrue\Socialite\AuthorizeFailedException $e){
+		} catch (\Overtrue\Socialite\AuthorizeFailedException $e) {
 			return $this->redirect(['site/index']);
 		}
 	}

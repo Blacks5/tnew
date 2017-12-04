@@ -21,7 +21,7 @@
             <img src="/wechat/images/order.png" alt="">
         </div>
         <p class="weui-grid__label">
-            提交订单
+            3C订单
         </p>
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/wait-order-list'])?>" class="weui-grid js_grid">
@@ -48,20 +48,20 @@
             逾期订单
         </p>
     </a>
-    <a href="javascript:void(0);" class="weui-grid js_grid message-center">
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/create-order'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
             <img src="/wechat/images/msg.png" alt="">
         </div>
         <p class="weui-grid__label">
-            消息中心
+            现金贷订单
         </p>
     </a>
-    <a href="javascript:void(0);" class="weui-grid js_grid my-qrcode">
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/order-list'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
             <img src="/wechat/images/icon_nav_dialog.png" alt="">
         </div>
         <p class="weui-grid__label">
-            我的二维码
+            现金贷审核
         </p>
     </a>
 </div>
@@ -70,7 +70,7 @@
         <p class="weui-footer__links">
             <a href="http://tnew.cn" class="weui-footer__link">天牛金融</a>
         </p>
-        <p class="weui-footer__text">Copyright © 2016 tnew.cn</p>
+        <p class="weui-footer__text">Copyright © 2017 tnew.cn</p>
     </div>
 </div>
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
@@ -98,18 +98,6 @@
                     'menuItem:openWithSafari',
                     'menuItem:share:email'
                 ]
-            });
-        });
-
-        $('.message-center').bind('click' , function(){
-            $.alert("暂未开放此功能，敬请期待！", "敬请期待！", function() {
-              //点击确认后的回调函数
-            });
-        });
-
-        $('.my-qrcode').bind('click' , function(){
-            $.alert("暂未开放此功能，敬请期待！", "敬请期待！", function() {
-              //点击确认后的回调函数
             });
         });
     });

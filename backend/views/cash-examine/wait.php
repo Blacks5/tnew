@@ -1,7 +1,6 @@
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.js"></script>
-<link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-<script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="/js/plugins/layDate/layDate.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
 
 <div class="ibox-content" id="list">
@@ -15,10 +14,10 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="input-daterange input-group" id="datepicker">
-                        <input type="text" class="form-control" name="sTime"
+                        <input type="text" class="form-control" name="sTime" id="sTime"
                                :value="params['sTime']" placeholder="开始时间">
                         <span class="input-group-addon ">到</span>
-                        <input type="text" class="form-control" name="eTime"
+                        <input type="text" class="form-control" name="eTime" id="eTime"
                                :value="params['eTime']" placeholder="结束时间">
                     </div>
                 </div>
@@ -27,16 +26,6 @@
                         <button type="input" class="btn btn-info" @click="toSearch"><i class="fa fa-search" ></i>查询</button>
                     </div>
                 </div>
-            <script>
-                $('#datepicker').datepicker({
-                    todayBtn: "linked",
-                    keyboardNavigation: true,
-                    forceParse: true,
-                    autoclose:true,
-                    format: "yyyy-mm-dd",
-                    todayHighlight: true
-                });
-            </script>
         </div>
     </div>
     <div class="row">
@@ -51,6 +40,7 @@
                                     <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
                                     <th>客户电话</th>
                                     <th class="client-status">申请金额</th>
+                                    <th class="client-status">审批金额</th>
                                     <th>申请期数</th>
                                     <th>还款周期</th>
                                     <th>申请时间</th>
@@ -59,14 +49,21 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="value in dataList">
-                                        <td class="client-avatar">{{value.orders_number}}</td>
+                                        <td class="client-avatar">{{value.order_number}}</td>
                                         <td>{{value.name}}</td>
                                         <td>{{value.phone}}</td>
                                         <td>{{value.expected_amount}}</td>
+                                        <td>{{value.accepted_amount}}</td>
                                         <td class="client-status">{{value.period_total}}</td>
                                         <td class="client-status">{{value.repay_cycle == 'week'?'周':'月'}}</td>
                                         <td class="client-status">{{value.created_at}}</td>
-                                        <td class="client-status"><a class="btn btn-info btn-xs" @click="open(value.id)">详情</a> </td>
+                                        <td class="client-status">
+                                            <a class="btn btn-info btn-xs" @click="open(value.id)">详情</a>
+                                            <a class="btn btn-danger btn-xs" v-if="value.status == 90 || value.status == 115" @click="loan(value.id)">放款</a>
+                                            <a class="btn btn-success btn-xs disabled" v-if="value.status == 100">正在放款</a>
+                                            <a class="btn btn-warning btn-xs disabled" v-if="value.status == 120">已代发</a>
+                                            <a class="btn btn-info btn-xs" v-if="value.status == 120" @click="repayments(value.id)">还款计划</a>
+                                        </td>
                                         <td>
                                         </td>
                                     </tr>
@@ -75,7 +72,7 @@
                             </table>
                         </div>
                         <!--分页-->
-                        <ul class="pagination">
+                        <ul class="pagination" v-if="pageCount != 1">
                             <li>
                                 <a  aria-label="Previous" @click="pageLeft">
                                     <span aria-hidden="true">&laquo;</span> 上一页
@@ -106,16 +103,18 @@
             dataList: '',
             params: '',
             pageCount: 1,
-            pageIndex:''
+            pageIndex:'',
+            token: window.sessionStorage.getItem('V2_TOKEN'),
+            baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>"
         },
         created: function () {
             this.toSearch();
         },
         methods: {
             toSearch:function (){
-                var url = "http://cash.app/v1/orders/examine/<?= $examine ?>";
+                var url = this.baseUrl + "examine/<?= $examine ?>";
                 var header = {
-                    headers:{'X-TOKEN':'123123123123123'},
+                    headers:{'X-TOKEN':this.token},
                     params: {
                         param:{
                             name:$('input[name=name]').val(),
@@ -134,7 +133,6 @@
                     this.dataList = usedData['data']['list']['data'];
                     this.params = usedData['data']['param'];
                     this.pageCount = usedData['data']['list']['last_page'];
-                    this.pageIndex = usedData['data']['list']['current_page'];
                 },function (response){
                     console.log(response['body']['errors']);
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})
@@ -157,15 +155,66 @@
                 this.toSearch();
             },
             open:function(id){
-                layer.open({
+                parent.layer.open({
                     type: 2,
                     title: false,
                     shadeClose:true,
                     shade: [0.8],
-                    area: ['1000px', '800px'],
-                    content: '/page'
+                    area: ['1200px', '900px'],
+                    content: "<?= \yii\helpers\Url::toRoute('cash-examine/info') ?>" + "?id="+id
                 })
+            },
+            repayments:function(id){
+                parent.layer.open({
+                    type: 2,
+                    title: false,
+                    shadeClose:true,
+                    shade:[0.8],
+                    area:['1400px', '900px'],
+                    content: "<?= \yii\helpers\Url::toRoute('cash-repayment/lists') ?>?orderID=" +id
+                })
+            },
+            loan:function (id){
+                var __this = this;
+                var url = this.baseUrl + id + "/loans";
+                var data = {param:this.param,status:'pass'};
+                var index = layer.msg('确定发起放款么?',{
+                    btn:['确定','取消'],
+                    btn1:function (){
+                        __this.postOrder(url,data);
+                    },
+                    btn2:function (){
+                        layer.close(index);
+                    }
+                })
+            },
+            postOrder: function (url, data){
+                var loading = layer.load(0,{shade: false});
+                var token = {headers:{'X-TOKEN':this.token}};
+                this.$http.post(url, data,token).then(function(data){
+                    layer.close(loading);
+                    var json = data.bodyText;
+                    var usedDatas = JSON.parse(json);
+                    if(usedDatas['success']==true){
+                        parent.layer.msg('放款成功', {icon:1});
+
+                        this.dataList = usedDatas['data']['data']['data'];
+                    }else{
+                        layer.msg(usedDatas['data']['message'],{icon:2});
+                    }
+                },function(response){
+                    layer.close(loading);
+                    var json = response.bodyText;
+                    var usedData = JSON.parse(json);
+                    layer.msg(usedData['errors'][0]['message'], {icon:2});
+                });
             }
         }
+    });
+    laydate.render({
+        elem:'#sTime'
+    });
+    laydate.render({
+        elem:'#eTime'
     });
 </script>

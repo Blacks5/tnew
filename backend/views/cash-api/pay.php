@@ -12,10 +12,12 @@
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
-                                <th class="client-avatar">订单号</th>
+                                <th >订单号</th>
                                 <th>签约ID</th>
                                 <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
-                                <th>签约时间</th>
+                                <th v-if="url == 'loans' || url == 'deducts'">成功时间</th>
+                                <th v-if="url == 'loans'">代发金额</th>
+                                <th v-if="url == 'deducts'">代扣金额</th>
                                 <th>状态</th>
                                 <th>操作人</th>
                                 <th>创建时间</th>
@@ -24,19 +26,24 @@
                             </thead>
                             <tbody>
                             <tr v-for="value in lists">
-                                <td class="client-avatar">{{value.order_id}}</td>
+                                <td>{{value.order_number}}</td>
                                 <td>{{value.thirdparty_id}}</td>
-                                <td>{{value.identification_card.name}}</td>
-                                <td>{{value.signed_at ==null?'还未签约':value.signed_at }}</td>
+                                <td>{{value.customerName}}</td>
+                                <td v-if="url == 'loans'">{{value.paid_at ==null?'还未成功':value.paid_at }}</td>
+                                <td v-if="url == 'deducts'">{{value.repaid_at ==null?'还未成功':value.repaid_at }}</td>
+                                <td v-if="url == 'loans'">{{value.expected_amount}}</td>
+                                <td v-if="url == 'deducts'">{{value.amount}}</td>
                                 <td>
-                                    <a class="btn btn-xs btn-info" v-if="value.status =='pending'">等待签约</a>
-                                    <a class="btn btn-xs btn-success" v-if="value.status == 'signed'">签约成功</a>
-                                    <a class="btn btn-xs btn-danger" v-if="value.status == 'refused'">签约失败</a>
+                                    <a class="btn btn-xs btn-info" v-if="value.status =='pending'">等待回调</a>
+                                    <a class="btn btn-xs btn-success" v-if="value.status == 'check_need'">带审核</a>
+                                    <a class="btn btn-xs btn-success" v-if="value.status == 'processing'">处理中</a>
+                                    <a class="btn btn-xs btn-success" v-if="value.status == 'successful'">成功</a>
+                                    <a class="btn btn-xs btn-danger" v-if="value.status == 'failed'">失败</a>
                                 </td>
                                 <td>{{value.name}}</td>
                                 <td>{{value.created_at}}</td>
                                 <td class="client-status">
-                                    <a class="btn btn-info btn-xs" @click="info(value.order_id)">详情</a>
+                                    <a class="btn btn-info btn-xs" @click="info(value.id)">详情</a>
                                 </td>
                                 <td>
                                 </td>
@@ -75,14 +82,15 @@
             token: window.sessionStorage.getItem('V2_TOKEN'),
             baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>",
             pageIndex:1,
-            pageCount:1
+            pageCount:1,
+            url:"<?= $url ?>"
         },
         created: function () {
             this.toSearch();
         },
         methods: {
             toSearch:function (){
-                var url = this.baseUrl + "contract";
+                var url = this.baseUrl + this.url;
                 var header = {headers:{'X-TOKEN':this.token}};
                 this.$http.get(url,header).then(function (data){
                     var json = data.bodyText;
@@ -97,15 +105,14 @@
                 })
             },
             info:function(id){
-                var url = this.baseUrl + id +"/contract";
-                var header ={headers:{'X-TOKEN':this.token}};
-                this.$http.get(url,header).then(function (data){
-                    var json =data.bodyText;
-                    var usedData = JSON.parse(json);
+                layer.open({
+                    type:2,
+                    title:false,
+                    shadeClose:true,
+                    shade:[0.8],
+                    area: ['1200px', '300px'],
+                    content: "<?= \yii\helpers\Url::toRoute('cash-api/info') ?>" + "?id="+id +'&url=' +this.url
 
-                    window.op;
-                },function (response){
-                    layer.msg(response['body']['errors'][0]['message'],{icon:2});
                 })
             }
         }

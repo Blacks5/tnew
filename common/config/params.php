@@ -168,4 +168,6 @@ return [
     'promotions_seller_serverfee_rate' => 0.02,
     // 商家服务费率【普通商品】
     'common_seller_serverfee_rate' => 0.035,
+    //cash api url
+    'cashBaseUrl' => 'http://cash.devapi.tnew.cn/v1/orders/',
 ];
