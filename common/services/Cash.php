@@ -5,15 +5,17 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-27 17:11:23
+ * @Last Modified time: 2017-12-04 10:19:30
  */
 namespace common\services;
 
 use common\components\CustomCommonException;
 
 class Cash extends Service {
-	// 微服务记录地址
-	protected $microServiceUrl = 'http://cash.devapi.tnew.cn/v1/';
+	// 微服务地址
+	protected $microServiceUrl = 'http://cash.api.tnew.cn/v1/';
+	// 微服务地址【开发】
+	protected $devMicroServiceUrl = 'http://cash.devapi.tnew.cn/v1/';
 	// 获取每期还款详情路由
 	private $queryPaymentRouter = '/orders/amount';
 	// 创建现金贷路由

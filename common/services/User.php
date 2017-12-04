@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:48:34
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-27 10:57:49
+ * @Last Modified time: 2017-12-04 10:19:19
  */
 
 namespace common\services;
@@ -13,8 +13,10 @@ namespace common\services;
 use common\components\CustomCommonException;
 
 class User extends Service {
-	// 微服务记录地址
-	protected $microServiceUrl = 'http://users.devapi.tnew.cn/v1/';
+	// 微服务地址
+	protected $microServiceUrl = 'http://users.api.tnew.cn/v1/';
+	// 微服务地址【开发】
+	protected $devMicroServiceUrl = 'http://users.devapi.tnew.cn/v1/';
 	// 获取用户TOKEN路由
 	private $queryUserTokenRouter = '/users/{login_name}/tokens';
 
