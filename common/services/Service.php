@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-04 10:15:44
+ * @Last Modified time: 2017-12-04 10:50:13
  */
 namespace common\services;
 
@@ -162,7 +162,10 @@ class Service {
 			if ($sysUser = Yii::$app->session->get('sys_user')) {
 				// 获取用户ID
 				if ($userId = $sysUser->id) {
-					$tokenKey = 'user:' . $userId . ':accesstoken';
+					// 当前环境
+					$env = isset(Yii::$app->params['server_running_env']) ? Yii::$app->params['server_running_env'] : 'develop';
+
+					$tokenKey = 'env:' . $env . ':user:' . $userId . ':accesstoken';
 
 					// 获取token
 					if ($token = Yii::$app->cache->get($tokenKey)) {
