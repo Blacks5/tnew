@@ -59,7 +59,9 @@
                                         <td class="client-status">{{value.created_at}}</td>
                                         <td class="client-status">
                                             <a class="btn btn-info btn-xs" @click="open(value.id)">详情</a>
+                                            <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-repayment/to-loan'))){ ?>
                                             <a class="btn btn-danger btn-xs" v-if="value.status == 90 || value.status == 115" @click="loan(value.id)">放款</a>
+                                            <?php } ?>
                                             <a class="btn btn-success btn-xs disabled" v-if="value.status == 100">正在放款</a>
                                             <a class="btn btn-warning btn-xs disabled" v-if="value.status == 120">已代发</a>
                                             <a class="btn btn-info btn-xs" v-if="value.status == 120" @click="repayments(value.id)">还款计划</a>

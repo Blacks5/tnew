@@ -22,7 +22,11 @@
                         <a class="list-group-item col-sm-4">手机号码<span class="badge">{{json(data.bank_card)['phone']}}</span></a>
                         <a class="list-group-item col-sm-4">操作人<span class="badge">{{data.name}}</span></a>
                         <a class="list-group-item col-sm-4">借款金额<span class="badge">{{data.accepted_amount}}</span></a>
-                        <a class="list-group-item col-sm-4" @click="change">状态<span class="badge">{{data.signText}}</span></a>
+                        <a class="list-group-item col-sm-4"
+                            <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-api/change'))){ ?>
+                           @click="change"
+                           <?php } ?>
+                        >状态<span class="badge">{{data.signText}}</span></a>
                     </div>
                 </div>
             </div>
