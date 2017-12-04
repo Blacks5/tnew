@@ -1,7 +1,5 @@
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.js"></script>
-<link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-<script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
 
 <div class="ibox-content" id="list">

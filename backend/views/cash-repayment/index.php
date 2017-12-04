@@ -1,6 +1,6 @@
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.js"></script>
-<script src="/js/plugins/layDate/layDate.js"></script>
+<script src="/js/plugins/laydate/laydate.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
 
 <div class="ibox-content" id="list">
