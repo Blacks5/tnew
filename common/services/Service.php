@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-04 10:50:13
+ * @Last Modified time: 2017-12-04 11:19:14
  */
 namespace common\services;
 
@@ -172,7 +172,12 @@ class Service {
 						return $token;
 					}
 
-					$url = 'http://users.devapi.tnew.cn/v1/users/' . $sysUser->username . '/tokens';
+					if (isset(Yii::$app->params['server_running_env']) && Yii::$app->params['server_running_env'] == 'master') {
+						$url = 'http://users.api.tnew.cn/v1/users/' . $sysUser->username . '/tokens';
+					} else {
+						$url = 'http://users.devapi.tnew.cn/v1/users/' . $sysUser->username . '/tokens';
+					}
+
 					$httpClient = new Client();
 					$response = $httpClient->post($url, [], [
 						'X-TOKEN' => Yii::$app->params['server_communicate_token'],
