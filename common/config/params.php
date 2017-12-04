@@ -170,4 +170,99 @@ return [
     'common_seller_serverfee_rate' => 0.035,
     //cash api url
     'cashBaseUrl' => 'http://cash.devapi.tnew.cn/v1/orders/',
+
+    // 还款周期
+    'installmentCycle' => [
+        [
+            'title' => '按周还款',
+            'value' => 'week',
+            'periods' => [
+                [
+                    'title' => '4周',
+                    'value' => '4',
+                ],
+                [
+                    'title' => '8周',
+                    'value' => '8',
+                ],
+                [
+                    'title' => '12周',
+                    'value' => '12',
+                ],
+                [
+                    'title' => '24周',
+                    'value' => '24',
+                ],
+                [
+                    'title' => '48周',
+                    'value' => '48',
+                ],
+            ],
+        ],
+        [
+            'title' => '按月还款',
+            'value' => 'month',
+            'periods' => [
+                [
+                    'title' => '6月',
+                    'value' => '6',
+                ],
+                [
+                    'title' => '9月',
+                    'value' => '9',
+                ],
+                [
+                    'title' => '12月',
+                    'value' => '12',
+                ],
+            ],
+        ],
+    ],
+
+    // 贵宾服务包费用 xx元/月
+    'vipServiceFee' => 15,
+    // 个人保障服务费用  xx元/月
+    'protectionFee' => 16.89,
+
+    // 婚姻状况
+    'maritalSituation' => [
+        [
+            'title' => '已婚',
+            'value' => 'married',
+        ],
+        [
+            'title' => '未婚',
+            'value' => 'unmarried',
+        ],
+        [
+            'title' => '离异',
+            'value' => 'divorced',
+        ],
+        [
+            'title' => '丧偶',
+            'value' => 'widowhood',
+        ],
+    ],
+
+    'contactRelationship' => [
+        [
+            'title' => '家人',
+            'value' => 'family',
+        ],
+        [
+            'title' => '同事',
+            'value' => 'workmate',
+        ],
+        [
+            'title' => '朋友',
+            'value' => 'friend',
+        ],
+        [
+            'title' => '其它',
+            'value' => 'other',
+        ],
+    ],
+
+    // 服务之间通信TOKEN
+    'server_communicate_token' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
 ];
