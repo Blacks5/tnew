@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-23 16:43:28
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-24 15:03:40
+ * @Last Modified time: 2017-12-04 10:19:51
  */
 
 namespace common\services;
@@ -13,8 +13,10 @@ namespace common\services;
 use common\components\CustomCommonException;
 
 class Files extends Service {
-	// 微服务记录地址
-	protected $microServiceUrl = 'http://files.devapi.tnew.cn/v1/';
+	// 微服务地址
+	protected $microServiceUrl = 'http://files.api.tnew.cn/v1/';
+	// 微服务地址【开发】
+	protected $devMicroServiceUrl = 'http://files.devapi.tnew.cn/v1/';
 	// 上传照片
 	private $uploadRouter = '/files/';
 

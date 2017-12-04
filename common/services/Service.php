@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-27 10:08:49
+ * @Last Modified time: 2017-12-04 10:15:44
  */
 namespace common\services;
 
@@ -143,7 +143,13 @@ class Service {
 			}
 		}
 
-		return rtrim($this->microServiceUrl, '/') . '/' . ltrim($router, '/');
+		if (isset(Yii::$app->params['server_running_env']) && Yii::$app->params['server_running_env'] == 'master') {
+			$serviceUrl = $this->microServiceUrl;
+		} else {
+			$serviceUrl = $this->devMicroServiceUrl;
+		}
+
+		return rtrim($serviceUrl, '/') . '/' . ltrim($router, '/');
 	}
 
 	/**
@@ -206,7 +212,7 @@ class Service {
 
 			$basePath = '../runtime/temp';
 
-			is_dir($basePath) || @mkdir($basePath, 0777 , true);
+			is_dir($basePath) || @mkdir($basePath, 0777, true);
 
 			$filepath = $basePath . '/' . $filename;
 
