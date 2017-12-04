@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-04 10:19:30
+ * @Last Modified time: 2017-12-04 10:47:01
  */
 namespace common\services;
 
@@ -46,7 +46,7 @@ class Cash extends Service {
 		if ($res['success']) {
 			return $res['data'];
 		} else {
-			throw new CustomCommonException($res['errors']['message'], $res['errors']['code']);
+			throw new CustomCommonException($res['errors'][0]['message'], $res['errors'][0]['code']);
 		}
 	}
 

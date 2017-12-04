@@ -43,8 +43,8 @@
                     <div class="list-group" >
                         <a class="list-group-item col-sm-3">{{order['repay_cycle'] == 'week'?'日':'月'}}利率<span class="badge">{{rate['rate']}}</span> </a>
                         <a class="list-group-item col-sm-3">每期还款金额<span class="badge">{{order['total_repay']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">本金<span class="badge">{{components['interest']}}元</span> </a>
-                        <a class="list-group-item col-sm-3">利息<span class="badge">{{components['principal']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">本金<span class="badge">{{components['principal']}}元</span> </a>
+                        <a class="list-group-item col-sm-3">利息<span class="badge">{{components['interest']}}元</span> </a>
                         <a class="list-group-item col-sm-3">个人保障计划<span class="badge">{{components['free_pack_fee']}}元</span> </a>
                         <a class="list-group-item col-sm-3">贵宾服务包<span class="badge">{{components['add_server_fee']}}元</span> </a>
                         <a class="list-group-item col-sm-3">财务管理费<span class="badge">{{components['finance_manage_fee']}}元</span> </a>
@@ -82,6 +82,7 @@
                 </div>
                 <div class="container center" style="margin-top: 30px;">
                     <div class="row" >
+                        <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-examine/examine'))){ ?>
                         <div class="col-sm-3 form-group" v-if="order['status'] < 20">
                             <select class="form-control"  name="visitorID">
                                 <option v-for="v in visitor" :value="v['id']">{{v['name']}}</option>
@@ -108,6 +109,7 @@
                         <div class="col-sm-2" v-if="order['status'] < 100">
                             <button type="button" class="btn btn-danger" @click="toDestroy">拒绝订单</button>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
