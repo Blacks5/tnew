@@ -30,6 +30,15 @@
                         </div>
                         <div class="weui-cell weui-cell_select-picker">
                             <div class="weui-cell__hd">
+                                <label class="weui-label">产品类型</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" id="productType" type="text" value="请选择产品类型">
+                            </div>
+                            <input type="hidden" name="productType">
+                        </div>
+                        <div class="weui-cell weui-cell_select-picker">
+                            <div class="weui-cell__hd">
                                 <label class="weui-label">分期方式</label>
                             </div>
                             <div class="weui-cell__bd">
@@ -141,6 +150,8 @@
     var successUrl = "<?=Yii::$app->getUrlManager()->createUrl(['cash/success'])?>";
     // 分期周期
     var installmentCycle = <?=$installmentCycle?>;
+    // 产品类型
+    var cashProductType = <?=$cashProductType?>;
     // 贵宾服务包
     var vipServiceFee = <?=$vipServiceFee?>;
     // 个人保障计划
@@ -153,6 +164,7 @@
             createUrl : createUrl,
             successUrl : successUrl,
             installmentCycle : installmentCycle,
+            cashProductType : cashProductType,
             vipServiceFee : vipServiceFee,
             protectionFee : protectionFee
         });
