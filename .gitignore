@@ -7,4 +7,5 @@ themes/classic/views/
 /.svn
 .idea/*
 common/config/main-local.php
+wechat/config/params.php
 logs/
