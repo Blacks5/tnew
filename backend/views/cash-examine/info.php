@@ -83,30 +83,30 @@
                 <div class="container center" style="margin-top: 30px;">
                     <div class="row" >
                         <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-examine/examine'))){ ?>
-                        <div class="col-sm-3 form-group" v-if="order['status'] < 20">
+                        <div class="col-sm-3 form-group" v-show="order['status'] < 20">
                             <select class="form-control"  name="visitorID">
                                 <option v-for="v in visitor" :value="v['id']">{{v['name']}}</option>
                             </select>
                         </div>
-                        <div class="col-sm-3" v-if="order['status'] <20">
+                        <div class="col-sm-3" v-show="order['status'] <20">
                             <button class="btn btn-info" type="button" @click="setVisitor">分配上门审核人员</button>
                         </div>
-                        <div class="col-sm-2" v-if="order['status'] == 30">
+                        <div class="col-sm-2" v-show="order['status'] == 30">
                             <button type="button" class="btn btn-info" @click="examine">一审</button>
                         </div>
-                        <div class="col-sm-2" v-if="order['status'] == 50">
+                        <div class="col-sm-2" v-show="order['status'] == 50">
                             <button type="button" class="btn btn-info" @click="examineTwo">二审</button>
                         </div>
-                        <div class="col-sm-2" v-if="order['status'] == 60">
+                        <div class="col-sm-2" v-show="order['status'] == 60">
                             <button type="button" class="btn btn-info" @click="contract">电子合同签约</button>
                         </div>
-                        <div class="col-sm-2" v-if="order['status'] == 70">
+                        <div class="col-sm-2" v-show="order['status'] == 70">
                             <button type="button" class="btn btn-info" @click="sign">扣款签约</button>
                         </div>
-                        <div class="col-sm-2" v-if="order['status'] < 100">
+                        <div class="col-sm-2" v-show="order['status'] < 100">
                             <button type="button" class="btn btn-warning" @click="revoke">取消订单</button>
                         </div>
-                        <div class="col-sm-2" v-if="order['status'] < 100">
+                        <div class="col-sm-2" v-show="order['status'] < 100">
                             <button type="button" class="btn btn-danger" @click="toDestroy">拒绝订单</button>
                         </div>
                         <?php } ?>
