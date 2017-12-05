@@ -1136,7 +1136,11 @@ left join customer on customer.c_id=orders.o_customer_id
                     $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
                 }catch (\Exception $e){
                     $trans->rollBack();
-                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], '系统错误');
+                    $log = new FileTarget();
+                    $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou.log';
+                    $log->messages[] = ['收到易极付代扣回调處理失敗:' . $e->getLine().' ,message: '.$e->getMessage(), 2, 'yijifu', microtime(true)];
+                    $log->export();
+                    //$this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], '系统错误');
                 }
             }else{
                 //未代扣成功(或结算成功)
