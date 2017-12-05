@@ -1085,7 +1085,7 @@ left join customer on customer.c_id=orders.o_customer_id
                         ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
                         ->count();
 
-                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $id . ") and r_status=:r_status for update";
+                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . implode($id, ',') . ") and r_status=:r_status for update";
                     $repay_model_arr = Repayment::findBySql($sql,[':r_status' => Repayment::STATUS_NOT_PAY])->all();
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
