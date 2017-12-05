@@ -128,6 +128,7 @@ class RepaymentSearch extends CoreBackendModel
     {
         $total['total'] = 0;    //总金额
         $total['num'] = [];    //期数
+        $total['overdue'] = 0; //滯納金
         $sql = Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1])->orderBy('r_pre_repay_date');
         $repayCount = $sql->count();
         $data = $sql->limit($num)->all();
@@ -136,6 +137,7 @@ class RepaymentSearch extends CoreBackendModel
             foreach ($data as $k => $d){
                 $total['total'] += $d['r_principal']; //获取所有的 本金
                 if($d['r_overdue_day']>3){    //如果逾期,加上除本金外的费用和滞纳金
+                    $total['overdue'] += $d['r_overdue_money'];
                     $total['total'] += $d['r_total_repay'] - $d['r_principal'] + $d['r_overdue_money'];
                 }
                 if($d['r_serial_no'] == $serialNo){ //如果是属于当期需还利息

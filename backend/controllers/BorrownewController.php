@@ -933,7 +933,7 @@ left join customer on customer.c_id=orders.o_customer_id
             $data = $repayment->getAdvanceMoney($request->post('order_id'), $request->post('expected'));
 
             Yii::$app->getResponse()->format = yii\web\Response::FORMAT_JSON;
-            return ['status' => 1, 'totalPrice' => $data['total']];
+            return ['status' => 1, 'totalPrice' => $data['total'], 'collection' => $data['total'] - $data['overdue']];
         }
     }
 
