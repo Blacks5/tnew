@@ -1131,9 +1131,9 @@ left join customer on customer.c_id=orders.o_customer_id
                     }
                     $trans->commit();
                     echo "success";
-                }catch (CustomCommonException $e){
-                    $trans->rollBack();
-                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
+//                }catch (CustomCommonException $e){
+//                    $trans->rollBack();
+//                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
                 }catch (\Exception $e){
                     $trans->rollBack();
                     $log = new FileTarget();
