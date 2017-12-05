@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-11-27 11:25:45
+ * @Last Modified time: 2017-12-05 14:28:13
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -15,7 +15,9 @@
 		this.successUrl = options.successUrl || '/';
 
 		// 分期配置
-		this.installmentCycle = options.installmentCycle || {};
+		this.installmentCycle = options.installmentCycle || [];
+		// 产品类型
+		this.cashProductType = options.cashProductType || [];
 		// swiper实例
 		this.swiper;
 		// slides总数
@@ -124,6 +126,11 @@
 			nullmsg: "请输入贷款金额",
 			errormsg: "贷款金额不合法"
 		}, {
+			ele: "input[name=productType]",
+			datatype: 'n',
+			nullmsg: "请选择产品类型",
+			errormsg: "请选择产品类型"
+		}, {
 			ele: "input[name=installmentCycle]",
 			datatype: '*1-20',
 			nullmsg: "请选择分期方式",
@@ -218,6 +225,12 @@
 		// 初始分期方式标题
 		var installmentPeriodTitle = '请选择分期时长';
 
+		// 初始产品类型值
+		var productType = Cache.get('productType');
+		productType = productType ? productType : '';
+		// 初始产品类型标题
+		var productTypeTitle = '请选择产品类型';
+
 		// 选择分期方式
 		var cycle = [];
 		_this.installmentCycle.forEach(function(value) {
@@ -239,12 +252,22 @@
 			}
 		});
 
+		// 选择产品类型
+		_this.cashProductType.forEach(function(value){
+			if(productType == value.value){
+				productTypeTitle = value.title;
+			}
+		});
+
 		// 分期方式初始值
 		$('input[name=installmentCycle]').val(installmentCycle);
 		$('#InstallmentType').val(installmentCycleTitle);
 		// 分期时长初始化
 		$('input[name=installmentPeriod]').val(installmentPeriod);
 		$('#InstallmentPeriod').val(installmentPeriodTitle);
+		// 产品类型初始化
+		$('input[name=productType]').val(productType);
+		$('#productType').val(productTypeTitle);
 
 		if (installmentCycle) {
 			// 获取所选父级
@@ -318,6 +341,17 @@
 				}
 			}
 		});
+
+		// 产品类型
+		$("#productType").select({
+			title: "请选择产品类型",
+			items: _this.cashProductType,
+			onChange: function(data) {
+				$('input[name=productType]').val(data.values);
+				Cache.set('productType', data.values);
+				_this.getPayment();
+			}
+		});
 	}
 
 	/**
@@ -330,6 +364,7 @@
 		// 检测数据完整性
 		if (!data.installmentCycle) return;
 		if (!data.installmentPeriod) return;
+		if (!data.productType) return;
 		if (!data.loanAmount || !/^[0-9]*$/.test(data.loanAmount) || data.loanAmount < 0) return;
 
 		// 获取之前的内容信息

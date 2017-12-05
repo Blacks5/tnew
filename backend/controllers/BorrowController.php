@@ -24,6 +24,7 @@ use common\models\YijifuDeduct;
 use common\models\YijifuLoan;
 use common\models\YijifuSign;
 use common\models\YijifuSignReturnmoney;
+use common\services\Order;
 use common\tools\yijifu\ReturnMoney;
 use org\ebq\api\tool\RopUtils;
 use WebSocket\Client;
@@ -1015,6 +1016,42 @@ left join customer on customer.c_id=orders.o_customer_id
                 return ['status'=>0, 'message'=>$e->getMessage()];
             }
         }
+    }
+
+    public function actionCollection() {
+        $request = Yii::$app->getRequest();
+        Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
+        if ($request->getIsAjax()) {
+            $repay = new RepaymentSearch();
+            $query = Repayment::find()->where(['r_orders_id' => $request->post('id'), 'r_status' => Repayment::STATUS_NOT_PAY]);
+            $total = $repay->getAdvanceMoney($request->post('id'), $query->count());
+            $collection = $total['total'] - $total['overdue'];
+            if ($collection != $request->post('value')){
+                return ['status' => 2, 'message' => '還款金額不對'];
+            }
+
+            foreach ($query->all() ?? [] as $k => $v) {
+                $repayment = Repayment::findOne($v['r_id']);
+                $repayment->r_overdue_money = 0;
+                $repayment->r_status = Repayment::STATUS_ALREADY_PAY;
+                $repayment->r_repay_date = strtotime(date('Y-m-d'));
+
+                if ($v['r_serial_no'] != $total['serialNo'] and $v['r_overdue_day'] < 3) {
+                    $repayment->r_total_repay = $repayment->r_principal;
+                    $repayment->r_interest = 0;
+                    $repayment->r_add_service_fee = 0;
+                    $repayment->r_free_pack_fee = 0;
+                    $repayment->r_finance_mangemant_fee = 0;
+                    $repayment->r_customer_management = 0;
+                }
+                $repayment->save(false);
+            }
+            $order = Orders::findOne($request->post('id'));
+            $order->o_status = Orders::STATUS_PAY_OVER;
+            $order->save(false);
+            return ['status' => 1, 'message' => '催收還款成功!'];
+        }
+        return ['status' => 2, 'message' => '啥子情況'];
     }
 
 }

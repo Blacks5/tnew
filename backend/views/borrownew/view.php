@@ -597,8 +597,15 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                         <span class="input-group-addon" id="sizing-addon1">元</span>
                                     </div>
                                 </div>
+                                <div class="col-md-2">
+                                    <div class="col-md-12 input-group">
+                                        <input type="text" value="0" id="collection_money" class="form-control" disabled/>
+                                        <span class="input-group-addon" id="sizing-addon1">元需催收</span>
+                                    </div>
+                                </div>
                                 <div class="com-md-8">
                                     <button class="btn btn-danger" id="prepayment">提前还款</button>
+                                    <button class="btn btn-info" id="collection">催收還款</button>
                                     <?php }?>
                                     <?php if($model['o_is_add_service_fee'] == 1 && $reCount == 1){ ?>
                                         <button class="btn btn-danger" id="cancel_personal_protection">取消个人保障计划</button>
@@ -843,6 +850,7 @@ $("#calculation_residual_loan").click(function(){
         success: function (data) {
             if (data.status === 1) {
                 $("#calculation_residual_loan_val").val(data.totalPrice);
+                $("#collection_money").val(data.collection);
             }
         }
     });
@@ -952,6 +960,34 @@ $("#undesirable").click(function(){
             }
         });
     });
+});
+
+//催收還款
+$("#collection").click(function () {
+    var value = $("#collection_money").val();
+    layer.confirm("確定要催收還款?", {icon:3, title: "確定催收還款么?"}, function (index) {
+        var postData = {
+            id:'.$model['o_id'] .',
+            value: value,
+            "'.Yii::$app->request->csrfParam.'":"'. Yii::$app->request->csrfToken.'"
+        }
+        $.ajax({
+            url: "'. \yii\helpers\Url::toRoute(['borrow/collection']). '",
+            type: "POST",
+            dataType: "JSON",
+            data:postData,
+            success:function (data) {
+                if (data.status == 1) {
+                    return layer.alert(data.message, {icon:data.status}, function() {return window.location.reload();});
+                } else {
+                    return layer.alert(data.message, {icon:data.status});
+                }
+            },
+            error:function () {
+                layer.alert("哦豁,出問題了!", {icon:2})
+            }
+        })
+    })
 });
 
 ');

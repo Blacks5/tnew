@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-20 13:47:36
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-27 10:26:37
+ * @Last Modified time: 2017-12-05 14:31:53
  */
 
 namespace common\models;
@@ -18,6 +18,7 @@ class Cash extends CoreCommonActiveRecord {
 	public $loanAmount;
 	public $installmentCycle;
 	public $installmentPeriod;
+	public $productType;
 	public $realName;
 	public $certNo;
 	public $bankCardNo;
@@ -47,6 +48,8 @@ class Cash extends CoreCommonActiveRecord {
 			['installmentCycle', 'in', 'range' => ['week', 'month'], 'message' => '请选择分期方式'],
 			['installmentPeriod', 'required', 'message' => '请选择分期时长'],
 			['installmentPeriod', 'integer', 'message' => '请选择分期时长'],
+			['productType', 'required', 'message' => '请选择产品类型'],
+			['productType', 'integer', 'message' => '请选择产品类型'],
 			['realName', 'required', 'message' => '请输入客户姓名'],
 			['realName', 'string', 'message' => '客户姓名不合法', 'length' => [2, 10]],
 			['certNo', 'required', 'message' => '请输入身份证号'],
@@ -62,13 +65,13 @@ class Cash extends CoreCommonActiveRecord {
 			['contactName', 'required', 'message' => '请输入联系人姓名'],
 			['contactName', 'string', 'message' => '联系人姓名长度在2~20之间', 'length' => [2, 20]],
 			['contactRelation', 'required', 'message' => '请选择联系人关系'],
-			['contactRelation', 'in', 'message' => '请选择联系人关系', 'range' => ['family' , 'workmate' , 'friend' , 'other']],
+			['contactRelation', 'in', 'message' => '请选择联系人关系', 'range' => ['family', 'workmate', 'friend', 'other']],
 			['contactPhone', 'required', 'message' => '请输入联系人手机'],
 			['contactPhone', 'match', 'message' => '联系人手机不合法', 'pattern' => '/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/'],
 			['orderID', 'required', 'message' => '参数异常'],
 			['orderID', 'number', 'message' => '参数异常'],
 			['reason', 'required', 'message' => '请输入取消原因'],
-			['reason', 'string', 'length' => [2 , 60] , 'message' => '取消原因长度在2~60之间'],
+			['reason', 'string', 'length' => [2, 60], 'message' => '取消原因长度在2~60之间'],
 		];
 	}
 
@@ -80,6 +83,7 @@ class Cash extends CoreCommonActiveRecord {
 			'loanAmount' => '贷款金额',
 			'installmentCycle' => '分期方式',
 			'installmentPeriod' => '分期时长',
+			'productType' => '产品类型',
 			'realName' => '客户姓名',
 			'certNo' => '身份证号',
 			'bankCardNo' => '银行卡号',
@@ -97,9 +101,9 @@ class Cash extends CoreCommonActiveRecord {
 	// 设置验证场景
 	public function scenarios() {
 		$scenarios = parent::scenarios();
-		$scenarios['loanInfo'] = ['loanAmount', 'installmentCycle', 'installmentPeriod'];
+		$scenarios['loanInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod'];
 		$scenarios['customerInfo'] = ['realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
-		$scenarios['orderInfo'] = ['loanAmount', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
+		$scenarios['orderInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
 		$scenarios['contactInfo'] = ['contactName', 'contactRelation', 'contactPhone'];
 		$scenarios['cancelOrder'] = ['orderID', 'reason'];
 		return $scenarios;

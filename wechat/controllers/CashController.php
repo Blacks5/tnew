@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-11-27 11:25:14
+ * @Last Modified time: 2017-12-05 14:32:19
  */
 namespace wechat\controllers;
 
@@ -50,6 +50,7 @@ class CashController extends BaseController {
 				'amount' => $request->post('loanAmount', 0),
 				'cycle' => $request->post('installmentCycle', ''),
 				'period' => $request->post('installmentPeriod', ''),
+				'productType' => $request->post('productType', 0),
 				'isFreePackFee' => $request->post('isProtectionFee', 0) ? 1 : 0,
 				'isAddServiceFee' => $request->post('isVipServiceFee', 0) ? 1 : 0,
 				'bankNumber' => $request->post('bankCardNo', ''),
@@ -75,12 +76,14 @@ class CashController extends BaseController {
 			$installmentCycle = Yii::$app->params['installmentCycle'];
 			$vipServiceFee = Yii::$app->params['vipServiceFee'];
 			$protectionFee = Yii::$app->params['protectionFee'];
+			$cashProductType = Yii::$app->params['cashProductType'];
 
 			// 渲染模板
 			return $this->renderPartial('create', [
 				'installmentCycle' => json_encode($installmentCycle, JSON_UNESCAPED_UNICODE),
 				'vipServiceFee' => $vipServiceFee,
 				'protectionFee' => $protectionFee,
+				'cashProductType' => json_encode($cashProductType, JSON_UNESCAPED_UNICODE),
 			]);
 		}
 	}
@@ -96,6 +99,7 @@ class CashController extends BaseController {
 				'amount' => $request->post('loanAmount', 0),
 				'cycle' => $request->post('installmentCycle', ''),
 				'period' => $request->post('installmentPeriod', ''),
+				'productType' => $request->post('productType', 0),
 				'isFreePackFee' => $request->post('isProtectionFee', 0) ? 1 : 0,
 				'isAddServiceFee' => $request->post('isVipServiceFee', 0) ? 1 : 0,
 			];
