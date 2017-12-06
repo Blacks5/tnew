@@ -70,21 +70,21 @@ class SiteController extends BaseController {
 			if ($sys_user && $wechat_user) {
 				$user = User::findOne(['wechat_openid' => $wechat_user->id, 'id' => $sys_user->id]);
 
+				// 销毁session
+				Yii::$app->session->remove('sys_user');
+
+				Yii::$app->session->remove('wechat_user');
+
+				Yii::$app->session->destroy();
+
 				if ($user) {
 					$user->wechat_openid = '';
 
 					$user->save(false);
 
-					// 销毁session
-					Yii::$app->session->remove('sys_user');
-
-					Yii::$app->session->remove('wechat_user');
-
-					Yii::$app->session->destroy();
-
 					return ['status' => 1, 'message' => '解绑成功'];
 				} else {
-					return ['status' => 0, 'message' => '解绑失败'];
+					return ['status' => 1, 'message' => '解绑成功'];
 				}
 			} else {
 				return ['status' => 0, 'message' => '解绑失败'];
