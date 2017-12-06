@@ -391,4 +391,31 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
         return $area;
     }
 
+
+    /**
+     * 获取所在区域
+     * @param  [type] $regions [description]
+     * @return [type]          [description]
+     */
+    public static function getAreas($regions){
+        $areas = (new \yii\db\Query())
+            ->select(['*'])
+            ->from('too_region')
+            ->where(['in' , 'region_id' , $regions])
+            ->all();
+
+        $areaArr = [];
+
+        for($i = 1 ; $i <= 3 ; $i++){
+            $areaArr[$i] = '';
+            
+            foreach ($areas as $item) {
+                if($item['region_type'] == $i){
+                    $areaArr[$i] = $item['region_name'];
+                }
+            }
+        }
+
+        return $areaArr;
+    }
 }

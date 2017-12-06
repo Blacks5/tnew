@@ -54,6 +54,12 @@ class WechatController extends Controller {
 
 				if ($sys_user) {
 					if ($sys_user->status == 10) {
+						// 获取所在位置
+						$regions = [intval($sys_user->province), intval($sys_user->city), intval($sys_user->county)];
+
+						// 加入地区数据
+						$sys_user->areas = array_values(User::getAreas($regions));
+
 						// 保存微信登录信息
 						$session->set('wechat_user', $wechat_user);
 

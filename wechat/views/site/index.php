@@ -11,10 +11,34 @@
     <link rel="stylesheet" href="/wechat/css/core.css">
 </head>
 <body ontouchstart>
-<header class='demos-header'>
+<!-- <header class='demos-header'>
     <h1 class="demos-title">天牛金融</h1>
     <p class='demos-sub-title'>天牛金融微信管理服务平台</p>
-</header>
+</header> -->
+<br />
+<div class="weui-panel__bd weui-cell_access">
+    <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg" id="usercenter">
+      <div class="weui-media-box__hd">
+        <?php if($wechat_user && $wechat_user->avatar) { ?>
+            <img src="<?=$wechat_user->avatar?>" class="weui-media-box__thumb" style="width: 60px;height: 60px;border-radius: 50%;" alt="">
+        <?php }else{ ?>
+            <img src="/wechat/images/tianniu.jpg" class="weui-media-box__thumb" style="width: 60px;height: 60px;border-radius: 50%;" alt="">
+        <?php } ?>
+      </div>
+      <div class="weui-media-box__bd">
+        <h4 class="weui-media-box__title"><?=$sys_user->realname?></h4>
+        <p class="weui-media-box__desc">
+            <?=$sys_user->username?>
+            <br />
+            <?php if($wechat_user && $wechat_user->areas) { ?>
+                <?=implode('-' , $sys_user->areas)?>
+            <?php } ?>
+        </p>
+      </div>
+      <span class="weui-cell__ft"></span>
+    </a>
+</div>
+<br />
 <div class="weui-grids">
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/create-order'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
@@ -76,8 +100,14 @@
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
+<script src="/wechat/js/jquery-weui-extend.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
+    // 退出登录
+    var logoutUrl = "<?=Yii::$app->getUrlManager()->createUrl(['site/logout'])?>";
+    // 解除绑定
+    var unbindUrl = "<?=Yii::$app->getUrlManager()->createUrl(['site/unbind'])?>";
+
     $(function() {
         FastClick.attach(document.body);
 
@@ -98,6 +128,67 @@
                     'menuItem:openWithSafari',
                     'menuItem:share:email'
                 ]
+            });
+        });
+
+        $('#usercenter').bind('click' , function(){
+            // 默认操作
+            var defaultActions = {
+                logout : {
+                    text: "退出登录",
+                    className: "color-warning",
+                    onClick: function() {
+                        $.confirm({
+                            title: '确认要退出登录吗？',
+                            text: '退出登录后微信浏览器将自动关闭。',
+                            onOK: function (input) {
+                                $.ajaxPost(logoutUrl , {} , function(res){
+                                    if(res.status){
+                                        $.toast(res.message, function(){
+                                            WeixinJSBridge.call('closeWindow');
+                                        });
+                                    }else{
+                                        $.toast(res.message, "text");
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+                unbind : {
+                    text: "解除绑定",
+                    className: "color-danger",
+                    onClick: function() {
+                        $.confirm({
+                            title: '确认要解除绑定吗？',
+                            text: '解除绑定后微信浏览器将自动关闭。',
+                            onOK: function (input) {
+                                $.ajaxPost(unbindUrl , {} , function(res){
+                                    if(res.status){
+                                        $.toast(res.message, function(){
+                                            WeixinJSBridge.call('closeWindow');
+                                        });
+                                    }else{
+                                        $.toast(res.message, "text");
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+
+            // 绑定操作
+            var actions = new Array;
+
+            // 退出登录
+            actions.push(defaultActions.logout);
+            actions.push(defaultActions.unbind);
+
+            $.actions({
+                title: "操作",
+                onClose: function() {},
+                actions: actions
             });
         });
     });
