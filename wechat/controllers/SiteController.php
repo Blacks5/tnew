@@ -74,9 +74,18 @@ class SiteController extends BaseController {
 					$user->wechat_openid = '';
 
 					$user->save(false);
-				}
 
-				return ['status' => 1, 'message' => '解绑成功'];
+					// 销毁session
+					Yii::$app->session->remove('sys_user');
+
+					Yii::$app->session->remove('wechat_user');
+
+					Yii::$app->session->destroy();
+
+					return ['status' => 1, 'message' => '解绑成功'];
+				} else {
+					return ['status' => 0, 'message' => '解绑失败'];
+				}
 			} else {
 				return ['status' => 0, 'message' => '解绑失败'];
 			}
