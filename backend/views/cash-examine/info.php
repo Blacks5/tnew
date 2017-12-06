@@ -369,7 +369,6 @@
                     'widowhood':'丧偶'
                 };
                 var m = '';
-                var
                 if (s.length > 0) {
                     m = data.s;
                 }
