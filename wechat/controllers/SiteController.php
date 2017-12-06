@@ -6,6 +6,7 @@ namespace wechat\controllers;
 
 use wechat\Tools\Wechat;
 use Yii;
+use common\models\User;
 
 class SiteController extends BaseController {
 	/**
