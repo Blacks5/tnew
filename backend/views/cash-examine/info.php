@@ -75,10 +75,10 @@
 
                     </div>
                 </div>
-                <div class="container" v-if="order['status'] >= 20">
+                <div class="container">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核放款信息</h3></div>
                     <div class="list-group">
-                        <a class="list-group-item col-sm-3" v-if="order.saleman != null">销售人员<span class="badge">{{order['saleman']['name']}}</span></a>
+                        <a class="list-group-item col-sm-3" v-if="order.sale != null">销售人员<span class="badge">{{order['sale']['name']}}</span></a>
                         <a class="list-group-item col-sm-3" v-if="order['status'] >=20 && order.visitor != null">上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
                     </div>
                 </div>
