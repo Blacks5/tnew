@@ -67,7 +67,7 @@
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
 
-                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ getMaritals(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
+                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
                         <a class="list-group-item col-sm-4" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
                         <a class="list-group-item col-sm-4" >现居地址<span class="badge">{{order.address}}</span> </a>
 
@@ -79,7 +79,7 @@
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核放款信息</h3></div>
                     <div class="list-group" v-if="order.sale != null">
                         <a class="list-group-item col-sm-3">销售人员<span class="badge">{{order['sale']['name']}}</span></a>
-                        <a class="list-group-item col-sm-3">电话<span class="badge">{{order['visitor']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3">电话<span class="badge">{{order['sale']['phone']}}</span></a>
                     </div>
                     <div class="list-group" v-if="order['status'] >=20 && order.visitor != null">
                         <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
@@ -369,7 +369,7 @@
                     'widowhood':'丧偶'
                 };
                 var m = '';
-                if (s.length > 0) {
+                if (s) {
                     m = data.s;
                 }
 
@@ -383,7 +383,7 @@
                     'other':'其它'
                 };
                 var m = '';
-                if(c.length > 0) {
+                if(c) {
                     m = data.c;
                 }
                 return m;
