@@ -4,9 +4,9 @@
  */
 namespace wechat\controllers;
 
+use common\models\User;
 use wechat\Tools\Wechat;
 use Yii;
-use common\models\User;
 
 class SiteController extends BaseController {
 	/**
@@ -69,10 +69,12 @@ class SiteController extends BaseController {
 
 			if ($sys_user && $wechat_user) {
 				$user = User::findOne(['wechat_openid' => $wechat_user->id, 'id' => $user->id]);
+				print_r($user);die;
+				if ($user) {
+					$user->wechat_openid = '';
 
-				$user->wechat_openid = '';
-
-				$user->save(false);
+					$user->save(false);
+				}
 
 				return ['status' => 1, 'message' => '解绑成功'];
 			} else {
