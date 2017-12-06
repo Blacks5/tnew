@@ -1090,9 +1090,9 @@ left join customer on customer.c_id=orders.o_customer_id
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
                     }
-
+                    $orderID =  Orders::find()->where(['o_serial_id' => $yijifu_data['o_serial_id']])->one();
                     $repay = new RepaymentSearch();
-                    $serialNO = $repay->isThisMonth($yijifu_data['o_serial_id']);
+                    $serialNO = $repay->isThisMonth($orderID['o_id']);
                     foreach ($repay_model_arr as $repay_model){
                         $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
                         $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间

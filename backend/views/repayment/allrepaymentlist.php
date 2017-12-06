@@ -136,7 +136,7 @@ use yii\helpers\Url;
 $(".repay").click(function(env){
     var url = "' . Url::toRoute(['repayment/repay']) . '";
     var r_id = $(env.target).attr("data-value");
-    layer.confirm("确定要进行还款操作吗？", {title:"还款操作", icon:3}, function(index){
+    layer.confirm("这里还款不经过银行,确定要进行还款操作吗？", {title:"老的还款操作", icon:3}, function(index){
         var loading = layer.load(4);
         $.ajax({
             url: url,
