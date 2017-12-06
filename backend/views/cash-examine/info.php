@@ -22,7 +22,8 @@
                         <a class="list-group-item  col-sm-3">个人保障计划<span class="badge">{{order['is_free_pack_fee'] ==1 ?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3">贵宾服务包<span class="badge">{{order['is_add_service_fee']==1?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3" @click="images(order['id'])">图片<span class="badge">点击查看</span></a>
-                        <a class="list-group-item  col-sm-12" v-if="order.extended_data != null">备注<span class="badge">支付宝:{{order['extended_data'].alipay}}</span></a>
+                        <a class="list-group-item  col-sm-3">产品类型<span class="badge">{{ order.product_type == 1?'常规':'促销'}}</span></a>
+                        <a class="list-group-item  col-sm-9" v-if="order.extended_data != null">备注<span class="badge">支付宝:{{order['extended_data'].alipay}}</span></a>
                     </div>
                 </div>
                 <div class="container" v-if="order['status'] < 90 ">
@@ -77,6 +78,7 @@
                 <div class="container" v-if="order['status'] >= 20">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核放款信息</h3></div>
                     <div class="list-group">
+                        <a class="list-group-item col-sm-3" v-if="order.saleman != null">销售人员<span class="badge">{{order['saleman']['name']}}</span></a>
                         <a class="list-group-item col-sm-3" v-if="order['status'] >=20 && order.visitor != null">上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
                     </div>
                 </div>
@@ -186,7 +188,7 @@
                 this.marital =this.order['marital'];
                 this.contacts = this.order['contacts'];
                 this.bank = this.order['bank_card'];
-                this.visitor = usedData['data']['visitor'];
+                this.visitor = usedData['data']['visitor']['items'];
             },
             setVisitor: function(){
                 var url = baseUrl + "<?= $id ?>/visitor";
