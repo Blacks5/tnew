@@ -67,11 +67,11 @@
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
 
-                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ marital(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
+                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ getMaritals(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
                         <a class="list-group-item col-sm-4" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
                         <a class="list-group-item col-sm-4" >现居地址<span class="badge">{{order.address}}</span> </a>
 
-                        <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{ contact(c['relation']) }}</span> </a>
+                        <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{ getContact(c['relation']) }}</span> </a>
 
                     </div>
                 </div>
@@ -361,7 +361,7 @@
                 };
                 return status[data];
             },
-            marital: function(s) {
+            getMarital: function(s) {
                 var data = {
                     'married':'已婚',
                     'unmarried':'未婚',
@@ -375,7 +375,7 @@
 
                 return m;
             },
-            contact: function (c) {
+            getContact: function (c) {
                 var data = {
                     'family': '家人',
                     'workmate':'同事',
