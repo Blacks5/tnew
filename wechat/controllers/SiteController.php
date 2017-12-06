@@ -68,8 +68,8 @@ class SiteController extends BaseController {
 			$wechat_user = Yii::$app->session->get('wechat_user');
 
 			if ($sys_user && $wechat_user) {
-				$user = User::findOne(['wechat_openid' => $wechat_user->id, 'id' => $user->id]);
-				print_r($user);die;
+				$user = User::findOne(['wechat_openid' => $wechat_user->id, 'id' => $sys_user->id]);
+
 				if ($user) {
 					$user->wechat_openid = '';
 
