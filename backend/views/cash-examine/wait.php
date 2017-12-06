@@ -39,6 +39,7 @@
                                     <th class="client-avatar">订单编号</th>
                                     <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
                                     <th>客户电话</th>
+                                    <th>借款类型</th>
                                     <th class="client-status">申请金额</th>
                                     <th class="client-status">审批金额</th>
                                     <th>申请期数</th>
@@ -52,6 +53,7 @@
                                         <td class="client-avatar">{{value.order_number}}</td>
                                         <td>{{value.name}}</td>
                                         <td>{{value.phone}}</td>
+                                        <td>{{ value.product_type ==1?'常规':'促销' }}</td>
                                         <td>{{value.expected_amount}}</td>
                                         <td>{{value.accepted_amount}}</td>
                                         <td class="client-status">{{value.period_total}}</td>

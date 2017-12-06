@@ -1085,14 +1085,14 @@ left join customer on customer.c_id=orders.o_customer_id
                         ->andWhere(['r_status'=>Repayment::STATUS_NOT_PAY])
                         ->count();
 
-                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . $id . ") and r_status=:r_status for update";
+                    $sql = "select * from ". Repayment::tableName()." where r_id in (" . implode($id, ',') . ") and r_status=:r_status for update";
                     $repay_model_arr = Repayment::findBySql($sql,[':r_status' => Repayment::STATUS_NOT_PAY])->all();
                     if (!$repay_model_arr) {
                         throw new CustomBackendException('数据异常', 2);
                     }
-
+                    $orderID =  Orders::find()->where(['o_serial_id' => $yijifu_data['o_serial_id']])->one();
                     $repay = new RepaymentSearch();
-                    $serialNO = $repay->isThisMonth($yijifu_data['o_serial_id']);
+                    $serialNO = $repay->isThisMonth($orderID['o_id']);
                     foreach ($repay_model_arr as $repay_model){
                         $repay_model->r_status = Repayment::STATUS_ALREADY_PAY; // 已还
                         $repay_model->r_repay_date = $_SERVER['REQUEST_TIME']; // 还款时间
@@ -1131,12 +1131,16 @@ left join customer on customer.c_id=orders.o_customer_id
                     }
                     $trans->commit();
                     echo "success";
-                }catch (CustomCommonException $e){
-                    $trans->rollBack();
-                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
+//                }catch (CustomCommonException $e){
+//                    $trans->rollBack();
+//                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], $status_str[$post['status']]);
                 }catch (\Exception $e){
                     $trans->rollBack();
-                    $this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], '系统错误');
+                    $log = new FileTarget();
+                    $log->logFile = Yii::$app->getRuntimePath() . '/logs/yijifu-daikou.log';
+                    $log->messages[] = ['收到易极付代扣回调處理失敗:' . $e->getLine().' ,message: '.$e->getMessage(), 2, 'yijifu', microtime(true)];
+                    $log->export();
+                    //$this->sendToWsByDeduct($yijifu_data['o_serial_id'], $repay_model['r_orders_id'], '系统错误');
                 }
             }else{
                 //未代扣成功(或结算成功)
