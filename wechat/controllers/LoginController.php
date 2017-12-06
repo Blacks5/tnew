@@ -49,6 +49,12 @@ class LoginController extends Controller {
 					->execute();
 
 				if (false !== $state) {
+					// 获取所在位置
+					$regions = [intval($sys_user->province), intval($sys_user->city), intval($sys_user->county)];
+
+					// 加入地区数据
+					$sys_user->areas = array_values(User::getAreas($regions));
+					
 					Yii::$app->session->set('sys_user', $sys_user);
 
 					return ['status' => 1, 'message' => '绑定成功'];

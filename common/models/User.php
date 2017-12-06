@@ -32,6 +32,8 @@ use yii;
 class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface {
 	public $password_hash_1; // 重复密码
 	public $old_password; // 原始密码
+    // 地址
+    public $areas = [];
 
 	// 10正常 0删除 1禁用 2离职
 	const STATUS_ACTIVE = 10; // 激活
@@ -391,4 +393,31 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
         return $area;
     }
 
+
+    /**
+     * 获取所在区域
+     * @param  [type] $regions [description]
+     * @return [type]          [description]
+     */
+    public static function getAreas($regions){
+        $areas = (new \yii\db\Query())
+            ->select(['*'])
+            ->from('too_region')
+            ->where(['in' , 'region_id' , $regions])
+            ->all();
+
+        $areaArr = [];
+
+        for($i = 1 ; $i <= 3 ; $i++){
+            $areaArr[$i] = '';
+
+            foreach ($areas as $item) {
+                if($item['region_type'] == $i){
+                    $areaArr[$i] = $item['region_name'];
+                }
+            }
+        }
+
+        return $areaArr;
+    }
 }
