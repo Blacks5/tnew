@@ -38,7 +38,7 @@
                         <a class="list-group-item col-sm-3">预计月供<span class="badge">{{amount['periodAmount']}}元</span> </a>
                     </div>
                 </div>
-                <div class="container" v-if="order['status'] > 90 && order.status!= 200">
+                <div class="container" v-if="order['status'] >= 120 && order.status!= 200">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">还款信息</h3></div>
                     <hr/>
                     <div class="list-group" >
@@ -67,19 +67,23 @@
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
 
-                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{marital['status']}} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
+                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ marital(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
                         <a class="list-group-item col-sm-4" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
                         <a class="list-group-item col-sm-4" >现居地址<span class="badge">{{order.address}}</span> </a>
 
-                        <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{c['relation']}}</span> </a>
+                        <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{ contact(c['relation']) }}</span> </a>
 
                     </div>
                 </div>
                 <div class="container">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核放款信息</h3></div>
-                    <div class="list-group">
-                        <a class="list-group-item col-sm-3" v-if="order.sale != null">销售人员<span class="badge">{{order['sale']['name']}}</span></a>
-                        <a class="list-group-item col-sm-3" v-if="order['status'] >=20 && order.visitor != null">上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
+                    <div class="list-group" v-if="order.sale != null">
+                        <a class="list-group-item col-sm-3">销售人员<span class="badge">{{order['sale']['name']}}</span></a>
+                        <a class="list-group-item col-sm-3">电话<span class="badge">{{order['visitor']['phone']}}</span></a>
+                    </div>
+                    <div class="list-group" v-if="order['status'] >=20 && order.visitor != null">
+                        <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
+                        <a class="list-group-item col-sm-3" >电话<span class="badge">{{order['visitor']['phone']}}</span></a>
                     </div>
                 </div>
                 <div class="container center" style="margin-top: 30px;">
@@ -106,10 +110,7 @@
                             <button type="button" class="btn btn-info" @click="sign">扣款签约</button>
                         </div>
                         <div class="col-sm-2" v-show="order['status'] < 100">
-                            <button type="button" class="btn btn-warning" @click="revoke">取消订单</button>
-                        </div>
-                        <div class="col-sm-2" v-show="order['status'] < 100">
-                            <button type="button" class="btn btn-danger" @click="toDestroy">拒绝订单</button>
+                            <button type="button" class="btn btn-warning" @click="revoke">拒绝订单</button>
                         </div>
                         <?php } ?>
                     </div>
@@ -359,6 +360,34 @@
                     12:'已取消'
                 };
                 return status[data];
+            },
+            marital: function(s) {
+                var data = {
+                    'married':'已婚',
+                    'unmarried':'未婚',
+                    'divorced':'离异',
+                    'widowhood':'丧偶'
+                };
+                var m = '';
+                var
+                if (s.length > 0) {
+                    m = data.s;
+                }
+
+                return m;
+            },
+            contact: function (c) {
+                var data = {
+                    'family': '家人',
+                    'workmate':'同事',
+                    'friend':'朋友',
+                    'other':'其它'
+                };
+                var m = '';
+                if(c.length > 0) {
+                    m = data.c;
+                }
+                return m;
             }
         }
     });
