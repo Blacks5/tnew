@@ -67,7 +67,7 @@
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
 
-                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
+                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge" v-if="marital != null">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{marital['spouse_phone']}}</span> </a>
                         <a class="list-group-item col-sm-4" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
                         <a class="list-group-item col-sm-4" >现居地址<span class="badge">{{order.address}}</span> </a>
 
@@ -76,14 +76,22 @@
                     </div>
                 </div>
                 <div class="container">
-                    <div class="col-sm-12 height"><h3 class="text-danger text-center">审核放款信息</h3></div>
+                    <div class="col-sm-12 height"><h3 class="text-danger text-center">审核信息</h3></div>
                     <div class="list-group" v-if="order.sale != null">
-                        <a class="list-group-item col-sm-3">销售人员<span class="badge">{{order['sale']['name']}}</span></a>
-                        <a class="list-group-item col-sm-3">电话<span class="badge">{{order['sale']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3">销售人员<span class="badge">{{order['sale']['name'] }} - {{order['sale']['phone']}}</span></a>
                     </div>
                     <div class="list-group" v-if="order['status'] >=20 && order.visitor != null">
-                        <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}}</span></a>
-                        <a class="list-group-item col-sm-3" >电话<span class="badge">{{order['visitor']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}} - {{order['visitor']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3" >后台审核人员<span class="badge">{{order['auditor']['name']}}</span></a>
+                    </div>
+                </div>
+                <div class="container" v-if="order.status == 120 || order.status == 130">
+                    <div class="col-sm-12 height"><h3 class="text-danger text-center">代发信息</h3> </div>
+                    <div class="list-group" >
+                        <a class="list-group-item col-sm-4">代发ID<span class="badge">{{loan.thirdparty_id}}</span> </a>
+                        <a class="list-group-item col-sm-3">代发金额<span class="badge">{{loan.expected_amount}}</span> </a>
+                        <a class="list-group-item col-sm-2">代发操作人<span class="badge">{{loan.auditor['name']}}</span> </a>
+                        <a class="list-group-item col-sm-3">代发时间<span class="badge">{{loan.created_at}}</span> </a>
                     </div>
                 </div>
                 <div class="container center" style="margin-top: 30px;">
@@ -150,7 +158,8 @@
             contacts:[],
             job:[],
             bank:[],
-            visitor:[]
+            visitor:[],
+            loan: []
 
         },
 
@@ -190,6 +199,7 @@
                 this.contacts = this.order['contacts'];
                 this.bank = this.order['bank_card'];
                 this.visitor = usedData['data']['visitor']['items'];
+                this.loan = usedData['data']['loan']
             },
             setVisitor: function(){
                 var url = baseUrl + "<?= $id ?>/visitor";
@@ -202,21 +212,31 @@
             },
             examineTwo: function(){
                 var url = baseUrl + "<?= $id ?>/examine/second";
-                var data = 1;
+                var __this = this;
                 var index = layer.open({
                    type:1,
                    shade:0.2,
                    title:false,
-                   content:$('examine'),
-                   btn:['通过','拒绝'],
+                   content:$('#examine'),
+                   btn:['通过','退回重填'],
                    btn1:function(){
-                       data =1;
+                       var data = {
+                           examine:1,
+                           reason:$('#reason').val(),
+                       };
+                       __this.postOrder(url, data);
+                       layer.close(index);
                    } ,
                     btn2:function(){
-                       data = 2;
+                        var data = {
+                            examine:2,
+                            reason:$('#reason').val(),
+                        };
+                       __this.postOrder(url, data);
+                        layer.close(index);
                     }
                 });
-                this.openDiv(url, data);
+
             },
             examine:function(){
                 $('#acceptAmount').val(this.order['expected_amount']);
@@ -228,7 +248,7 @@
                     shade:0.2,
                     title:false,
                     content:$('#examineTwo'),
-                    btn:['通过','拒绝'],
+                    btn:['通过','退回重填'],
                     btn1:function(){
                         if($('#acceptAmount').val() == ''){
                             layer.msg('终审金额不能为空!',{icon:2});return false;
@@ -301,7 +321,7 @@
                     shade:0.2,
                     title:false,
                     content:$('#examine'),
-                    btn:['确定','取消'],
+                    btn:['确认','取消'],
                     btn1:function(){
                         var data = {
                             examine:examine,
@@ -370,7 +390,7 @@
                 };
                 var m = '';
                 if (s) {
-                    m = data.s;
+                    m = data[s];
                 }
 
                 return m;
@@ -384,7 +404,7 @@
                 };
                 var m = '';
                 if(c) {
-                    m = data.c;
+                    m = data[c];
                 }
                 return m;
             }
