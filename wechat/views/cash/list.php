@@ -167,10 +167,10 @@
                     items: [{title: "全部",value: 0},
                         {title: "已提交",value: _this.SUBMIT},
                         {title: "待审核",value: _this.REVIEW},
-                        {title: "已拒绝",value: _this.REFUSE},
+                        {title: "资料不合格",value: _this.REFUSE},
                         {title: "已通过",value: _this.PASSED},
                         {title: "已还清",value: _this.PAYOVER},
-                        {title: "已取消",value: _this.CANCEL},
+                        {title: "已拒绝",value: _this.CANCEL},
                         ]
                 });
 
@@ -279,7 +279,7 @@
                                 break;
 
                                 case _this.REFUSE:
-                                    status  = '已拒绝';
+                                    status  = '资料不合格';
                                 break;
 
                                 case _this.PASSED:
@@ -291,7 +291,7 @@
                                 break;
 
                                 case _this.CANCEL:
-                                    status  = '已取消';
+                                    status  = '已拒绝';
                                 break;
                             }
                             html += '</div><div class="weui-form-preview__ft"><a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">'+ status + '</a><button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">操作</button></div></div><br />';
