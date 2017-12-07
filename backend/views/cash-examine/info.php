@@ -82,7 +82,7 @@
                     </div>
                     <div class="list-group" v-if="order['status'] >=20 && order.visitor != null">
                         <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}} - {{order['visitor']['phone']}}</span></a>
-                        <a class="list-group-item col-sm-3" >后台审核人员<span class="badge">{{order['auditor']['name']}}</span></a>
+                        <a class="list-group-item col-sm-3" >后台审核人员<span class="badge" v-if="order.auditor != null">{{order['auditor']['name']}}</span></a>
                     </div>
                 </div>
                 <div class="container" v-if="order.status == 120 || order.status == 130">
