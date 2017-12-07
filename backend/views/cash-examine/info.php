@@ -208,7 +208,7 @@
                    shade:0.2,
                    title:false,
                    content:$('examine'),
-                   btn:['通过','拒绝'],
+                   btn:['通过','退回重填'],
                    btn1:function(){
                        data =1;
                    } ,
@@ -228,7 +228,7 @@
                     shade:0.2,
                     title:false,
                     content:$('#examineTwo'),
-                    btn:['通过','拒绝'],
+                    btn:['通过','退回重填'],
                     btn1:function(){
                         if($('#acceptAmount').val() == ''){
                             layer.msg('终审金额不能为空!',{icon:2});return false;
@@ -370,7 +370,7 @@
                 };
                 var m = '';
                 if (s) {
-                    m = data.s;
+                    m = data[s];
                 }
 
                 return m;
@@ -384,7 +384,7 @@
                 };
                 var m = '';
                 if(c) {
-                    m = data.c;
+                    m = data[c];
                 }
                 return m;
             }
