@@ -67,7 +67,7 @@
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
 
-                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
+                        <a class="list-group-item col-sm-4">婚姻状况<span class="badge" v-if="marital != null">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{[marital['spouse_phone']]}}</span> </a>
                         <a class="list-group-item col-sm-4" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
                         <a class="list-group-item col-sm-4" >现居地址<span class="badge">{{order.address}}</span> </a>
 
