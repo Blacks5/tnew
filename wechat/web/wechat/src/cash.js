@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-12-08 15:46:59
+ * @Last Modified time: 2017-12-08 16:25:54
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -415,7 +415,7 @@
 					$.ajaxPost(this.createUrl, data, function(res) {
 						if (res.status) {
 							$.toast(res.message, function() {
-								// Cache.batchDel();
+								Cache.batchDel();
 								window.location = _this.successUrl + '?orderId=' + res.data.orderId;
 							});
 						} else {
