@@ -14,7 +14,7 @@
     <div class="main-box">
         <div class="swiper-container commit-order-container">
             <div class="swiper-wrapper">
-                <!--商品信息begin-->
+                <!--贷款信息begin-->
                 <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep1" action="<?=Yii::$app->getUrlManager()->createUrl(['cash/check-step'])?>">
                         <header class='demos-header'>
@@ -73,16 +73,16 @@
                         </div>
                     </form>
                 </div>
-                <!--商品信息end-->
+                <!--贷款信息end-->
 
-                <!--订单信息begin-->
+                <!--客户信息begin-->
                 <div class="swiper-slide swiper-no-swiping">
                     <form id="formStep2" action="<?=Yii::$app->getUrlManager()->createUrl(['cash/check-step'])?>">
                         <header class='demos-header'>
                             <h1 class="demos-title">客户信息</h1>
                         </header>
                         <input type="hidden" name="actionStep" value="2">
-                        
+
                         <div class="weui-cell">
                             <div class="weui-cell__hd"><label class="weui-label">客户姓名</label></div>
                             <div class="weui-cell__bd">
@@ -121,7 +121,130 @@
                         </div>
                     </form>
                 </div>
-                <!--订单信息end-->
+                <!--客户信息end-->
+
+                <!--详细信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep3" action="<?=Yii::$app->getUrlManager()->createUrl(['cash/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">订单调查</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="3">
+                        <div class="weui-cells__title">详细信息</div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">客户性别</label></div>
+                            <div class="weui-cell__bd">
+                                <div class="weui-cells weui-cells_radio weui-cells-radio">
+                                    <label class="weui-cell weui-check__label" for="x11">
+                                        <div class="weui-cell__bd">
+                                            <p>男</p>
+                                        </div>
+                                        <div class="weui-cell__ft">
+                                            <input type="radio" class="weui-check" name="gender" id="x11" value="男" checked="checked">
+                                            <span class="weui-icon-checked"></span>
+                                        </div>
+                                    </label>
+                                    <label class="weui-cell weui-check__label" for="x12">
+                                        <div class="weui-cell__bd">
+                                            <p>女</p>
+                                        </div>
+                                        <div class="weui-cell__ft">
+                                            <input type="radio" name="gender" class="weui-check" id="x12" value="女">
+                                            <span class="weui-icon-checked"></span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_select-picker">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">婚姻状况</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" id="maritalSituation" type="text" value="请选择婚姻状况">
+                            </div>
+                            <input type="hidden" name="marital">
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">月收入</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="monthlyIncome" placeholder="请输入月收入">
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_select-picker">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">房屋权属</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" id="houseProperty" type="text" value="请选择房屋权属">
+                            </div>
+                            <input type="hidden" name="houseProperty">
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">户籍地址</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="cardAddress" placeholder="请输入户籍地址">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">居住地址</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="currentAddress" placeholder="请输入居住地址">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">工作单位</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="jobName" placeholder="请输入工作单位">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">单位地址</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="jobAddress" placeholder="请输入单位地址">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">单位电话</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="jobPhone" placeholder="请输入单位电话">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">微信账号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="wechat" placeholder="请输入微信账号">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">QQ账号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="qq" placeholder="请输入QQ账号">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">支付宝账号</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" type="text" name="alipay" placeholder="请输入支付宝账号">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--详细信息end-->
+
+                <!--联系信息begin-->
+                <div class="swiper-slide swiper-no-swiping">
+                    <form id="formStep4" action="<?=Yii::$app->getUrlManager()->createUrl(['cash/check-step'])?>">
+                        <header class='demos-header'>
+                            <h1 class="demos-title">订单调查</h1>
+                        </header>
+                        <input type="hidden" name="actionStep" value="4">
+                        <div class="weui-cells__title">联系人信息</div>
+                        <a href="javascript:void(0);" class="weui-cell weui-cell_link" id="addContactBtn"><div class="weui-cell__bd">添加更多联系人信息</div></a>
+                        <a href="javascript:void(0);" class="weui-cell weui-cell_link" id="delContactBtn"><div class="weui-cell__bd">删除一个联系人信息</div></a>
+                    </form>
+                </div>
+                <!--联系信息end-->
             </div>
         </div>
 
@@ -152,10 +275,12 @@
     var installmentCycle = <?=$installmentCycle?>;
     // 产品类型
     var cashProductType = <?=$cashProductType?>;
-    // 贵宾服务包
-    var vipServiceFee = <?=$vipServiceFee?>;
-    // 个人保障计划
-    var protectionFee = <?=$protectionFee?>;
+    // 婚姻状况
+    var maritalSituation = <?=$maritalSituation?>;
+    // 联系人关系
+    var contactRelationship = <?=$contactRelationship?>;
+    // 房屋权属
+    var houseProperty = <?=$houseProperty?>;
 
     $(function() {
         // 现金贷业务
@@ -165,8 +290,9 @@
             successUrl : successUrl,
             installmentCycle : installmentCycle,
             cashProductType : cashProductType,
-            vipServiceFee : vipServiceFee,
-            protectionFee : protectionFee
+            maritalSituation : maritalSituation,
+            contactRelationship : contactRelationship,
+            houseProperty : houseProperty
         });
         cash.init();
     });

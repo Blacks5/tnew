@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-20 13:47:36
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-05 14:31:53
+ * @Last Modified time: 2017-12-08 15:57:42
  */
 
 namespace common\models;
@@ -25,6 +25,18 @@ class Cash extends CoreCommonActiveRecord {
 	public $mobileNo;
 	public $bankMobileNo;
 	public $address;
+	public $gender;
+	public $marital;
+	public $monthlyIncome;
+	public $houseProperty;
+	public $cardAddress;
+	public $currentAddress;
+	public $jobName;
+	public $jobAddress;
+	public $jobPhone;
+	public $wechat;
+	public $qq;
+	public $alipay;
 	public $contactName;
 	public $contactRelation;
 	public $contactPhone;
@@ -72,6 +84,31 @@ class Cash extends CoreCommonActiveRecord {
 			['orderID', 'number', 'message' => '参数异常'],
 			['reason', 'required', 'message' => '请输入取消原因'],
 			['reason', 'string', 'length' => [2, 60], 'message' => '取消原因长度在2~60之间'],
+			['gender', 'required', 'message' => '请选择客户性别'],
+			['gender', 'in', 'range' => ['男', '女'], 'message' => '请选择客户性别'],
+			['marital', 'required', 'message' => '请选择婚姻状况'],
+			['marital', 'in', 'range' => ['married', 'unmarried', 'divorced', 'widowhood'], 'message' => '请选择婚姻状况'],
+			['monthlyIncome', 'required', 'message' => '请输入月收入'],
+			['monthlyIncome', 'number', 'message' => '月收入格式不正确'],
+			['monthlyIncome', 'compare', 'compareValue' => 0, 'operator' => '>', 'message' => '月收入额必需大于0'],
+			['houseProperty', 'required', 'message' => '请选择房屋权属'],
+			['houseProperty', 'in', 'range' => ['rented', 'owned'], 'message' => '请选择房屋权属'],
+			['cardAddress', 'required', 'message' => '请输入户籍地址'],
+			['cardAddress', 'string', 'message' => '户籍地址长度在200以内', 'length' => [0, 200]],
+			['currentAddress', 'required', 'message' => '请输入居住地址'],
+			['currentAddress', 'string', 'message' => '居住地址长度在200以内', 'length' => [0, 200]],
+			['jobName', 'required', 'message' => '请输入工作单位'],
+			['jobName', 'string', 'message' => '工作单位长度在200以内', 'length' => [0, 200]],
+			['jobAddress', 'required', 'message' => '请输入单位地址'],
+			['jobAddress', 'string', 'message' => '单位地址长度在200以内', 'length' => [0, 200]],
+			['jobPhone', 'required', 'message' => '请输入单位电话'],
+			['jobPhone', 'match', 'message' => '单位电话格式不正确', 'pattern' => '/(^0\d{2,3}-?\d{7,8}$)|(^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$)/'],
+			['wechat', 'required', 'message' => '请输入微信账号'],
+			['wechat', 'string', 'message' => '微信账号长度在40以内', 'length' => [0, 40]],
+			['qq', 'required', 'message' => '请输入QQ账号'],
+			['qq', 'string', 'message' => 'QQ账号长度在20以内', 'length' => [0, 20]],
+			['alipay', 'required', 'message' => '请输入支付宝账号'],
+			['alipay', 'string', 'message' => '支付宝账号长度在40以内', 'length' => [0, 40]],
 		];
 	}
 
@@ -95,6 +132,18 @@ class Cash extends CoreCommonActiveRecord {
 			'contactPhone' => '联系人手机',
 			'orderID' => '订单ID',
 			'reason' => '取消原因',
+			'gender' => '客户性别',
+			'marital' => '婚姻状况',
+			'monthlyIncome' => '月收入',
+			'houseProperty' => '房屋权属',
+			'cardAddress' => '户籍地址',
+			'currentAddress' => '居住地址',
+			'jobName' => '工作单位',
+			'jobAddress' => '单位地址',
+			'jobPhone' => '单位电话',
+			'wechat' => '微信账号',
+			'qq' => 'QQ账号',
+			'alipay' => '支付宝账号',
 		];
 	}
 
@@ -103,7 +152,8 @@ class Cash extends CoreCommonActiveRecord {
 		$scenarios = parent::scenarios();
 		$scenarios['loanInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod'];
 		$scenarios['customerInfo'] = ['realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
-		$scenarios['orderInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
+		$scenarios['detailInfo'] = ['gender', 'marital', 'monthlyIncome', 'houseProperty', 'cardAddress', 'currentAddress', 'jobName', 'jobAddress', 'jobPhone', 'wechat', 'qq', 'alipay'];
+		$scenarios['orderInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address', 'gender', 'marital', 'monthlyIncome', 'houseProperty', 'cardAddress', 'currentAddress', 'jobName', 'jobAddress', 'jobPhone', 'wechat', 'qq', 'alipay'];
 		$scenarios['contactInfo'] = ['contactName', 'contactRelation', 'contactPhone'];
 		$scenarios['cancelOrder'] = ['orderID', 'reason'];
 		return $scenarios;
