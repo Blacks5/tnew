@@ -283,6 +283,25 @@
     var houseProperty = <?=$houseProperty?>;
 
     $(function() {
+        wx.config(<?php echo $js->config(['hideMenuItems']) ?>);
+        wx.ready(function(){
+            wx.hideMenuItems({
+                menuList: [
+                    'menuItem:share:appMessage',
+                    'menuItem:share:timeline',
+                    'menuItem:share:qq',
+                    'menuItem:share:weiboApp',
+                    'menuItem:share:facebook',
+                    'menuItem:share:QZone',
+                    'menuItem:copyUrl',
+                    'menuItem:originPage',
+                    'menuItem:openWithQQBrowser',
+                    'menuItem:openWithSafari',
+                    'menuItem:share:email'
+                ]
+            });
+        });
+
         // 现金贷业务
         var cash = new Cash({
             paymentUrl : paymentUrl,
