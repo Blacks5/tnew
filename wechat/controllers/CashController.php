@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-11 17:06:56
+ * @Last Modified time: 2017-12-11 17:08:31
  */
 namespace wechat\controllers;
 
@@ -205,20 +205,20 @@ class CashController extends BaseController {
 			}
 
 			// 第二步时进行四要素验证
-			// if (intval($actionStep) == 2) {
-			// 	try {
-			// 		$cash = new Cash;
-			// 		$res = $cash->queryFourFactor($params);
+			if (intval($actionStep) == 2) {
+				try {
+					$cash = new Cash;
+					$res = $cash->queryFourFactor($params);
 
-			// 		if ($res) {
-			// 			return ['status' => 1, 'message' => '验证成功'];
-			// 		} else {
-			// 			return ['status' => 0, 'message' => '验证失败'];
-			// 		}
-			// 	} catch (CustomCommonException $e) {
-			// 		return ['status' => 0, 'message' => $e->getMessage()];
-			// 	}
-			// }
+					if ($res) {
+						return ['status' => 1, 'message' => '验证成功'];
+					} else {
+						return ['status' => 0, 'message' => '验证失败'];
+					}
+				} catch (CustomCommonException $e) {
+					return ['status' => 0, 'message' => $e->getMessage()];
+				}
+			}
 
 			return ['status' => 1, 'message' => '验证成功'];
 		}
