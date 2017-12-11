@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-11 17:08:31
+ * @Last Modified time: 2017-12-11 17:20:05
  */
 namespace wechat\controllers;
 
@@ -208,7 +208,12 @@ class CashController extends BaseController {
 			if (intval($actionStep) == 2) {
 				try {
 					$cash = new Cash;
-					$res = $cash->queryFourFactor($params);
+					$res = $cash->queryFourFactor([
+						'bankNumber' => $params['bankCardNo'],
+						'bankPhone' => $params['bankMobileNo'],
+						'cardNumber' => $params['certNo'],
+						'customerName' => $params['realName'],
+					]);
 
 					if ($res) {
 						return ['status' => 1, 'message' => '验证成功'];
