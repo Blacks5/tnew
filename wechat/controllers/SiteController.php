@@ -9,25 +9,14 @@ use wechat\Tools\Wechat;
 use Yii;
 
 class SiteController extends BaseController {
-	/**
-	 * @inheritdoc
-	 */
-	public function actions() {
-		return [
-			'error' => [
-				'class' => 'yii\web\ErrorAction',
-			],
-			'captcha' => [
-				'class' => 'yii\captcha\CaptchaAction',
-				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-			],
-		];
-	}
-
 	// 首页
 	public function actionIndex() {
 		// 获取系统用户
 		$sys_user = Yii::$app->session->get('sys_user');
+
+		if (!$sys_user) {
+			return $this->redirect(['login/bind']);
+		}
 
 		// 获取微信用户
 		$wechat_user = Yii::$app->session->get('wechat_user');
