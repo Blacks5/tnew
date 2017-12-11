@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-08 16:01:40
+ * @Last Modified time: 2017-12-11 16:49:26
  */
 namespace wechat\controllers;
 
@@ -202,6 +202,22 @@ class CashController extends BaseController {
 			if (false === $cashModel->validate()) {
 				$msg = $cashModel->getFirstErrors();
 				return ['status' => 0, 'message' => reset($msg)];
+			}
+
+			// 第二步时进行四要素验证
+			if (intval($actionStep) == 2) {
+				try {
+					$cash = new Cash;
+					$res = $cash->queryFourFactor($params);
+
+					if ($res) {
+						return ['status' => 1, 'message' => '验证成功'];
+					} else {
+						return ['status' => 0, 'message' => '验证失败'];
+					}
+				} catch (CustomCommonException $e) {
+					return ['status' => 0, 'message' => $e->getMessage()];
+				}
 			}
 
 			return ['status' => 1, 'message' => '验证成功'];

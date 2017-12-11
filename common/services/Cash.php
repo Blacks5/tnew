@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-04 10:47:01
+ * @Last Modified time: 2017-12-11 16:45:22
  */
 namespace common\services;
 
@@ -30,6 +30,8 @@ class Cash extends Service {
 	private $saveOrderImageRouter = '/orders/{id}/images';
 	// 取消订单
 	private $cancelOrderRouter = '/orders/{id}';
+	// 四要素验证
+	private $queryFourFactorRouter = '/orders/factory';
 	// 每一页显示的数据量
 	private $range = 15;
 
@@ -149,6 +151,23 @@ class Cash extends Service {
 
 		if ($res['success']) {
 			return $res['data'];
+		} else {
+			throw new CustomCommonException($res['errors'][0]['message']);
+		}
+	}
+
+	/**
+	 * 四要素验证
+	 * @param  array $params 四要素参数
+	 * @return boolean       验证结果
+	 */
+	public function queryFourFactor($params) {
+		$url = $this->buildUrl($this->queryFourFactorRouter);
+
+		$res = $this->httpGet($url);
+
+		if ($res['success']) {
+			return true;
 		} else {
 			throw new CustomCommonException($res['errors'][0]['message']);
 		}
