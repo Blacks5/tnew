@@ -44,7 +44,7 @@
                                     <th class="client-status">审批金额</th>
                                     <th>申请期数</th>
                                     <th>还款周期</th>
-                                    <th>申请时间</th>
+                                    <th><?= $examine == 'pass'?'通过':'申请' ?>时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -58,7 +58,8 @@
                                         <td>{{value.accepted_amount}}</td>
                                         <td class="client-status">{{value.period_total}}</td>
                                         <td class="client-status">{{value.repay_cycle == 'week'?'周':'月'}}</td>
-                                        <td class="client-status">{{value.created_at}}</td>
+                                        <td class="client-status" v-if="getPassTime(value.extended_data)">{{value.extended_data.pass_time}}</td>
+                                        <td class="client-status" v-else>{{value.created_at}}</td>
                                         <td class="client-status">
                                             <a class="btn btn-info btn-xs" @click="open(value.id)">详情</a>
                                             <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-repayment/to-loan'))){ ?>
@@ -137,6 +138,7 @@
                     this.dataList = usedData['data']['list']['data'];
                     this.params = usedData['data']['param'];
                     this.pageCount = usedData['data']['list']['last_page'];
+                    this.pageIndex = usedData['data']['list']['current_page']
                 },function (response){
                     console.log(response['body']['errors']);
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})
@@ -164,7 +166,7 @@
                     title: false,
                     shadeClose:true,
                     shade: [0.8],
-                    area: ['1200px', '900px'],
+                    area: ['1200px', '800px'],
                     content: "<?= \yii\helpers\Url::toRoute('cash-examine/info') ?>" + "?id="+id
                 })
             },
@@ -174,7 +176,7 @@
                     title: false,
                     shadeClose:true,
                     shade:[0.8],
-                    area:['1400px', '900px'],
+                    area:['1400px', '800px'],
                     content: "<?= \yii\helpers\Url::toRoute('cash-repayment/lists') ?>?orderID=" +id
                 })
             },
@@ -212,6 +214,13 @@
                     var usedData = JSON.parse(json);
                     layer.msg(usedData['errors'][0]['message'], {icon:2});
                 });
+            },
+            getPassTime: function (data) {
+                try {
+                    return data['pass_time'];
+                } catch (error){
+                    return false;
+                }
             }
         }
     });
