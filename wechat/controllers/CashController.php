@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-05 14:32:19
+ * @Last Modified time: 2017-12-08 16:01:40
  */
 namespace wechat\controllers;
 
@@ -59,10 +59,37 @@ class CashController extends BaseController {
 				'phone' => $request->post('mobileNo', ''),
 				'bankPhone' => $request->post('bankMobileNo', ''),
 				'address' => $request->post('address', ''),
+				'gender' => $request->post('gender', '男'),
+				'marital' => $request->post('marital', ''),
+				'monthlyIncome' => $request->post('monthlyIncome', ''),
+				'houseProperty' => $request->post('houseProperty', ''),
+				'cardAddress' => $request->post('cardAddress', ''),
+				'currentAddress' => $request->post('currentAddress', ''),
+				'jobName' => $request->post('jobName', ''),
+				'jobAddress' => $request->post('jobAddress', ''),
+				'jobPhone' => $request->post('jobPhone', ''),
+				'wechat' => $request->post('wechat', ''),
+				'qq' => $request->post('qq', ''),
+				'alipay' => $request->post('alipay', ''),
 			];
 
 			try {
 				$cash = new Cash;
+
+				// 验证联系人信息
+				$contacts = $cash->checkContactInfo($request->post());
+				// 重新组装联系人信息
+				foreach ($contacts as $k => $item) {
+					$contacts[$k] = [
+						'name' => $item['contactName'],
+						'relation' => $item['contactRelation'],
+						'phone' => $item['contactPhone'],
+					];
+				}
+				// 封装联系人信息进数据
+				$params['contact'] = json_encode($contacts, JSON_UNESCAPED_UNICODE);
+
+				// 创建订单
 				$res = $cash->createCashOrder($params);
 
 				return ['status' => 1, 'message' => '提交成功', 'data' => [
@@ -72,18 +99,25 @@ class CashController extends BaseController {
 				return ['status' => 0, 'message' => $e->getMessage()];
 			}
 		} else {
-			// 获取分期方式配置
+			// 分期方式配置
 			$installmentCycle = Yii::$app->params['installmentCycle'];
-			$vipServiceFee = Yii::$app->params['vipServiceFee'];
-			$protectionFee = Yii::$app->params['protectionFee'];
+			// 产品配置
 			$cashProductType = Yii::$app->params['cashProductType'];
+			// 婚姻状况配置
+			$maritalSituation = Yii::$app->params['maritalSituation'];
+			// 联系人关系配置
+			$contactRelationship = Yii::$app->params['contactRelationship'];
+			// 房屋权属配置
+			$houseProperty = Yii::$app->params['houseProperty'];
 
 			// 渲染模板
 			return $this->renderPartial('create', [
 				'installmentCycle' => json_encode($installmentCycle, JSON_UNESCAPED_UNICODE),
-				'vipServiceFee' => $vipServiceFee,
-				'protectionFee' => $protectionFee,
 				'cashProductType' => json_encode($cashProductType, JSON_UNESCAPED_UNICODE),
+				'maritalSituation' => json_encode($maritalSituation, JSON_UNESCAPED_UNICODE),
+				'contactRelationship' => json_encode($contactRelationship, JSON_UNESCAPED_UNICODE),
+				'houseProperty' => json_encode($houseProperty, JSON_UNESCAPED_UNICODE),
+				'js' => Wechat::jssdk(),
 			]);
 		}
 	}
@@ -147,7 +181,7 @@ class CashController extends BaseController {
 				break;
 
 			case 3: // 验证详细信息
-				return ['status' => 1, 'message' => '验证成功'];
+				$cashModel->scenario = 'detailInfo';
 				break;
 
 			case 4: // 验证联系人信息是否合法

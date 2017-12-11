@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-12-05 14:28:13
+ * @Last Modified time: 2017-12-08 16:25:54
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -13,26 +13,35 @@
 		this.createUrl = options.createUrl || '';
 		// 创建成功后跳转页面
 		this.successUrl = options.successUrl || '/';
-
 		// 分期配置
 		this.installmentCycle = options.installmentCycle || [];
 		// 产品类型
 		this.cashProductType = options.cashProductType || [];
+		// 婚姻状况
+		this.maritalSituation = options.maritalSituation || [];
+		// 联系人关系
+		this.contactRelationship = options.contactRelationship || [];
+		// 房屋权属
+		this.houseProperty = options.houseProperty || [];
 		// swiper实例
 		this.swiper;
 		// slides总数
-		this.slides = 2;
-		// 个人保障计划
-		this.protectionFee = options.protectionFee || 0;
-		// 贵宾服务包
-		this.vipServiceFee = options.vipServiceFee || 0;
+		this.slides = 4;
+		// 默认的联系人数量
+		this.initContacts = 2;
+		// 最多联系人数量
+		this.maxContacts = 10;
+		// 当前联系人数量（决定下一个联系人的ID）
+		this.currContactId = 0;
 		// 计算
 		this.selects = [];
 		this.checkboxs = [
 			'isProtectionFee',
 			'isVipServiceFee'
 		];
-		this.ids = [];
+		this.radios = [
+			'gender'
+		];
 	}
 
 	// 初始化
@@ -54,6 +63,14 @@
 
 					case 1: // 第2步
 						_this.step2(swiper.activeIndex);
+						break;
+
+					case 2: // 第3步
+						_this.step3(swiper.activeIndex);
+						break;
+
+					case 3: // 第4步
+						_this.step4(swiper.activeIndex);
 						break;
 				}
 			},
@@ -79,7 +96,7 @@
 		_this.periodsCycle();
 
 		// 监听数据变动
-		$('input').bind('blur', function() {
+		$('input[type=text]').bind('blur', function() {
 			var key = $(this).attr('name');
 			var val = $(this).val();
 			Cache.set(key, val);
@@ -95,6 +112,109 @@
 			Cache.set(key, val);
 			if (key == 'isProtectionFee' || key == 'isVipServiceFee') {
 				_this.getPayment();
+			}
+		});
+
+		console.log(Cache.get('gender'));
+		// 监听radio变动
+		$('input[type=radio]').bind('change' , function(){
+			var key = $(this).attr('name');
+			var val = $(this).val();
+			if(key == 'gender'){
+				if(val == '女'){
+					$("input[value=女]").attr('checked' , true);
+					$("input[value=男]").attr('checked' , false);
+				}else{
+					$("input[value=男]").attr('checked' , true);
+					$("input[value=女]").attr('checked' , false);
+				}
+			}
+
+			Cache.set(key , val);
+		});
+
+		// 初始婚姻状况
+		var maritalSituation = Cache.get('maritalSituation');
+		maritalSituation = maritalSituation ? maritalSituation : '';
+		// 初始婚姻状况标题
+		var maritalSituationTitle = '请选择婚姻状况';
+		// 选择产品类型
+		_this.maritalSituation.forEach(function(value) {
+			if (maritalSituation == value.value) {
+				maritalSituationTitle = value.title;
+			}
+		});
+		$('input[name=marital]').val(maritalSituation);
+		$('#maritalSituation').val(maritalSituationTitle);
+		$("#maritalSituation").select({
+			title: "请选择婚姻状况",
+			items: _this.maritalSituation,
+			onChange: function(data) {
+				$('input[name=marital]').val(data.values);
+				Cache.set('maritalSituation', data.values);
+			}
+		});
+
+		// 初始产品类型值
+		var houseProperty = Cache.get('houseProperty');
+		houseProperty = houseProperty ? houseProperty : '';
+		// 初始房屋权属标题
+		var housePropertyTitle = '请选择房屋权属';
+		// 选择房屋权属类型
+		_this.houseProperty.forEach(function(value) {
+			if (houseProperty == value.value) {
+				housePropertyTitle = value.title;
+			}
+		});
+		$('input[name=houseProperty]').val(houseProperty);
+		$('#houseProperty').val(housePropertyTitle);
+		$("#houseProperty").select({
+			title: "请选择房屋权属",
+			items: _this.houseProperty,
+			onChange: function(data) {
+				$('input[name=houseProperty]').val(data.values);
+				Cache.set('houseProperty', data.values);
+			}
+		});
+
+		// 初始化联系人数量
+		var initContacts = Cache.get('initContacts');
+		initContacts = initContacts ? initContacts : _this.initContacts;
+		for (var i = 1; i <= initContacts; i++) {
+			_this.buildContactHTML(i);
+			_this.currContactId = i;
+		}
+
+		// 监听添加联系人操作
+		$('#addContactBtn').on('click', function() {
+			if (_this.currContactId < _this.maxContacts) {
+				_this.currContactId += 1;
+				_this.buildContactHTML(_this.currContactId);
+				Cache.set('initContacts' , _this.currContactId);
+			} else {
+				$.toast('最多添加' + _this.maxContacts + '个联系人信息', "text");
+			}
+		});
+
+		// 监听删除联系人操作
+		$('#delContactBtn').on('click' , function(){
+			if(_this.currContactId > _this.initContacts){
+				// 当前序号
+				var serial = _this.currContactId;
+
+				// 清理掉本地存储中的数据
+				Cache.del('contactName' + serial);
+				Cache.del('contactPhone' + serial);
+				Cache.del('contactRelation' + serial);
+
+				// 删除掉DOM
+				$('.weui-cell-contact' + serial).remove();
+
+				// 减少一个DOM标签
+				_this.currContactId -= 1;
+				Cache.set('initContacts' , _this.currContactId);
+			}else{
+				$.toast('最少保留' + _this.initContacts + '个联系人信息', "text");
 			}
 		});
 
@@ -154,22 +274,7 @@
 			ajaxPost: true,
 			callback: function(res) {
 				if (res.status) {
-					// 获取提交数据
-					var data = $.extend({},
-						$('#formStep1').serializeObject(),
-						$('#formStep2').serializeObject()
-					);
-
-					$.ajaxPost(this.createUrl, data, function(res) {
-						if (res.status) {
-							$.toast(res.message, function() {
-								Cache.batchDel();
-								window.location = _this.successUrl + '?orderId=' + res.data.orderId;
-							});
-						} else {
-							$.toast(res.message, "text");
-						}
-					});
+					_this.swiper.slideNext();
 				} else {
 					$.toast(res.message, "text");
 				}
@@ -207,9 +312,199 @@
 		}]);
 	}
 
+	// 第三步验证
+	cash.prototype.step3 = function(currStep) {
+		var _this = this;
+		// 初始化
+		_this.initStep(currStep);
+		// 验证数据并提交
+		var validator = $('#formStep3').validator({
+			btnSubmit: '.nextStep3',
+			ajaxPost: true,
+			callback: function(res) {
+				if (res.status) {
+					_this.swiper.slideNext();
+				} else {
+					$.toast(res.message, "text");
+				}
+			}
+		}).addRule([{
+			ele: "input[name=gender]",
+			datatype: /(^(男|女)$)/,
+			nullmsg: "请选择客户性别",
+			errormsg: "请选择客户性别"
+		}, {
+			ele: "input[name=marital]",
+			datatype: '*2-20',
+			nullmsg: "请选择婚姻状况",
+			errormsg: "请选择婚姻状况"
+		}, {
+			ele: "input[name=monthlyIncome]",
+			datatype: 'n',
+			nullmsg: "请输入月收入",
+			errormsg: "月收入不合法"
+		}, {
+			ele: "input[name=houseProperty]",
+			datatype: '*2-20',
+			nullmsg: "请选择房屋权属",
+			errormsg: "请选择房屋权属"
+		}, {
+			ele: "input[name=cardAddress]",
+			datatype: '*0-200',
+			nullmsg: "请输入户籍地址",
+			errormsg: "户籍地址长度在200以内"
+		}, {
+			ele: "input[name=currentAddress]",
+			datatype: '*0-200',
+			nullmsg: "请输入居住地址",
+			errormsg: "居住地址长度在200以内"
+		}, {
+			ele: "input[name=jobName]",
+			datatype: '*0-200',
+			nullmsg: "请输入工作单位",
+			errormsg: "工作单位长度在200以内"
+		}, {
+			ele: "input[name=jobAddress]",
+			datatype: '*0-200',
+			nullmsg: "请输入单位地址",
+			errormsg: "单位地址长度在200以内"
+		}, {
+			ele: "input[name=jobPhone]",
+			datatype: /(^0\d{2,3}-?\d{7,8}$)|(^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$)/,
+			ignore: "ignore",
+			nullmsg: "请输入单位电话",
+			errormsg: "单位电话格式不正确"
+		}, {
+			ele: "input[name=wechat]",
+			datatype: '*0-40',
+			nullmsg: "请输入微信账号",
+			errormsg: "微信账号长度在40以内"
+		}, {
+			ele: "input[name=qq]",
+			datatype: '*0-20',
+			nullmsg: "请输入QQ账号",
+			errormsg: "QQ账号长度在20以内"
+		}, {
+			ele: "input[name=alipay]",
+			datatype: '*0-40',
+			ignore: "ignore",
+			nullmsg: "请输入支付宝账号",
+			errormsg: "支付宝账号长度在40以内"
+		}]);
+	}
+
+	// 第二步验证
+	cash.prototype.step4 = function(currStep) {
+		var _this = this;
+		// 初始化
+		_this.initStep(currStep);
+		// 验证数据并提交
+		var validator = $('#formStep4').validator({
+			btnSubmit: '.nextStep4',
+			ajaxPost: true,
+			callback: function(res) {
+				if (res.status) {
+					// 获取提交数据
+					var data = $.extend({},
+						$('#formStep1').serializeObject(),
+						$('#formStep2').serializeObject(),
+						$('#formStep3').serializeObject(),
+						$('#formStep4').serializeObject()
+					);
+
+					$.ajaxPost(this.createUrl, data, function(res) {
+						if (res.status) {
+							$.toast(res.message, function() {
+								Cache.batchDel();
+								window.location = _this.successUrl + '?orderId=' + res.data.orderId;
+							});
+						} else {
+							$.toast(res.message, "text");
+						}
+					});
+				} else {
+					$.toast(res.message, "text");
+				}
+			}
+		});
+	}
+
+	/**
+	 * 建立联系人HTML
+	 * @param  {[type]} serial 序号
+	 * @return {[type]}        void
+	 */
+	cash.prototype.buildContactHTML = function(serial) {
+		var _this = this;
+
+		var html = '';
+
+		html += '<div class="weui-cell weui-cell-contact' + serial + '">';
+		html += '<input type="hidden" name="serial' + serial + '" value="' + serial + '"/>';
+		html += '<div class="weui-cell__hd"><label class="weui-label">联系人' + serial + '姓名</label></div>';
+		html += '<div class="weui-cell__bd">';
+		html += '<input class="weui-input" type="text" name="contactName' + serial + '" placeholder="请输入联系人姓名">';
+		html += '</div></div>';
+		html += '<div class="weui-cell weui-cell_select-picker weui-cell-contact' + serial + '">';
+		html += '<div class="weui-cell__hd">';
+		html += '<label class="weui-label">联系人' + serial + '关系</label>';
+		html += '</div><div class="weui-cell__bd">';
+		html += '<input class="weui-input contactRelationship contactRelationship' + serial + '" type="text" value="请选择联系人关系">';
+		html += '<input type="hidden" class="contactRelationshipValue" name="contactRelation' + serial + '">';
+		html += '</div></div>';
+		html += '<div class="weui-cell weui-cell-contact' + serial + '">';
+		html += '<div class="weui-cell__hd"><label class="weui-label">联系人' + serial + '手机</label></div>';
+		html += '<div class="weui-cell__bd">';
+		html += '<input class="weui-input" type="text" name="contactPhone' + serial + '" placeholder="请输入联系人手机">';
+		html += '</div></div>';
+
+		$('#addContactBtn').before(html);
+
+		$('input[type=text]').bind('blur', function() {
+			var key = $(this).attr('name');
+			var val = $(this).val();
+			Cache.set(key, val);
+		});
+
+		// 初始化联系人名称
+		var contactName = Cache.get('contactName' + serial);
+		if (contactName) {
+			$('input[name=contactName' + serial + ']').val(contactName);
+		}
+
+		// 初始化联系人电话
+		var contactPhone = Cache.get('contactPhone' + serial);
+		if (contactPhone) {
+			$('input[name=contactPhone' + serial + ']').val(contactPhone);
+		}
+
+		// 初始化联系人关系
+		var contactRelationshipTitle = '请选择联系人关系';
+		var contactRelation = Cache.get('contactRelation' + serial);
+		// 获取最终显示标题
+		_this.contactRelationship.forEach(function(value) {
+			if (contactRelation == value.value) {
+				contactRelationshipTitle = value.title;
+			}
+		});
+
+		$('.contactRelationship' + serial).val(contactRelationshipTitle);
+		$('input[name=contactRelation' + serial + ']').val(contactRelation);
+
+		// 绑定婚姻状况
+		$('.contactRelationship' + serial).select({
+			title: "请选择联系人关系",
+			items: _this.contactRelationship,
+			onChange: function(data) {
+				Cache.set('contactRelation' + serial, data.values);
+				this.$input.next('.contactRelationshipValue').val(data.values);
+			}
+		});
+	}
+
 	/**
 	 * 分期周期选择
-	 * @return {[type]} 
+	 * @return {[type]}
 	 */
 	cash.prototype.periodsCycle = function() {
 		var _this = this;
@@ -253,8 +548,8 @@
 		});
 
 		// 选择产品类型
-		_this.cashProductType.forEach(function(value){
-			if(productType == value.value){
+		_this.cashProductType.forEach(function(value) {
+			if (productType == value.value) {
 				productTypeTitle = value.title;
 			}
 		});
@@ -356,7 +651,7 @@
 
 	/**
 	 * 网络请求获取贷款信息
-	 * @return {[type]} 
+	 * @return {[type]}
 	 */
 	cash.prototype.getPayment = function() {
 		// 获取表单对象数据
@@ -396,19 +691,22 @@
 	cash.prototype.initVal = function() {
 		var data = Cache.batchGet();
 		for (var key in data) {
-			if (-1 !== $.inArray(key, this.selects)) {
-				if (key == 'g_goods_type') {
-					$("input[name=" + key + "]").val(data[key]);
-				}
-				$("select[name=" + key + "]").find("option[value='" + data[key] + "']").attr("selected", true);
-			} else if (-1 !== $.inArray(key, this.checkboxs)) {
+			if (-1 !== $.inArray(key, this.checkboxs)) {
 				if (data[key] == 1) {
 					$("input[name=" + key + "]").attr('checked', true);
 				} else {
 					$("input[name=" + key + "]").attr('checked', false);
 				}
-			} else if (-1 !== $.inArray(key, this.ids)) {
-				$("#" + key).val(data[key]);
+			} else if (-1 !== $.inArray(key, this.radios)) {
+				if(key == 'gender'){
+					if(data[key] == '女'){
+						$("input[value=女]").attr('checked' , true);
+						$("input[value=男]").attr('checked' , false);
+					}else{
+						$("input[value=男]").attr('checked' , true);
+						$("input[value=女]").attr('checked' , false);
+					}
+				}
 			} else {
 				$("input[name=" + key + "]").val(data[key]);
 			}

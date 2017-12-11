@@ -280,6 +280,18 @@ return [
 		],
 	],
 
+	// 现金贷产品类型
+	'houseProperty' => [
+		[
+			'title' => '租用',
+			'value' => 'rented',
+		],
+		[
+			'title' => '自有',
+			'value' => 'owned',
+		],
+	],
+
 	// 服务之间通信TOKEN
 	'server_communicate_token' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
 	// 服务运行环境 master develop
