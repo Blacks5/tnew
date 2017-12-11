@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-11 17:08:45
+ * @Last Modified time: 2017-12-11 17:14:13
  */
 namespace common\services;
 
@@ -164,7 +164,7 @@ class Cash extends Service {
 	public function queryFourFactor($params) {
 		$url = $this->buildUrl($this->queryFourFactorRouter);
 
-		$res = $this->httpGet($url);
+		$res = $this->httpPost($url , $params);
 		print_r($res);
 		if ($res['success']) {
 			return true;
