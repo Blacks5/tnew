@@ -89,7 +89,7 @@ use yii\widgets\DetailView;
                         <label class="col-sm-3 control-label">身份证照片：</label>
                         <div class="col-sm-8">
                             <p class="form-control-static">
-                                <img src="<?=$model["id_card_pic_one"]?>" alt="员工身份证照片">
+                                <img src="<?=$model["id_card_pic_one"]?>" alt="员工身份证照片" style="max-width:300px;max-height:300px;">
                             </p>
                         </div>
                     </div>
