@@ -378,10 +378,10 @@
                             actions.push(defaultActions.cancel);
                         }
 
-                        // 开始调查
-                        if(status == ORDER_STATUS_FIRST_UPLOAD){
-                            actions.push(defaultActions.edit);
-                        }
+                        // // 开始调查
+                        // if(status == ORDER_STATUS_FIRST_UPLOAD){
+                        //     actions.push(defaultActions.edit);
+                        // }
                     }
 
                     $.actions({
