@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:52:39
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-04 11:19:14
+ * @Last Modified time: 2017-12-15 17:39:21
  */
 namespace common\services;
 
@@ -56,6 +56,7 @@ class Service {
 					->setUrl($url)
 					->addHeaders(['X-TOKEN' => $token])
 					->addFile('image', $file)
+					->addOptions(['timeout' => 10000])
 					->send();
 
 				return $response->data;
