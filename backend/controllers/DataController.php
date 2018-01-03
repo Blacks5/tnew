@@ -79,22 +79,28 @@ class DataController extends CoreBackendController
     {
         $data = new DataSearch();
         $list = $data->getLogs(\yii::$app->request->getQueryParams());
-        return $this->render('logs',[
+        return $this->render('logs', 
+            [
                 'data' => $list['data'],
                 'sear' => $list['sear'],
                 'type' => $list['type'],
                 'pages'=> $list['pages'],
-            ]);
+            ]
+        );
     }
 
+    /**
+     * 获取客户资料
+     * @return $this->render
+     */
     public function actionCustomerInfo()
     {
-
-
-
         return $this->render('customer');
     }
 
+    /**
+     * 生成并下载客户信息(林丹妮使用)
+     */
     public function actionDownloadCustomerCsv()
     {
         $post = Yii::$app->request->post();

@@ -33,7 +33,6 @@ class UserPerformanceController extends CoreBackendController
         $user = yii::$app->user->identity;
         $area = $yejidrv->getArea($user);
 
-
         return $this->render('index', [
             'data'=>$list,
             'user'=>$user,
@@ -43,6 +42,26 @@ class UserPerformanceController extends CoreBackendController
             'pages'=>$list['pages'],
             'area'=>$area,
             'total'=>$list['total'],
+        ]);
+    }
+
+    public function actionCash()
+    {
+        $yejidrv = new YejiSearch();
+        $data = $yejidrv->getCash(\yii::$app->request->getQueryParams());
+        $user = yii::$app->user->identity;
+        $area = $yejidrv->getArea($user);
+
+        //var_dump($data['params']);die;
+
+        return $this->render('cash', [
+           'data' => $data,
+           'user' => $user,
+            'list' => $data['list'],
+            'area' => $area,
+            'sear' => $data['params'],
+            'pages' => $data['pages']
+
         ]);
     }
 }
