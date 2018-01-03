@@ -31,7 +31,7 @@
                                 <?php if($user->level==1){ ?>
                                     <option value="" selected>全部</option>
                                 <?php }?>
-                                <?php foreach ($area['province'] as $k=>$v){ ?>
+                                <?php foreach ($area['province'] ?? [] as $k=>$v){ ?>
                                     <option <?php if($sear['province']??'' == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
                                 <?php } ?>
                             </select>
@@ -54,7 +54,7 @@
                         <div class="col-sm-1">
                             <select class="input form-control" name="name" id="user-realname">
                                 <option value="">全部</option>
-                                <?php foreach ($data['list']['items'] as $k => $v){ ?>
+                                <?php foreach ($data['list']['items'] ?? [] as $k => $v){ ?>
                                     <option value="<?= $v['name'] ?>"><?= $v['name'] ?></option>
                                 <?php } ?>
                             </select>
@@ -162,7 +162,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <?php foreach ($data['list']['items'] as $_k => $_v) { ?>
+                                                <?php foreach ($data['list']['items'] ?? [] as $_k => $_v) { ?>
                                                     <tr>
                                                         <td><a data-toggle="tab" href="#contact-3"
                                                                class="client-link"><?= $_v['name'] ?></a></td>

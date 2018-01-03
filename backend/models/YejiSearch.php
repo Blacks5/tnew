@@ -342,7 +342,7 @@ class YejiSearch extends CoreBackendModel{
         $params['id'] = $data['id'];
 
         try {
-            $url = yii::$app->params['cashBaseUrl'] . 'saleCount';
+            $url = yii::$app->params['v2_cash'] . 'saleCount';
             //$url = 'http://cash.app/v1/orders/saleCount';
             //$url = 'http://cash.devapi.tnew.cn/v1/orders/saleCount';
             $sendData = http_build_query($data);
@@ -359,7 +359,7 @@ class YejiSearch extends CoreBackendModel{
 //            $data['list'] = json_decode(file_get_contents($url, false, $context), true);
 
             $httpClient = new Client();
-            $response =  $httpClient->get($url, $params, ['X-TOKEN'=>yii::$app->params['CASH_API_TOKEN']])->send();
+            $response =  $httpClient->get($url, $params, ['X-TOKEN'=>yii::$app->params['v2_cash_token']])->send();
 
             $data['params'] = $params;
             $data['list'] = $response->data['data'];
