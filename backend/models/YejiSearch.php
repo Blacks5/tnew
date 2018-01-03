@@ -341,7 +341,6 @@ class YejiSearch extends CoreBackendModel{
         $params['area'] = $data['area'];
         $params['area_value'] = $data['area_value'];
         $params['id'] = $data['id'];
-
         try {
             $url = yii::$app->params['v2_cash'] . 'saleCount';
             //$url = 'http://cash.app/v1/orders/saleCount';
@@ -360,7 +359,7 @@ class YejiSearch extends CoreBackendModel{
 //            $data['list'] = json_decode(file_get_contents($url, false, $context), true);
 
             $httpClient = new Client();
-            $response =  $httpClient->get($url, $params, ['X-TOKEN'=>yii::$app->params['v2_cash_token']])->send();
+            $response =  $httpClient->get($url, $params, ['X-TOKEN'=>$_SESSION['V2_TOKEN']])->send();
             if ($response->data['success'] == false) {
                 throw new CustomBackendException($response->data['errors'][0]['message']);
             }
