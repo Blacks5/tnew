@@ -8,6 +8,7 @@
 
 namespace backend\models;
 
+use backend\components\CustomBackendException;
 use backend\core\CoreBackendModel;
 use common\components\Helper;
 use common\models\Orders;
@@ -360,7 +361,9 @@ class YejiSearch extends CoreBackendModel{
 
             $httpClient = new Client();
             $response =  $httpClient->get($url, $params, ['X-TOKEN'=>yii::$app->params['v2_cash_token']])->send();
-
+            if ($response->data['success'] == false) {
+                throw new CustomBackendException($response->data['errors'][0]['message']);
+            }
             $data['params'] = $params;
             $data['list'] = $response->data['data'];
             $pages = new Pagination(['totalCount' => $data['list']['pageCount']]);
@@ -370,7 +373,7 @@ class YejiSearch extends CoreBackendModel{
 
 
             return $data;
-        } catch (CustomCommonException $e) {
+        } catch (CustomBackendException $e) {
             throw new CustomBackendException('获取数据失败'. $e->getMessage());
         }
     }
