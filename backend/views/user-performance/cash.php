@@ -9,53 +9,53 @@
                         <!-- 暂时不用这2个输入框 by OneStep
                         <div class="col-sm-1">
                             <input type="text" name="YejiSearch[username]" placeholder="用户名"
-                                   value="<?php echo $sear['username']; ?>" class="input form-control">
+                                   value="" class="input form-control">
                         </div>
                         <div class="col-sm-1">
                             <input type="text" name="YejiSearch[realname]" placeholder="真实姓名"
-                                   value="<?php echo $sear['realname']; ?>" class="input form-control">
+                                   value="" class="input form-control">
                         </div> -->
 
                         <div class="col-sm-2">
                             <div class="input-daterange input-group" id="datepicker">
-                                <input type="text" class="form-control" name="YejiSearch[start_time]"
-                                       value="<?= $sear['start_time']? date('Y-m-d', $sear['start_time']): ''; ?>" placeholder="开始时间">
+                                <input type="text" class="form-control" name="start_time"
+                                       value="<?= $sear['start_time'] ?? ''; ?>" placeholder="开始时间">
                                 <span class="input-group-addon ">到</span>
-                                <input type="text" class="form-control" name="YejiSearch[end_time]"
-                                       value="<?= $sear['end_time'] ? date('Y-m-d', $sear['end_time']):''; ?>" placeholder="结束时间">
+                                <input type="text" class="form-control" name="end_time"
+                                       value="<?= $sear['end_time'] ?? ''; ?>" placeholder="结束时间">
                             </div>
                         </div>
 
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[province]" id="user-province" <?= $user->level>1?'disabled':'';?> >
+                            <select class="input form-control" name="province" id="user-province" <?= $user->level>1?'disabled':'';?> >
                                 <?php if($user->level==1){ ?>
                                     <option value="" selected>全部</option>
                                 <?php }?>
                                 <?php foreach ($area['province'] as $k=>$v){ ?>
-                                    <option <?php if($sear['province'] == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
+                                    <option <?php if($sear['province']??'' == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
                                 <?php } ?>
                             </select>
                         </div>
 
                         <div class="col-md-1">
-                            <select class="input form-control" name="YejiSearch[city]" id="user-city" <?php echo $user->level>2?'disabled':'';?>>
+                            <select class="input form-control" name="city" id="user-city" <?php echo $user->level>2?'disabled':'';?>>
                                 <?php if($user->level>2){?>
                                     <option value="<?= $user->city?>" selected><?=$area['city']?></option>
                                 <?php }?>
                             </select>
                         </div>
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[county]" id="user-county" <?php echo $user->level>3?'disabled':'';?>>
+                            <select class="input form-control" name="county" id="user-county" <?php echo $user->level>3?'disabled':'';?>>
                                 <?php if($user->level>3){?>
                                     <option value="<?= $user->county?>"><?=$area['county']?></option>
                                 <?php }?>
                             </select>
                         </div>
                         <div class="col-sm-1">
-                            <select class="input form-control" name="YejiSearch[realname]" id="user-realname">
+                            <select class="input form-control" name="name" id="user-realname">
                                 <option value="">全部</option>
-                                <?php foreach ($users as $k => $v){ ?>
-                                    <option value="<?= $v['realname'] ?>"><?= $v['realname'] ?></option>
+                                <?php foreach ($data['list']['items'] as $k => $v){ ?>
+                                    <option value="<?= $v['name'] ?>"><?= $v['name'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -115,23 +115,23 @@
                     <!-- 下级销售数据汇总 by OneStep -->
                     <div class="row" style="margin-top: 20px;">
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">总放款<span class="badge"><?= round($total['s_orderMoney'], 0) ?></span> </a>
-                            <a class="list-group-item">总提单<span class="badge"><?= $total['a_orderCount'] ?></span> </a>
-                            <a class="list-group-item">成功提单<span class="badge"><?= $total['s_orderCount'] ?></span> </a>
+                            <a class="list-group-item">总放款<span class="badge"><?= round($list['allAcceptedAmount'], 0) ?></span> </a>
+                            <a class="list-group-item">总提单<span class="badge"><?= $list['allOrderCount'] ?></span> </a>
+                            <a class="list-group-item">成功提单<span class="badge"><?= $list['allAcceptedCount'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">逾期率<span class="badge"><?= $total['overdue_numRatio'] ?></span> </a>
-                            <a class="list-group-item">逾期单数<span class="badge"><?= $total['overdue_num'] ?></span> </a>
-                            <a class="list-group-item">逾期金额<span class="badge"><?= round($total['overdue_money'], 0) ?></span> </a>
+                            <a class="list-group-item">逾期率<span class="badge"><?= $list['allOverdueRadio'] ?>%</span> </a>
+                            <a class="list-group-item">逾期单数<span class="badge"><?= $list['allOverdueCount'] ?></span> </a>
+                            <a class="list-group-item">逾期金额<span class="badge"><?= round($list['allOverdueMoney'], 0) ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">通过率<span class="badge"><?= $total['adopt_ratio'] ?></span> </a>
-                            <a class="list-group-item">逾期金额比<span class="badge"><?= $total['overdue_moneyRatio'] ?></span> </a>
-                            <a class="list-group-item">不良率<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
+                            <a class="list-group-item">通过率<span class="badge"><?= $list['allAcceptedRadio'] ?>%</span> </a>
+                            <a class="list-group-item">逾期金额比<span class="badge"><?= $list['allOverdueMoneyRadio'] ?>%</span> </a>
+                            <a class="list-group-item">不良率<span class="badge"><?= $list['allBadRadio'] ?>%</span> </a>
                         </div>
                         <div class="list-group col-sm-3">
-                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
-                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
+                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $list['allServiceRadio'] ?>%</span> </a>
+                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $list['allPackRadio'] ?>%</span> </a>
                         </div>
 
                     </div>
@@ -145,11 +145,9 @@
                                             <table class="table table-striped table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th class="client-avatar">id</th>
-                                                    <th><a data-toggle="tab" href="#contact-3"
-                                                           class="client-link">用户名</a></th>
                                                     <th><a data-toggle="tab" href="#contact-3"
                                                            class="client-link">真实姓名</a></th>
+                                                    <th>邀请商户业绩</th>
                                                     <th>个人保障计划捆绑率</th>
                                                     <th>贵宾服务包捆绑率</th>
                                                     <th class="client-status">总提单</th>
@@ -161,54 +159,25 @@
                                                     <th>通过率</th>
                                                     <th>逾期金额比</th>
                                                     <th>不良率</th>
-                                                    <th>操作</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                <?php foreach ($data['list']['items'] as $_k => $_v) { ?>
                                                     <tr>
-                                                        <td class="client-avatar"></td>
-                                                        <td>当页统计</td>
-                                                        <td></td>
-                                                        <td><?= $all['a_services']?></td>
-                                                        <td><?= $all['f_packcount']?></td>
-                                                        <td><?= $all['t_ordercount']?></td>
-                                                        <td><?= $all['s_ordercount']?></td>
-                                                        <td><?= $all['s_amount']?></td>
-                                                        <td><?= $all['overdue_num']?></td>
-                                                        <td><?= $all['overdue_money']?></td>
-                                                        <td><?= $all['overdue_ratio']?></td>
-                                                        <td><?= $all['adopt_ratio']?></td>
-                                                        <td><?= $all['overdueMoney_ratio']?></td>
-                                                        <td><?= $all['undesirable_ratio']?></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                <?php foreach ($data['data'] as $_k => $_v) { ?>
-                                                    <tr>
-                                                        <td class="client-avatar"><?= $_v['id'] ?></td>
                                                         <td><a data-toggle="tab" href="#contact-3"
-                                                               class="client-link"><?= $_v['username'] ?></a></td>
-                                                        <td><a data-toggle="tab" href="#contact-3"
-                                                               class="client-link"><?= $_v['realname'] ?></a></td>
-                                                        <td><?= $_v['a_services'] ?></td>
-                                                        <td><?= $_v['f_packcount'] ?></td>
-                                                        <td class="client-status"><?= $_v['t_ordercount'] ?></td>
-                                                        <td class="client-status"><?= $_v['s_ordercount'] ?></td>
-                                                        <td class="client-status"><?= $_v['s_amount'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdue_count'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdue_money'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdue_ratio'] ?></td>
-                                                        <td class="client-status"><?= $_v['adopt_ratio'] ?></td>
-                                                        <td class="client-status"><?= $_v['overdueMoney_ratio'] ?></td>
-                                                        <td class="client-status"><?= $_v['undesirable_ratio'] ?></td>
-                                                        <td class="client-status">
-                                                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/index']))) { ?>
-                                                                <a class="btn btn-primary btn-xs"
-                                                                   href="<?= \yii\helpers\Url::toRoute(['customer/index', 'CustomerSearch[u_id]'=>$_v['id']]) ?>"><i
-                                                                            class="fa fa-edit"></i>所有客户
-                                                                </a>
-                                                            <?php } ?>
-                                                        </td>
+                                                               class="client-link"><?= $_v['name'] ?></a></td>
+                                                        <td><?= $_v['inviterAmount'] ?></td>
+                                                        <td><?= $_v['packRadio'] ?>%</td>
+                                                        <td class="client-status"><?= $_v['serviceRadio'] ?>%</td>
+                                                        <td class="client-status"><?= $_v['orderCount'] ?></td>
+                                                        <td class="client-status"><?= $_v['acceptedCount'] ?></td>
+                                                        <td class="client-status"><?= $_v['acceptedAmount'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdueCount'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdueMoney'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdueRadio'] ?>%</td>
+                                                        <td class="client-status"><?= $_v['acceptedRadio'] ?>%</td>
+                                                        <td class="client-status"><?= $_v['overdueMoneyRadio'] ?>%</td>
+                                                        <td class="client-status"><?= $_v['badRadio'] ?>%</td>
                                                     </tr>
                                                 <?php } ?>
                                                 </tbody>

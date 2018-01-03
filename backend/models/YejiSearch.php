@@ -12,9 +12,11 @@ use backend\core\CoreBackendModel;
 use common\components\Helper;
 use common\models\Orders;
 use common\models\Repayment;
+use yii\httpclient\Client;
 use function GuzzleHttp\Promise\all;
 use yii\data\Pagination;
 use yii;
+use common\components\CustomCommonException;
 
 class YejiSearch extends CoreBackendModel{
     public $username;
@@ -128,7 +130,7 @@ class YejiSearch extends CoreBackendModel{
         $all_list['serial_no']      = array();  //逾期期数
         $all_list['undesirable']    = 0;    //不良笔数
 
-        foreach ($userlist as $_k=>$_v){
+        foreach ($userlist as $_k=>$_v) {
             $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']])->andWhere(['!=', 'o_status', Orders::STATUS_NOT_COMPLETE]);
             $orderinfo->andFilterWhere(['>=', 'o_created_at', $this->start_time]);
             $orderinfo->andFilterWhere(['<=', 'o_created_at', $this->end_time]);
@@ -260,7 +262,7 @@ class YejiSearch extends CoreBackendModel{
             ->andFilterWhere(['user.city'=>$this->city])
             ->andFilterWhere(['user.county'=>$this->county]);
 
-        if($area['level']>1){   //如果不是销售总监,只能查看管理地区范围内的销售数据
+        if ($area['level']>1) {   //如果不是销售总监,只能查看管理地区范围内的销售数据
             $query->andWhere([$area['area']=>$area['area_value']])
             ->andWhere(['department_id'=>26]);
         }
@@ -317,11 +319,60 @@ class YejiSearch extends CoreBackendModel{
         $total['overdue_numRatio'] = empty($total['overdue_num'])?'0%':round($total['overdue_num']/$total['s_orderCount']*100, 2).'%';
         $total['overdue_moneyRatio'] =empty($total['overdue_money'])?'0%':round($total['overdue_money']/$total['s_orderMoney']*100, 2). '%';
         $total['service_ratio'] = empty($total['service'])?'0%':round($total['service']/$total['s_orderCount']*100, 2).'%';
-        $total['pack_ratio'] = empty($total['pack'])?'0%':round($total['pack']/$total['s_orderCount']*100,2).'%';
+        $total['pack_ratio'] = empty($total['pack'])?'0%':round($total['pack']/$total['s_orderCount']*100, 2).'%';
         $total['adopt_ratio'] = empty($total['s_orderCount'])?'0%':round($total['s_orderCount'] / $total['a_orderCount']*100, 2). '%';  //通过率
         $total['undesirable_ratio'] = empty($total['undesirable'])?'0%':round($total['undesirable'] / $total['a_orderCount']*100, 2). '%'; //不良率
 
         return $total;
+    }
+
+    public function getCash($params = null)
+    {
+        $this->load($params);
+        if (!$this->validate()) {
+            return [];
+        }
+
+
+
+        $data = $this->getLower();
+        $params['level'] = $data['level'];
+        $params['area'] = $data['area'];
+        $params['area_value'] = $data['area_value'];
+        $params['id'] = $data['id'];
+
+        try {
+            $url = yii::$app->params['cashBaseUrl'] . 'saleCount';
+            //$url = 'http://cash.app/v1/orders/saleCount';
+            //$url = 'http://cash.devapi.tnew.cn/v1/orders/saleCount';
+            $sendData = http_build_query($data);
+//            $options = [
+//                'http' => [
+//                    'method' => 'GET',
+//                    'header' => "Content-type: application/x-www-form-urlencoded \r\n" .
+//                                "X-TOKEN: ". yii::$app->params['CASH_API_TOKEN'] ."\r\n",
+//
+//                    'content' => $sendData
+//                ]
+//            ];
+//            $context = stream_context_create($options);
+//            $data['list'] = json_decode(file_get_contents($url, false, $context), true);
+
+            $httpClient = new Client();
+            $response =  $httpClient->get($url, $params, ['X-TOKEN'=>yii::$app->params['CASH_API_TOKEN']])->send();
+
+            $data['params'] = $params;
+            $data['list'] = $response->data['data'];
+            $pages = new Pagination(['totalCount' => $data['list']['pageCount']]);
+            $pages->pageSize = \Yii::$app->params['page_size'];
+
+            $data['pages'] = $pages;
+
+
+            return $data;
+        } catch (CustomCommonException $e) {
+            throw new CustomBackendException('获取数据失败'. $e->getMessage());
+        }
     }
 
 }
