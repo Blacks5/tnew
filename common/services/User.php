@@ -5,12 +5,14 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:48:34
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-04 10:19:19
+ * @Last Modified time: 2018-01-05 15:35:41
  */
 
 namespace common\services;
 
+use backend\components\CustomBackendException;
 use common\components\CustomCommonException;
+use Yii;
 
 class User extends Service {
 	// 微服务地址
@@ -19,6 +21,8 @@ class User extends Service {
 	protected $devMicroServiceUrl = 'http://users.devapi.tnew.cn/v1/';
 	// 获取用户TOKEN路由
 	private $queryUserTokenRouter = '/users/{login_name}/tokens';
+	// 创建用户
+	private $createUserRouter = '/users';
 
 	/**
 	 * 获取用户TOKEN
@@ -40,8 +44,50 @@ class User extends Service {
 		}
 	}
 
+	/**
+	 * 创建用户
+	 * @param  [type] $params [description]
+	 * @return [type]         [description]
+	 */
+	public function createUser($params) {
+		try {
+			$user = new \common\models\User;
 
+			$params['status'] = \common\models\User::STATUS_ACTIVE;
 
-	$cache->set('cache_data_key', $cacheData, 60*60); 
+			if (!$user->createUser(['User' => $params])) {
+				return false;
+			}
+		} catch (CustomBackendException $e) {
+			throw new CustomCommonException($e->getMessage());
+		}
 
+		try {
+			// 获取系统用户
+			$sys_user = Yii::$app->session->get('sys_user');
+
+			// 获取请求地址
+			$url = $this->buildUrl($this->createUserRouter);
+
+			$res = $this->httpPost($url, [
+				'type' => 'agent',
+				'v1_id' => $user->id,
+				'inviter' => $sys_user->id,
+				'phone' => $params['cellphone'],
+				'name' => $params['realname'],
+				'login_name' => $params['username'],
+				'password' => $params['password_hash'],
+			]);
+
+			if ($res['success']) {
+				return true;
+			} else {
+				$user->delete();
+				throw new CustomCommonException($res['errors'][0]['message']);
+			}
+		} catch (CustomCommonException $e) {
+			$user->delete();
+			throw new CustomCommonException($e->getMessage());
+		}
+	}
 }
