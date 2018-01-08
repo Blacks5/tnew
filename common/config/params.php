@@ -170,6 +170,10 @@ return [
 	'common_seller_serverfee_rate' => 0.035,
 	//cash api url
 	'cashBaseUrl' => 'http://cash.api.tnew.cn/v1/orders/',
+	// cash dev api url
+	'cashDevBaseUrl' => 'http://cash.devapi.tnew.cn/v1/orders',
+	// cash api token
+	'CASH_API_TOKEN' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
 
 	// 还款周期
 	'installmentCycle' => [

@@ -22,4 +22,7 @@ return [
     'v2_user' => 'http://users.devapi.tnew.cn/v1/',
     // 'v2_user' => 'http://users.api.tnew.loc/v1/',
     'v2_user_token' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
+    // v2_cash
+    'v2_cash' => 'http://cash.api.tnew.cn/v1/orders/',
+    'v2_cash_token' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
 ];

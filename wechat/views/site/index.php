@@ -30,7 +30,7 @@
         <p class="weui-media-box__desc">
             <?=$sys_user->username?>
             <br />
-            <?php if($wechat_user && $wechat_user->areas) { ?>
+            <?php if($sys_user && $sys_user->areas) { ?>
                 <?=implode('-' , $sys_user->areas)?>
             <?php } ?>
         </p>
@@ -42,15 +42,15 @@
 <div class="weui-grids">
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/create-order'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
-            <img src="/wechat/images/order.png" alt="">
+            <img src="/wechat/images/icon_nav_3c.png" alt="">
         </div>
         <p class="weui-grid__label">
-            3C订单
+            3C贷订单
         </p>
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/wait-order-list'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
-            <img src="/wechat/images/photo_picker.png" alt="">
+            <img src="/wechat/images/icon_nav_3cd.png" alt="">
         </div>
         <p class="weui-grid__label">
             待审订单
@@ -66,7 +66,7 @@
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['order/overdue-order-list'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
-            <img src="/wechat/images/overdue_order.png" alt="">
+            <img src="/wechat/images/icon_nav_3cy.png" alt="">
         </div>
         <p class="weui-grid__label">
             逾期订单
@@ -74,7 +74,7 @@
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/create-order'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
-            <img src="/wechat/images/msg.png" alt="">
+            <img src="/wechat/images/icon_nav_cashr.png" alt="">
         </div>
         <p class="weui-grid__label">
             现金贷订单
@@ -82,10 +82,18 @@
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/order-list'])?>" class="weui-grid js_grid">
         <div class="weui-grid__icon">
-            <img src="/wechat/images/icon_nav_dialog.png" alt="">
+            <img src="/wechat/images/icon_nav_cash.png" alt="">
         </div>
         <p class="weui-grid__label">
             现金贷审核
+        </p>
+    </a>
+    <a href="<?= Yii::$app->getUrlManager()->createUrl(['site/register'])?>" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+            <img src="/wechat/images/icon_nav_yao.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+            邀请注册
         </p>
     </a>
 </div>
