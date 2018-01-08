@@ -100,7 +100,9 @@ class SiteController extends BaseController {
 				'password_hash_1' => $request->post('password_confirm', ''),
 				'realname' => $request->post('realName', ''),
 				'id_card_num' => $request->post('certNo', ''),
-				'certNoAddress' => $request->post('certNoAddress', ''),
+				'province' => $request->post('province', ''),
+				'city' => $request->post('city', ''),
+				'county' => $request->post('county', ''),
 				'address' => $request->post('address', ''),
 				'email' => $request->post('email', ''),
 			];
@@ -111,11 +113,6 @@ class SiteController extends BaseController {
 			$params['leader'] = 6;
 			$params['level'] = 6;
 			$params['id_card_pic_one'] = '';
-
-			// 被邀请人所属省市县与当前用户保持一致
-			$params['province'] = isset($sys_user->areas[0]) ? $sys_user->areas[0] : '';
-			$params['city'] = isset($sys_user->areas[1]) ? $sys_user->areas[1] : '';
-			$params['county'] = isset($sys_user->areas[2]) ? $sys_user->areas[2] : '';
 
 			try {
 				$user = new \common\services\User;
@@ -138,10 +135,14 @@ class SiteController extends BaseController {
 			// 获取微信用户
 			$wechat_user = Yii::$app->session->get('wechat_user');
 
+			$user = new \common\services\User;
+			$region = $user->region();
+
 			return $this->renderPartial('register', [
 				'sys_user' => $sys_user,
 				'wechat_user' => $wechat_user,
 				'js' => Wechat::jssdk(),
+				'region' => $region,
 			]);
 		}
 	}
