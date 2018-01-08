@@ -55,12 +55,15 @@
                         <input class="weui-input" name="certNo" type="text" placeholder="请输入身份证号">
                     </div>
                 </div>
-<!--                 <div class="weui-cell">
-                    <div class="weui-cell__hd"><label class="weui-label">身份证地址</label></div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">所属区域</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" name="certNoAddress" type="text" placeholder="请输入身份证地址">
+                        <input class="weui-input" id="invitedAddress" type="text" readonly="readonly" placeholder="请选择所属区域">
+                        <input type="hidden" class="province" name="province" value="" />
+                        <input type="hidden" class="city" name="city" value="" />
+                        <input type="hidden" class="county" name="county" value="" />
                     </div>
-                </div> -->
+                </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd"><label class="weui-label">联系地址</label></div>
                     <div class="weui-cell__bd">
@@ -85,12 +88,15 @@
     </div>
 </section>
 <script src="/wechat/lib/jquery-2.1.4.js"></script>
+<script src="/wechat/lib/weui.js"></script>
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
 <script src="/wechat/js/validform.min.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
+    var region = <?=$region?>;
+
     $(function() {
         FastClick.attach(document.body);
 
@@ -111,6 +117,41 @@
                     'menuItem:openWithSafari',
                     'menuItem:share:email'
                 ]
+            });
+        });
+
+        $('#invitedAddress').bind('click' , function(){
+            var that  = $(this);
+
+            var provinceInput = that.siblings('input.province');
+            var cityInput = that.siblings('input.city');
+            var countryInput = that.siblings('input.county');
+
+            var defaultValue = [24, 275, 2755];
+
+            weui.picker(region, {
+                depth: 3,
+                defaultValue: defaultValue,
+                onChange: function (result) {
+                   // console.log(result);
+                },
+                onConfirm: function (result) {
+                    var showValueArr = new Array;
+
+                    var province = result[0] ? result[0].label : '';
+                    var city = result[1] ? result[1].label : '';
+                    var country = result[2] ? result[2].label : '';
+
+                    showValueArr.push(province);
+                    showValueArr.push(city);
+                    showValueArr.push(country);
+
+                    that.val(showValueArr.join(' '));
+
+                    provinceInput.val(province);
+                    cityInput.val(city);
+                    countryInput.val(country);
+                }
             });
         });
 
@@ -158,6 +199,21 @@
             datatype: 's6-40',
             nullmsg: "请输入联系地址",
             errormsg: "联系地址长度为6~40之间"
+        }, {
+            ele: "input[name=province]",
+            datatype: 's1-20',
+            nullmsg: "请选择所属区域",
+            errormsg: "不支持的省"
+        }, {
+            ele: "input[name=city]",
+            datatype: 's1-20',
+            nullmsg: "请选择所属区域",
+            errormsg: "不支持的市"
+        }, {
+            ele: "input[name=country]",
+            datatype: 's1-20',
+            nullmsg: "请选择所属区域",
+            errormsg: "不支持的县/区"
         }, {
             ele: "input[name=email]",
             datatype: 'e',

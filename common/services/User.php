@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:48:34
  * @Last Modified by:   MuMu
- * @Last Modified time: 2018-01-05 15:35:41
+ * @Last Modified time: 2018-01-08 15:10:24
  */
 
 namespace common\services;
@@ -89,5 +89,60 @@ class User extends Service {
 			$user->delete();
 			throw new CustomCommonException($e->getMessage());
 		}
+	}
+
+	/**
+	 * 获取区域
+	 * @return [type] [description]
+	 */
+	public function region() {
+		$cache = Yii::$app->cache;
+
+		if ($json = $cache->get('city_json_data')) {
+			return $json;
+		}
+
+		$rows = (new \yii\db\Query())
+			->select(['*'])
+			->from('too_region')
+			->where(['parent_id' => 1])
+			->all();
+		$data = [];
+		foreach ($rows as $k => $v) {
+			$data[$k]['label'] = $v['region_name'];
+			$data[$k]['value'] = $v['region_id'];
+			$rows_2 = (new \yii\db\Query())
+				->select(['*'])
+				->from('too_region')
+				->where(['parent_id' => $v['region_id']])
+				->all();
+			if ($rows_2) {
+				$children = [];
+				foreach ($rows_2 as $k1 => $v1) {
+					$children[$k1]['label'] = $v1['region_name'];
+					$children[$k1]['value'] = $v1['region_id'];
+					$rows_3 = (new \yii\db\Query())
+						->select(['*'])
+						->from('too_region')
+						->where(['parent_id' => $v1['region_id']])
+						->all();
+					if ($rows_3) {
+						$children2 = [];
+						foreach ($rows_3 as $k2 => $v2) {
+							$children2[$k2]['label'] = $v2['region_name'];
+							$children2[$k2]['value'] = $v2['region_id'];
+						}
+
+						$children[$k1]['children'] = $children2;
+					}
+				}
+				$data[$k]['children'] = $children;
+			}
+		}
+		$json = json_encode($data);
+
+		$cache->set('city_json_data', $json, 3600);
+
+		return $json;
 	}
 }

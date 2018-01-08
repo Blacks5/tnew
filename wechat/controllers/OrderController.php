@@ -68,10 +68,11 @@ class OrderController extends BaseController {
 				->all();
 
 			//省市区JSON
-			$data_json = $this->actionGetcity();
+			$user = new \common\services\User;
+			$region = $user->region();
 
 			return $this->renderPartial('create', [
-				'data_json' => $data_json,
+				'data_json' => $region,
 				'data' => [
 					'stores' => $stores,
 					'goods_type' => $goods_type,
