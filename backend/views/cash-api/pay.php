@@ -117,7 +117,7 @@
                     var usedData = JSON.parse(json);
 
                     this.lists = usedData['data']['data'];
-                    this.pageCount = usedData['data']['last_page'];
+                    this.pageCount = usedData['data']['total'];
                     this.pageIndex = usedData['data']['current_page'];
                 },function (response){
                     console.log(response['body']['errors']);
