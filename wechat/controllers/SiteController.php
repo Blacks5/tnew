@@ -4,6 +4,7 @@
  */
 namespace wechat\controllers;
 
+use common\components\CustomCommonException;
 use common\models\User;
 use wechat\Tools\Wechat;
 use Yii;
@@ -79,5 +80,74 @@ class SiteController extends BaseController {
 				return ['status' => 0, 'message' => '解绑失败'];
 			}
 		}
+	}
+
+	// 账号注册
+	public function actionRegister() {
+		$request = Yii::$app->request;
+
+		if ($request->isAjax && $request->isPost) {
+			Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+			// 获取系统用户
+			$sys_user = Yii::$app->session->get('sys_user');
+
+			// 创建订单
+			$params = [
+				'username' => $request->post('username', ''),
+				'cellphone' => $request->post('username', ''),
+				'password_hash' => $request->post('password', ''),
+				'password_hash_1' => $request->post('password_confirm', ''),
+				'realname' => $request->post('realName', ''),
+				'id_card_num' => $request->post('certNo', ''),
+				'province' => $request->post('province', ''),
+				'city' => $request->post('city', ''),
+				'county' => $request->post('county', ''),
+				'address' => $request->post('address', ''),
+				'email' => $request->post('email', ''),
+			];
+
+			// 默认参数
+			$params['department_id'] = null;
+			$params['job_id'] = null;
+			$params['leader'] = 6;
+			$params['level'] = 6;
+			$params['id_card_pic_one'] = '';
+
+			try {
+				$user = new \common\services\User;
+				$res = $user->createUser($params);
+
+				if ($res) {
+					return ['status' => 1, 'message' => '注册成功'];
+				} else {
+					return ['status' => 0, 'message' => '注册失败'];
+				}
+			} catch (CustomCommonException $e) {
+				return ['status' => 0, 'message' => $e->getMessage()];
+			} catch (\Exception $e) {
+				return ['status' => 0, 'message' => '网络异常'];
+			}
+		} else {
+			// 获取系统用户
+			$sys_user = Yii::$app->session->get('sys_user');
+
+			// 获取微信用户
+			$wechat_user = Yii::$app->session->get('wechat_user');
+
+			$user = new \common\services\User;
+			$region = $user->region();
+
+			return $this->renderPartial('register', [
+				'sys_user' => $sys_user,
+				'wechat_user' => $wechat_user,
+				'js' => Wechat::jssdk(),
+				'region' => $region,
+			]);
+		}
+	}
+
+	public function actionRegisterSuccess() {
+		return $this->renderPartial('success');
 	}
 }

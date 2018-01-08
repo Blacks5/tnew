@@ -54,7 +54,7 @@ class LoginController extends Controller {
 
 					// 加入地区数据
 					$sys_user->areas = array_values(User::getAreas($regions));
-					
+
 					Yii::$app->session->set('sys_user', $sys_user);
 
 					return ['status' => 1, 'message' => '绑定成功'];
@@ -74,10 +74,5 @@ class LoginController extends Controller {
 				'js' => Wechat::jssdk()
 			]);
 		}
-	}
-
-	// 账号密码登录
-	public function actionLogin() {
-
 	}
 }

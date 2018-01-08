@@ -229,7 +229,8 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
     {
         $this->scenario = 'create';
         if(!$this->load($param) || !$this->validate()){
-            return false;
+            $msg = $this->getFirstErrors();
+            throw new CustomBackendException(reset($msg));
         }
         if(self::find()->where(['id_card_num'=>$this->id_card_num])->exists()){
             throw new CustomBackendException('该身份证号码已存在');
