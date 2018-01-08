@@ -1,9 +1,25 @@
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
-
+<link rel="stylesheet" href="https://unpkg.com/element-ui@2.0.10/lib/theme-chalk/index.css">
+<script src="https://unpkg.com/element-ui@2.0.10/lib/index.js"></script>
 
 <div class="ibox-content" id="list">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="order_number" v-model:value="params['order_number']" placeholder="订单编号">
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="signID" v-model:value="params['signID']" placeholder="签约ID">
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <button type="input" class="btn btn-info"  @click="toSearchBtn"><i class="fa fa-search" ></i>查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="clients-list">
             <div class="tab-content">
@@ -53,21 +69,11 @@
                         </table>
                     </div>
                     <!--分页-->
-                    <ul class="pagination" v-if="pageCount != 1">
-                        <li>
-                            <a  aria-label="Previous" @click="pageLeft">
-                                <span aria-hidden="true">&laquo;</span> 上一页
-                            </a>
-                        </li>
-                        <li><a :value="pageIndex" >当前第 {{pageIndex}} 页</a></li>
-                        <li><a>共 {{pageCount}} 页</a></li>
-                        <li>
-                            <a  aria-label="Next" @click="pageRight">
-                                下一页 <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-
-                    </ul>
+                    <el-pagination
+                            background
+                            layout="prev, pager, next"
+                            :total="pageCount" :page-size="15" @current-change="pageChange">
+                    </el-pagination>
                 </div>
             </div>
         </div>
@@ -78,6 +84,10 @@
     new Vue({
         el: '#list',
         data:{
+            params: {
+                order_number: '',
+                signID: ''
+            },
             lists:[],
             token: window.sessionStorage.getItem('V2_TOKEN'),
             baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>",
@@ -91,8 +101,18 @@
         methods: {
             toSearch:function (){
                 var url = this.baseUrl + this.url;
-                var header = {headers:{'X-TOKEN':this.token}};
-                this.$http.get(url,header).then(function (data){
+                var header = {
+                    headers:{'X-TOKEN':this.token},
+                    params: {
+                        param:{
+                            order_number:this.params['order_number'],
+                            signID: this.params['signID'],
+                        },
+                        page: this.pageIndex
+                    }
+
+                };
+                this.$http.get(url,header).then(function (data) {
                     var json = data.bodyText;
                     var usedData = JSON.parse(json);
 
@@ -104,6 +124,10 @@
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})
                 })
             },
+            toSearchBtn:function () {
+                this.pageIndex = 1;
+                this.toSearch();
+            },
             info:function(id){
                 layer.open({
                     type:2,
@@ -114,6 +138,18 @@
                     content: "<?= \yii\helpers\Url::toRoute('cash-api/info') ?>" + "?id="+id +'&url=' +this.url
 
                 })
+            },
+            pageChange:function(val) {
+                this.pageIndex = val;
+                this.toSearch();
+            },
+            pageRight:function() {
+                if(this.pageCount == this.pageIndex || this.pageIndex == 'null'){
+                    layer.msg('已经是最后一页了!',{icon:2});
+                    return false;
+                }
+                this.pageIndex ++;
+                this.toSearch();
             }
         }
     });

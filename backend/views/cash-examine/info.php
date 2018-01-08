@@ -52,6 +52,14 @@
                         <a class="list-group-item col-sm-3">客户管理费<span class="badge">{{components['customer_manage_fee']}}</span> </a>
                     </div>
                 </div>
+                <!-- 备注信息 -->
+                <div class="container" v-if="memos.length > 0">
+                    <div class="col-sm-12 height"><h3 class="text-danger text-center">备注信息</h3></div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="list-group">
+                        <a class="list-group-item col-sm-6" v-for="item in memos">{{ item.content }}<span class="badge">{{ item.user_name }} - {{ item.created_at }}</span> </a>
+                    </div>
+                </div>
                 <div class="container">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">客户信息</h3></div>
                     <div class="hr-line-dashed"></div>
@@ -163,14 +171,28 @@
             job:[],
             bank:[],
             visitor:[],
-            loan: []
+            loan: [],
+            memos: []
 
         },
 
         created: function () {
             this.toSearch();
+            this.getMemos();
         },
         methods: {
+            getMemos:function () {
+              var url = baseUrl + "<?= $id ?>/memos";
+              var header = {headers:{'X-TOKEN': this.token}};
+
+              this.$http.get(url, header).then(function (data) {
+                  var json = data.bodyText;
+                  var usedData = JSON.parse(json);
+
+                  this.memos = usedData.data
+              })
+
+            },
             toSearch: function () {
                 var url = baseUrl + "<?= $id ?>/detail";
                 var header = {
