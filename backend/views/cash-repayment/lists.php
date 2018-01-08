@@ -11,6 +11,7 @@
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
+                                <th>手动还款</th>
                                 <th class="client-avatar">编号</th>
                                 <th><a data-toggle="tab" href="#contact-3" class="client-link">客户姓名</a></th>
                                 <th>客户电话</th>
@@ -30,6 +31,11 @@
                             </thead>
                             <tbody>
                             <tr v-for="value in dataList">
+                                <td>
+                                    <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-repayment/to-deduct'))){ ?>
+                                        <a class="btn btn-danger btn-xs" v-if="value.status == 'pending' || value.status == 'aborted'" @click="mDeduct(value.id)">手动还款</a>
+                                    <?php } ?>
+                                </td>
                                 <td class="client-avatar">{{value.id}}</td>
                                 <td>{{value.name}}</td>
                                 <td>{{value.phone}}</td>
@@ -47,7 +53,7 @@
                                 <td class="client-status">
                                     <a class="btn btn-info btn-xs" @click="open(value.order_id)">详情</a>
                                     <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-repayment/to-deduct'))){ ?>
-                                    <a class="btn btn-danger btn-xs" v-if="value.status == 'pending' || value.status == 'aborted'" @click="deduct(value.order_id)">还款</a>
+                                    <a class="btn btn-warning btn-xs" v-if="value.status == 'pending' || value.status == 'aborted'" @click="deduct(value.order_id)">还款</a>
                                     <?php } ?>
                                     <a class="btn btn-success btn-xs disabled" v-if="value.status == 'paying'">正在还款</a>
                                     <a class="btn btn-warning btn-xs disabled" v-if="value.status == 'paid'">已还</a>
@@ -126,6 +132,22 @@
                     }
                 })
             },
+            mDeduct:function (id){
+                var __this = this;
+                var url = this.baseUrl + id + "/manual";
+                var data = {
+                    period: 1
+                };
+                var index = layer.msg('确定手动还款么?不经过银行哟~~~',{
+                    btn:['确定','取消'],
+                    btn1:function (){
+                        __this.postOrder(url,data);
+                    },
+                    btn2:function (){
+                        layer.close(index);
+                    }
+                })
+            },
             postOrder: function (url, data){
                 var loading = layer.load(0,{shade: false});
                 var token = {headers:{'X-TOKEN':this.token}};
@@ -134,7 +156,7 @@
                     var json = data.bodyText;
                     var usedDatas = JSON.parse(json);
                     if(usedDatas['success']==true){
-                        layer.msg('发起代扣成功',{icon:1});
+                        layer.msg('发起还款成功',{icon:1});
                         setTimeout("window.location.reload()", 1000)
                     }else{
                         layer.msg(usedDatas['data'],{icon:2});
