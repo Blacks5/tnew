@@ -194,12 +194,14 @@
             datatype: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
             nullmsg: "请输入身份证号",
             errormsg: "身份证号不合法"
-        }, {
-            ele: "input[name=address]",
-            datatype: 's6-40',
-            nullmsg: "请输入联系地址",
-            errormsg: "联系地址长度为6~40之间"
-        }, {
+        }
+        // , {
+        //     ele: "input[name=address]",
+        //     datatype: 's6-40',
+        //     nullmsg: "请输入联系地址",
+        //     errormsg: "联系地址长度为6~40之间"
+        // }
+        , {
             ele: "input[name=province]",
             datatype: 's1-20',
             nullmsg: "请选择所属区域",
