@@ -49,7 +49,11 @@
                                 <th>客户管理费(元)</th>
                                 <th>财务管理费(元)</th>
                                 <th>期数</th>
+                                <?php if ($repayment == 'paid' or $repayment == 'paidOff') { ?>
+                                <th>还款时间</th>
+                                <?php } else { ?>
                                 <th>应还时间</th>
+                                <?php } ?>
                                 <th>逾期天数</th>
                                 <th>滞纳金</th>
                                 <th>操作</th>
@@ -68,7 +72,11 @@
                                 <td class="client-status">{{component(value.component)['finance_manage_fee']}}</td>
                                 <td class="client-status">{{component(value.component)['customer_manage_fee']}}</td>
                                 <td class="client-status">{{value.period_number+'/'+value.period_total}}</td>
-                                <td class="client-status">{{value.due_date}}</td>
+                                <?php if ($repayment == 'paid' or $repayment == 'paidOff') { ?>
+                                    <td class="client-status">{{value.repaid_at}}</td>
+                                <?php } else { ?>
+                                    <td class="client-status">{{value.due_date}}</td>
+                                <?php } ?>
                                 <td class="client-status">{{value.overdue_days}}</td>
                                 <td class="client-status">{{value.overdue_fee}}</td>
                                 <td class="client-status">
