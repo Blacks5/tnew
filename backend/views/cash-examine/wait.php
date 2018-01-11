@@ -2,6 +2,8 @@
 <script src="/js/vue-resource.js"></script>
 <script src="/js/plugins/laydate/laydate.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/element-ui@2.0.10/lib/theme-chalk/index.css">
+<script src="https://unpkg.com/element-ui@2.0.10/lib/index.js"></script>
 
 <div class="ibox-content" id="list">
     <div class="row">
@@ -23,7 +25,7 @@
                 </div>
                 <div class="col-sm-2">
                     <div class="form-group">
-                        <button type="input" class="btn btn-info" @click="toSearch"><i class="fa fa-search" ></i>查询</button>
+                        <button type="input" class="btn btn-info"  @click="toSearchBtn"><i class="fa fa-search" ></i>查询</button>
                     </div>
                 </div>
         </div>
@@ -77,21 +79,11 @@
                             </table>
                         </div>
                         <!--分页-->
-                        <ul class="pagination" v-if="pageCount != 1">
-                            <li>
-                                <a  aria-label="Previous" @click="pageLeft">
-                                    <span aria-hidden="true">&laquo;</span> 上一页
-                                </a>
-                            </li>
-                            <li><a :value="pageIndex" >当前第 {{pageIndex}} 页</a></li>
-                            <li><a>共 {{pageCount}} 页</a></li>
-                            <li>
-                                <a  aria-label="Next" @click="pageRight">
-                                    下一页 <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-
-                        </ul>
+                        <el-pagination
+                                background
+                                layout="prev, pager, next"
+                                :total="pageCount" :page-size="15" @current-change="pageChange">
+                        </el-pagination>
                         </div>
                     </div>
                 </div>
@@ -127,7 +119,7 @@
                             sTime:$('input[name=sTime]').val(),
                             eTime:$('input[name=eTime]').val()
                         },
-                        page:this.pageIndex
+                        page: this.pageIndex
                     }
 
                 };
@@ -137,28 +129,20 @@
 
                     this.dataList = usedData['data']['list']['data'];
                     this.params = usedData['data']['param'];
-                    this.pageCount = usedData['data']['list']['last_page'];
+                    this.pageCount = usedData['data']['list']['total'];
                     this.pageIndex = usedData['data']['list']['current_page']
                 },function (response){
                     console.log(response['body']['errors']);
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})
                 })
             },
-            pageLeft:function(){
-                if(this.pageIndex == 1 || this.pageIndex == 'null'){
-                    layer.msg('已经是第一页了!',{icon:2});
-                    return false;
-                }
-                this.pageIndex--;
-                this.toSearch();
+            toSearchBtn:function () {
+                this.pageIndex = 1;
+                this.toSearch()
             },
-            pageRight:function(){
-                if(this.pageCount == this.pageIndex || this.pageIndex == 'null'){
-                    layer.msg('已经是最后一页了!',{icon:2});
-                    return false;
-                }
-                this.pageIndex ++;
-                this.toSearch();
+            pageChange:function (val) {
+                this.pageIndex = val
+                this.toSearch()
             },
             open:function(id){
                 parent.layer.open({

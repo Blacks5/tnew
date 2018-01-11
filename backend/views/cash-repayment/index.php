@@ -2,6 +2,8 @@
 <script src="/js/vue-resource.js"></script>
 <script src="/js/plugins/laydate/laydate.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/element-ui@2.0.10/lib/theme-chalk/index.css">
+<script src="https://unpkg.com/element-ui@2.0.10/lib/index.js"></script>
 
 <div class="ibox-content" id="list">
     <div class="row">
@@ -23,7 +25,7 @@
             </div>
             <div class="col-sm-2">
                 <div class="form-group">
-                    <button type="input" class="btn btn-info" @click="toSearch"><i class="fa fa-search" ></i>查询</button>
+                    <button type="input" class="btn btn-info" @click="toSearchBtn"><i class="fa fa-search" ></i>查询</button>
                 </div>
             </div>
         </div>
@@ -47,7 +49,11 @@
                                 <th>客户管理费(元)</th>
                                 <th>财务管理费(元)</th>
                                 <th>期数</th>
+                                <?php if ($repayment == 'paid' or $repayment == 'paidOff') { ?>
+                                <th>还款时间</th>
+                                <?php } else { ?>
                                 <th>应还时间</th>
+                                <?php } ?>
                                 <th>逾期天数</th>
                                 <th>滞纳金</th>
                                 <th>操作</th>
@@ -66,7 +72,11 @@
                                 <td class="client-status">{{component(value.component)['finance_manage_fee']}}</td>
                                 <td class="client-status">{{component(value.component)['customer_manage_fee']}}</td>
                                 <td class="client-status">{{value.period_number+'/'+value.period_total}}</td>
-                                <td class="client-status">{{value.due_date}}</td>
+                                <?php if ($repayment == 'paid' or $repayment == 'paidOff') { ?>
+                                    <td class="client-status">{{value.repaid_at}}</td>
+                                <?php } else { ?>
+                                    <td class="client-status">{{value.due_date}}</td>
+                                <?php } ?>
                                 <td class="client-status">{{value.overdue_days}}</td>
                                 <td class="client-status">{{value.overdue_fee}}</td>
                                 <td class="client-status">
@@ -77,6 +87,7 @@
                                     <?php } ?>
                                     <a class="btn btn-success btn-xs disabled" v-if="value.status == 'paying'">正在还款</a>
                                     <a class="btn btn-warning btn-xs disabled" v-if="value.status == 'paid'">已还</a>
+                                    <a class="btn btn-danger btn-xs" @click="addMemos(value.order_id)">备注</a>
 
                                 </td>
                                 <td>
@@ -87,25 +98,24 @@
                         </table>
                     </div>
                     <!--分页-->
-                    <ul class="pagination" v-if="pageCount != 1">
-                        <li>
-                            <a  aria-label="Previous" @click="pageLeft">
-                                <span aria-hidden="true">&laquo;</span> 上一页
-                            </a>
-                        </li>
-                        <li><a :value="pageIndex" >当前第 {{pageIndex}} 页</a></li>
-                        <li><a>共 {{pageCount}} 页</a></li>
-                        <li>
-                            <a  aria-label="Next" @click="pageRight">
-                                下一页 <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-
-                    </ul>
+                    <el-pagination
+                            background
+                            layout="prev, pager, next"
+                            :total="pageCount" :page-size="15" @current-change="pageChange">
+                    </el-pagination>
                 </div>
             </div>
         </div>
     </div>
+
+    <el-dialog title="增加备注" :visible.sync="dialogFormVisible">
+        <el-input placeholder="请输入备注内容" clearable v-model="memos">
+        </el-input>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="toSendMemos">确 定</el-button>
+        </div>
+    </el-dialog>
 
 </div>
 
@@ -120,7 +130,10 @@
             pageCount: 1,
             pageIndex:'',
             token: window.sessionStorage.getItem('V2_TOKEN'),
-            baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>"
+            baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>",
+            dialogFormVisible: false,
+            memosID: 0,
+            memos: ''
         },
         created: function () {
             this.toSearch();
@@ -147,7 +160,7 @@
 
                     this.dataList = usedData['data']['list']['data'];
                     this.params = usedData['data']['param'];
-                    this.pageCount = usedData['data']['list']['last_page'];
+                    this.pageCount = usedData['data']['list']['total'];
                     this.pageIndex = usedData['data']['list']['current_page'];
                     console.info(this.dataList[0]['component'][0]['interest']);
                 },function (response){
@@ -155,24 +168,41 @@
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})
                 })
             },
+            toSearchBtn:function () {
+                this.pageIndex = 1;
+                this.toSearch()
+            },
             component:function(data){
                 return JSON.parse(data);
             },
-            pageLeft:function(){
-                if(this.pageIndex == 1 || this.pageIndex == 'null'){
-                    layer.msg('已经是第一页了!',{icon:2});
-                    return false;
-                }
-                this.pageIndex--;
+            pageChange:function(val) {
+                this.pageIndex = val;
                 this.toSearch();
             },
-            pageRight:function(){
-                if(this.pageCount == this.pageIndex || this.pageIndex == 'null'){
-                    layer.msg('已经是最后一页了!',{icon:2});
-                    return false;
-                }
-                this.pageIndex ++;
-                this.toSearch();
+            addMemos:function (id) {
+                this.memosID = id;
+                this.memos = '';
+                this.dialogFormVisible = true;
+            },
+            toSendMemos:function () {
+                var url = this.baseUrl + this.memosID +'/memos';
+                var data = {content: this.memos};
+                var token = {headers:{'X-TOKEN':this.token}};
+                this.$http.post(url, data,token).then(function(data){
+                    var json = data.bodyText;
+                    var usedData = JSON.parse(json);
+
+                    if (usedData['success'] == true) {
+                        this.$message({message: '恭喜你，备注成功',type: 'success'});
+                        this.dialogFormVisible = false;
+                    }else{
+                        layer.msg(usedDatas['data'],{icon:2});
+                    }
+                },function(response){
+                    var json = response.bodyText;
+                    var usedData = JSON.parse(json);
+                    layer.msg(usedData['errors'][0]['message'], {icon:2});
+                });
             },
             open:function(id){
                 parent.layer.open({

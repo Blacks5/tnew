@@ -52,6 +52,14 @@
                         <a class="list-group-item col-sm-3">客户管理费<span class="badge">{{components['customer_manage_fee']}}</span> </a>
                     </div>
                 </div>
+                <!-- 备注信息 -->
+                <div class="container" v-if="memos.length > 0">
+                    <div class="col-sm-12 height"><h3 class="text-danger text-center">备注信息</h3></div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="list-group">
+                        <a class="list-group-item col-sm-6" v-for="item in memos">{{ item.content }}<span class="badge">{{ item.user_name }} - {{ item.created_at }}</span> </a>
+                    </div>
+                </div>
                 <div class="container">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">客户信息</h3></div>
                     <div class="hr-line-dashed"></div>
@@ -67,7 +75,7 @@
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
 
-                        <a class="list-group-item col-sm-3">月收入<span class="badge" v-text="order.extended_data['monthly_income']"></span> </a>
+                        <a class="list-group-item col-sm-3">月收入<span class="badge" v-if="order.extended_data && order.extended_data.monthly_income" v-text="order.extended_data.monthly_income"></span> </a>
                         <a class="list-group-item col-sm-3">房屋权属<span class="badge" v-text="getHouse(order.extended_data)"></span> </a>
                         <a class="list-group-item col-sm-6" >现居地址<span class="badge">{{order.address}}</span> </a>
 
@@ -125,6 +133,43 @@
                             <button type="button" class="btn btn-warning" @click="revoke">拒绝订单</button>
                         </div>
                         <?php } ?>
+                        <div class="row" v-if="order['status'] == 120">
+                            <div class="col-sm-2">
+                                <select v-if="repay.overdue > 0" class="form-control" id="repaySelect">
+                                    <option :value="order.period_total - repay.count">已逾期</option>
+                                </select>
+                                <select v-if="repay.overdue == 0" class="form-control" id="repaySelect">
+                                    <option v-for="n in (order.period_total - repay.count)" :value="n">未还的前 {{ n }} 期</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <a class="btn btn-info" @click="getRepayAmount">提前还款计算</a>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-12 input-group">
+                                    <input type="text" :value="repayAmount" id="calculation_residual_loan_val" class="form-control" disabled/>
+                                    <span class="input-group-addon">元 需还款</span>
+                                </div>
+                                <div class="col-md-12 input-group">
+                                    <input type="text" :value="overdueAmount" id="calculation_residual_loan_val" class="form-control" disabled/>
+                                    <span class="input-group-addon">元 需催收</span>
+                                </div>
+                            </div>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute('borrownew/prepayment'))) { ?>
+                            <div class="col-sm-2">
+                                <a class="btn btn-danger" @click="repayMany">提前还款</a>
+                                <a class="btn btn-info" @click="repayNoOverdue">催收还款</a>
+                            </div>
+                            <?php } ?>
+                            <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute('borrownew/cancel-personal-protection'))) { ?>
+                            <div class="col-sm-2" v-if="order.is_add_service_fee == 1">
+                                <a class="btn btn-danger" @click="cService">取消贵宾服务包</a>
+                            </div>
+                            <div class="col-sm-1" v-if="order.is_free_pack_fee == 1">
+                                <a class="btn btn-danger" @click="cPack">取消个人保障计划</a>
+                            </div>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -163,14 +208,31 @@
             job:[],
             bank:[],
             visitor:[],
-            loan: []
-
+            loan: [],
+            memos: [],
+            repay: [],
+            period: 0,
+            repayAmount: 0,
+            overdueAmount: 0
         },
 
         created: function () {
             this.toSearch();
+            this.getMemos();
         },
         methods: {
+            getMemos:function () {
+              var url = baseUrl + "<?= $id ?>/memos";
+              var header = {headers:{'X-TOKEN': this.token}};
+
+              this.$http.get(url, header).then(function (data) {
+                  var json = data.bodyText;
+                  var usedData = JSON.parse(json);
+
+                  this.memos = usedData.data
+              })
+
+            },
             toSearch: function () {
                 var url = baseUrl + "<?= $id ?>/detail";
                 var header = {
@@ -203,7 +265,8 @@
                 this.contacts = this.order['contacts'];
                 this.bank = this.order['bank_card'];
                 this.visitor = usedData['data']['visitor']['items'];
-                this.loan = usedData['data']['loan']
+                this.loan = usedData['data']['loan'];
+                this.repay = usedData['data']['repay'];
             },
             setVisitor: function(){
                 var url = baseUrl + "<?= $id ?>/visitor";
@@ -424,6 +487,115 @@
                 } catch (error) {
                     return '未填'
                 }
+            },
+            getRepayAmount:function () {
+                var url = baseUrl + "<?= $id ?>/repayments/amount";
+                var header = {
+                    headers:{'X-TOKEN': this.token},
+                    params: {period: $('#repaySelect').val()}
+                };
+
+                this.$http.get(url, header).then(function (data) {
+                    var json = data.bodyText;
+                    var usedData = JSON.parse(json);
+
+                    this.repayAmount = usedData.data.total;
+                    this.overdueAmount = this.repayAmount - usedData.data.overdueAmount;
+                })
+            },
+            repayMany:function () {
+                if (this.repayAmount == 0) {
+                    layer.msg('请先计算还款金额!', {icon:2});
+                    return false;
+                }
+                var url = baseUrl + "<?= $id ?>/repayments";
+                var data = {period: $('#repaySelect').val()};
+
+                var token = {headers:{'X-TOKEN':this.token}};
+                var __this = this;
+                var index = layer.confirm('确定要提前还款么', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var loading = layer.load(0,{shade: false});
+                    __this.$http.post(url, data,token).then(function(data){
+                        layer.close(loading);
+                        var json = data.bodyText;
+                        var usedData = JSON.parse(json);
+                        if(usedData['success']==true){
+                            layer.msg('提前还款成功!', {icon:1});
+                        }else{
+                            layer.msg(usedData['data']['message'],{icon:2});
+                        }
+                        this.setDomData(usedData['data']);
+                    },function(response){
+                        layer.close(loading);
+                        var json = response.bodyText;
+                        var usedData = JSON.parse(json);
+                        layer.msg(usedData['errors'][0]['message'], {icon:2});
+                    });
+                },function() {
+                    layer.close(index);
+                });
+
+            },
+            repayNoOverdue:function () {
+                layer.msg('客官莫急,这个功能开没开发', {icon:2})
+            },
+            cService:function() {
+                var url = baseUrl + "<?= $id ?>/service";
+                var token = {headers:{'X-TOKEN':this.token}};
+                var __this = this;
+                var index = layer.confirm('确定要取消贵宾服务包么', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var loading = layer.load(0,{shade: false});
+                    __this.$http.delete(url, token).then(function(data){
+                        layer.close(loading);
+                        var json = data.bodyText;
+                        var usedData = JSON.parse(json);
+                        if(usedData['success']==true){
+                            layer.msg('取消成功!', {icon:1});
+                        }else{
+                            layer.msg(usedData['data']['message'],{icon:2});
+                        }
+                        this.setDomData(usedData['data']);
+                    },function(response){
+                        layer.close(loading);
+                        var json = response.bodyText;
+                        var usedData = JSON.parse(json);
+                        layer.msg(usedData['errors'][0]['message'], {icon:2});
+                    });
+                },function() {
+                    layer.close(index);
+                });
+            },
+            cPack:function() {
+                var url = baseUrl + "<?= $id ?>/freePack";
+                var token = {headers:{'X-TOKEN':this.token}};
+                var __this = this;
+                var index = layer.confirm('确定要取消个人保障计划么', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var loading = layer.load(0,{shade: false});
+                    __this.$http.delete(url, token).then(function(data){
+                        layer.close(loading);
+                        var json = data.bodyText;
+                        var usedData = JSON.parse(json);
+                        if(usedData['success']==true){
+                            layer.msg('取消成功!', {icon:1});
+                        }else{
+                            layer.msg(usedData['data']['message'],{icon:2});
+                        }
+                        this.setDomData(usedData['data']);
+                    },function(response){
+                        layer.close(loading);
+                        var json = response.bodyText;
+                        var usedData = JSON.parse(json);
+                        layer.msg(usedData['errors'][0]['message'], {icon:2});
+                    });
+                },function() {
+                    layer.close(index);
+                });
             }
         }
     });
