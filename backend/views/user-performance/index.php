@@ -127,9 +127,10 @@
                         <div class="list-group col-sm-3">
                             <a class="list-group-item">通过率<span class="badge"><?= $total['adopt_ratio'] ?></span> </a>
                             <a class="list-group-item">逾期金额比<span class="badge"><?= $total['overdue_moneyRatio'] ?></span> </a>
-                            <a class="list-group-item">不良率<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
+                            <a class="list-group-item">不良率(单数)<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
+                            <a class="list-group-item">不良率(金额)<span class="badge"><?= $total['undesirableMoney_ratio'] ?></span> </a>
                             <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
                             <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
                         </div>

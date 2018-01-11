@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:48:34
  * @Last Modified by:   MuMu
- * @Last Modified time: 2018-01-08 15:10:24
+ * @Last Modified time: 2018-01-11 14:12:30
  */
 
 namespace common\services;
@@ -77,6 +77,18 @@ class User extends Service {
 				'name' => $params['realname'],
 				'login_name' => $params['username'],
 				'password' => $params['password_hash'],
+				'realname' => $params['realname'],
+				'id_card_num' => $params['id_card_num'],
+				'province' => $params['province'],
+				'city' => $params['city'],
+				'county' => $params['county'],
+				'address' => $params['address'],
+				'email' => $params['email'],
+				'department_id' => $params['department_id'],
+				'job_id' => $params['job_id'],
+				'leader' => $params['leader'],
+				'level' => $params['level'],
+				'id_card_pic_one' => $params['id_card_pic_one'],
 			]);
 
 			if ($res['success']) {
