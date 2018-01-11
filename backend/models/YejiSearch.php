@@ -304,6 +304,7 @@ class YejiSearch extends CoreBackendModel{
         $service = clone $s_orderQuery;
         $pack = clone $s_orderQuery;
         $overdue_num = clone $s_orderQuery;
+        $undesirableMoneyQuery = Repayment::find()->select('r_orders_id')->where(['>', 'r_overdue_day', 30])->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])->groupBy('r_orders_id')->column();
         $total['a_orderCount'] = $a_orderQuery->andWhere(['!=','o_status',Orders::STATUS_NOT_COMPLETE])->count('o_id'); //总提单
         $total['s_orderCount'] = $s_orderQuery->count('o_id');    //成功提单数量
         $total['s_orderMoney'] = $s_orderQuery->sum('o_total_price-o_total_deposit+o_service_fee+o_inquiry_fee'); //提单金额
@@ -317,7 +318,7 @@ class YejiSearch extends CoreBackendModel{
             ->groupBy('r_orders_id')->count();
         $overdue_order = $overdue_num->column();
         $total['overdue_money'] = Repayment::find()->where(['in', 'r_orders_id', $overdue_order])->andWhere(['r_repay_date'=>0])->sum('r_principal'); // 逾期金额
-        $total['undesirableMoney'] = Repayment::find()->where(['in', 'r_orders_id', $overdue_order])->andWhere(['>', 'r_overdue_day', 30])->sum('r_principal'); // 超过30天的逾期金额
+        $total['undesirableMoney'] = Repayment::find()->where(['in', 'r_orders_id', $undesirableMoneyQuery])->andWhere(['r_repay_date' => 0])->sum('r_principal'); // 超过30天的逾期金额
 
         $total['overdue_numRatio'] = empty($total['overdue_num'])?'0%':round($total['overdue_num']/$total['s_orderCount']*100, 2).'%';
         $total['overdue_moneyRatio'] =empty($total['overdue_money'])?'0%':round($total['overdue_money']/$total['s_orderMoney']*100, 2). '%';
@@ -325,7 +326,7 @@ class YejiSearch extends CoreBackendModel{
         $total['pack_ratio'] = empty($total['pack'])?'0%':round($total['pack']/$total['s_orderCount']*100, 2).'%';
         $total['adopt_ratio'] = empty($total['s_orderCount'])?'0%':round($total['s_orderCount'] / $total['a_orderCount']*100, 2). '%';  //通过率
         $total['undesirable_ratio'] = empty($total['undesirable'])?'0%':round($total['undesirable'] / $total['a_orderCount']*100, 2). '%'; //不良率
-        $total['undesirableMoney_ratio'] = empty($total['undesirableMoney'])? '0%': round($total['undesirableMoney'] / $total['s_orderMoney'], 2) . '%'; // 逾期超过30天的金额比
+        $total['undesirableMoney_ratio'] = empty($total['undesirableMoney'])? '0%': round($total['undesirableMoney'] / $total['s_orderMoney'] * 100, 2) . '%'; // 逾期超过30天的金额比
 
         return $total;
     }

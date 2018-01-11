@@ -1,6 +1,8 @@
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.js"></script>
 <script src="/js/plugins/layer/layer.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/element-ui@2.0.10/lib/theme-chalk/index.css">
+<script src="https://unpkg.com/element-ui@2.0.10/lib/index.js"></script>
 <style>
     body{background-color: white;}
     .height{height:60px;padding:20px 0;}
@@ -80,7 +82,7 @@
                         <a class="list-group-item col-sm-6" >现居地址<span class="badge">{{order.address}}</span> </a>
 
                         <a class="list-group-item col-sm-6">婚姻状况<span class="badge" v-if="marital != null">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{marital['spouse_phone']}}</span> </a>
-                        <a class="list-group-item col-sm-6" >还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span> </a>
+                        <a class="list-group-item col-sm-6" @click="changeBank">还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span></a>
 
 
                         <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{ getContact(c['relation']) }}</span> </a>
@@ -596,6 +598,44 @@
                 },function() {
                     layer.close(index);
                 });
+            },
+            changeBank:function () {
+                var __this =  this;
+
+                if (this.order.status < 90) {
+                    this.$message({
+                        type: 'error',
+                        message: '还没有完成签约,不能修改银行卡'
+                    });
+                    return false;
+                }
+
+                var url = baseUrl + "<?= $id ?>/bank";
+                this.$prompt('请输入银行卡', '修改银行卡', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(function (value) {
+                    var loading = layer.load(0, {shade:false});
+                    var token = {headers:{'X-TOKEN':__this.token}};
+                    var data = {bankNumber:value.value};
+                    __this.$http.patch(url, data, token).then(function (response) {
+                        layer.close(loading);
+                        console.info(response);
+                        __this.$message({
+                            type: 'success',
+                            message: '修改成功'
+                        });
+                        var json = response.bodyText;
+                        var usedData = JSON.parse(json);
+                        __this.bank.bank_name =usedData.data.bankName;
+                        __this.bank.number = value.value;
+                    },function(response) {
+                        layer.close(loading);
+                        var json = response.bodyText;
+                        var usedData = JSON.parse(json);
+                        layer.msg(usedData['errors'][0]['message'], {icon:2});
+                    })
+                })
             }
         }
     });
