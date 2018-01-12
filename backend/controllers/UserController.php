@@ -132,6 +132,15 @@ class UserController extends CoreBackendController
             'provinces'=>$provinces
         ]);
     }
+
+    public function actionAgent($id = null)
+    {
+        $provinces = Helper::getAllProvince();
+
+        return $this->render('agent', [
+            'id' => $id
+        ]);
+    }
     /**
      * 员工列表
      * @return string
