@@ -101,6 +101,7 @@
             params: '',
             pageCount: 1,
             pageIndex:'',
+            saleID: "<?= $id ?>",
             token: window.sessionStorage.getItem('V2_TOKEN'),
             baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>"
         },
@@ -114,6 +115,7 @@
                     headers:{'X-TOKEN':this.token},
                     params: {
                         param:{
+                            saleID: this.saleID,
                             name:$('input[name=name]').val(),
                             phone:$('input[name=phone]').val(),
                             sTime:$('input[name=sTime]').val(),

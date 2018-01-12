@@ -25,10 +25,10 @@ class CashExamineController extends CoreBackendController
         return $this->render('wait',['examine' => $examine]);
     }
 
-    public function actionPass()
+    public function actionPass($id = null)
     {
         $examine = 'pass';
-        return $this->render('wait', ['examine' => $examine]);
+        return $this->render('wait', ['examine' => $examine, 'id' => $id]);
     }
 
     public function actionCancel()
