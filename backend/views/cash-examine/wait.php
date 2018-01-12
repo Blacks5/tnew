@@ -101,7 +101,7 @@
             params: '',
             pageCount: 1,
             pageIndex:'',
-            saleID: "<?= $id ?>",
+            saleID: "<?= $id ?? '' ?>",
             token: window.sessionStorage.getItem('V2_TOKEN'),
             baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>"
         },

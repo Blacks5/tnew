@@ -39,6 +39,7 @@
                                 <th>地区</th>
                                 <th>下级业绩</th>
                                 <th>创建时间</th>
+                                <th>邀请者</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -50,6 +51,7 @@
                                     <th>{{ item.region && item.region.province }} - {{ item.region && item.region.city }} - {{ item.region && item.region.county }}</th>
                                     <th>{{ item.subordinate_amount }}</th>
                                     <th>{{ item.created_at }}</th>
+                                    <th>{{ item.nearest_inviter && item.nearest_inviter.name ? item.nearest_inviter.name: '没找到' }}</th>
                                     <th>
                                         <a class="btn btn-info btn-xs" @click="getLeader(item.user)">查看下级</a>
                                         <a class="btn btn-danger btn-xs" @click="getOrder(item.user)">查看订单</a>
