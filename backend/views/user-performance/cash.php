@@ -1,5 +1,6 @@
 <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="/js/plugins/layer/layer.min.js"></script>
 <div>
     <div class="row">
         <div class="col-sm-12">
@@ -159,6 +160,7 @@
                                                     <th>通过率</th>
                                                     <th>逾期金额比</th>
                                                     <th>不良率</th>
+                                                    <th>操作</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -178,6 +180,10 @@
                                                         <td class="client-status"><?= $_v['acceptedRadio'] ?>%</td>
                                                         <td class="client-status"><?= $_v['overdueMoneyRadio'] ?>%</td>
                                                         <td class="client-status"><?= $_v['badRadio'] ?>%</td>
+                                                        <td>
+                                                            <a class="btn btn-success btn-xs" onclick="getOrder(<?= $_v['id'] ?>)">查看订单</a>
+                                                            <a class="btn btn-danger btn-xs" onclick="getLeader(<?= $_v['id'] ?>)">查看下级</a>
+                                                        </td>
                                                     </tr>
                                                 <?php } ?>
                                                 </tbody>
@@ -204,3 +210,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    function getOrder(id) {
+        parent.layer.open({
+            type: 2,
+            title: false,
+            shadeClose:true,
+            shade: [0.8],
+            area: ['1200px', '800px'],
+            content: "<?= \yii\helpers\Url::toRoute('cash-examine/pass') ?>" + "?id="+id
+        })
+    }
+
+    function getLeader(id) {
+        parent.layer.open({
+            type: 2,
+            title: false,
+            shadeClose:true,
+            shade: [0.8],
+            area: ['1200px', '800px'],
+            content: "<?= \yii\helpers\Url::toRoute('user/agent') ?>" + "?id="+id
+        })
+    }
+</script>
