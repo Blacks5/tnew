@@ -364,7 +364,7 @@ class YejiSearch extends CoreBackendModel{
 
             $httpClient = new Client();
             $response =  $httpClient->get($url, $params, ['X-TOKEN'=>$_SESSION['V2_TOKEN']])->send();
-            if ($response->data['success'] == false) {
+            if ($response->data['success'] && $response->data['success'] == false) {
                 throw new CustomBackendException($response->data['errors'][0]['message']);
             }
             $data['params'] = $params;
