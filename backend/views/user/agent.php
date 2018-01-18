@@ -11,7 +11,7 @@
                 <div class="ibox-content">
                     <div class="row">
                         <ol class="breadcrumb">
-                            <li><a @click="toSearch(0,'')">首页</a></li>
+                            <li><a @click="toSearch(0,'<?= $id ??''?>')">首页</a></li>
                             <li v-for="(u, index) in leader"><a  @click="toSearch(index + 1, u.id)">{{ u.name }}</a></li>
                             <li class="active">详细信息</li>
                         </ol>
@@ -26,6 +26,11 @@
                         </div>
                         <div class="col-sm-3">
                             <a class="btn btn-success" @click="getAgent">查询</a>
+                        </div>
+                        <div class="col-sm-3" v-if="user">
+                            <el-badge :value="user.subordinate_amount" class="item">
+                                <el-button size="small">邀请者: {{ user.name }}</el-button>
+                            </el-badge>
                         </div>
                     </div>
 
@@ -95,7 +100,8 @@
                 value: 'region_name',
                 label: 'region_name',
                 children: 'all_child'
-            }
+            },
+            user: ''
         },
         created:function () {
             if (this.provinces =='') {
@@ -109,7 +115,6 @@
                 var params = {headers:{'X-TOKEN':this.token}};
                 this.$http.get(url, params).then(function (response) {
                     this.provinces = response.data.data;
-                    console.info(this.provinces)
                 },function (response) {
 
                 })
@@ -133,7 +138,6 @@
                 this.$http.get(url, params).then(function (response) {
                     this.lists = response.data.data.items;
                     this.total = response.data.data.total;
-                    console.info(this.lists)
                 },function (response) {
 
                 });
@@ -141,11 +145,13 @@
             getLeader:function (user) {
                 this.leader.push(user);
                 this.inviter = user.id;
+                this.user = user;
                 this.getAgent();
             },
             toSearch:function (key, id) {
                 this.leader = this.leader.slice(0, key);
                 this.inviter = id;
+                this.user = this.leader[0];
                 this.getAgent();
             },
             getOrder:function (user) {
