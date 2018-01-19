@@ -82,9 +82,7 @@
                         <a class="list-group-item col-sm-6" >现居地址<span class="badge">{{order.address}}</span> </a>
 
                         <a class="list-group-item col-sm-6">婚姻状况<span class="badge" v-if="marital != null">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{marital['spouse_phone']}}</span> </a>
-                        <a class="list-group-item col-sm-6" @click="changeBank">还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span></a>
-
-
+                        <a class="list-group-item col-sm-6" <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/change-bank-info']))) { echo '@click="changeBank"' ;};?>>还款信息<span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span></a>
                         <a class="list-group-item col-sm-4" v-for="c in contacts" v-if="c  != null">其他联系人<span class="badge">{{c['name']}} - {{c['phone']}} - {{ getContact(c['relation']) }}</span> </a>
 
                     </div>
