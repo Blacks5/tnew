@@ -118,21 +118,26 @@
                             <a class="list-group-item">总放款<span class="badge"><?= round($total['s_orderMoney'], 0) ?></span> </a>
                             <a class="list-group-item">总提单<span class="badge"><?= $total['a_orderCount'] ?></span> </a>
                             <a class="list-group-item">成功提单<span class="badge"><?= $total['s_orderCount'] ?></span> </a>
-                        </div>
-                        <div class="list-group col-sm-3">
-                            <a class="list-group-item">逾期率<span class="badge"><?= $total['overdue_numRatio'] ?></span> </a>
-                            <a class="list-group-item">逾期单数<span class="badge"><?= $total['overdue_num'] ?></span> </a>
-                            <a class="list-group-item">逾期金额<span class="badge"><?= round($total['overdue_money'], 0) ?></span> </a>
-                        </div>
-                        <div class="list-group col-sm-3">
                             <a class="list-group-item">通过率<span class="badge"><?= $total['adopt_ratio'] ?></span> </a>
+
+                        </div>
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
+                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
+                            <a class="list-group-item">逾期单数<span class="badge"><?= $total['overdue_num'] ?></span> </a>
+                            <a class="list-group-item">逾期率<span class="badge"><?= $total['overdue_numRatio'] ?></span> </a>
+
+                        </div>
+                        <div class="list-group col-sm-3">
+                            <a class="list-group-item">逾期金额<span class="badge"><?= round($total['overdue_money'], 0) ?></span> </a>
                             <a class="list-group-item">逾期金额比<span class="badge"><?= $total['overdue_moneyRatio'] ?></span> </a>
-                            <a class="list-group-item">不良率(单数)<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
+                            <a class="list-group-item">已逾期金额(本金)<span class="badge"><?= $total['overdue_principal'] ?></span> </a>
+                            <a class="list-group-item">已逾期金额比(本金)<span class="badge"><?= $total['overdue_principal_ratio'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
                             <a class="list-group-item">不良率(金额)<span class="badge"><?= $total['undesirableMoney_ratio'] ?></span> </a>
-                            <a class="list-group-item">个人保障计划捆绑率<span class="badge"><?= $total['service_ratio'] ?></span> </a>
-                            <a class="list-group-item">贵宾服务包捆绑率<span class="badge"><?= $total['pack_ratio'] ?></span> </a>
+                            <a class="list-group-item">不良率(单数)<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
+
                         </div>
 
                     </div>
@@ -159,6 +164,8 @@
                                                     <th>逾期单数</th>
                                                     <th>逾期金额</th>
                                                     <th>逾期率</th>
+                                                    <th>已逾期本金</th>
+                                                    <th>已逾期本金比</th>
                                                     <th>通过率</th>
                                                     <th>逾期金额比</th>
                                                     <th>不良率</th>
@@ -178,6 +185,8 @@
                                                         <td><?= $all['overdue_num']?></td>
                                                         <td><?= $all['overdue_money']?></td>
                                                         <td><?= $all['overdue_ratio']?></td>
+                                                        <td><?= $all['overdue_principal']?></td>
+                                                        <td><?= $all['overdue_principal_ratio']?></td>
                                                         <td><?= $all['adopt_ratio']?></td>
                                                         <td><?= $all['overdueMoney_ratio']?></td>
                                                         <td><?= $all['undesirable_ratio']?></td>
@@ -199,6 +208,8 @@
                                                         <td class="client-status"><?= $_v['overdue_count'] ?></td>
                                                         <td class="client-status"><?= $_v['overdue_money'] ?></td>
                                                         <td class="client-status"><?= $_v['overdue_ratio'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdue_principal'] ?></td>
+                                                        <td class="client-status"><?= $_v['overdue_principal_ratio'] ?></td>
                                                         <td class="client-status"><?= $_v['adopt_ratio'] ?></td>
                                                         <td class="client-status"><?= $_v['overdueMoney_ratio'] ?></td>
                                                         <td class="client-status"><?= $_v['undesirable_ratio'] ?></td>

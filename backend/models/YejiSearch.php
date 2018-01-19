@@ -127,10 +127,11 @@ class YejiSearch extends CoreBackendModel{
         $all_list['f_packcount']    = 0;    //个人保障计划
         $all_list['overdue_count']  = 0;    //总单数
         $all_list['overdue_num']    = 0;    //逾期笔数
-        $all_list['overdue_money']  = 0;    //逾期金额
+        $all_list['overdue_money']  = 0;    //逾期金额(逾期后未还的金额)
         $all_list['overdue_ratio']  = 0;    //逾期率
         $all_list['serial_no']      = array();  //逾期期数
         $all_list['undesirable']    = 0;    //不良笔数
+        $all_list['overdue_principal'] = 0; // 已逾期的本金(只算逾期)
 
         foreach ($userlist as $_k=>$_v) {
             $orderinfo = Orders::find()->where(['o_user_id'=>$_v['id']])->andWhere(['!=', 'o_status', Orders::STATUS_NOT_COMPLETE]);
@@ -199,6 +200,16 @@ class YejiSearch extends CoreBackendModel{
             //逾期金额
             //$userlist[$_k]['overdue_money'] = round(Repayment::find()->where(['in', 'r_orders_id', $overdue_orders])->andWhere(['r_repay_date'=>0])->sum('r_principal'),2);
             $userlist[$_k]['overdue_money'] = $overdueMoney['overdueMoney'];
+            // 已逾期的本金
+            $userlist[$_k]['overdue_principal'] = round(
+                Repayment::find()
+                ->where(['in', 'r_orders_id', $overdue_orders])
+                ->andWhere(['>', 'r_overdue_day', 3])
+                ->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])
+                ->sum('r_principal')
+                ,
+                2
+            );
             //逾期率
             $userlist[$_k]['overdue_ratio'] =  $userlist[$_k]['overdue_money']?round($userlist[$_k]['overdue_count']/$s_ordercount*100,3). "%":'0%';
             //通过率
@@ -208,6 +219,8 @@ class YejiSearch extends CoreBackendModel{
 
             //逾期金额比
             $userlist[$_k]['overdueMoney_ratio'] = $userlist[$_k]['overdue_money'] == 0? '0%':round($userlist[$_k]['overdue_money']/$s_amount*100,2).'%';
+            // 已逾期本金比
+            $userlist[$_k]['overdue_principal_ratio'] = $userlist[$_k]['overdue_principal'] == 0 ? '0%': round($userlist[$_k]['overdue_principal'] / $s_amount * 100, 2). '%';
 
             $all_list['t_ordercount'] +=$userlist[$_k]['t_ordercount'];
             $all_list['s_amount']+= $userlist[$_k]['s_amount'];
@@ -215,6 +228,7 @@ class YejiSearch extends CoreBackendModel{
             $all_list['a_servicecount'] += $a_servicecount;
             $all_list['f_packcount'] += $f_packcount;
             $all_list['undesirable'] += $overdueMoney['undesirableTotal'];
+            $all_list['overdue_principal'] += $userlist[$_k]['overdue_principal'];
 
             //总逾期统计
             $all_list['overdue_num'] += $userlist[$_k]['overdue_count'];
@@ -233,6 +247,8 @@ class YejiSearch extends CoreBackendModel{
         //不良率
         $all_list['undesirable_ratio'] = $all_list['undesirable'] == 0 ?'0%':round($all_list['undesirable']/$all_list['s_ordercount']*100,2).'%';
         $all_list['risk_num'] = $all_list['serial_no']? $this->getRisk($all_list['serial_no'],$all_list['s_ordercount']). '%':'0%';
+        // 已逾期本金比
+        $all_list['overdue_principal_ratio'] = $all_list['overdue_principal'] == 0 ?'0' : round($all_list['overdue_principal']/$all_list['s_amount'] * 100, 2). '%';
 
         //总数据
         $total = $this->getTotal();
@@ -315,6 +331,9 @@ class YejiSearch extends CoreBackendModel{
 
         $overdueMoney = $this->getOverDueMoney($overdue_order);
 
+        $total['overdue_principal'] = round(
+            Repayment::find()->where(['in', 'r_orders_id', $overdue_order])->andWhere(['r_status' => Repayment::STATUS_NOT_PAY])->andWhere(['>', 'r_overdue_day', 3])->sum('r_principal')
+            , 2);
         $total['overdue_money'] = $overdueMoney['overdueMoney']; // 逾期金额
         $total['undesirableMoney'] = $overdueMoney['undesirableMoney']; // 超过30天的逾期金额
         $total['undesirable'] = $overdueMoney['undesirableTotal']; // 超过30天逾期的笔数
@@ -326,6 +345,7 @@ class YejiSearch extends CoreBackendModel{
         $total['adopt_ratio'] = empty($total['s_orderCount'])?'0%':round($total['s_orderCount'] / $total['a_orderCount']*100, 2). '%';  //通过率
         $total['undesirable_ratio'] = empty($total['undesirable'])?'0%':round($total['undesirable'] / $total['a_orderCount']*100, 2). '%'; //不良率
         $total['undesirableMoney_ratio'] = empty($total['undesirableMoney'])? '0%': round($total['undesirableMoney'] / $total['s_orderMoney'] * 100, 2) . '%'; // 逾期超过30天的金额比
+        $total['overdue_principal_ratio'] = empty($total['overdue_principal'])? '0%' : round($total['overdue_principal']/$total['s_orderMoney'] * 100, 2). '%'; //已逾期金额比
 
         return $total;
     }
@@ -347,7 +367,7 @@ class YejiSearch extends CoreBackendModel{
                 ->one();
             $repaymentSearch = new RepaymentSearch();
             $money = $repaymentSearch->getAdvanceMoney($v, $overduePeriod);
-            $total['overdueMoney'] += $money['total'];
+            $total['overdueMoney'] += $money['total'] - $money['overdue'];
             if (!empty($isUndesirable)) {
                 $total['undesirableMoney'] += $money['total'];
                 $total['undesirableTotal'] += 1;
