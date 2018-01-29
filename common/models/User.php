@@ -81,7 +81,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 			[['cellphone'], 'match', 'pattern' => '/^1[3|5|7|8]\d{9}$/', 'message' => '错误的手机号码'],
 
 			[['password_hash_1'], 'compare', 'compareAttribute' => 'password_hash', 'message' => '两次密码不一致'],
-			[['department_id', 'job_id'], 'safe'],
+			[['department_id', 'job_id' , 'inviter_id'], 'safe'],
 
             ['address', 'string', 'min'=>10, 'max'=>'150', 'tooShort'=>'地址太短了', 'tooLong'=>'地址太长了'],
             ['id_card_num', 'match', 'pattern'=>'/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/', 'message'=>'身份证号码错误']
@@ -90,7 +90,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
     public function scenarios()
     {
         $scen = parent::scenarios();
-        $scen['create'] = ['id_card_num', 'id_card_pic_one', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id','leader','level'];
+        $scen['create'] = ['id_card_num', 'id_card_pic_one', 'address', 'username', 'realname', 'password_hash', 'password_hash_1', 'county', 'city', 'province', 'email', 'status', 'cellphone', 'department_id', 'job_id','leader','level','inviter_id'];
         $scen['update'] = [/*'username', 'realname', 'password_hash',*/ 'id_card_pic_one', 'email', 'county', 'city', 'province', 'status', 'cellphone', 'department_id', 'job_id', 'id_card_num', 'address','leader','level'];
         $scen['modpwd'] = ['password_hash', 'password_hash_1'];
 //        $scen['modselfpwd'] = ['password_hash', 'password_hash_1', 'old_password'];
@@ -122,6 +122,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
             'updated_at' => 'Updated At',
             'leader'    => '上级领导',
             'level' => '销售级别', //1销售总监 2大区经理 3城市经理 4销售经理 5销售主管 6销售代表
+            'inviter_id' => '邀请人ID',
         ];
     }
 
