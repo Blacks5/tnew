@@ -67,11 +67,11 @@ use yii\helpers\Url;
                                                     <th>客户电话</th>
                                                     <th>本月应还总金额</th>
                                                     <th>本金(元)</th>
-                                                    <th>利息(元)</th>
+                                                    <!-- <th>利息(元)</th>
                                                     <th>个人保障计划(%)</th>
                                                     <th>贵宾服务包(元/月)</th>
                                                     <th>财务管理费(元)</th>
-                                                    <th>客户管理费(元)</th>
+                                                    <th>客户管理费(元)</th> -->
                                                     <th>期数</th>
                                                     <th>应还款时间</th>
                                                     <th>逾期天数</th>
@@ -90,13 +90,13 @@ use yii\helpers\Url;
                                                         <td><?= $_v['c_customer_cellphone'] ?></td>
                                                         <td class="client-status"><?= $_v['r_total_repay'] + 0; ?>元</td>
                                                         <td class="client-status"><?= $_v['r_principal']; ?></td>
-                                                        <td class="client-status"><?= $_v['r_interest']; ?></td>
+                                                        <!-- <td class="client-status"><?= $_v['r_interest']; ?></td>
                                                         <td class="client-status"><?= $_v['r_add_service_fee']; ?></td>
                                                         <td class="client-status"><?= $_v['r_free_pack_fee']; ?></td>
                                                         <td class="client-status"><?= $_v['r_finance_mangemant_fee']; ?>
 
                                                         </td>
-                                                        <td class="client-status"><?= $_v['r_customer_management']; ?>
+                                                        <td class="client-status"><?= $_v['r_customer_management']; ?> -->
 
                                                         </td>
                                                         <td class="client-status"><?= $_v['r_serial_no'] . '/' . $_v['r_serial_total']; ?></td>
