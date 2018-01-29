@@ -119,7 +119,7 @@ use yii\widgets\LinkPager;
                                     <tr>
                                         <td><?= $vo['id'] ?></td>
                                         <td><?= $vo['username'] ?></td>
-                                        <td><?= $vo['realname'] ?></td>
+                                        <td><?= $vo['realname'] ?><?= $vo['inviter_id'] == 0 ?'':' - (代理商)' ?></td>
                                         <!--<td><? /*= $vo['usergroup']['item_name'] */ ?></td>-->
                                         <td><?= $vo['d_name'].'-'.$vo['j_name'] ?></td>
                                         <td><i class="fa fa-mobile"
