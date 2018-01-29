@@ -167,7 +167,7 @@
                                                 <?php foreach ($data['list']['items'] ?? [] as $_k => $_v) { ?>
                                                     <tr>
                                                         <td><a data-toggle="tab" href="#contact-3"
-                                                               class="client-link"><?= $_v['name'] ?> <?= count($_v['inviter']) == 1?'1':'(代理商)'?></a></td>
+                                                               class="client-link"><?= $_v['name'] ?> <?= count(json_decode($_v['inviter'], true)) == 1?'':'(代理商)'?></a></td>
                                                         <td><?= $_v['inviterAmount'] ?></td>
                                                         <td><?= $_v['packRadio'] ?>%</td>
                                                         <td class="client-status"><?= $_v['serviceRadio'] ?>%</td>
