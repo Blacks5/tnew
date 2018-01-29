@@ -114,6 +114,9 @@ class SiteController extends BaseController {
 			$params['level'] = 6;
 			$params['id_card_pic_one'] = '';
 
+			// 邀请人ID
+			$params['inviter_id'] = $sys_user->id;
+
 			try {
 				$user = new \common\services\User;
 				$res = $user->createUser($params);
