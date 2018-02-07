@@ -87,7 +87,7 @@
                                     <?php } ?>
                                     <a class="btn btn-success btn-xs disabled" v-if="value.status == 'paying'">正在还款</a>
                                     <a class="btn btn-warning btn-xs disabled" v-if="value.status == 'paid'">已还</a>
-                                    <a class="btn btn-danger btn-xs" @click="addMemos(value.order_id)">备注</a>
+                                    <a class="btn btn-default btn-xs" @click="addMemos(value.order_id)">备注</a>
 
                                 </td>
                                 <td>
