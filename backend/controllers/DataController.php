@@ -116,8 +116,9 @@ class DataController extends CoreBackendController
      * 保留此函数以便需要时使用
      *
      * @return void
+     * _NO_EXECUTE_b34f1bb78d4624e1df6678deb21a2ff8cdf1d241
      */
-    public function actionChangeSign_NO_EXECUTE_b34f1bb78d4624e1df6678deb21a2ff8cdf1d241()
+    public function actionChangeSign()
     {
         $oldSign = YijifuSign::find()
             ->select([
@@ -139,7 +140,7 @@ class DataController extends CoreBackendController
             ->leftJoin(Customer::tableName(),'o_customer_id=c_id')
             ->leftJoin(OrderImages::tableName(), 'oi_id=orders.o_images_id')
             ->leftJoin(Goods::tableName(), 'g_order_id=o_id')
-            ->where(['yijifu_sign.o_serial_id' => '17101200000003863302'])
+            ->where(['yijifu_sign.o_serial_id' => '17111100000005214402'])
             ->andWhere(['status'=>1])
             ->andWhere(['o_status'=> 10])
             ->asArray()->all();
