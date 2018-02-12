@@ -581,7 +581,7 @@ $this->title = $model['c_customer_name'] . '借款详情【'. $msg. '】';
                                     <div class="input-group">
                                         <select class="col-md-8 form-control" id="period_num">
                                             <?php for($i = 0;$i < $repayCount;$i++) { ?>
-                                                <option value="<?php echo $i+1; ?>"><?= $isOverdue == 0 ? '': '<逾期>' ?>还<?php echo $i+1; ?>期</option>
+                                                <option value="<?php echo $i+1; ?>"><?= $isOverdue < $i ? '': '<逾期>' ?>还<?php echo $i+1; ?>期</option>
                                             <?php } ?>
                                         </select>
                                         <span class="btn btn-info input-group-addon" id="calculation_residual_loan">计算金额</span>
