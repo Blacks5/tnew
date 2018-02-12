@@ -197,7 +197,7 @@ class BorrownewController extends CoreBackendController
             $query =Repayment::find()->where(['r_orders_id'=>$order_id, 'r_status'=>1]);
             $reCount = Repayment::find()->where(['r_status'=>10, 'r_orders_id'=>$order_id])->count()>=3 ?1:0;
             $repayCount = $query->count(); //未还期数
-            $isOverdue = $query->andWhere(['>', 'r_overdue_day', 3])->count() >0 ?1:0; //是否有逾期 1逾期 0未逾期
+            $isOverdue = $query->andWhere(['>', 'r_overdue_day', 3])->count(); //是否有逾期
             $operator = Carbon::createFromTimestamp($model['o_operator_date'])->addDay(90);
             $canCancel = $operator < Carbon::now()?1:0;  //审核时间是否大于120天 1是 0否
 

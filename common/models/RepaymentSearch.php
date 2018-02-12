@@ -160,7 +160,9 @@ class RepaymentSearch extends CoreBackendModel
         $count = $sql->count();
         $isPack = $sql->asArray()->one();
         if($isPack['o_is_free_pack_fee'] == 0 || $count < 2){  //如果还款小于3期 或者 未购买贵宾包 +200
-            $total['total'] += 200;
+            if ($num === $repayCount) {
+                $total['total'] += 200;
+            }
         }
         $total['serialNo'] = $serialNo;  //当前应还期数
         return $total;
