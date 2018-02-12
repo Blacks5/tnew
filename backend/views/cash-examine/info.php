@@ -137,10 +137,7 @@
                         <?php } ?>
                         <div class="row" v-if="order['status'] == 120">
                             <div class="col-sm-2">
-                                <select v-if="repay.overdue > 0" class="form-control" id="repaySelect">
-                                    <option :value="order.period_total - repay.count">已逾期</option>
-                                </select>
-                                <select v-if="repay.overdue == 0" class="form-control" id="repaySelect">
+                                <select class="form-control" id="repaySelect">
                                     <option v-for="n in (order.period_total - repay.count)" :value="n">未还的前 {{ n }} 期</option>
                                 </select>
                             </div>
