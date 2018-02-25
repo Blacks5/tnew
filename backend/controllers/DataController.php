@@ -54,6 +54,11 @@ class DataController extends CoreBackendController
         ]);
     }
 
+    public function actionCashGather()
+    {
+        return $this->render('cash-gather');
+    }
+
     /**
      * 获取审核数据
      * @return string
