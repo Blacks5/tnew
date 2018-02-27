@@ -220,11 +220,11 @@ class DataSearch extends CoreBackendModel
         $totalQuery = clone $query;
         $listQuery = clone $query;  // 已还
         $overdueQuery = clone $query; // 未还
-        $repayQuery = $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
-            ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
-
-        $overdueQuery = $overdueQuery->andFilterWhere(['>=', 'repayment.r_repay_date', $this->start_time])
+        $repayQuery = $listQuery->andFilterWhere(['>=', 'repayment.r_repay_date', $this->start_time])
             ->andFilterWhere(['<=', 'repayment.r_repay_date', $this->end_time]);
+
+        $overdueQuery = $overdueQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
+            ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
 
         $totalQuery = $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
             ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
