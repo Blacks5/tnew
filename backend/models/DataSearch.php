@@ -217,10 +217,14 @@ class DataSearch extends CoreBackendModel
                 sum(r_interest) as interest,
                 sum(r_overdue_money) as overdue'
             ]);
-         $totalQuery = clone $query;
-         $listQuery = clone $query;
-         $listQuery = $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
-             ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
+        $totalQuery = clone $query;
+        $listQuery = clone $query;  // 已还
+        $overdueQuery = clone $query; // 未还
+        $repayQuery = $listQuery->andFilterWhere(['>=', 'repayment.r_pre_repay_date', $this->start_time])
+            ->andFilterWhere(['<=', 'repayment.r_pre_repay_date', $this->end_time]);
+
+        $overdueQuery = $overdueQuery->andFilterWhere(['>=', 'repayment.r_repay_date', $this->start_time])
+            ->andFilterWhere(['<=', 'repayment.r_repay_date', $this->end_time]);
 
         $totalQuery = $totalQuery->andFilterWhere(['>=', 'orders.o_created_at', $this->start_time])
             ->andFilterWhere(['<=', 'orders.o_created_at', $this->end_time]);
@@ -237,8 +241,8 @@ class DataSearch extends CoreBackendModel
         $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
 
         $total= $totalQuery->asArray()->one();
-        $overdueQuery = clone $listQuery;
-        $repayQuery = clone $listQuery;
+
+        //$repayQuery = clone $listQuery;
         $data['repayTotal']      = round($total['total'], 0);        //所有月供
         $data['principal']  = round($total['principal'], 0);   //本金
         $data['interest']   = round($total['interest'], 0);    //利息
