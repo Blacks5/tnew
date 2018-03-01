@@ -188,7 +188,7 @@
                         status : $('#picker').attr('data-values')
                     } , function(html , realPage){
                         $(".weui-loadmore").hide();
-                        if((realPage + 1) == _this.currPage){
+                        if(realPage == _this.currPage){
                             $(".content-padded").append(html);
                             // 绑定相关操作
                             _this.bindAction();
