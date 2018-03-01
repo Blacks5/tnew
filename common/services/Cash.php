@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-17 16:43:52
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-11 17:21:17
+ * @Last Modified time: 2018-03-01 11:19:52
  */
 namespace common\services;
 
@@ -33,7 +33,7 @@ class Cash extends Service {
 	// 四要素验证
 	private $queryFourFactorRouter = '/orders/factory';
 	// 每一页显示的数据量
-	private $range = 15;
+	private $range = 2;
 
 	/**
 	 * 获取查询收据
