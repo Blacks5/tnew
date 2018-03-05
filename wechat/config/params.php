@@ -13,15 +13,15 @@ return [
          * 账号基本信息，请从微信公众平台/开放平台获取
          */
         // 测试
-        // 'app_id'  => 'wxf757d1e9b8ddd8fd',         // AppID
-        // 'secret'  => '22fde021baf36fddaa8b15dcd867c4c7',     // AppSecret
-        // 'token'   => '234f235f235rf235gh2354rdf24rfc',          // Token
-        // 'aes_key' => 'ojD0UQMVQ1CoAkFh31uP0XngZ54LlhZtbdyVo8hBbuu',                    // EncodingAESKey，安全模式下请一定要填写！！！
-        // 正式
-        'app_id'  => 'wx34acc0fd1b7cb76e',         // AppID
-        'secret'  => '1a277125d599d16c898e2e412a6fb2d7',     // AppSecret
+        'app_id'  => 'wxf757d1e9b8ddd8fd',         // AppID
+        'secret'  => '22fde021baf36fddaa8b15dcd867c4c7',     // AppSecret
         'token'   => '234f235f235rf235gh2354rdf24rfc',          // Token
         'aes_key' => 'ojD0UQMVQ1CoAkFh31uP0XngZ54LlhZtbdyVo8hBbuu',                    // EncodingAESKey，安全模式下请一定要填写！！！
+        // 正式
+        // 'app_id'  => 'wx34acc0fd1b7cb76e',         // AppID
+        // 'secret'  => '1a277125d599d16c898e2e412a6fb2d7',     // AppSecret
+        // 'token'   => '234f235f235rf235gh2354rdf24rfc',          // Token
+        // 'aes_key' => 'ojD0UQMVQ1CoAkFh31uP0XngZ54LlhZtbdyVo8hBbuu',                    // EncodingAESKey，安全模式下请一定要填写！！！
         /**
          * 日志配置
          *

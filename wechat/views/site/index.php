@@ -77,7 +77,7 @@
             <img src="/wechat/images/icon_nav_cashr.png" alt="">
         </div>
         <p class="weui-grid__label">
-            现金贷订单
+            消费贷订单
         </p>
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['cash/order-list'])?>" class="weui-grid js_grid">
@@ -85,7 +85,7 @@
             <img src="/wechat/images/icon_nav_cash.png" alt="">
         </div>
         <p class="weui-grid__label">
-            现金贷审核
+            消费贷审核
         </p>
     </a>
     <a href="<?= Yii::$app->getUrlManager()->createUrl(['site/register'])?>" class="weui-grid js_grid">
