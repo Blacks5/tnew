@@ -36,14 +36,31 @@ class DataController extends CoreBackendController
     }
 
     /**
-     * 获取平台总数据
+     * 获取平台总数据(3c new)
      * @return string
      * @author OneStep
      */
     public function actionGather()
     {
         $data = new DataSearch();
-        $list = $data->getLoanTotal(\yii::$app->request->getQueryParams());
+        $list = $data->getLoanTotal(\yii::$app->request->getQueryParams(), '>=');
+        $province = Helper::getAllProvince();
+
+        return $this->render('gather',[
+            'data'=>$list['data'],
+            'users'=>$list['user'],
+            'area' => $province,
+            'sear' => $list['sear'],
+        ]);
+    }
+
+    /**
+     * 获取凭条数据 (3c old)
+     * @return string
+     */
+    public function actionOldGather(){
+        $data = new DataSearch();
+        $list = $data->getLoanTotal(\yii::$app->request->getQueryParams(), '<=');
         $province = Helper::getAllProvince();
 
         return $this->render('gather',[
