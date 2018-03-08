@@ -153,6 +153,7 @@
                                                     <th>贵宾服务包捆绑率</th>
                                                     <th class="client-status">总提单</th>
                                                     <th>成功提单</th>
+                                                    <th>常规/促销</th>
                                                     <th>总借出金额</th>
                                                     <th>逾期单数</th>
                                                     <th>逾期金额</th>
@@ -173,6 +174,7 @@
                                                         <td class="client-status"><?= $_v['serviceRadio'] ?>%</td>
                                                         <td class="client-status"><?= $_v['orderCount'] ?></td>
                                                         <td class="client-status"><?= $_v['acceptedCount'] ?></td>
+                                                        <td class="client-status"><?= $_v['routineRadio'] ?>% / <?= $_v['promotionRadio'] ?> %</td>
                                                         <td class="client-status"><?= $_v['acceptedAmount'] ?></td>
                                                         <td class="client-status"><?= $_v['overdueCount'] ?></td>
                                                         <td class="client-status"><?= $_v['overdueMoney'] ?></td>
