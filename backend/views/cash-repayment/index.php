@@ -229,7 +229,13 @@
                 var url = this.baseUrl + id + "/repayments";
                 var data = {
                     period: 1,
-                    param: this.param ,
+                    param:{
+                        name:$('input[name=name]').val(),
+                        phone:$('input[name=phone]').val(),
+                        sTime:$('input[name=sTime]').val(),
+                        eTime:$('input[name=eTime]').val()
+                    },
+                    page:this.pageIndex,
                     status: "<?= $repayment ?>"
                 };
                 var index = layer.msg('确定发起还款么?',{
