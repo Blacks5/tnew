@@ -37,33 +37,48 @@ use common\models\CustomerSearch;
                             </div>
 
                             <div class="col-sm-2">
-                                <select class="input form-control" name="CustomerSearch[borrow_status]" id="user-provincex">
+                                <select class="input form-control" 
+                                name="CustomerSearch[borrow_status]" id="user-provincex">
                                         <option value="">借款状态</option>
-                                        <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_SUCCESS){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_SUCCESS?>">已通过</option>
-                                        <option <?php if($sear['borrow_status'] == CustomerSearch::BORROW_STATUS_FAIL){ ?> selected <?php } ?>value="<?=CustomerSearch::BORROW_STATUS_FAIL?>">未通过</option>
+                                        <option <?php if ($sear['borrow_status'] ==
+                                        CustomerSearch::BORROW_STATUS_SUCCESS) {
+                                            ?> selected 
+                                                <?php } ?>
+                                            value="<?=CustomerSearch::BORROW_STATUS_SUCCESS?>">已通过</option>
+                                        <option <?php if ($sear['borrow_status'] ==
+                                        CustomerSearch::BORROW_STATUS_FAIL) {
+                                            ?> selected 
+                                                <?php } ?>
+                                            value="<?=CustomerSearch::BORROW_STATUS_FAIL?>">未通过</option>
                                 </select>
                             </div>
 
                             <div class="col-sm-1">
-                                <select class="input form-control" name="CustomerSearch[c_customer_province]" id="user-province">
+                                <select class="input form-control" 
+                                name="CustomerSearch[c_customer_province]" id="user-province">
                                     <option value="">选择省</option>
-                                    <?php foreach ($provinces as $k=>$v){ ?>
-                                        <option <?php if($sear['c_customer_province'] == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
+                                    <?php foreach ($provinces as $k => $v) { ?>
+                                        <option <?php if ($sear['c_customer_province'] == $k) {
+                                            ?> selected 
+                                                <?php } ?>value="<?= $k ?>"><?=$v?></option>
                                     <?php } ?>
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <select class="input form-control" name="CustomerSearch[c_customer_city]" id="user-city">
+                                <select class="input form-control" 
+                                name="CustomerSearch[c_customer_city]" id="user-city">
                                 </select>
                             </div>
                             <div class="col-sm-1">
-                                <select class="input form-control" name="CustomerSearch[c_customer_county]" id="user-county">
+                                <select class="input form-control" 
+                                name="CustomerSearch[c_customer_county]" id="user-county">
                                 </select>
                             </div>
 
                             <div class="col-sm-3">
                                 <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                    <button type="submit" 
+                                    class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                 </span>
                             </div>
 
@@ -123,13 +138,14 @@ use common\models\CustomerSearch;
                                 <?php foreach ($model as $vo) { ?>
                                     <tr>
                                         <td><?= $vo['c_customer_name']; ?></td>
-                                        <td><?= yii::$app->user->identity->level>1?substr_replace($vo['c_customer_id_card'], str_repeat('*',10),4,-4):$vo['c_customer_id_card']; ?></td>
+                                        <td><?= yii::$app->user->identity->level>1?substr_replace($vo['c_customer_id_card'], str_repeat('*', 10), 4, -4):$vo['c_customer_id_card']; ?></td>
                                         <td>
                                             <i class="fa fa-mobile" style="color: #00a2d4;"></i>
                                             <?= $vo['c_customer_cellphone']; ?>
                                         </td>
                                         <td>
-                                            <?= \common\components\Helper::getAddrName($vo['c_customer_province']).'-', \common\components\Helper::getAddrName($vo['c_customer_city']). '-'. \common\components\Helper::getAddrName($vo['c_customer_county']) ?>
+                                            <?= \common\components\Helper::getAddrName($vo['c_customer_province']). '-', \common\components\Helper::getAddrName($vo['c_customer_city']).
+                                            '-'. \common\components\Helper::getAddrName($vo['c_customer_county']) ?>
                                         </td>
                                         <td><?= $vo['c_total_money'] ?></td>
                                         <td><?= $vo['c_updated_at'] ?></td>
