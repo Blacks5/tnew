@@ -68,7 +68,7 @@
                         <!--分页-->
                         <el-pagination
                                 background
-                                layout="prev, pager, next" :page-size="range"
+                                layout="prev, pager, next" :page-size="range" @current-change="pages"
                                 :total="total">
                         </el-pagination>
                     </div>
@@ -163,6 +163,11 @@
                     area: ['1200px', '800px'],
                     content: "<?= \yii\helpers\Url::toRoute('cash-examine/pass') ?>" + "?id="+user.id
                 })
+            },
+
+            pages: function (val) {
+                this.pageIndex = val;
+                this.toSearch();
             }
         }
     })
