@@ -10,27 +10,36 @@ namespace backend\controllers;
 
 
 use backend\core\CoreBackendController;
+use common\models\User;
 
 class CashRepaymentController extends CoreBackendController
 {
     public function actionWait()
     {
-        return $this->render('index', ['repayment' => 'wait']);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('index', ['repayment' => 'wait', 'user' => $area]);
     }
 
     public function actionOverdue()
     {
-        return $this->render('index', ['repayment' => 'overdue']);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('index', ['repayment' => 'overdue', 'user' => $area]);
     }
 
     public function actionPaid()
     {
-        return $this->render('index', ['repayment' => 'paid']);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('index', ['repayment' => 'paid', 'user' => $area]);
     }
 
     public function actionPaidOff()
     {
-        return $this->render('index', ['repayment' => 'paidOff']);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('index', ['repayment' => 'paidOff', 'user' => $area]);
     }
 
     public function actionLists($orderID)
