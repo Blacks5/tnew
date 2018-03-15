@@ -136,7 +136,12 @@
             baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>",
             dialogFormVisible: false,
             memosID: 0,
-            memos: ''
+            memos: '',
+            region: "<?= $user['area'] ?? '' ?>",
+            regionName: "<?= $user['area_value'] ?>",
+            level: "<?= $user['level'] ?>",
+            dep: "<?= $user['d_department_id'] ?>",
+            createdAt: "<?= $user['created_at'] ?>"
         },
         created: function () {
             this.toSearch();
@@ -157,6 +162,14 @@
                     }
 
                 };
+
+                if (this.level > 1 ) {
+                    header.params.param['region'] = this.region
+                    header.params.param['regionName'] = this.regionName
+                    if (this.dep == 26) {
+                        header.params.param['createdAt'] = this.createdAt
+                    }
+                }
                 this.$http.get(url,header).then(function (data){
                     var json = data.bodyText;
                     var usedData = JSON.parse(json);

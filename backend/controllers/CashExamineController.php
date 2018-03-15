@@ -10,31 +10,41 @@ namespace backend\controllers;
 
 
 use backend\core\CoreBackendController;
+use common\models\User;
 
 class CashExamineController extends CoreBackendController
 {
+
     public function actionWait()
     {
         $examine = 'wait';
-        return $this->render('wait',['examine' => $examine]);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('wait',['examine' => $examine, 'user' => $area]);
     }
 
     public function actionRevoke()
     {
         $examine = 'revoke';
-        return $this->render('wait',['examine' => $examine]);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('wait',['examine' => $examine, 'user' => $area]);
     }
 
     public function actionPass($id = null)
     {
         $examine = 'pass';
-        return $this->render('wait', ['examine' => $examine, 'id' => $id]);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('wait', ['examine' => $examine, 'id' => $id, 'user' => $area]);
     }
 
     public function actionCancel()
     {
         $examine = 'cancel';
-        return $this->render('wait', ['examine' => $examine]);
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('wait', ['examine' => $examine, 'user' => $area]);
     }
 
     public function actionInfo($id)
