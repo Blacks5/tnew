@@ -137,10 +137,14 @@
                 },
                 onConfirm: function (result) {
                     var showValueArr = new Array;
-                    console.log(result);
-                    var province = result[0] ? result[0].value : '0';
-                    var city = result[1] ? result[1].value : '0';
-                    var country = result[2] ? result[2].value : '0';
+
+                    var province = result[0] ? result[0].label : '';
+                    var city = result[1] ? result[1].label : '';
+                    var country = result[2] ? result[2].label : '';
+
+                    var provinceId = result[0] ? result[0].value : '0';
+                    var cityId = result[1] ? result[1].value : '0';
+                    var countryId = result[2] ? result[2].value : '0';
 
                     showValueArr.push(province);
                     showValueArr.push(city);
@@ -148,9 +152,9 @@
 
                     that.val(showValueArr.join(' '));
 
-                    provinceInput.val(province);
-                    cityInput.val(city);
-                    countryInput.val(country);
+                    provinceInput.val(provinceId);
+                    cityInput.val(cityId);
+                    countryInput.val(cityId);
                 }
             });
         });
