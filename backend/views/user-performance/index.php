@@ -135,6 +135,7 @@
                             <a class="list-group-item">已逾期金额比(本金)<span class="badge"><?= $total['overdue_principal_ratio'] ?></span> </a>
                         </div>
                         <div class="list-group col-sm-3">
+                            <a class="list-group-item">不良单数<span class="badge"><?= $total['undesirable'] ?></span> </a>
                             <a class="list-group-item">不良率(金额)<span class="badge"><?= $total['undesirableMoney_ratio'] ?></span> </a>
                             <a class="list-group-item">不良率(单数)<span class="badge"><?= $total['undesirable_ratio'] ?></span> </a>
 

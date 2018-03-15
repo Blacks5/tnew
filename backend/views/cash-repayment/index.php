@@ -82,8 +82,11 @@
                                 <td class="client-status">
                                     <a class="btn btn-info btn-xs" @click="open(value.order_id)">详情</a>
                                     <a class="btn btn-info btn-xs" @click="repayLists(value.order_id)">还款计划</a>
-                                    <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-repayment/to-deduct'))){ ?>
-                                    <a class="btn btn-danger btn-xs" v-if="value.status == 'pending' || value.status == 'aborted'" @click="deduct(value.order_id)">还款</a>
+                                    <?php if (Yii::$app->getUser()
+                                    ->can(yii\helpers\Url::toRoute('cash-repayment/to-deduct'))) { ?>
+                                    <a class="btn btn-danger btn-xs" 
+                                    v-if="value.status == 'pending' || value.status == 'aborted'"
+                                    @click="deduct(value.order_id)">还款</a>
                                     <?php } ?>
                                     <a class="btn btn-success btn-xs disabled" v-if="value.status == 'paying'">正在还款</a>
                                     <a class="btn btn-warning btn-xs disabled" v-if="value.status == 'paid'">已还</a>
@@ -229,7 +232,13 @@
                 var url = this.baseUrl + id + "/repayments";
                 var data = {
                     period: 1,
-                    param: this.param ,
+                    param:{
+                        name:$('input[name=name]').val(),
+                        phone:$('input[name=phone]').val(),
+                        sTime:$('input[name=sTime]').val(),
+                        eTime:$('input[name=eTime]').val()
+                    },
+                    page:this.pageIndex,
                     status: "<?= $repayment ?>"
                 };
                 var index = layer.msg('确定发起还款么?',{

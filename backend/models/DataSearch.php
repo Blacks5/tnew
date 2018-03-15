@@ -182,10 +182,11 @@ class DataSearch extends CoreBackendModel
     /**
      * 获取平台信息(重构的)
      * @param null $param
+     * @param $type >= or <=
      * @return array
      * @author OneStep
      */
-    public function getLoanTotal($param = null)
+    public function getLoanTotal($param = null, $type)
     {
         $this->load($param);
         if(!$this->validate()){
@@ -207,6 +208,7 @@ class DataSearch extends CoreBackendModel
             ->leftJoin(Repayment::tableName(), 'r_orders_id=o_id')
             ->where(['in', 'orders.o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER, ]])
             ->andWhere(['in', 'orders.o_user_id', $userInOrder])
+            ->andWhere([$type, 'orders.o_created_at', strtotime('2017-08-02 00:00:00')])
             ->select(['
                 sum(r_total_repay) as total,
                 sum(r_finance_mangemant_fee) as finance,
@@ -234,9 +236,11 @@ class DataSearch extends CoreBackendModel
             ->select(['sum(orders.o_service_fee) as service,sum(orders.o_inquiry_fee) as inquiry'])
             ->where(['in', 'o_status', [Orders::STATUS_PAYING, Orders::STATUS_PAY_OVER]])
             ->andWhere(['in', 'o_user_id', $userInOrder])
+            ->andWhere([$type, 'o_created_at', strtotime('2017-08-02 00:00:00')])
             ->andFilterWhere(['>=', 'o_created_at', $this->start_time])
             ->andFilterWhere(['<=', 'o_created_at', $this->end_time])
             ->asArray()->one();
+
         $data['serviceFee'] = round($fee['service'], 0);    //商家服务费
         $data['inquiryFee'] = round($fee['inquiry'], 0);     //查询费
 

@@ -158,6 +158,7 @@
                             <div class="col-sm-2">
                                 <a class="btn btn-danger" @click="repayMany">提前还款</a>
                                 <a class="btn btn-info" @click="repayNoOverdue">催收还款</a>
+                                <a class="btn btn-default" @click="prepayment">提前还款(不经过银行)</a>
                             </div>
                             <?php } ?>
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute('borrownew/cancel-personal-protection'))) { ?>
@@ -536,6 +537,35 @@
                     layer.close(index);
                 });
 
+            },
+            prepayment: function () {
+                if (this.repayAmount == 0) {
+                    layer.msg('请先计算还款金额!', {icon: 2});
+                    return false;
+                }
+                var url = baseUrl + "<?= $id ?>/prepayments";
+                var data = { total: $('#repaySelect').val()};
+
+                var token = {headers: {'X-TOKEN': this.token}};
+                var __this = this;
+                var index = layer.confirm('真的要提前还款么?不经过银行哟!!!!!!!!', {
+                    btn: ['确定', '取消']
+                }, function () {
+                    var loading =  layer.load(0, {shade: false});
+                    __this.$http.post(url, data, token).then(function (res) {
+                        layer.close(loading);
+                        var json = res.bodyText;
+                        var usedData = JSON.parse(json);
+                        if (usedData['success']==true) {
+                            layer.msg('提前还款成功!', {icon:1});
+                        }
+                    }, function (res) {
+                        layer.close(loading);
+                        var json = res.bodyText;
+                        var usedData = JSON.parse(json);
+                        layer.msg(usedData['errors'][0]['message'], {icon:2});
+                    })
+                })
             },
             repayNoOverdue:function () {
                 layer.msg('客官莫急,这个功能开没开发', {icon:2})
