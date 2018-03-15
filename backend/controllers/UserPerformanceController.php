@@ -52,7 +52,7 @@ class UserPerformanceController extends CoreBackendController
         $user = yii::$app->user->identity;
         $area = $yejidrv->getArea($user);
 
-        //var_dump($data['params']);die;
+        //var_dump($area);die;
 
         return $this->render('cash', [
            'data' => $data,

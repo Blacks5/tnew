@@ -14,6 +14,7 @@ use common\components\Helper;
 use common\models\Orders;
 use common\models\Repayment;
 use common\models\RepaymentSearch;
+use common\models\TooRegion;
 use yii\httpclient\Client;
 use function GuzzleHttp\Promise\all;
 use yii\data\Pagination;
@@ -404,22 +405,15 @@ class YejiSearch extends CoreBackendModel{
         $params['area'] = $data['area'];
         $params['area_value'] = $data['area_value'];
         $params['id'] = $data['id'];
+
+        if ($data['level'] > 1) {
+            $user = Yii::$app->user->getIdentity();
+            $user->department_id == 26 ? $params['created_at'] = $user['created_at'] : null;
+            $params[$data['area']] = $data['area_value'];
+        }
+
         try {
             $url = yii::$app->params['v2_cash'] . 'saleCount';
-            //$url = 'http://cash.app/v1/orders/saleCount';
-            //$url = 'http://cash.devapi.tnew.cn/v1/orders/saleCount';
-            $sendData = http_build_query($data);
-//            $options = [
-//                'http' => [
-//                    'method' => 'GET',
-//                    'header' => "Content-type: application/x-www-form-urlencoded \r\n" .
-//                                "X-TOKEN: ". yii::$app->params['CASH_API_TOKEN'] ."\r\n",
-//
-//                    'content' => $sendData
-//                ]
-//            ];
-//            $context = stream_context_create($options);
-//            $data['list'] = json_decode(file_get_contents($url, false, $context), true);
 
             $httpClient = new Client();
             $response =  $httpClient->get($url, $params, ['X-TOKEN'=>$_SESSION['V2_TOKEN']])->send();

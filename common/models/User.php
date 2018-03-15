@@ -381,6 +381,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
             'd_department_id' => $user->department_id,
             'area' => '',
             'area_value' => '',
+            'created_at' => $user->created_at,
         ];
 
         $job_area = [1=>'province', 2=>'province', 3=>'city', 4=>'county', 5=> 'county', 6=>'county'];
