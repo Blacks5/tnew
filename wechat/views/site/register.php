@@ -137,10 +137,10 @@
                 },
                 onConfirm: function (result) {
                     var showValueArr = new Array;
-
-                    var province = result[0] ? result[0].label : '';
-                    var city = result[1] ? result[1].label : '';
-                    var country = result[2] ? result[2].label : '';
+                    console.log(result);
+                    var province = result[0] ? result[0].value : '0';
+                    var city = result[1] ? result[1].value : '0';
+                    var country = result[2] ? result[2].value : '0';
 
                     showValueArr.push(province);
                     showValueArr.push(city);
