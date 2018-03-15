@@ -100,9 +100,9 @@ class SiteController extends BaseController {
 				'password_hash_1' => $request->post('password_confirm', ''),
 				'realname' => $request->post('realName', ''),
 				'id_card_num' => $request->post('certNo', ''),
-				'province' => $request->post('province', ''),
-				'city' => $request->post('city', ''),
-				'county' => $request->post('county', ''),
+				'province' => $request->post('province', '0'),
+				'city' => $request->post('city', '0'),
+				'county' => $request->post('county', '0'),
 				'address' => $request->post('address', ''),
 				'email' => $request->post('email', ''),
 			];
