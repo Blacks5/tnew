@@ -142,15 +142,19 @@
                     var city = result[1] ? result[1].label : '';
                     var country = result[2] ? result[2].label : '';
 
+                    var provinceId = result[0] ? result[0].value : '0';
+                    var cityId = result[1] ? result[1].value : '0';
+                    var countryId = result[2] ? result[2].value : '0';
+
                     showValueArr.push(province);
                     showValueArr.push(city);
                     showValueArr.push(country);
 
                     that.val(showValueArr.join(' '));
 
-                    provinceInput.val(province);
-                    cityInput.val(city);
-                    countryInput.val(country);
+                    provinceInput.val(provinceId);
+                    cityInput.val(cityId);
+                    countryInput.val(cityId);
                 }
             });
         });
