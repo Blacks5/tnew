@@ -62,6 +62,9 @@
                         <input type="hidden" class="province" name="province" value="" />
                         <input type="hidden" class="city" name="city" value="" />
                         <input type="hidden" class="county" name="county" value="" />
+                        <input type="hidden" class="province_id" name="province_id" value="" />
+                        <input type="hidden" class="city_id" name="city_id" value="" />
+                        <input type="hidden" class="county_id" name="county_id" value="" />
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -126,6 +129,9 @@
             var provinceInput = that.siblings('input.province');
             var cityInput = that.siblings('input.city');
             var countryInput = that.siblings('input.county');
+            var provinceIdInput = that.siblings('input.province_id');
+            var cityIdInput = that.siblings('input.city_id');
+            var countryIdInput = that.siblings('input.county_id');
 
             var defaultValue = [24, 275, 2755];
 
@@ -152,9 +158,13 @@
 
                     that.val(showValueArr.join(' '));
 
-                    provinceInput.val(provinceId);
-                    cityInput.val(cityId);
-                    countryInput.val(cityId);
+                    provinceInput.val(province);
+                    cityInput.val(city);
+                    countryInput.val(country);
+
+                    provinceIdInput.val(provinceId);
+                    cityIdInput.val(cityId);
+                    countryIdInput.val(countryId);
                 }
             });
         });

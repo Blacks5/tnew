@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-22 10:48:34
  * @Last Modified by:   MuMu
- * @Last Modified time: 2018-01-29 14:59:29
+ * @Last Modified time: 2018-03-15 18:03:36
  */
 
 namespace common\services;
@@ -53,9 +53,17 @@ class User extends Service {
 		try {
 			$user = new \common\models\User;
 
+			$data = $params;
+
+			$data['province'] = $data['province_id'];
+			$data['city'] = $data['city_id'];
+			$data['county'] = $data['county_id'];
+
+			unset($data['province_id'] , $data['city_id'] , $data['county_id']);
+
 			$params['status'] = \common\models\User::STATUS_ACTIVE;
 
-			if (!$user->createUser(['User' => $params])) {
+			if (!$user->createUser(['User' => $data])) {
 				return false;
 			}
 		} catch (CustomBackendException $e) {
@@ -82,6 +90,9 @@ class User extends Service {
 				'province' => $params['province'],
 				'city' => $params['city'],
 				'county' => $params['county'],
+				'province_id' => $params['province_id'],
+				'city_id' => $params['city_id'],
+				'county_id' => $params['county_id'],
 				'address' => $params['address'],
 				'email' => $params['email'],
 				'department_id' => $params['department_id'],
