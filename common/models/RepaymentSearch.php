@@ -176,7 +176,7 @@ class RepaymentSearch extends CoreBackendModel
      */
     public function isThisMonth($order_id){
         $repayment = Repayment::find()->where(['r_orders_id'=>$order_id])->all();
-        $date = Carbon::now();
+        $date = Carbon::createFromTimestamp(date('Y-m-d'));
         foreach ($repayment as $k => $v){
             $reDate = Carbon::createFromTimestamp($v['r_pre_repay_date']);
             if($reDate->month == $date->month){    //判断当期应还的月份

@@ -178,7 +178,6 @@
                     this.params = usedData['data']['param'];
                     this.pageCount = usedData['data']['list']['total'];
                     this.pageIndex = usedData['data']['list']['current_page'];
-                    console.info(this.dataList[0]['component'][0]['interest']);
                 },function (response){
                     console.log(response['body']['errors']);
                     layer.msg(response['body']['errors'][0]['message'],{icon:2})

@@ -33,7 +33,7 @@
                                     <option value="" selected>全部</option>
                                 <?php }?>
                                 <?php foreach ($area['province'] ?? [] as $k=>$v){ ?>
-                                    <option <?php if($sear['province']??'' == $k){ ?> selected <?php } ?>value="<?=$k?>"><?=$v?></option>
+                                    <option <?php if (!empty($sear['province']) && $sear['province'] == $k) { echo "selected";} ?> value="<?=$k?>"><?=$v?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -69,9 +69,9 @@
                                 var province_id = $(this).val();
                                 $.get(url, {p_id:province_id}, function(data){
                                     var dom = "<option value=''>选择市</option>";
-                                    var t = "<?=$user->city?>";
+                                    var c = "<?= $sear['city'] ?? '' ?>";
                                     $.each(data, function (k, v) {
-                                        dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
+                                        dom += "<option "+((c==k)?'selected':'')+" value="+k+">"+v+"</option>";
                                     })
                                     $("#user-city").html(dom);
 
@@ -84,7 +84,7 @@
                                 var city_id = $(this).val();
                                 $.get(url, {p_id:city_id}, function(data){
                                     var dom = "<option value=''>选择县</option>";
-                                    var t = "<?=$user->county?>";
+                                    var t = "<?=$sear['county'] ?? ''?>";
                                     $.each(data, function (k, v) {
                                         dom += "<option "+((t==k)?'selected':'')+" value="+k+">"+v+"</option>";
                                     })

@@ -139,7 +139,6 @@
                     }
                 }
 
-                console.log(header)
                 this.$http.get(url,header).then(function (data){
                     var json = data.bodyText;
                     var usedData = JSON.parse(json);
