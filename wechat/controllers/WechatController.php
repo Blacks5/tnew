@@ -70,6 +70,15 @@ class WechatController extends Controller {
 
 						return $this->redirect($targetUrl);
 					} else {
+						// 当前环境
+						$env = isset(Yii::$app->params['server_running_env']) ? Yii::$app->params['server_running_env'] : 'develop';
+
+						$tokenKey = 'env:' . $env . ':user:1:accesstoken';
+
+						$token = Yii::$app->cache->get($tokenKey);
+
+						var_dump($token);die;
+						
 						return $this->renderPartial('fail');
 					}
 				} else {
@@ -78,6 +87,8 @@ class WechatController extends Controller {
 
 					return $this->redirect(['login/bind']);
 				}
+			}else{
+				return $this->renderPartial('fail');
 			}
 		} catch (\Overtrue\Socialite\AuthorizeFailedException $e) {
 			return $this->redirect(['site/index']);
