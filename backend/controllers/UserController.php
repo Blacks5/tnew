@@ -137,8 +137,11 @@ class UserController extends CoreBackendController
     {
         $provinces = Helper::getAllProvince();
 
+        $user = new User();
+        $area = $user->getUserArea();
         return $this->render('agent', [
-            'id' => $id
+            'id' => $id,
+            'area' => $area
         ]);
     }
     /**
