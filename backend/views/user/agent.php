@@ -20,7 +20,7 @@
                         <div class="col-sm-2">
                             <el-input v-model="name" placeholder="请输入姓名" clearable></el-input>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" v-if="showArea">
                             <el-cascader expand-trigger="click" :props="selectP" :options="provinces" v-model="selectPro" change-on-select>
                             </el-cascader>
                         </div>
@@ -91,13 +91,17 @@
             name: '',
             inviter: "<?= $id ?>",
             provinces: '',
+            level: "<?= $area['level'] ?>",
+            area: "<?= $area['area'] ?>",
+            area_value: "<?= $area['area_value'] ?>",
+            showArea: true,
             leader: [],
             selectPro: [],
             pageIndex: 1,
             total: 0,
             range: 15,
             selectP: {
-                value: 'region_name',
+                value: 'region_id',
                 label: 'region_name',
                 children: 'all_child'
             },
@@ -106,6 +110,16 @@
         created:function () {
             if (this.provinces =='') {
                 this.getProvinces();
+            }
+            if (this.level > 1) {
+                this.showArea = false;
+                if (this.area == 'province') {
+                    this.selectPro[0] = this.area_value
+                } else if (this.area == 'city') {
+                    this.selectPro[1] = this.area_value
+                } else {
+                    this.selectPro[2] = this.area_value
+                }
             }
             this.getAgent();
         },
@@ -126,9 +140,9 @@
                     params: {
                         terms:{
                             name: this.name,
-                            province: this.selectPro[0],
-                            city: this.selectPro[1],
-                            county: this.selectPro[2],
+                            v1_province_id: this.selectPro[0],
+                            v1_city_id: this.selectPro[1],
+                            v1_county_id: this.selectPro[2],
                             inviter: this.inviter
                         },
                         offset: (this.pageIndex - 1) * this.range,
