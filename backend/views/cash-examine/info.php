@@ -111,12 +111,15 @@
                 <div class="container center" style="margin-top: 30px;">
                     <div class="row" >
                         <?php if(Yii::$app->getUser()->can(yii\helpers\Url::toRoute('cash-examine/examine'))){ ?>
-                        <div class="col-sm-3 form-group" v-show="order['status'] < 20">
+                        <div class="col-sm-3 form-group" v-show="order['status'] == 15">
                             <select class="form-control"  name="visitorID">
                                 <option v-for="v in visitor" :value="v['id']">{{v['name']}}</option>
                             </select>
                         </div>
-                        <div class="col-sm-3" v-show="order['status'] <20">
+                        <div class="col-sm-3" v-show="order['status'] == 10">
+                            <button class="btn btn-info" type="button" @click="canVisitor">初审通过</button>
+                        </div>
+                        <div class="col-sm-3" v-show="order['status'] == 15">
                             <button class="btn btn-info" type="button" @click="setVisitor">分配上门审核人员</button>
                         </div>
                         <div class="col-sm-2" v-show="order['status'] == 30">
@@ -277,6 +280,11 @@
 
                 this.postOrder(url, header);
             },
+            canVisitor: function () {
+                var url = baseUrl + "<?= $id ?>/canVisitor";
+                var header = [];
+                this.postOrder(url, header);
+            },
             examineTwo: function(){
                 var url = baseUrl + "<?= $id ?>/examine/second";
                 var __this = this;
@@ -433,7 +441,7 @@
             },
             getStatus: function(data){
                 var status = {
-                    1:'待分配外访人员',
+                    1:'待初审',
                     2:'待上传一审照片',
                     5:'待上传一审照片',
                     3:'待一审',
@@ -444,7 +452,8 @@
                     9:'签约失败',
                     10:'正在还款',
                     11:'已还清',
-                    12:'已拒绝'
+                    12:'已拒绝',
+                    14: '待分配外访人员',
                 };
                 return status[data];
             },

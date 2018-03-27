@@ -23,6 +23,14 @@ class CashExamineController extends CoreBackendController
         return $this->render('wait',['examine' => $examine, 'user' => $area]);
     }
 
+    public function actionFirst()
+    {
+        $examine = 'first';
+        $user = new User();
+        $area = $user->getUserArea();
+        return $this->render('wait', ['examine' => $examine, 'user' => $area]);
+    }
+
     public function actionRevoke()
     {
         $examine = 'revoke';
