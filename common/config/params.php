@@ -359,5 +359,5 @@ return [
 	// 服务之间通信TOKEN
 	'server_communicate_token' => 'e4f193277b664c4695f36b00a0b8bbe45a02ae98097ae151798135',
 	// 服务运行环境 master develop
-	'server_running_env' => 'master',
+	'server_running_env' => 'develop',
 ];
