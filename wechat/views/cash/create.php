@@ -30,6 +30,15 @@
                         </div>
                         <div class="weui-cell weui-cell_select-picker">
                             <div class="weui-cell__hd">
+                                <label class="weui-label">借款用途</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" id="purposeType" type="text" value="请选择借款用途">
+                            </div>
+                            <input type="hidden" name="purpose">
+                        </div>
+                        <div class="weui-cell weui-cell_select-picker">
+                            <div class="weui-cell__hd">
                                 <label class="weui-label">产品类型</label>
                             </div>
                             <div class="weui-cell__bd">
@@ -117,6 +126,13 @@
                             <div class="weui-cell__hd"><label class="weui-label">调查地址</label></div>
                             <div class="weui-cell__bd">
                                 <input class="weui-input" type="text" name="address" placeholder="请输入调查地址">
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">备注</label></div>
+                            <div class="weui-cell__bd">
+                                <textarea class="weui-textarea" name="remark" placeholder="请输入备注" id="remarkTextArea"></textarea>
+                                <div class="weui-textarea-counter"><span id="remarkCounter">0</span>/200</div>
                             </div>
                         </div>
                     </form>
@@ -275,6 +291,8 @@
     var installmentCycle = <?=$installmentCycle?>;
     // 产品类型
     var cashProductType = <?=$cashProductType?>;
+    // 借款用途
+    var casePurpose = <?=$casePurpose?>;
     // 婚姻状况
     var maritalSituation = <?=$maritalSituation?>;
     // 联系人关系
@@ -309,6 +327,7 @@
             successUrl : successUrl,
             installmentCycle : installmentCycle,
             cashProductType : cashProductType,
+            casePurpose : casePurpose,
             maritalSituation : maritalSituation,
             contactRelationship : contactRelationship,
             houseProperty : houseProperty
