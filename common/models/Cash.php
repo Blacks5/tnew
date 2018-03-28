@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-20 13:47:36
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-08 15:57:42
+ * @Last Modified time: 2018-03-28 11:37:26
  */
 
 namespace common\models;
@@ -19,6 +19,7 @@ class Cash extends CoreCommonActiveRecord {
 	public $installmentCycle;
 	public $installmentPeriod;
 	public $productType;
+	public $purpose;
 	public $realName;
 	public $certNo;
 	public $bankCardNo;
@@ -40,6 +41,7 @@ class Cash extends CoreCommonActiveRecord {
 	public $contactName;
 	public $contactRelation;
 	public $contactPhone;
+	public $remark;
 
 	/**
 	 * @inheritdoc
@@ -62,6 +64,8 @@ class Cash extends CoreCommonActiveRecord {
 			['installmentPeriod', 'integer', 'message' => '请选择分期时长'],
 			['productType', 'required', 'message' => '请选择产品类型'],
 			['productType', 'integer', 'message' => '请选择产品类型'],
+			['purpose', 'required', 'message' => '请选择借款用途'],
+			['purpose', 'string', 'message' => '请选择借款用途', 'length' => [1, 20]],
 			['realName', 'required', 'message' => '请输入客户姓名'],
 			['realName', 'string', 'message' => '客户姓名不合法', 'length' => [2, 10]],
 			['certNo', 'required', 'message' => '请输入身份证号'],
@@ -109,6 +113,8 @@ class Cash extends CoreCommonActiveRecord {
 			['qq', 'string', 'message' => 'QQ账号长度在20以内', 'length' => [0, 20]],
 			['alipay', 'required', 'message' => '请输入支付宝账号'],
 			['alipay', 'string', 'message' => '支付宝账号长度在40以内', 'length' => [0, 40]],
+			['remark', 'required', 'message' => '请输入备注'],
+			['remark', 'string', 'message' => '备注长度在200以内', 'length' => [0, 200]],
 		];
 	}
 
@@ -121,6 +127,7 @@ class Cash extends CoreCommonActiveRecord {
 			'installmentCycle' => '分期方式',
 			'installmentPeriod' => '分期时长',
 			'productType' => '产品类型',
+			'purpose' => '借款用途',
 			'realName' => '客户姓名',
 			'certNo' => '身份证号',
 			'bankCardNo' => '银行卡号',
@@ -144,16 +151,17 @@ class Cash extends CoreCommonActiveRecord {
 			'wechat' => '微信账号',
 			'qq' => 'QQ账号',
 			'alipay' => '支付宝账号',
+			'remark' => '备注',
 		];
 	}
 
 	// 设置验证场景
 	public function scenarios() {
 		$scenarios = parent::scenarios();
-		$scenarios['loanInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod'];
-		$scenarios['customerInfo'] = ['realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address'];
+		$scenarios['loanInfo'] = ['loanAmount', 'purpose', 'productType', 'installmentCycle', 'installmentPeriod'];
+		$scenarios['customerInfo'] = ['realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address', 'remark'];
 		$scenarios['detailInfo'] = ['gender', 'marital', 'monthlyIncome', 'houseProperty', 'cardAddress', 'currentAddress', 'jobName', 'jobAddress', 'jobPhone', 'wechat', 'qq', 'alipay'];
-		$scenarios['orderInfo'] = ['loanAmount', 'productType', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address', 'gender', 'marital', 'monthlyIncome', 'houseProperty', 'cardAddress', 'currentAddress', 'jobName', 'jobAddress', 'jobPhone', 'wechat', 'qq', 'alipay'];
+		$scenarios['orderInfo'] = ['loanAmount', 'purpose', 'productType', 'installmentCycle', 'installmentPeriod', 'realName', 'certNo', 'bankCardNo', 'bankMobileNo', 'mobileNo', 'address', 'gender', 'marital', 'monthlyIncome', 'houseProperty', 'cardAddress', 'currentAddress', 'jobName', 'jobAddress', 'jobPhone', 'wechat', 'qq', 'alipay'];
 		$scenarios['contactInfo'] = ['contactName', 'contactRelation', 'contactPhone'];
 		$scenarios['cancelOrder'] = ['orderID', 'reason'];
 		return $scenarios;
