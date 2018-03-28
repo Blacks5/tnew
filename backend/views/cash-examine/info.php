@@ -25,7 +25,7 @@
                         <a class="list-group-item  col-sm-3">贵宾服务包<span class="badge">{{order['is_add_service_fee']==1?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3" @click="images(order['id'])">图片<span class="badge">点击查看</span></a>
                         <a class="list-group-item  col-sm-3">产品类型<span class="badge">{{ order.product_type == 1?'常规':'促销'}}</span></a>
-                        <a class="list-group-item  col-sm-9" v-if="order.extended_data != null">备注<span class="badge">支付宝:{{order['extended_data'].alipay}}</span></a>
+                        <a class="list-group-item  col-sm-9">备注<span class="badge" v-if="order.extended_data && order.extended_data.remark">{{ order.extended_data.remark }}</span></a>
                     </div>
                 </div>
                 <div class="container" v-if="order['status'] < 90 ">
@@ -69,10 +69,12 @@
                         <a class="list-group-item col-sm-3">客户姓名<span class="badge">{{order['name']}}</span> </a>
                         <a class="list-group-item col-sm-3">客户电话<span class="badge">{{order['phone']}}</span> </a>
                         <a class="list-group-item col-sm-3">身份证<span class="badge">{{identification['number']}}</span> </a>
-                        <a class="list-group-item col-sm-3">性别<span class="badge">{{order['extended_data'] == null?'未填':order.extended_data['gender']}}</span> </a>
-                        <a class="list-group-item col-sm-3">QQ号<span class="badge">{{order['qq']}}</span> </a>
+                        <a class="list-group-item col-sm-3">借款用途<span class="badge" v-if="">{{order.extended_data && order.extended_data.purpose ? order.extended_data.purpose: '未填'}}</span></a>
+
+                        <a class="list-group-item col-sm-3">QQ号<span class="badge">{{order['qq']}}</span></a>
                         <a class="list-group-item col-sm-3">微信号<span class="badge">{{order['wechat_number']}}</span> </a>
                         <a class="list-group-item col-sm-6">户籍地址<span class="badge">{{identification['address']}}</span> </a>
+
                         <a class="list-group-item col-sm-3">工作单位<span class="badge">{{job['name']}}</span> </a>
                         <a class="list-group-item col-sm-3">工作电话<span class="badge">{{job['phone']}}</span> </a>
                         <a class="list-group-item col-sm-6">工作地址<span class="badge">{{job['address']}}</span> </a>
@@ -81,7 +83,9 @@
                         <a class="list-group-item col-sm-3">房屋权属<span class="badge" v-text="getHouse(order.extended_data)"></span> </a>
                         <a class="list-group-item col-sm-6" >现居地址<span class="badge">{{order.address}}</span> </a>
 
-                        <a class="list-group-item col-sm-6">婚姻状况<span class="badge" v-if="marital != null">{{ getMarital(marital['status']) }} - {{marital['spouse_name']}} - {{marital['spouse_phone']}}</span> </a>
+                        <a class="list-group-item col-sm-3">婚姻状况<span class="badge" v-if="marital != null">{{ getMarital(marital['status']) }}</span> </a>
+                        <a class="list-group-item col-sm-3">性别<span class="badge">{{order['extended_data'] == null?'未填':order.extended_data['gender']}}</span> </a>
+
                         <a class="list-group-item col-sm-6">还款信息
                             <?php if (Yii::$app->getUser()->can(yii\helpers\Url::toRoute(['customer/change-bank-info']))) {?><button class="btn btn-xs btn-danger" @click="changeBank">修改</button><?php }?>
                             <span class="badge">{{bank['bank_name']}} - {{bank['number']}}</span></a>

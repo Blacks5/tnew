@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-16 09:38:35
  * @Last Modified by:   MuMu
- * @Last Modified time: 2017-12-11 17:20:05
+ * @Last Modified time: 2018-03-28 11:38:28
  */
 namespace wechat\controllers;
 
@@ -51,6 +51,7 @@ class CashController extends BaseController {
 				'cycle' => $request->post('installmentCycle', ''),
 				'period' => $request->post('installmentPeriod', ''),
 				'productType' => $request->post('productType', 0),
+				'purpose' => $request->post('purpose', ''),
 				'isFreePackFee' => $request->post('isProtectionFee', 0) ? 1 : 0,
 				'isAddServiceFee' => $request->post('isVipServiceFee', 0) ? 1 : 0,
 				'bankNumber' => $request->post('bankCardNo', ''),
@@ -71,6 +72,7 @@ class CashController extends BaseController {
 				'wechat' => $request->post('wechat', ''),
 				'qq' => $request->post('qq', ''),
 				'alipay' => $request->post('alipay', ''),
+				'remark' => $request->post('remark', ''),
 			];
 
 			try {
@@ -101,6 +103,8 @@ class CashController extends BaseController {
 		} else {
 			// 分期方式配置
 			$installmentCycle = Yii::$app->params['installmentCycle'];
+			// 借款用途
+			$casePurpose = Yii::$app->params['casePurpose'];
 			// 产品配置
 			$cashProductType = Yii::$app->params['cashProductType'];
 			// 婚姻状况配置
@@ -117,6 +121,7 @@ class CashController extends BaseController {
 				'maritalSituation' => json_encode($maritalSituation, JSON_UNESCAPED_UNICODE),
 				'contactRelationship' => json_encode($contactRelationship, JSON_UNESCAPED_UNICODE),
 				'houseProperty' => json_encode($houseProperty, JSON_UNESCAPED_UNICODE),
+				'casePurpose' => json_encode($casePurpose, JSON_UNESCAPED_UNICODE),
 				'js' => Wechat::jssdk(),
 			]);
 		}

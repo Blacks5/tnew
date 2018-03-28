@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-12-08 16:25:54
+ * @Last Modified time: 2018-03-28 11:31:01
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -17,6 +17,8 @@
 		this.installmentCycle = options.installmentCycle || [];
 		// 产品类型
 		this.cashProductType = options.cashProductType || [];
+		// 借款用途
+		this.casePurpose = options.casePurpose || [];
 		// 婚姻状况
 		this.maritalSituation = options.maritalSituation || [];
 		// 联系人关系
@@ -95,6 +97,29 @@
 		// 分期周期
 		_this.periodsCycle();
 
+		// 借款用途
+		var purpose = Cache.get('purpose');
+		purpose = purpose ? purpose : '';
+		// 初始化借款用途标题
+		var purposeTitle = '请选择婚姻状况';
+		// 选择产品类型
+		_this.casePurpose.forEach(function(value) {
+			if (purpose == value.value) {
+				purposeTitle = value.title;
+			}
+		});
+		$('input[name=purpose]').val(purpose);
+		$('#purposeType').val(purposeTitle);
+
+		$("#purposeType").select({
+			title: "请选择借款用途",
+			items: _this.casePurpose,
+			onChange: function(data) {
+				$('input[name=purpose]').val(data.values);
+				Cache.set('purpose', data.values);
+			}
+		});
+
 		// 监听数据变动
 		$('input[type=text]').bind('blur', function() {
 			var key = $(this).attr('name');
@@ -115,22 +140,21 @@
 			}
 		});
 
-		console.log(Cache.get('gender'));
 		// 监听radio变动
-		$('input[type=radio]').bind('change' , function(){
+		$('input[type=radio]').bind('change', function() {
 			var key = $(this).attr('name');
 			var val = $(this).val();
-			if(key == 'gender'){
-				if(val == '女'){
-					$("input[value=女]").attr('checked' , true);
-					$("input[value=男]").attr('checked' , false);
-				}else{
-					$("input[value=男]").attr('checked' , true);
-					$("input[value=女]").attr('checked' , false);
+			if (key == 'gender') {
+				if (val == '女') {
+					$("input[value=女]").attr('checked', true);
+					$("input[value=男]").attr('checked', false);
+				} else {
+					$("input[value=男]").attr('checked', true);
+					$("input[value=女]").attr('checked', false);
 				}
 			}
 
-			Cache.set(key , val);
+			Cache.set(key, val);
 		});
 
 		// 初始婚姻状况
@@ -190,15 +214,15 @@
 			if (_this.currContactId < _this.maxContacts) {
 				_this.currContactId += 1;
 				_this.buildContactHTML(_this.currContactId);
-				Cache.set('initContacts' , _this.currContactId);
+				Cache.set('initContacts', _this.currContactId);
 			} else {
 				$.toast('最多添加' + _this.maxContacts + '个联系人信息', "text");
 			}
 		});
 
 		// 监听删除联系人操作
-		$('#delContactBtn').on('click' , function(){
-			if(_this.currContactId > _this.initContacts){
+		$('#delContactBtn').on('click', function() {
+			if (_this.currContactId > _this.initContacts) {
 				// 当前序号
 				var serial = _this.currContactId;
 
@@ -212,8 +236,8 @@
 
 				// 减少一个DOM标签
 				_this.currContactId -= 1;
-				Cache.set('initContacts' , _this.currContactId);
-			}else{
+				Cache.set('initContacts', _this.currContactId);
+			} else {
 				$.toast('最少保留' + _this.initContacts + '个联系人信息', "text");
 			}
 		});
@@ -221,6 +245,18 @@
 		// 监听上一步
 		$('#prevStep').bind('click', function() {
 			_this.swiper.slidePrev();
+		});
+
+		// 监听文本框输入限制
+		var couter = $('#remarkCounter');
+		$('#remarkTextArea').on('input propertychange change', function() {
+			var value = $(this).val();
+
+			if (value.length > 200) {
+				$(this).val(value.substr(0, 200));
+			} else {
+				couter.text(value.length);
+			}
 		});
 	}
 
@@ -245,6 +281,11 @@
 			datatype: "n",
 			nullmsg: "请输入贷款金额",
 			errormsg: "贷款金额不合法"
+		}, {
+			ele: "input[name=purpose]",
+			datatype: '*1-20',
+			nullmsg: "请选择借款用途",
+			errormsg: "请选择借款用途"
 		}, {
 			ele: "input[name=productType]",
 			datatype: 'n',
@@ -698,13 +739,13 @@
 					$("input[name=" + key + "]").attr('checked', false);
 				}
 			} else if (-1 !== $.inArray(key, this.radios)) {
-				if(key == 'gender'){
-					if(data[key] == '女'){
-						$("input[value=女]").attr('checked' , true);
-						$("input[value=男]").attr('checked' , false);
-					}else{
-						$("input[value=男]").attr('checked' , true);
-						$("input[value=女]").attr('checked' , false);
+				if (key == 'gender') {
+					if (data[key] == '女') {
+						$("input[value=女]").attr('checked', true);
+						$("input[value=男]").attr('checked', false);
+					} else {
+						$("input[value=男]").attr('checked', true);
+						$("input[value=女]").attr('checked', false);
 					}
 				}
 			} else {
