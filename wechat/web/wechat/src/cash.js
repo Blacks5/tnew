@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2018-03-28 11:31:01
+ * @Last Modified time: 2018-03-28 16:00:40
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -101,7 +101,7 @@
 		var purpose = Cache.get('purpose');
 		purpose = purpose ? purpose : '';
 		// 初始化借款用途标题
-		var purposeTitle = '请选择婚姻状况';
+		var purposeTitle = '';
 		// 选择产品类型
 		_this.casePurpose.forEach(function(value) {
 			if (purpose == value.value) {
@@ -161,7 +161,7 @@
 		var maritalSituation = Cache.get('maritalSituation');
 		maritalSituation = maritalSituation ? maritalSituation : '';
 		// 初始婚姻状况标题
-		var maritalSituationTitle = '请选择婚姻状况';
+		var maritalSituationTitle = '';
 		// 选择产品类型
 		_this.maritalSituation.forEach(function(value) {
 			if (maritalSituation == value.value) {
@@ -183,7 +183,7 @@
 		var houseProperty = Cache.get('houseProperty');
 		houseProperty = houseProperty ? houseProperty : '';
 		// 初始房屋权属标题
-		var housePropertyTitle = '请选择房屋权属';
+		var housePropertyTitle = '';
 		// 选择房屋权属类型
 		_this.houseProperty.forEach(function(value) {
 			if (houseProperty == value.value) {
@@ -553,19 +553,19 @@
 		var installmentCycle = Cache.get('installmentCycle');
 		installmentCycle = installmentCycle ? installmentCycle : '';
 		// 初始分期方式标题
-		var installmentCycleTitle = '请选择分期方式';
+		var installmentCycleTitle = '';
 
 		// 初始分期方式值
 		var installmentPeriod = Cache.get('installmentPeriod');
 		installmentPeriod = installmentPeriod ? installmentPeriod : '';
 		// 初始分期方式标题
-		var installmentPeriodTitle = '请选择分期时长';
+		var installmentPeriodTitle = '';
 
 		// 初始产品类型值
 		var productType = Cache.get('productType');
 		productType = productType ? productType : '';
 		// 初始产品类型标题
-		var productTypeTitle = '请选择产品类型';
+		var productTypeTitle = '';
 
 		// 选择分期方式
 		var cycle = [];
