@@ -371,10 +371,8 @@ class LoanController extends CoreBackendController
 
     public function actionVoucher($order_no)
     {
-        $no = YijifuSign::find()->where(['o_serial_id' => $order_no])->one();
-
         $loan = new Loan();
-        $voucher = $loan->getLoanVoucher($no['merchOrderNo']);
+        $voucher = $loan->getLoanVoucher($order_no);
         //echo "<script>window.open('{$voucher}')</script>";
         return $this->redirect($voucher);
     }

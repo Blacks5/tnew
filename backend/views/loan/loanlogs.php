@@ -76,7 +76,7 @@ $loan_stauts = [
                                                                 <?php if($_v['status'] == 4){ ?>
                                                                     <a href="<?= Yii::$app->getUrlManager()->createUrl(['loan/view', 'y_serial_id' => $_v['y_serial_id']]); ?>"
                                                                        class="btn btn-primary btn-xs">详情</a>
-                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['loan/voucher', 'order_no' => $_v['y_serial_id']]) ?>" class="btn btn-danger btn-xs">对账文件</a>
+                                                                    <a href="<?= Yii::$app->getUrlManager()->createUrl(['loan/voucher', 'order_no' => $_v['contractNo']]) ?>" class="btn btn-danger btn-xs">转账凭证</a>
                                                                 <?php }else{ ?>
                                                                     <a class="btn btn-primary btn-xs">处理中</a>
                                                                 <?php } ?>
