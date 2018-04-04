@@ -5,7 +5,7 @@
  * @Author: MuMu
  * @Date:   2017-11-20 13:47:36
  * @Last Modified by:   MuMu
- * @Last Modified time: 2018-03-28 11:37:26
+ * @Last Modified time: 2018-04-04 17:47:19
  */
 
 namespace common\models;
@@ -73,9 +73,9 @@ class Cash extends CoreCommonActiveRecord {
 			['bankCardNo', 'required', 'message' => '请输入银行卡号'],
 			['bankCardNo', 'string', 'message' => '银行卡号不合法', 'length' => [16, 19]],
 			['bankMobileNo', 'required', 'message' => '请输入银行预留手机号'],
-			['bankMobileNo', 'match', 'message' => '预留手机号不合法', 'pattern' => '/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/'],
+			['bankMobileNo', 'match', 'message' => '预留手机号不合法', 'pattern' => '/^(13[0-9]|14[579]|15[012356789]|16[6]|17[0-9]|18[0-9]|19[89])[0-9]{8}$/'],
 			['mobileNo', 'required', 'message' => '请输入联系手机号'],
-			['mobileNo', 'match', 'message' => '联系手机号不合法', 'pattern' => '/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/'],
+			['mobileNo', 'match', 'message' => '联系手机号不合法', 'pattern' => '/^(13[0-9]|14[579]|15[012356789]|16[6]|17[0-9]|18[0-9]|19[89])[0-9]{8}$/'],
 			['address', 'required', 'message' => '请输入调查地址'],
 			['address', 'string', 'message' => '调查地址长度在2~200之间', 'length' => [2, 200]],
 			['contactName', 'required', 'message' => '请输入联系人姓名'],
@@ -83,7 +83,7 @@ class Cash extends CoreCommonActiveRecord {
 			['contactRelation', 'required', 'message' => '请选择联系人关系'],
 			['contactRelation', 'in', 'message' => '请选择联系人关系', 'range' => ['family', 'workmate', 'friend', 'other']],
 			['contactPhone', 'required', 'message' => '请输入联系人手机'],
-			['contactPhone', 'match', 'message' => '联系人手机不合法', 'pattern' => '/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/'],
+			['contactPhone', 'match', 'message' => '联系人手机不合法', 'pattern' => '/^(13[0-9]|14[579]|15[012356789]|16[6]|17[0-9]|18[0-9]|19[89])[0-9]{8}$/'],
 			['orderID', 'required', 'message' => '参数异常'],
 			['orderID', 'number', 'message' => '参数异常'],
 			['reason', 'required', 'message' => '请输入取消原因'],
@@ -106,7 +106,7 @@ class Cash extends CoreCommonActiveRecord {
 			['jobAddress', 'required', 'message' => '请输入单位地址'],
 			['jobAddress', 'string', 'message' => '单位地址长度在200以内', 'length' => [0, 200]],
 			['jobPhone', 'required', 'message' => '请输入单位电话'],
-			['jobPhone', 'match', 'message' => '单位电话格式不正确', 'pattern' => '/(^0\d{2,3}-?\d{7,8}$)|(^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$)/'],
+			['jobPhone', 'match', 'message' => '单位电话格式不正确', 'pattern' => '/(^(\d{3,4}-?)?\d{7,9}$)|(^(13[0-9]|14[579]|15[012356789]|16[6]|17[0-9]|18[0-9]|19[89])[0-9]{8}$)/'],
 			['wechat', 'required', 'message' => '请输入微信账号'],
 			['wechat', 'string', 'message' => '微信账号长度在40以内', 'length' => [0, 40]],
 			['qq', 'required', 'message' => '请输入QQ账号'],

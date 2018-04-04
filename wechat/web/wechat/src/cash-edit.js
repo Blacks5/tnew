@@ -3,7 +3,7 @@
  * @Author: Admin
  * @Date:   2017-11-17 13:36:31
  * @Last Modified by:   Admin
- * @Last Modified time: 2017-11-27 17:18:10
+ * @Last Modified time: 2018-04-04 17:43:42
  */
 ! function(win) {
 	var cash = window.Cash = function(options) {
@@ -153,7 +153,7 @@
 			errormsg: "单位地址长度在200个字符以内"
 		}, {
 			ele: "input[name=jobPhone]",
-			datatype: /(^0\d{2,3}-?\d{7,8}$)|(^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$)/,
+			datatype: /(^0\d{2,3}-?\d{7,8}$)|(^(13[0-9]|14[579]|15[012356789]|16[6]|17[0-9]|18[0-9]|19[89])[0-9]{8}$)/,
 			ignore: "ignore",
 			nullmsg: "请输入单位电话",
 			errormsg: "单位电话格式不正确"
