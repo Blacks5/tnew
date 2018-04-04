@@ -8,6 +8,7 @@
  */
 
 namespace common\tools\yijifu;
+use backend\components\CustomBackendException;
 use common\models\Stores;
 use common\models\Orders;
 use common\components\CustomCommonException;
@@ -241,6 +242,33 @@ class Loan extends AbstractYijifu
             return $response->getData();
         }
         return false;
+    }
+
+    /**
+     * 付款凭证
+     * @param $merchOrderNo
+     * @return mixed
+     * @throws CustomCommonException
+     * @author OneStep
+     */
+    public function getLoanVoucher($merchOrderNo)
+    {
+        if (empty($merchOrderNo)) {
+            throw new CustomCommonException('缺少参数');
+        }
+
+        $this->service = 'payVoucherView';
+        $common = $this->getCommonParams();
+        $param_arr = [
+            'merchOrderNo' => $merchOrderNo
+        ];
+        $param_arr = array_merge($param_arr, $common);
+        $param_arr = $this->prepQueryParams($param_arr);
+
+        $http_client = new httpClient();
+        $response = $http_client->post($this->api, $param_arr)->send();
+        $header = $response->getHeaders();
+        return $header['location'] ?? '';
     }
 
     /**

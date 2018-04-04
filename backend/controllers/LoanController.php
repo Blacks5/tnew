@@ -1,5 +1,6 @@
 <?php
 namespace backend\controllers;
+use common\models\YijifuSign;
 use common\tools\yijifu\Loan;
 use yii;
 use backend\core\CoreBackendController;
@@ -368,6 +369,13 @@ class LoanController extends CoreBackendController
         ]);
     }
 
+    public function actionVoucher($order_no)
+    {
+        $loan = new Loan();
+        $voucher = $loan->getLoanVoucher($order_no);
+        //echo "<script>window.open('{$voucher}')</script>";
+        return $this->redirect($voucher);
+    }
 
     /**
      * websocket通知
