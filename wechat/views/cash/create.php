@@ -278,7 +278,7 @@
 <script src="/wechat/js/validform.min.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
 <script src="/wechat/js/cache.js"></script>
-<script src="/wechat/src/cash.js?v=0.0.1"></script>
+<script src="/wechat/src/cash.js?v=0.0.2"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
     // 获取每期还款URL
