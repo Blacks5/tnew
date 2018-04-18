@@ -7,10 +7,10 @@
     body{background-color: white;}
     .height{height:60px;padding:20px 0;}
 </style>
-<div class="ibox float-e-margins">
+<div class="ibox float-e-margins" id="list">
     <div class="ibox-content">
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
-            <div class="container-f" id="list">
+            <div class="container-f">
                 <h1 class="text-center">{{order['name']}}的借款详情<span>【{{getStatus(order.order_status)}}】</span></h1>
                 <div class="container">
                     <h3 class="text-danger text-center">订单信息</h3>
@@ -182,22 +182,29 @@
             </div>
         </div>
     </div>
+    <div class="form-group" id="examineTwo" style="display:none">
+        <div class="col-sm-12" style="margin-top: 20px;">
+            <textarea class="form-control" placeholder="请属于理由" id="reasonTwo"></textarea>
+        </div>
+        <div class="col-sm-12">
+            <label class="form-label">审批金额:</label>
+            <input type="text" class="form-control" value="" id="acceptAmount">
+        </div>
+
+        <div class="col-sm-12">
+            <label class="form-label">还款周期:</label>
+            <select class="form-control" id="changePeriod">
+                <option v-for="t in periodOptions[order.repay_cycle]" :value="t" :selected="t === order.period_total">{{ t }} 期</option>
+            </select>
+        </div>
+    </div>
 </div>
 <div class="form-group" id="examine" style="display:none">
     <div class="col-sm-12" style="margin-top: 20px;">
         <textarea type="text" class="form-control" placeholder="请属于理由" id="reason"></textarea>
     </div>
 </div>
-<div class="form-group" id="examineTwo" style="display:none">
-    <div class="col-sm-12" style="margin-top: 20px;">
-        <textarea class="form-control" placeholder="请属于理由" id="reasonTwo"></textarea>
-    </div>
-    <div class="col-sm-12">
-        <label class="form-label">审批金额:</label>
-        <input type="text" class="form-control" value="" id="acceptAmount">
-    </div>
 
-</div>
 <script>
     Vue.use(VueResource);
     var baseUrl = "<?= Yii::$app->params['cashBaseUrl'] ?>";
@@ -220,7 +227,11 @@
             repay: [],
             period: 0,
             repayAmount: 0,
-            overdueAmount: 0
+            overdueAmount: 0,
+            periodOptions: {
+                'week': [4, 8, 12, 24, 48],
+                'month': [6, 9, 12, 18]
+            }
         },
 
         created: function () {
@@ -335,7 +346,8 @@
                         var data = {
                             examine:1,
                             reason:$('#reasonTwo').val(),
-                            acceptAmount:$('#acceptAmount').val()
+                            acceptAmount:$('#acceptAmount').val(),
+                            period: $('#changePeriod').val()
                         };
                         __this.postOrder(url, data);
                     },
@@ -477,7 +489,10 @@
             },
             getContact: function (c) {
                 var data = {
-                    'family': '家人',
+                    'family': '家人-其他',
+                    'parent':'父母',
+                    'spouse':'配偶',
+                    'brothers':'兄弟姐妹',
                     'workmate':'同事',
                     'friend':'朋友',
                     'other':'其它'
