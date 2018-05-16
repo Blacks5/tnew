@@ -10,7 +10,9 @@
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
             <div class="container-f" id="list">
                 <h1 class="text-center" v-if="url == 'deduct-signs'">{{json(data.bank_card)['user_name']}}的放款详情</h1>
-                <h1 class="text-center" v-if="url == 'loans'">{{json(data.bank_card)['user_name']}}的放款详情</h1>
+                <h1 class="text-center" v-if="url == 'loans'">{{json(data.bank_card)['user_name']}}的放款详情 【{{data.extended_data && data.extended_data.type ?
+                    (data.extended_data.type === 'cash' ? '消费贷' : '奖励金')
+                    : '消费贷'}}】</h1>
                 <h1 class="text-center" v-if="url == 'deducts'">{{json(data.bank_card)['user_name']}}的放款详情</h1>
                 <div class="row">
                     <div class="list-group">
@@ -27,6 +29,8 @@
                            @click="change"
                            <?php } ?>
                         >状态<span class="badge">{{data.signText}}</span></a>
+                        <a class="list-group-item col-sm-4" v-if="url === 'loans' && data.status === 'failed'">重新放款<span class="badge" @click="reLoan">点击</span></a>
+                        <a class="list-group-item col-sm-12" v-if="data.statusInfo && data.statusInfo.deductErrorDescription">原因<span class="badge">{{data.statusInfo.deductErrorDescription}}</span></a>
                     </div>
                 </div>
             </div>
@@ -72,6 +76,32 @@
                    return JSON.parse(data);
                }
            },
+            reLoan: function () {
+
+                var __this = this;
+                var url = this.baseUrl + "<?= $id ?>/re-loan";
+                var data = {action:"<?= $url ?>"};
+                var token = {headers:{'X-TOKEN':this.token}};
+                var index = layer.msg('确定从新放款么?',{
+                    btn:['确定','取消'],
+                    btn1:function (){
+                        __this.$http.post(url, data,token).then(function(data){
+                            var json = data.bodyText;
+                            var usedData = JSON.parse(json);
+
+                            layer.msg(usedData['data'],{icon:1});
+                        },function(response){
+                            layer.close(loading);
+                            var json = response.bodyText;
+                            var usedData = JSON.parse(json);
+                            layer.msg(usedData['errors'][0]['message'], {icon:2});
+                        });
+                    },
+                    btn2:function (){
+                        layer.close(index);
+                    }
+                })
+            },
            change: function ()
            {
                var __this = this;

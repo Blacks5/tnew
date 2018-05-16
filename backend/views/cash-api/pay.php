@@ -13,6 +13,13 @@
             <div class="col-sm-3">
                 <input type="text" class="form-control" name="signID" v-model:value="params['signID']" placeholder="签约ID">
             </div>
+            <div class="col-sm-3" v-if="url == 'loans'">
+                <el-select v-model="params.type">
+                    <el-option value="all"  label="全部"></el-option>
+                    <el-option value="cash" label="消费贷"></el-option>
+                    <el-option value="reward" label="奖励金"></el-option>
+                </el-select>
+            </div>
             <div class="col-sm-2">
                 <div class="form-group">
                     <button type="input" class="btn btn-info"  @click="toSearchBtn"><i class="fa fa-search" ></i>查询</button>
@@ -86,7 +93,8 @@
         data:{
             params: {
                 order_number: '',
-                signID: ''
+                signID: '',
+                type: 'all'
             },
             lists:[],
             token: window.sessionStorage.getItem('V2_TOKEN'),
@@ -107,6 +115,7 @@
                         param:{
                             order_number:this.params['order_number'],
                             signID: this.params['signID'],
+                            type: this.params['type']
                         },
                         page: this.pageIndex
                     }

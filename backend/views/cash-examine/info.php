@@ -11,7 +11,7 @@
     <div class="ibox-content">
         <div class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
             <div class="container-f">
-                <h1 class="text-center">{{order['name']}}的借款详情<span>【{{getStatus(order.order_status)}}】</span></h1>
+                <h1 class="text-center">{{order['name']}}的借款详情<span>【{{getStatus(order.order_status)}}】</span> <span>【{{order.saleman_id ? '销售订单' : '客户订单'}}】</span></span></h1>
                 <div class="container">
                     <h3 class="text-danger text-center">订单信息</h3>
                     <div class="hr-line-dashed"></div>
@@ -96,7 +96,8 @@
                 <div class="container">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核信息</h3></div>
                     <div class="list-group" v-if="order.sale != null">
-                        <a class="list-group-item col-sm-3">销售人员<span class="badge">{{order['sale']['name'] }} - {{order['sale']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3" v-if="order.saleman_id">销售人员<span class="badge">{{order['sale']['name'] }} - {{order['sale']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3" v-else>客户订单</a>
                     </div>
                     <div class="list-group" v-if="order['status'] >=20 && order.visitor != null">
                         <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}} - {{order['visitor']['phone']}}</span></a>
