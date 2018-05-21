@@ -9,28 +9,12 @@
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
-                    <div class="row">
-                        <ol class="breadcrumb">
-                            <li><a @click="toSearch(0,'<?= $id ??''?>')">首页</a></li>
-                            <li v-for="(u, index) in leader"><a  @click="toSearch(index + 1, u.id)">{{ u.name }}</a></li>
-                            <li class="active">详细信息</li>
-                        </ol>
-                    </div>
                     <div class="row" style="margin: 10px 0px; ">
                         <div class="col-sm-2">
-                            <el-input v-model="name" placeholder="请输入姓名" clearable></el-input>
-                        </div>
-                        <div class="col-sm-3" v-if="showArea">
-                            <el-cascader expand-trigger="click" :props="selectP" :options="provinces" v-model="selectPro" change-on-select>
-                            </el-cascader>
+                            <el-input v-model="phone" placeholder="请输入手机号码" clearable></el-input>
                         </div>
                         <div class="col-sm-3">
-                            <a class="btn btn-success" @click="getAgent">查询</a>
-                        </div>
-                        <div class="col-sm-3" v-if="user">
-                            <el-badge :value="user.subordinate_amount" class="item">
-                                <el-button size="small">邀请者: {{ user.name }}</el-button>
-                            </el-badge>
+                            <a class="btn btn-success" @click="toSearch">查询</a>
                         </div>
                     </div>
 
@@ -38,11 +22,9 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>员工编号</th>
+                                <th>用户编号</th>
                                 <th>真实姓名</th>
                                 <th>手机号码</th>
-                                <th>地区</th>
-                                <th>下级业绩</th>
                                 <th>创建时间</th>
                                 <th>邀请者</th>
                                 <th>操作</th>
@@ -50,16 +32,18 @@
                             </thead>
                             <tbody>
                                 <tr v-for="item in lists">
-                                    <td>{{ item.user && item.user.id ? item.user.id: '' }}</td>
-                                    <td>{{ item.user && item.user.name ? item.user.name: '' }}</td>
-                                    <td>{{ item.user && item.user.phone ? item.user.phone: '' }}</td>
-                                    <th>{{ item.region && item.region.province }} - {{ item.region && item.region.city }} - {{ item.region && item.region.county }}</th>
-                                    <th>{{ item.subordinate_amount }}</th>
+                                    <td>{{ item.id }}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.phone }}</td>
                                     <th>{{ item.created_at }}</th>
-                                    <th>{{ item.nearest_inviter && item.nearest_inviter.name ? item.nearest_inviter.name: '没找到' }}</th>
                                     <th>
-                                        <a class="btn btn-info btn-xs" @click="getLeader(item.user)">查看下级</a>
-                                        <a class="btn btn-danger btn-xs" @click="getOrder(item.user)">查看订单</a>
+                                        <span v-for="(i, index) in item.inviter_path" :key="index" v-if="item.inviter_path.length - 1 > index">
+                                            {{i.name}} <i class="el-icon-arrow-right" v-if="index < item.inviter_path.length -2"></i>
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <a class="btn btn-info btn-xs" @click="invitee(item.phone)">查看下级</a>
+                                        <a class="btn btn-danger btn-xs" @click="getOrder(item.id)">查看订单</a>
                                     </th>
                                 </tr>
 
@@ -87,64 +71,24 @@
             baseUrl: "<?= Yii::$app->params['cashBaseUrl'] ?>",
             userUrl: "<?= Yii::$app->params['v2_user'] ?>",
             token: window.sessionStorage.getItem('V2_TOKEN'),
+            phone: '',
             lists: [],
             name: '',
-            inviter: "<?= $id ?>",
-            provinces: '',
-            level: "<?= $area['level'] ?>",
-            area: "<?= $area['area'] ?>",
-            area_value: "<?= $area['area_value'] ?>",
-            showArea: true,
-            leader: [],
             selectPro: [],
             pageIndex: 1,
             total: 0,
-            range: 15,
-            selectP: {
-                value: 'region_id',
-                label: 'region_name',
-                children: 'all_child'
-            },
-            user: ''
+            range: 15
         },
         created:function () {
-            if (this.provinces =='') {
-                this.getProvinces();
-            }
-            if (this.level > 1) {
-                this.showArea = false;
-                if (this.area == 'province') {
-                    this.selectPro[0] = this.area_value
-                } else if (this.area == 'city') {
-                    this.selectPro[1] = this.area_value
-                } else {
-                    this.selectPro[2] = this.area_value
-                }
-            }
-            this.getAgent();
+            this.inviteeList();
         },
         methods:{
-            getProvinces:function () {
-                var url = this.baseUrl + 'region';
-                var params = {headers:{'X-TOKEN':this.token}};
-                this.$http.get(url, params).then(function (response) {
-                    this.provinces = response.data.data;
-                },function (response) {
-
-                })
-            },
-            getAgent:function () {
-                var url = this.userUrl + "agents";
+            inviteeList:function () {
+                var url = this.userUrl + "users/all-invitee";
                 var params = {
                     headers:{'X-TOKEN':this.token},
                     params: {
-                        terms:{
-                            name: this.name,
-                            v1_province_id: this.selectPro[0],
-                            v1_city_id: this.selectPro[1],
-                            v1_county_id: this.selectPro[2],
-                            inviter: this.inviter
-                        },
+                        inviter_phone: this.phone,
                         offset: (this.pageIndex - 1) * this.range,
                         range: this.range
                     }
@@ -156,32 +100,28 @@
 
                 });
             },
-            getLeader:function (user) {
-                this.leader.push(user);
-                this.inviter = user.id;
-                this.user = user;
-                this.getAgent();
+            toSearch:function () {
+                this.pageIndex = 1;
+                this.inviteeList();
             },
-            toSearch:function (key, id) {
-                this.leader = this.leader.slice(0, key);
-                this.inviter = id;
-                this.user = this.leader[0];
-                this.getAgent();
+            invitee:function (phone) {
+                this.phone = phone;
+                this.inviteeList()
             },
-            getOrder:function (user) {
+            getOrder:function (id) {
                 parent.layer.open({
                     type: 2,
                     title: false,
                     shadeClose:true,
                     shade: [0.8],
                     area: ['1200px', '800px'],
-                    content: "<?= \yii\helpers\Url::toRoute('cash-examine/pass') ?>" + "?id="+user.id
+                    content: "<?= \yii\helpers\Url::toRoute('cash-examine/pass') ?>" + "?customer_id="+id
                 })
             },
 
             pages: function (val) {
                 this.pageIndex = val;
-                this.toSearch();
+                this.inviteeList();
             }
         }
     })
