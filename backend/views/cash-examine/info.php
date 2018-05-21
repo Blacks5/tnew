@@ -24,8 +24,9 @@
                         <a class="list-group-item  col-sm-3">个人保障计划<span class="badge">{{order['is_free_pack_fee'] ==1 ?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3">贵宾服务包<span class="badge">{{order['is_add_service_fee']==1?'是':'否'}}</span></a>
                         <a class="list-group-item  col-sm-3" @click="images(order['id'])">图片<span class="badge">点击查看</span></a>
-                        <a class="list-group-item  col-sm-3">产品类型<span class="badge">{{ order.product_type == 1?'常规':'促销'}}</span></a>
-                        <a class="list-group-item  col-sm-9">备注<span class="badge" v-if="order.extended_data && order.extended_data.remark">{{ order.extended_data.remark }}</span></a>
+                        <a class="list-group-item  col-sm-2">产品类型<span class="badge">{{ order.product_type == 1?'常规':'促销'}}</span></a>
+                        <a class="list-group-item  col-sm-2">邀请用户<span class="badge" @click="getInvitee(order.phone)">点击查看</span></a>
+                        <a class="list-group-item  col-sm-8">备注<span class="badge" v-if="order.extended_data && order.extended_data.remark">{{ order.extended_data.remark }}</span></a>
                     </div>
                 </div>
                 <div class="container" v-if="order['status'] < 90 ">
@@ -436,7 +437,17 @@
                     content: "<?= \yii\helpers\Url::toRoute('cash-examine/images') ?>" + "?orderID="+id
                 })
             },
-            postOrder: function (url, data){
+            getInvitee: function (phone){
+              var invitee = layer.open({
+                  type: 2,
+                  title: false,
+                  shadeClose:true,
+                  shade: [0.8],
+                  area: ['1000px', '600px'],
+                  content: "<?= \yii\helpers\Url::toRoute('user/invitee') ?>" + "?phone=" + phone
+              })
+            },
+            postOrder:function (url, data){
                 var loading = layer.load(0,{shade: false});
                 var token = {headers:{'X-TOKEN':this.token}};
                 this.$http.post(url, data,token).then(function(data){
