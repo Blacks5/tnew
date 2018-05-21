@@ -39,12 +39,12 @@ class CashExamineController extends CoreBackendController
         return $this->render('wait',['examine' => $examine, 'user' => $area]);
     }
 
-    public function actionPass($id = null)
+    public function actionPass($id = null, $customer_id = null)
     {
         $examine = 'pass';
         $user = new User();
         $area = $user->getUserArea();
-        return $this->render('wait', ['examine' => $examine, 'id' => $id, 'user' => $area]);
+        return $this->render('wait', ['examine' => $examine, 'id' => $id, 'user' => $area, 'customer_id' => $customer_id]);
     }
 
     public function actionCancel()
