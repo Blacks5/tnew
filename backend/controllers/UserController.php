@@ -144,6 +144,11 @@ class UserController extends CoreBackendController
             'area' => $area
         ]);
     }
+
+    public function actionInvitee()
+    {
+        return $this->render('invitee');
+    }
     /**
      * 员工列表
      * @return string
