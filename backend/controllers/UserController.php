@@ -145,9 +145,9 @@ class UserController extends CoreBackendController
         ]);
     }
 
-    public function actionInvitee()
+    public function actionInvitee($phone = null)
     {
-        return $this->render('invitee');
+        return $this->render('invitee', ['phone' => $phone]);
     }
     /**
      * 员工列表

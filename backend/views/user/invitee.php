@@ -23,9 +23,9 @@
                             <thead>
                             <tr>
                                 <th>用户编号</th>
-                                <th>真实姓名</th>
+                                <th>被邀请姓名</th>
                                 <th>手机号码</th>
-                                <th>创建时间</th>
+                                <th>接收邀请时间</th>
                                 <th>邀请者</th>
                                 <th>操作</th>
                             </tr>
@@ -71,7 +71,7 @@
             baseUrl: "<?= Yii::$app->params['cashBaseUrl'] ?>",
             userUrl: "<?= Yii::$app->params['v2_user'] ?>",
             token: window.sessionStorage.getItem('V2_TOKEN'),
-            phone: '',
+            phone: "<?= $phone ?? '' ?>",
             lists: [],
             name: '',
             selectPro: [],
