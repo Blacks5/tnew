@@ -102,6 +102,7 @@
             pageCount: 1,
             pageIndex:'',
             saleID: "<?= $id ?? '' ?>",
+            customer_id: "<?= $customer_id ?? '' ?>",
             token: window.sessionStorage.getItem('V2_TOKEN'),
             baseUrl:"<?= Yii::$app->params['cashBaseUrl'] ?>",
             region: "<?= $user['area'] ?? '' ?>",
@@ -121,6 +122,7 @@
                     params: {
                         param:{
                             saleID: this.saleID,
+                            customerID: this.customer_id,
                             name:$('input[name=name]').val(),
                             phone:$('input[name=phone]').val(),
                             sTime:$('input[name=sTime]').val(),
