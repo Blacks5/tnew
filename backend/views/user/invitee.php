@@ -13,6 +13,12 @@
                         <div class="col-sm-2">
                             <el-input v-model="phone" placeholder="请输入手机号码" clearable></el-input>
                         </div>
+                        <div class="col-sm-2">
+                            <el-select v-model="invitee" placeholder="请选择邀请者类型">
+                                <el-option value="" label="全部"></el-option>
+                                <el-option value="staff" label="工作人员"></el-option>
+                            </el-select>
+                        </div>
                         <div class="col-sm-3">
                             <a class="btn btn-success" @click="toSearch">查询</a>
                         </div>
@@ -72,6 +78,7 @@
             userUrl: "<?= Yii::$app->params['v2_user'] ?>",
             token: window.sessionStorage.getItem('V2_TOKEN'),
             phone: "<?= $phone ?? '' ?>",
+            invitee: "",
             lists: [],
             name: '',
             selectPro: [],
@@ -90,7 +97,8 @@
                     params: {
                         inviter_phone: this.phone,
                         offset: (this.pageIndex - 1) * this.range,
-                        range: this.range
+                        range: this.range,
+                        inviter_type: this.invitee,
                     }
                 };
                 this.$http.get(url, params).then(function (response) {
