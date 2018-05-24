@@ -175,9 +175,9 @@ $(".repay").click(function(env){
             data: {refund_id: r_id},
             success: function (data) {
                 if (data.status === 1) {
-                    return layer.alert(data.message, {icon: data.status}, function(){window.location.reload();});
+                    return layer.msg(data.message, {icon: data.status}, function(){window.location.reload();});
                 }else{
-                    return layer.alert(data.message, {icon: data.status});
+                    return layer.msg(data.message, {icon: data.status});
                 }
             },
             error: function () {
