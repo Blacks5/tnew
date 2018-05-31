@@ -184,7 +184,7 @@ $(".repay").click(function(env){
             data: {refund_id: r_id},
             success: function (data) {
                 if (data.status === 1) {
-                    return layer.msg(data.message, {icon: data.status}, function(){return window.location.reload();});
+                    return layer.msg(data.message, {icon: data.status}, function(){$("#" + r_id + "Btn").attr("disabled",true);});
                 }else{
                     return layer.msg(data.message, {icon: data.status});
                 }
