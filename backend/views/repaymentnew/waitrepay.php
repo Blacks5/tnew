@@ -125,6 +125,7 @@ use yii\helpers\Url;
                                                                     </button>
                                                                 <?php }else{ ?>
                                                                     <button data-value="<?= $_v['r_id'] ?>"
+                                                                            id="<?= $_v['r_id'] . 'Btn' ?>"
                                                                             class="btn btn-info btn-xs repay"><i
                                                                                 class="fa fa-folder"></i>
                                                                         还款
@@ -175,7 +176,7 @@ $(".repay").click(function(env){
             data: {refund_id: r_id},
             success: function (data) {
                 if (data.status === 1) {
-                    return layer.msg(data.message, {icon: data.status}, function(){window.location.reload();});
+                    return layer.msg(data.message, {icon: data.status}, function(){$("#" + r_id + "Btn").attr("disabled",true)});
                 }else{
                     return layer.msg(data.message, {icon: data.status});
                 }
