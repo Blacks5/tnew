@@ -73,15 +73,15 @@ class WechatController extends Controller {
 						// 当前环境
 						$env = isset(Yii::$app->params['server_running_env']) ? Yii::$app->params['server_running_env'] : 'develop';
 
-						$tokenKey = 'env:' . $env . ':user:206:accesstoken';
+						// $tokenKey = 'env:' . $env . ':user:206:accesstoken';
 
-						echo $tokenKey;
+						// echo $tokenKey;
 
-						echo '<br />';
+						// echo '<br />';
 
-						$token = Yii::$app->cache->get($tokenKey);
+						// $token = Yii::$app->cache->get($tokenKey);
 
-						var_dump($token);die;
+						// var_dump($token);die;
 
 						return $this->renderPartial('fail');
 					}
