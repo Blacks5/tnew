@@ -149,6 +149,7 @@ class RepaymentSearch extends CoreBackendModel
         }else{  // 没有还完所有期, 还款金额为月供 和 滞纳金
             foreach ($data as $k => $d){
                 $total['total'] += $d['r_total_repay'] + $d['r_overdue_money'];
+                $total['overdue'] += $d['r_overdue_money'];
                 array_push($total['num'], $d['r_id']);
             }
         }
