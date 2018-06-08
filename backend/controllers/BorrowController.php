@@ -223,7 +223,8 @@ class BorrowController extends CoreBackendController
                 'jzq_sign_log'=>$jzq_sign_log,
                 'not_yet_count'=>count($notYet),
                 'canCancel'=>$canCancel,
-                'all_periods'=>$allPeriods
+                'all_periods'=>$allPeriods,
+                'isOverdueCount' => $overdue,
             ]);
         }
 
