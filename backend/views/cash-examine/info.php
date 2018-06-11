@@ -608,7 +608,32 @@
                 })
             },
             repayNoOverdue:function () {
-                layer.msg('客官莫急,这个功能开没开发', {icon:2})
+                if (this.repayAmount == 0) {
+                    layer.msg('请先计算还款金额!', {icon:2});
+                }
+                var url = baseUrl + "<?= $id ?>/collection";
+                var data = { total: $('#repaySelect').val()};
+
+                var token = {headers: {'X-TOKEN': this.token}};
+                var __this = this;
+                var index = layer.confirm('真的要催收还款么? 没有滞纳金也不经过银行哟~~~~~~~', {
+                    btn: ['确定', '取消']
+                }, function () {
+                    var loading =  layer.load(0, {shade: false});
+                    __this.$http.post(url, data, token).then(function (res) {
+                        layer.close(loading);
+                        var json = res.bodyText;
+                        var usedData = JSON.parse(json);
+                        if (usedData['success']==true) {
+                            layer.msg('催收还款成功!', {icon:1});
+                        }
+                    }, function (res) {
+                        layer.close(loading);
+                        var json = res.bodyText;
+                        var usedData = JSON.parse(json);
+                        layer.msg(usedData['errors'][0]['message'], {icon:2});
+                    })
+                })
             },
             cService:function() {
                 var url = baseUrl + "<?= $id ?>/service";
