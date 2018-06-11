@@ -26,9 +26,9 @@ class BaseController extends Controller {
 		Wechat::Login(['site/index']);
 
 		// 检测是否已经绑定
-		$session = Yii::$app->session;
+		$sys_user = Yii::$app->session->get('sys_user');
 
-		if (!$session->get('sys_user')) {
+		if (!$sys_user || !$sys_user->wechat_openid) {
 			return $this->redirect(['login/bind']);
 		}
 
