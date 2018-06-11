@@ -339,6 +339,16 @@ $(function(){
             // 插入到预览区
             var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + url + '" style="width:100%;height:100%;"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
             filesContainer.append(preview);
+            // 移除状态
+            preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
+            // 当前数量
+            var currNum = parseInt(numContainer.text().split('/')[0]);
+            numContainer.text((currNum+1) + '/' + maxCount);
+            // 预览
+            wx.previewImage({
+                current: url,
+                urls: [url]
+            });
         }
     }
 
