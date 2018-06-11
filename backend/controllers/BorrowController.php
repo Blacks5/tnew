@@ -1037,7 +1037,11 @@ left join customer on customer.c_id=orders.o_customer_id
                 $repayment->r_status = Repayment::STATUS_ALREADY_PAY;
                 $repayment->r_repay_date = strtotime(date('Y-m-d'));
 
-                if ($v['r_serial_no'] != $total['serialNo'] and $v['r_overdue_day'] < 3) {
+                if (
+                    $v['r_serial_no'] != $total['serialNo']
+                    and $v['r_overdue_day'] < 3
+                    and $query->count() == $request->post('expected')
+                ) {
                     $repayment->r_total_repay = $repayment->r_principal;
                     $repayment->r_interest = 0;
                     $repayment->r_add_service_fee = 0;
@@ -1046,6 +1050,14 @@ left join customer on customer.c_id=orders.o_customer_id
                     $repayment->r_customer_management = 0;
                 }
                 $repayment->save(false);
+
+                if($repayment->r_is_last==1){
+                    $order = Orders::find()->where(['o_id'=>$repayment->r_orders_id, 'o_status'=>Orders::STATUS_PAYING])->one();
+                    $order->o_status = Orders::STATUS_PAY_OVER;
+                    if($order->save(false)===false){
+                       return ['status' => 2, 'message' => '修改订单失败'];
+                    }
+                }
             }
             $order = Orders::findOne($request->post('id'));
             $order->o_status = Orders::STATUS_PAY_OVER;

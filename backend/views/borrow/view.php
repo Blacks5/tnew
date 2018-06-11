@@ -931,10 +931,12 @@ $("#undesirable").click(function(){
 
 $("#collection").click(function () {
     var value = $("#collection_money").val();
+    var period_num = $("#period_num").val();
     layer.confirm("確定要催收還款?", {icon:3, title: "確定催收還款么?"}, function (index) {
         var postData = {
             id:'.$model['o_id'] .',
             value: value,
+            "expected":period_num,
             "'.Yii::$app->request->csrfParam.'":"'. Yii::$app->request->csrfToken.'"
         }
         $.ajax({
