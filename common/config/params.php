@@ -255,8 +255,20 @@ return [
 	// 联系人关系
 	'contactRelationship' => [
 		[
-			'title' => '家人',
+			'title' => '家人-其他',
 			'value' => 'family',
+		],
+		[
+			'title' => '父母',
+			'value' => 'parent',
+		],
+		[
+			'title' => '配偶',
+			'value' => 'spouse',
+		],
+		[
+			'title' => '兄弟姐妹',
+			'value' => 'brothers',
 		],
 		[
 			'title' => '同事',
