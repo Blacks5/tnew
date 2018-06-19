@@ -1025,14 +1025,14 @@ left join customer on customer.c_id=orders.o_customer_id
         if ($request->getIsAjax()) {
             $repay = new RepaymentSearch();
             $query = Repayment::find()->where(['r_orders_id' => $request->post('id'), 'r_status' => Repayment::STATUS_NOT_PAY]);
-            $total = $repay->getAdvanceMoney($request->post('id'), $query->count());
+            $total = $repay->getAdvanceMoney($request->post('id'), $request->post('period'));
             $collection = $total['total'] - $total['overdue'];
             if ($collection != $request->post('value')){
                 return ['status' => 2, 'message' => '還款金額不對'];
             }
 
-            foreach ($query->all() ?? [] as $k => $v) {
-                $repayment = Repayment::findOne($v['r_id']);
+            foreach ($total['num'] ?? [] as $k => $v) {
+                $repayment = Repayment::findOne($v);
                 $repayment->r_overdue_money = 0;
                 $repayment->r_status = Repayment::STATUS_ALREADY_PAY;
                 $repayment->r_repay_date = strtotime(date('Y-m-d'));
@@ -1059,9 +1059,6 @@ left join customer on customer.c_id=orders.o_customer_id
                     }
                 }
             }
-            $order = Orders::findOne($request->post('id'));
-            $order->o_status = Orders::STATUS_PAY_OVER;
-            $order->save(false);
             return ['status' => 1, 'message' => '催收還款成功!'];
         }
         return ['status' => 2, 'message' => '啥子情況'];
