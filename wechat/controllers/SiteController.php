@@ -15,7 +15,7 @@ class SiteController extends BaseController {
 		// 获取系统用户
 		$sys_user = Yii::$app->session->get('sys_user');
 
-		if (!$sys_user) {
+		if (!$sys_user || !$sys_user->wechat_openid) {
 			return $this->redirect(['login/bind']);
 		}
 

@@ -257,6 +257,7 @@
 <script src="/wechat/lib/fastclick.js"></script>
 <script src="/wechat/js/jquery-weui.js"></script>
 <script src="/wechat/js/jquery-weui-extend.js"></script>
+<script src="/wechat/js/cache.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -329,6 +330,60 @@ $(function(){
             ]
         });
 
+        // 一审上传检测
+        if(orderStatus == ORDER_STATUS_FIRST_UPLOAD || orderStatus == ORDER_STATUS_FIRST_REFUSE){
+            var currPost = firstPost;
+        }
+
+        // 二审上传检测
+        if(orderStatus == ORDER_STATUS_SECOND_UPLOAD || orderStatus == ORDER_STATUS_SECOND_REFUSE){
+            var currPost = secondPost;
+        }
+
+        if(currPost){
+            // 初始化图片缓存
+            for(var i = 0 ; i < currPost.length; i++){
+                var imageType = currPost[i].imageType;
+                // 缓存订单照片信息
+                var uuid = Cache.get('order:' + orderId + ':imagetype:' + imageType + ':uuid');
+                var url = Cache.get('order:' + orderId + ':imagetype:' + imageType + ':url');
+                // 拼装数据
+                if(uuid && url){
+                    imagesArr[imageType] = uuid;
+                    // 当前容器
+                    var _that = $('.weui-uploader__input[imageType=' + imageType + ']');
+                    // 获取uploader上传容器
+                    var uploaderContainer = _that.parents('.weui-uploader');
+                    // 获取图片显示容器
+                    var filesContainer = uploaderContainer.find('.weui-uploader__files');
+                    // 获取input容器
+                    var inputContainer = _that.parents('.weui-uploader-box');
+                    // 获取图片数量容器
+                    var numContainer = uploaderContainer.find('.weui-uploader__info');
+                    // 获取最大图片上传数
+                    var maxCount = parseInt(numContainer.text().split('/')[1]);
+                    // 隐藏当前input容器
+                    inputContainer.hide();
+                    // 插入到预览区
+                    var preview = $('<li class="weui-uploader__file weui-uploader__file_status"><img src="' + url + '" style="width:100%;height:100%;"><div class="weui-uploader__file-content" style="font-size:12px">上传中</div></li>');
+                    filesContainer.append(preview);
+                    // 移除状态
+                    preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
+                    // 当前数量
+                    var currNum = parseInt(numContainer.text().split('/')[0]);
+                    numContainer.text((currNum+1) + '/' + maxCount);
+                    // 绑定查看
+                    preview.bind('click' , function(){
+                        var imageUrl = $(this).find('img').attr('src');
+                        wx.previewImage({
+                            current: imageUrl,
+                            urls: [imageUrl]
+                        });
+                    });
+                }
+            }
+        }
+
         // 绑定上传图片
         $('.weui-uploader__input').bind('click' , function(){
             // 获取当前input
@@ -371,6 +426,10 @@ $(function(){
 
                                     // 临时存储上传文件
                                     imagesArr[imageType] = res.data.uuid;
+
+                                    // 缓存订单照片信息
+                                    Cache.set('order:' + orderId + ':imagetype:' + imageType + ':uuid', res.data.uuid);
+                                    Cache.set('order:' + orderId + ':imagetype:' + imageType + ':url', res.data.url);
 
                                     preview.removeClass('weui-uploader__file_status').find('.weui-uploader__file-content').remove();
                                     // 当前数量
@@ -418,7 +477,7 @@ $(function(){
                             $.toast('请上传' + descText, 'text');
                             return;
                         }
-                        
+
                         var uuid = imagesArr[imageType] ? imagesArr[imageType] : '';
 
                         // 加入待上传的数据中
@@ -447,6 +506,12 @@ $(function(){
                 $.ajaxPost(uploadOrderImgUrl , {orderId : orderId, images : post.join(',')} , function(res){
                     if(res.status){
                         $.toast(res.message, function(){
+                            // 清理缓存
+                            for (var i = 1; i <= 18; i++) {
+                                Cache.del('order:' + orderId + ':imagetype:' + i + ':uuid');
+                                Cache.del('order:' + orderId + ':imagetype:' + i + ':url');
+                            }
+
                             window.location = successUrl + "?orderId=" + orderId;
                         });
                     }else{
