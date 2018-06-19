@@ -22,6 +22,10 @@
                         <div class="col-sm-3">
                             <a class="btn btn-success" @click="toSearch">查询</a>
                         </div>
+                        <div class="col-sm-3 col-sm-offset-2">
+                            <el-badge :value="ownInvitee.name" class="item" v-if="phone">
+                                <el-button size="small">邀请者:{{ownInvitee.name}} - {{ownInvitee.phone}}</el-button>
+                            </el-badge></div>
                     </div>
 
                     <div class="table-responsive">
@@ -84,7 +88,8 @@
             selectPro: [],
             pageIndex: 1,
             total: 0,
-            range: 15
+            range: 15,
+            ownInvitee: ''
         },
         created:function () {
             this.inviteeList();
@@ -104,9 +109,23 @@
                 this.$http.get(url, params).then(function (response) {
                     this.lists = response.data.data.items;
                     this.total = response.data.data.total;
+                    if (this.phone) {
+                        this.getOwnInvitee()
+                    }
                 },function (response) {
 
                 });
+            },
+            getOwnInvitee(phone) {
+                var params = {
+                    headers: {'X-TOKEN':this.token},
+                    params: {
+                        phone: this.phone
+                    }
+                };
+                this.$http.get(this.userUrl + 'users/nearest-inviter', params).then(function (response) {
+                    this.ownInvitee = response.data.data
+                })
             },
             toSearch:function () {
                 this.pageIndex = 1;
