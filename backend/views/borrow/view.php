@@ -936,7 +936,7 @@ $("#collection").click(function () {
         var postData = {
             id:'.$model['o_id'] .',
             value: value,
-            "expected":period_num,
+            "period":period_num,
             "'.Yii::$app->request->csrfParam.'":"'. Yii::$app->request->csrfToken.'"
         }
         $.ajax({
