@@ -51,7 +51,8 @@
                             <tr v-for="value in lists">
                                 <td>{{value.order_number}}</td>
                                 <td>{{value.thirdparty_id}}</td>
-                                <td>{{value.customerName}}</td>
+                                <td v-if="value.extended_data && value.extended_data.label">{{value.extended_data.label}}</td>
+                                <td v-else>{{value.customerName}}</td>
                                 <td v-if="url == 'loans'">{{value.paid_at ==null?'还未成功':value.paid_at }}</td>
                                 <td v-if="url == 'deducts'">{{value.repaid_at ==null?'还未成功':value.repaid_at }}</td>
                                 <td v-if="url == 'loans'">{{value.expected_amount}}</td>
@@ -63,10 +64,14 @@
                                     <a class="btn btn-xs btn-success" v-if="value.status == 'successful'">成功</a>
                                     <a class="btn btn-xs btn-danger" v-if="value.status == 'failed'">失败</a>
                                 </td>
-                                <td>{{value.name}}</td>
+                                <td>{{value.name ? value.name : '系统'}}</td>
                                 <td>{{value.created_at}}</td>
                                 <td class="client-status">
                                     <a class="btn btn-info btn-xs" @click="info(value.id)">详情</a>
+                                    <a class="btn btn-danger btn-xs" @click="reLoan(value.order_id)" v-if="url === 'loans'
+                                    && value.extended_data
+                                    && value.extended_data.type === 'reward'
+                                    && value.status != 'successful'">重发</a>
                                 </td>
                                 <td>
                                 </td>
@@ -159,7 +164,34 @@
                 }
                 this.pageIndex ++;
                 this.toSearch();
-            }
+            },
+            reLoan: function (id) {
+
+                var __this = this;
+                var url = this.baseUrl + id +"/re-loan";
+                var data = {action:"<?= $url ?>"};
+                var token = {headers:{'X-TOKEN':this.token}};
+                var index = layer.msg('确定从新放款么?',{
+                    btn:['确定','取消'],
+                    btn1:function (){
+                        __this.$http.post(url, data,token).then(function(data){
+                            var json = data.bodyText;
+                            var usedData = JSON.parse(json);
+
+                            layer.msg(usedData['data'],{icon:1});
+                            __this.toSearch();
+                        },function(response){
+                            layer.close(loading);
+                            var json = response.bodyText;
+                            var usedData = JSON.parse(json);
+                            layer.msg(usedData['errors'][0]['message'], {icon:2});
+                        });
+                    },
+                    btn2:function (){
+                        layer.close(index);
+                    }
+                })
+            },
         }
     });
 </script>
