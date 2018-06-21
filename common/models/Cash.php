@@ -5,12 +5,13 @@
  * @Author: MuMu
  * @Date:   2017-11-20 13:47:36
  * @Last Modified by:   MuMu
- * @Last Modified time: 2018-04-04 17:47:19
+ * @Last Modified time: 2018-06-21 12:00:37
  */
 
 namespace common\models;
 
 use common\core\CoreCommonActiveRecord;
+use Yii;
 
 class Cash extends CoreCommonActiveRecord {
 	public $orderID;
@@ -81,7 +82,7 @@ class Cash extends CoreCommonActiveRecord {
 			['contactName', 'required', 'message' => '请输入联系人姓名'],
 			['contactName', 'string', 'message' => '联系人姓名长度在2~20之间', 'length' => [2, 20]],
 			['contactRelation', 'required', 'message' => '请选择联系人关系'],
-			['contactRelation', 'in', 'message' => '请选择联系人关系', 'range' => ['family', 'workmate', 'friend', 'other']],
+			['contactRelation', 'in', 'message' => '请选择联系人关系', 'range' => array_column(Yii::$app->params['contactRelationship'] , 'value')],
 			['contactPhone', 'required', 'message' => '请输入联系人手机'],
 			['contactPhone', 'match', 'message' => '联系人手机不合法', 'pattern' => '/^(13[0-9]|14[579]|15[012356789]|16[6]|17[0-9]|18[0-9]|19[89])[0-9]{8}$/'],
 			['orderID', 'required', 'message' => '参数异常'],
