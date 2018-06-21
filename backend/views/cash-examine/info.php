@@ -97,10 +97,10 @@
                 <div class="container">
                     <div class="col-sm-12 height"><h3 class="text-danger text-center">审核信息</h3></div>
                     <div class="list-group" v-if="order.sale != null">
-                        <a class="list-group-item col-sm-3" v-if="order.saleman_id">销售人员<span class="badge">{{order['sale']['name'] }} - {{order['sale']['phone']}}</span></a>
+                        <a class="list-group-item col-sm-3" v-if="order.sale && order.sale.name">销售人员<span class="badge">{{order['sale']['name'] }} - {{order['sale']['phone']}}</span></a>
                         <a class="list-group-item col-sm-3" v-else>客户订单</a>
                     </div>
-                    <div class="list-group" v-if="order['status'] >=20 && order.visitor != null">
+                    <div class="list-group" v-if="order['status'] >=20 && order.visitor && order.visitor.name">
                         <a class="list-group-item col-sm-3" >上门审核人员<span class="badge">{{order['visitor']['name']}} - {{order['visitor']['phone']}}</span></a>
                         <a class="list-group-item col-sm-3" >后台审核人员<span class="badge" v-if="order.auditor != null">{{order['auditor']['name']}}</span></a>
                     </div>
@@ -110,7 +110,7 @@
                     <div class="list-group" >
                         <a class="list-group-item col-sm-4">代发ID<span class="badge">{{loan.thirdparty_id}}</span> </a>
                         <a class="list-group-item col-sm-3">代发金额<span class="badge">{{loan.expected_amount}}</span> </a>
-                        <a class="list-group-item col-sm-2">代发操作人<span class="badge">{{loan.auditor['name']}}</span> </a>
+                        <a class="list-group-item col-sm-2">代发操作人<span class="badge" v-if="loan.auditor && loan.auditor.name">{{loan.auditor['name']}}</span> </a>
                         <a class="list-group-item col-sm-3">代发时间<span class="badge">{{loan.created_at}}</span> </a>
                     </div>
                 </div>
