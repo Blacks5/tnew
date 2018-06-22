@@ -180,7 +180,7 @@ class RepaymentSearch extends CoreBackendModel
         $date = Carbon::createFromTimestamp(strtotime(date('Y-m-d')));
         foreach ($repayment as $k => $v){
             $reDate = Carbon::createFromTimestamp($v['r_pre_repay_date']);
-            if($reDate->month == $date->month){    //判断当期应还的月份
+            if($reDate->month == $date->month and $reDate->year == $date->year){    //判断当期应还的月份
                 if($reDate->addDay(3)->gt($date)){  //如果应还大于现在时间证明本月已还,下月应还为本期
                     return $v['r_serial_no'];
                 }else{
