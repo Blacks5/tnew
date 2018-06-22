@@ -68,7 +68,7 @@
                                 <td>{{value.created_at}}</td>
                                 <td class="client-status">
                                     <a class="btn btn-info btn-xs" @click="info(value.id)">详情</a>
-                                    <a class="btn btn-danger btn-xs" @click="reLoan(value.order_id)" v-if="url === 'loans'
+                                    <a class="btn btn-danger btn-xs" @click="reLoan(value.id)" v-if="url === 'loans'
                                     && value.extended_data
                                     && value.extended_data.type === 'reward'
                                     && value.status != 'successful'">重发</a>
