@@ -1020,48 +1020,59 @@ left join customer on customer.c_id=orders.o_customer_id
     }
 
     public function actionCollection() {
-        $request = Yii::$app->getRequest();
         Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
-        if ($request->getIsAjax()) {
+        $request = Yii::$app->getRequest();
+        if($request->getIsAjax()){
             $repay = new RepaymentSearch();
-            $query = Repayment::find()->where(['r_orders_id' => $request->post('id'), 'r_status' => Repayment::STATUS_NOT_PAY]);
-            $total = $repay->getAdvanceMoney($request->post('id'), $request->post('period'));
-            $collection = $total['total'] - $total['overdue'];
-            if ($collection != $request->post('value')){
-                return ['status' => 2, 'message' => '還款金額不對'];
-            }
-
-            foreach ($total['num'] ?? [] as $k => $v) {
-                $repayment = Repayment::findOne($v);
-                $repayment->r_overdue_money = 0;
-                $repayment->r_status = Repayment::STATUS_ALREADY_PAY;
-                $repayment->r_repay_date = strtotime(date('Y-m-d'));
-
-                if (
-                    $v['r_serial_no'] != $total['serialNo']
-                    and $v['r_overdue_day'] < 3
-                    and $query->count() == $request->post('expected')
-                ) {
-                    $repayment->r_total_repay = $repayment->r_principal;
-                    $repayment->r_interest = 0;
-                    $repayment->r_add_service_fee = 0;
-                    $repayment->r_free_pack_fee = 0;
-                    $repayment->r_finance_mangemant_fee = 0;
-                    $repayment->r_customer_management = 0;
+            $price = $repay->getAdvanceMoney($request->post('id'), $request->post('period'));
+            $trans = Yii::$app->getDb()->beginTransaction();
+            try{
+                $totalPrice = $price['total'] - $price['overdue'];
+                if($totalPrice!=$request->post('value')){
+                    throw new CustomBackendException('金额不对,请重试!');
                 }
-                $repayment->save(false);
+                $sql = Repayment::find()
+                    ->where(['r_orders_id'=>$request->post('id'), 'r_status'=>1])
+                    ->orderBy('r_pre_repay_date');
+                $count = $sql->count();
+                foreach ($price['num'] as $k => $v){
+                    $data = Repayment::findOne($v);
+                    $data->r_overdue_money = 0;
+                    $data->r_repay_date = strtotime(date('Y-m-d'));
+                    $data->r_status = Repayment::STATUS_ALREADY_PAY;
 
-                if($repayment->r_is_last==1){
-                    $order = Orders::find()->where(['o_id'=>$repayment->r_orders_id, 'o_status'=>Orders::STATUS_PAYING])->one();
-                    $order->o_status = Orders::STATUS_PAY_OVER;
-                    if($order->save(false)===false){
-                       return ['status' => 2, 'message' => '修改订单失败'];
+                    if($count == $request->post('period')){
+                        if($price['serialNo'] != $data['r_serial_no'] && $data['r_overdue_day'] <= 3){
+                            $data->r_total_repay = $data->r_principal;  //月供=本金
+                            $data->r_interest = 0;
+                            $data->r_add_service_fee = 0;
+                            $data->r_free_pack_fee = 0;
+                            $data->r_finance_mangemant_fee = 0;
+                            $data->r_customer_management = 0;
+                        }
+                    }
+                    if($data->save(false)===false){
+                        throw new CustomBackendException('还款失败!');
+                    }
+
+                    if($data->r_is_last==1){
+                        $order = Orders::find()->where(['o_id'=>$data->r_orders_id, 'o_status'=>Orders::STATUS_PAYING])->one();
+                        $order->o_status = Orders::STATUS_PAY_OVER;
+                        if($order->save(false)===false){
+                            throw new CustomBackendException('修改订单失败!');
+                        }
                     }
                 }
+                $trans->commit();
+                return ['status'=>1, 'message'=>'催收还款成功!'];
+            }catch (CustomCommonException $e){
+                $trans->rollBack();
+                return ['status'=>$e->getCode(), 'message'=>$e->getMessage()];
+            }catch (\Exception $e){
+                $trans->rollBack();
+                return ['status'=>0, 'message'=>$e->getMessage()];
             }
-            return ['status' => 1, 'message' => '催收還款成功!'];
         }
-        return ['status' => 2, 'message' => '啥子情況'];
     }
 
 }

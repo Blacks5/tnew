@@ -51,7 +51,7 @@ class Repayment extends CoreCommonActiveRecord
         return [
             [['r_customer_id', 'r_orders_id', 'r_principal', 'r_interest', 'r_add_service_fee', 'r_free_pack_fee', 'r_finance_mangemant_fee', 'r_customer_management', 'r_pre_repay_date', 'r_repay_date', 'r_status', 'r_is_last', 'r_serial_no', 'r_operator_id', 'r_operator_date'], 'required'],
             [['r_customer_id', 'r_orders_id', 'r_pre_repay_date', 'r_repay_date', 'r_status', 'r_is_last', 'r_serial_no', 'r_operator_id', 'r_operator_date'], 'integer'],
-            [['r_principal', 'r_interest', 'r_add_service_fee', 'r_free_pack_fee', 'r_finance_mangemant_fee', 'r_customer_management'], 'number'],
+            [['r_principal', 'r_interest', 'r_add_service_fee', 'r_free_pack_fee', 'r_finance_mangemant_fee', 'r_customer_management', 'r_overdue_money'], 'number'],
 
 
         ];
@@ -79,6 +79,7 @@ class Repayment extends CoreCommonActiveRecord
             'r_free_pack_fee' => '随心包服务费',
             'r_finance_mangemant_fee' => '财务管理费',
             'r_customer_management' => '客户管理费',
+            'r_overdue_money' => '逾期金额',
             'r_pre_repay_date' => '应还时间',
             'r_repay_date' => '实际还款时间',
             'r_status' => '状态：1未还 2已还',
