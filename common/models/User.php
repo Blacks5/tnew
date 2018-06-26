@@ -78,7 +78,7 @@ class User extends CoreCommonActiveRecord implements \yii\web\IdentityInterface 
 			[['county', 'city', 'province'], 'string', 'max' => 20],
 			['username', 'unique', 'targetClass' => '\common\models\User', 'message' => '{attribute}已存在', 'on' => 'create'],
 //            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => '邮箱已存在', 'on'=>'create'],
-			[['cellphone'], 'match', 'pattern' => '/^1[3|5|7|8]\d{9}$/', 'message' => '错误的手机号码'],
+			[['cellphone'], 'match', 'pattern' => '/^1[3|5|7|8|9]\d{9}$/', 'message' => '错误的手机号码'],
 
 			[['password_hash_1'], 'compare', 'compareAttribute' => 'password_hash', 'message' => '两次密码不一致'],
 			[['department_id', 'job_id' , 'inviter_id'], 'safe'],
